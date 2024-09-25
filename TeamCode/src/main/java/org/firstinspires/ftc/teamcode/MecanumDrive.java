@@ -222,8 +222,8 @@ public final class MecanumDrive {
 
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFront_leftOdometry");
         leftBack = hardwareMap.get(DcMotorEx.class, "leftRear");
-        rightBack = hardwareMap.get(DcMotorEx.class, "rightRear");
-        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront_rightOdometry");
+        rightBack = hardwareMap.get(DcMotorEx.class, "rightRear_rightOdometry");
+        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront_centerOdometry");
 
         rightBack.setDirection(DcMotor.Direction.REVERSE);
         rightFront.setDirection(DcMotor.Direction.REVERSE);
@@ -243,8 +243,8 @@ public final class MecanumDrive {
 
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
-        localizer = new DriveLocalizer();
-        //localizer = new ThreeDeadWheelLocalizer(hardwareMap, MecanumDrive.PARAMS.inPerTick);
+        //localizer = new DriveLocalizer();
+        localizer = new ThreeDeadWheelLocalizer(hardwareMap, MecanumDrive.PARAMS.inPerTick);
         //localizer = new TwoDeadWheelLocalizer(hardwareMap, lazyImu.get(), MecanumDrive.PARAMS.inPerTick);
 
         FlightRecorder.write("MECANUM_PARAMS", PARAMS);

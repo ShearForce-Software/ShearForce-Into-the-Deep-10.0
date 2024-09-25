@@ -36,8 +36,8 @@ public final class ThreeDeadWheelLocalizer_summerChassis implements Localizer {
 
     public ThreeDeadWheelLocalizer_summerChassis(HardwareMap hardwareMap, double inPerTick) {
         par0 = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "leftFront_leftOdometry")));
-        par1 = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "rightRear")));
-        perp = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "rightFront_rightOdometry")));
+        par1 = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "rightRear_rightOdometry")));
+        perp = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "rightFront_centerOdometry")));
 
         par0.setDirection(DcMotorEx.Direction.REVERSE);
         par1.setDirection(DcMotorEx.Direction.REVERSE);

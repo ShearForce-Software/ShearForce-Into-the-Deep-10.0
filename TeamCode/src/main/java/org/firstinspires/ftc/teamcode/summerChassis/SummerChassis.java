@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Config
-public class SummerChassis {
+public class    SummerChassis {
     LinearOpMode opMode;
     DcMotor leftFront;
     DcMotor leftRear;
@@ -64,8 +64,8 @@ public class SummerChassis {
     public void Init (HardwareMap hardwareMap) {
         leftFront = hardwareMap.get(DcMotor.class, "leftFront_leftOdometry");
         leftRear = hardwareMap.get(DcMotor.class, "leftRear");
-        rightFront = hardwareMap.get(DcMotor.class, "rightFront_rightOdometry");
-        rightRear = hardwareMap.get(DcMotor.class, "rightRear");
+        rightFront = hardwareMap.get(DcMotor.class, "rightFront_centerOdometry");
+        rightRear = hardwareMap.get(DcMotor.class, "rightRear_rightOdometry");
         //  slidesMotor = hardwareMap.get(DcMotor.class, "slidesMotor");
 
         rightFront.setDirection(DcMotor.Direction.REVERSE);
