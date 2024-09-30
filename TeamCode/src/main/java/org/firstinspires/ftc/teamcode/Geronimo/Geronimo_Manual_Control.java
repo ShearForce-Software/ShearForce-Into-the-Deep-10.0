@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Geronimo;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -6,22 +6,14 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp(name = "Geronimo 1 Manual Control")
 @Disabled
-public class GeronimoManualWithUniversalClass extends LinearOpMode {
-    GeronimoUniversalControlClass theRobot;
+public class Geronimo_Manual_Control extends LinearOpMode {
+    Geronimo theRobot;
     static final double SCALE = 0.001;
     public void runOpMode() {
-        theRobot = new GeronimoUniversalControlClass(true, true, this);
-/*
-        double armRotationLeftPosition = 0.07;
-        double armRotationRightPosition = 0.07;
-        final double MAX_POS     =  1.0;     // Maximum rotational position
-        final double MIN_POS     =  0.0;     // Minimum rotational position
-        final double MIN_POS_ARM     =  0.04;     // Minimum rotational position
-
- */
+        theRobot = new Geronimo(true, true, this);
 
         theRobot.Init(this.hardwareMap);
-        //theRobot.ShowSlideTelemetry();
+        theRobot.ShowTelemetry();
 
         telemetry.update();
         waitForStart();
@@ -165,7 +157,7 @@ public class GeronimoManualWithUniversalClass extends LinearOpMode {
                    // theRobot.SpecialSleep(150);
                 }
 
-                theRobot.ShowSlideTelemetry();
+                theRobot.ShowTelemetry();
                 telemetry.update();
             } // end while (opModeIsActive())
 

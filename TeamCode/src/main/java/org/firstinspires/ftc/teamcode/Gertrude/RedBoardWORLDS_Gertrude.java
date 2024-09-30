@@ -14,6 +14,7 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.VelConstraint;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Gertrude.MecanumDrive_Gertrude;
@@ -21,6 +22,7 @@ import org.firstinspires.ftc.teamcode.Gertrude.Gertrude;
 
 //@Disabled
 @Autonomous(name="Red Board WORLDS Gertrude", preselectTeleOp = "Gertrude Manual Control")
+@Disabled
 public class RedBoardWORLDS_Gertrude extends LinearOpMode {
     Gertrude control = new Gertrude(true, false,this);
     MecanumDrive_Gertrude drive;
