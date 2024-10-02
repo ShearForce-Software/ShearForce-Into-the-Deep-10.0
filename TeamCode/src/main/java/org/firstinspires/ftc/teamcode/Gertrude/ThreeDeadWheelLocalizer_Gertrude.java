@@ -36,8 +36,8 @@ public final class ThreeDeadWheelLocalizer_Gertrude implements Localizer {
 
     public ThreeDeadWheelLocalizer_Gertrude(HardwareMap hardwareMap, double inPerTick) {
         par0 = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "leftFront_leftOdometry")));
-        par1 = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "rightFront_rightOdometry")));
-        perp = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "centerOdometry")));
+        par1 = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "rightRear_rightOdometry")));
+        perp = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "rightFront_centerOdometry")));
 
         par0.setDirection(DcMotorEx.Direction.FORWARD);
         par1.setDirection(DcMotorEx.Direction.REVERSE);
