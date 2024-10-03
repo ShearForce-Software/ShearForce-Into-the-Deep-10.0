@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Gertrude;
+package org.firstinspires.ftc.teamcode.Geronimo;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.DualNum;
@@ -18,11 +18,11 @@ import org.firstinspires.ftc.teamcode.Localizer;
 import org.firstinspires.ftc.teamcode.messages.ThreeDeadWheelInputsMessage;
 
 @Config
-public final class ThreeDeadWheelLocalizer_Gertrude implements Localizer {
+public final class ThreeDeadWheelLocalizer_Geronimo implements Localizer {
     public static class Params {
-        public double par0YTicks = -10010;//-9945; //-9497.19020701245// y position of the first parallel encoder (in tick units)
-        public double par1YTicks =  10010;//9945; //9726.518199066166 // y position of the second parallel encoder (in tick units)
-        public double perpXTicks = 0;//5.68660341074504; // x position of the perpendicular encoder (in tick units)
+        public double par0YTicks = -6020.0574879850155;//-9945; //-9497.19020701245// y position of the first parallel encoder (in tick units)
+        public double par1YTicks =  7127.860741993049;//9945; //9726.518199066166 // y position of the second parallel encoder (in tick units)
+        public double perpXTicks = 325.50136593228007;//5.68660341074504; // x position of the perpendicular encoder (in tick units)
     }
 
     public static Params PARAMS = new Params();
@@ -34,12 +34,15 @@ public final class ThreeDeadWheelLocalizer_Gertrude implements Localizer {
     private int lastPar0Pos, lastPar1Pos, lastPerpPos;
     private boolean initialized;
 
-    public ThreeDeadWheelLocalizer_Gertrude(HardwareMap hardwareMap, double inPerTick) {
+    public ThreeDeadWheelLocalizer_Geronimo(HardwareMap hardwareMap, double inPerTick) {
+        // TODO: make sure your config has **motors** with these names (or change them)
+        //   the encoders should be plugged into the slot matching the named motor
+        //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
         par0 = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "leftFront_leftOdometry")));
         par1 = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "rightRear_rightOdometry")));
         perp = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "rightFront_centerOdometry")));
 
-        par0.setDirection(DcMotorEx.Direction.FORWARD);
+        par0.setDirection(DcMotorEx.Direction.REVERSE);
         par1.setDirection(DcMotorEx.Direction.REVERSE);
         perp.setDirection(DcMotorEx.Direction.REVERSE);  /* *** HAD TO SWITCH from REVERSE to FORWARD on 2/22/2024 *** */
 

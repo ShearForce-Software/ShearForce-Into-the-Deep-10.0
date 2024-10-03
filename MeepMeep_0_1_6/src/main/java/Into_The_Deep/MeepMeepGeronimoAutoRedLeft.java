@@ -4,7 +4,8 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
-public class GeronimoAutoTest {
+
+public class MeepMeepGeronimoAutoRedLeft {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(600);
 
