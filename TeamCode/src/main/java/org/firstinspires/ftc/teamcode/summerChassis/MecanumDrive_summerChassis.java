@@ -228,8 +228,8 @@ public final class MecanumDrive_summerChassis {
 
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFront_leftOdometry");
         leftBack = hardwareMap.get(DcMotorEx.class, "leftRear");
-        rightBack = hardwareMap.get(DcMotorEx.class, "rightRear");
-        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront_rightOdometry");
+        rightBack = hardwareMap.get(DcMotorEx.class, "rightRear_rightOdometry");
+        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront_centerOdometry");
 
         rightBack.setDirection(DcMotor.Direction.REVERSE);
         rightFront.setDirection(DcMotor.Direction.REVERSE);

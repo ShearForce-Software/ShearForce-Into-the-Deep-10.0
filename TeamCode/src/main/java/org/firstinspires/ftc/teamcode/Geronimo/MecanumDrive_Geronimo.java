@@ -1,11 +1,13 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Geronimo;
 
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.acmerobotics.roadrunner.*;
+import com.acmerobotics.roadrunner.AccelConstraint;
+import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.Actions;
 import com.acmerobotics.roadrunner.AngularVelConstraint;
 import com.acmerobotics.roadrunner.DualNum;
 import com.acmerobotics.roadrunner.HolonomicController;
@@ -14,13 +16,20 @@ import com.acmerobotics.roadrunner.MinVelConstraint;
 import com.acmerobotics.roadrunner.MotorFeedforward;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Pose2dDual;
+import com.acmerobotics.roadrunner.PoseVelocity2d;
+import com.acmerobotics.roadrunner.PoseVelocity2dDual;
 import com.acmerobotics.roadrunner.ProfileAccelConstraint;
+import com.acmerobotics.roadrunner.ProfileParams;
+import com.acmerobotics.roadrunner.Rotation2d;
 import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.TimeTrajectory;
 import com.acmerobotics.roadrunner.TimeTurn;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
+import com.acmerobotics.roadrunner.TrajectoryBuilderParams;
 import com.acmerobotics.roadrunner.TurnConstraints;
 import com.acmerobotics.roadrunner.Twist2dDual;
+import com.acmerobotics.roadrunner.Vector2d;
+import com.acmerobotics.roadrunner.Vector2dDual;
 import com.acmerobotics.roadrunner.VelConstraint;
 import com.acmerobotics.roadrunner.ftc.DownsampledWriter;
 import com.acmerobotics.roadrunner.ftc.Encoder;
@@ -41,18 +50,21 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+import org.firstinspires.ftc.teamcode.Drawing;
+import org.firstinspires.ftc.teamcode.Localizer;
+import org.firstinspires.ftc.teamcode.Geronimo.ThreeDeadWheelLocalizer_Geronimo;
+import org.firstinspires.ftc.teamcode.Geronimo.TwoDeadWheelLocalizer_Geronimo;
 import org.firstinspires.ftc.teamcode.messages.DriveCommandMessage;
 import org.firstinspires.ftc.teamcode.messages.MecanumCommandMessage;
 import org.firstinspires.ftc.teamcode.messages.MecanumLocalizerInputsMessage;
 import org.firstinspires.ftc.teamcode.messages.PoseMessage;
 
-import java.lang.Math;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 @Config
-public final class MecanumDrive {
+public final class MecanumDrive_Geronimo {
     public static class Params {
         // IMU orientation
         // TODO: fill in these values based on
@@ -134,10 +146,10 @@ public final class MecanumDrive {
         private boolean initialized;
 
         public DriveLocalizer() {
-            leftFront = new OverflowEncoder(new RawEncoder(MecanumDrive.this.leftFront));
-            leftBack = new OverflowEncoder(new RawEncoder(MecanumDrive.this.leftBack));
-            rightBack = new OverflowEncoder(new RawEncoder(MecanumDrive.this.rightBack));
-            rightFront = new OverflowEncoder(new RawEncoder(MecanumDrive.this.rightFront));
+            leftFront = new OverflowEncoder(new RawEncoder(MecanumDrive_Geronimo.this.leftFront));
+            leftBack = new OverflowEncoder(new RawEncoder(MecanumDrive_Geronimo.this.leftBack));
+            rightBack = new OverflowEncoder(new RawEncoder(MecanumDrive_Geronimo.this.rightBack));
+            rightFront = new OverflowEncoder(new RawEncoder(MecanumDrive_Geronimo.this.rightFront));
 
             imu = lazyImu.get();
 
@@ -210,7 +222,7 @@ public final class MecanumDrive {
         }
     }
 
-    public MecanumDrive(HardwareMap hardwareMap, Pose2d pose) {
+    public MecanumDrive_Geronimo(HardwareMap hardwareMap, Pose2d pose) {
         this.pose = pose;
         imuOffsetRadians = this.pose.heading.toDouble();
 
@@ -244,8 +256,8 @@ public final class MecanumDrive {
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
         //localizer = new DriveLocalizer();
-        localizer = new ThreeDeadWheelLocalizer(hardwareMap, MecanumDrive.PARAMS.inPerTick);
-        //localizer = new TwoDeadWheelLocalizer(hardwareMap, lazyImu.get(), MecanumDrive.PARAMS.inPerTick);
+        localizer = new ThreeDeadWheelLocalizer_Geronimo(hardwareMap, MecanumDrive_Geronimo.PARAMS.inPerTick);
+        //localizer = new TwoDeadWheelLocalizer_Geronimo(hardwareMap, lazyImu.get(), MecanumDrive.PARAMS.inPerTick);
 
         FlightRecorder.write("MECANUM_PARAMS", PARAMS);
     }
