@@ -44,7 +44,7 @@ public class ShreyAutoTest {
                 .build();
 
         Action PickSpeicmen = myBot.getDrive().actionBuilder(new Pose2d(60,-58,Math.toRadians(270)))
-                .splineToConstantHeading(new Vector2d(40, -58), Math.toRadians(90))
+                .splineToLinearHeading(new Pose2d(40, -58,Math.toRadians(90)),Math.toRadians(90))
                 .build();
 
         Action DriveToSubmersible3 = myBot.getDrive().actionBuilder(new Pose2d(40,-58,Math.toRadians(90)))
@@ -52,7 +52,7 @@ public class ShreyAutoTest {
                 .build();
 
         Action SpecimenDrop = myBot.getDrive().actionBuilder(new Pose2d(40,-58,Math.toRadians(90)))
-              // .lineToLinearHeading(VectorTwo, Math.toRadians(90))
+               .strafeToLinearHeading(VectorTwo, Math.toRadians(90))
                        .build();
 
         myBot.runAction(new SequentialAction(
