@@ -72,13 +72,23 @@ public class GeronimoAutoRedLeft extends LinearOpMode {
         // ****  START DRIVING    ****************************
         // ***************************************************
 
+            BoxTraj = drive.actionBuilder(drive.pose)
+                    .strafeToLinearHeading(new Vector2d(-12, -30), Math.toRadians(90))
+                    .build();
+
+
+            WallTraj = drive.actionBuilder(new Pose2d(-12,-30,Math.toRadians(90)))
+                    .strafeToLinearHeading(new Vector2d(-12, -36), Math.toRadians(225))
+                    .strafeToLinearHeading(new Vector2d(-48, -48), Math.toRadians(225))
+                    .build();
+
         /* Drive to the Board */
         Actions.runBlocking(
                 new SequentialAction(
                         BoxTraj,
                                 new SequentialAction(
                                         grabsample(),
-                                        new SleepAction(300)
+                                        new SleepAction(3)
                                 ),
                         WallTraj
                         )
@@ -89,21 +99,12 @@ public class GeronimoAutoRedLeft extends LinearOpMode {
         drive.updatePoseEstimate();
 
         // Build up the Stack to Submerssible Trajectory
-        if (autoPosition == 3) {
-            BoxTraj = drive.actionBuilder(drive.pose)
-                    .strafeToLinearHeading(new Vector2d(-12, -30), Math.toRadians(90))
-                    .build();
-        }
+
 
 
        // drive.updatePoseEstimate();
         // Build up the Stack to Wall Trajectory
-        if (autoPosition == 3) {
-            WallTraj = drive.actionBuilder(drive.pose)
-                    .strafeToLinearHeading(new Vector2d(-12, -36), Math.toRadians(225))
-                    .strafeToLinearHeading(new Vector2d(-48, -48), Math.toRadians(225))
-                    .build();
-        }
+
 
 
 
