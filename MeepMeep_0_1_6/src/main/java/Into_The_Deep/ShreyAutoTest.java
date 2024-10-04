@@ -31,29 +31,29 @@ public class ShreyAutoTest {
                                 .strafeToLinearHeading(VectorTwo, Math.toRadians(90))
                                 .build();
 
-        Action DropOff1 = myBot.getDrive().actionBuilder(StartPose)
+        Action DropOff1 = myBot.getDrive().actionBuilder(new Pose2d(5,-30,Math.toRadians(90)))
                 .strafeToLinearHeading(new Vector2d(60, -58), Math.toRadians(270))
                 .build();
 
-        Action DriveToSubmersible2 = myBot.getDrive().actionBuilder(StartPose)
+        Action DriveToSubmersible2 = myBot.getDrive().actionBuilder(new Pose2d(60,-58,Math.toRadians(270)))
                 .strafeToLinearHeading(VectorTwo, Math.toRadians(90))
                 .build();
 
-        Action DropOff2 = myBot.getDrive().actionBuilder(StartPose)
+        Action DropOff2 = myBot.getDrive().actionBuilder(new Pose2d(5,-30,Math.toRadians(90)))
                 .strafeToLinearHeading(new Vector2d(60, -58), Math.toRadians(270))
                 .build();
 
-        Action PickSpeicmen = myBot.getDrive().actionBuilder(StartPose)
+        Action PickSpeicmen = myBot.getDrive().actionBuilder(new Pose2d(60,-58,Math.toRadians(270)))
                 .splineToConstantHeading(new Vector2d(40, -58), Math.toRadians(90))
                 .build();
 
-        Action DriveToSubmersible3 = myBot.getDrive().actionBuilder(StartPose)
+        Action DriveToSubmersible3 = myBot.getDrive().actionBuilder(new Pose2d(40,-58,Math.toRadians(90)))
                 .strafeToLinearHeading(VectorTwo, Math.toRadians(90))
                 .build();
 
-        Action SpecimenDrop = myBot.getDrive().actionBuilder(StartPose)
-                .strafeToLinearHeading(new Vector2d(60, -58), Math.toRadians(270))
-                        .build();
+        Action SpecimenDrop = myBot.getDrive().actionBuilder(new Pose2d(40,-58,Math.toRadians(90)))
+              // .lineToLinearHeading(VectorTwo, Math.toRadians(90))
+                       .build();
 
         myBot.runAction(new SequentialAction(
                 //Drive to submersible and pick up sample
@@ -70,9 +70,9 @@ public class ShreyAutoTest {
                 new SleepAction(1),
                 PickSpeicmen,
                 new SleepAction(1),
-                //drop speicmen and pick up sample
-                SpecimenDrop,
-                new SleepAction(1)
+                //drop specimen and pick up sample
+                SpecimenDrop//,
+                //new SleepAction(1)
                 ));
 
 
