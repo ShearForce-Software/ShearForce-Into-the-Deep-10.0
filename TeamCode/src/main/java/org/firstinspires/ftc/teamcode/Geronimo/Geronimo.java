@@ -34,8 +34,8 @@ public class Geronimo {
     DcMotor leftRear;
     DcMotor rightFront;
     DcMotor rightRear;
-    DcMotor leftSlide;
-    DcMotor rightSlide;
+    DcMotor leftRotater;
+    DcMotor rightRotater;
     IMU imu;
 
     public double imuOffsetInDegrees;
@@ -92,11 +92,11 @@ public class Geronimo {
         rightRear.setDirection(DcMotor.Direction.REVERSE);
 
         // ************* Slide MOTORS ****************
-        leftSlide = hardwareMap.get(DcMotorEx.class, "leftSlide");
-        rightSlide = hardwareMap.get(DcMotorEx.class, "rightSlide");
+        leftRotater = hardwareMap.get(DcMotorEx.class, "leftRotater");
+        rightRotater = hardwareMap.get(DcMotorEx.class, "rightRotater");
 
-        leftSlide.setDirection(DcMotor.Direction.REVERSE);
-        rightSlide.setDirection(DcMotorSimple.Direction.FORWARD);
+        leftRotater.setDirection(DcMotor.Direction.REVERSE);
+        rightRotater.setDirection(DcMotorSimple.Direction.FORWARD);
 
         // ********** Color Sensors ********************
         leftColorSensor = hardwareMap.get(RevColorSensorV3.class, "ColorSensorLeft");
@@ -252,6 +252,11 @@ public class Geronimo {
 
         //  opMode.telemetry.addData("Claw Distance: ", clawDistanceSensor.getDistance(DistanceUnit.MM));
         //  opMode.telemetry.update();
+    }
+
+    public void SlidesRotating(double slidePower){
+        leftRotater.setPower(slidePower);
+        rightRotater.setPower(slidePower);
     }
 
     public void EndgameBuzzer(){
