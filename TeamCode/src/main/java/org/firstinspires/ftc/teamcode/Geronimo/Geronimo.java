@@ -34,6 +34,8 @@ public class Geronimo {
     DcMotor leftRear;
     DcMotor rightFront;
     DcMotor rightRear;
+    DcMotor leftSlide;
+    DcMotor rightSlide;
     IMU imu;
 
     public double imuOffsetInDegrees;
@@ -88,6 +90,13 @@ public class Geronimo {
 
         rightFront.setDirection(DcMotor.Direction.REVERSE);
         rightRear.setDirection(DcMotor.Direction.REVERSE);
+
+        // ************* Slide MOTORS ****************
+        leftSlide = hardwareMap.get(DcMotorEx.class, "leftSlide");
+        rightSlide = hardwareMap.get(DcMotorEx.class, "rightSlide");
+
+        leftSlide.setDirection(DcMotor.Direction.REVERSE);
+        rightSlide.setDirection(DcMotorSimple.Direction.FORWARD);
 
         // ********** Color Sensors ********************
         leftColorSensor = hardwareMap.get(RevColorSensorV3.class, "ColorSensorLeft");
