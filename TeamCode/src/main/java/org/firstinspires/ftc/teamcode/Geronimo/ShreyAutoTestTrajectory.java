@@ -21,16 +21,17 @@ import org.firstinspires.ftc.teamcode.Geronimo.MecanumDrive_Geronimo;
 import org.firstinspires.ftc.teamcode.Gertrude.Gertrude;
 
 
-@Autonomous(name="GeronimoAutoRedLeft")
+@Autonomous(name="ShreyAutoTestTrajectory")
 // @Disabled
-public class GeronimoAutoRedLeft extends LinearOpMode {
+public class ShreyAutoTestTrajectory extends LinearOpMode {
     Geronimo control = new Geronimo(true, false,this);
     MecanumDrive_Geronimo drive;
     Pose2d startPose;
     Pose2d deliverToFloorPose;
     Pose2d deliverToBoardPose;
     Pose2d stackPose;
-    Action WallTraj;
+    Vector2d VectorTwo;
+    Action DriveToSubmersible1;
     Action DriveToStack;
     Action BoxTraj;
     Action Park;
@@ -46,8 +47,9 @@ public class GeronimoAutoRedLeft extends LinearOpMode {
     double autoPosition = 3;
 
     public void runOpMode(){
-        startPose = new Pose2d(-12,-60, Math.toRadians(90));
-       // stackPose = new Pose2d(stackX, stackY, Math.toRadians(180)); //-54.5,-11.5
+        startPose = new Pose2d(30,-60, Math.toRadians(90));
+        VectorTwo = new Vector2d(5, -30);
+        // stackPose = new Pose2d(stackX, stackY, Math.toRadians(180)); //-54.5,-11.5
 
         // Define some custom constraints to use when wanting to go faster than defaults
         speedUpVelocityConstraint = new TranslationalVelConstraint(60.0);
@@ -72,26 +74,27 @@ public class GeronimoAutoRedLeft extends LinearOpMode {
         // ****  START DRIVING    ****************************
         // ***************************************************
 
-            BoxTraj = drive.actionBuilder(drive.pose)
-                    .strafeToLinearHeading(new Vector2d(-12, -30), Math.toRadians(90))
-                    .build();
+        DriveToSubmersible1 = drive.actionBuilder(drive.pose)
+                .strafeToLinearHeading(VectorTwo, Math.toRadians(90))
+                .build();
+/*
 
+        BoxTraj = drive.actionBuilder(new Pose2d(-12,-30,Math.toRadians(90)))
+                .strafeToLinearHeading(new Vector2d(-12, -36), Math.toRadians(225))
+                .strafeToLinearHeading(new Vector2d(-48, -48), Math.toRadians(225))
+                .build();
 
-            WallTraj = drive.actionBuilder(new Pose2d(-12,-30,Math.toRadians(90)))
-                    .strafeToLinearHeading(new Vector2d(-12, -36), Math.toRadians(225))
-                    .strafeToLinearHeading(new Vector2d(-48, -48), Math.toRadians(225))
-                    .build();
+ */
 
         /* Drive to the Board */
         Actions.runBlocking(
                 new SequentialAction(
-                        BoxTraj,
-                                new SequentialAction(
-                                        grabsample(),
-                                        new SleepAction(3)
-                                ),
-                        WallTraj
+                        DriveToSubmersible1,
+                        new SequentialAction(
+                                grabsample(),
+                                new SleepAction(3)
                         )
+                )
 
         );
 
@@ -102,7 +105,7 @@ public class GeronimoAutoRedLeft extends LinearOpMode {
 
 
 
-       // drive.updatePoseEstimate();
+        // drive.updatePoseEstimate();
         // Build up the Stack to Wall Trajectory
 
 
