@@ -30,7 +30,7 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package org.firstinspires.ftc.robotcontroller.external.samples;
+package org.firstinspires.ftc.teamcode.Geronimo;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
@@ -68,7 +68,7 @@ import java.util.List;
  */
 @TeleOp(name = "Sensor: Limelight3A", group = "Sensor")
 
-public class SensorLimelight3A extends LinearOpMode {
+public class LimeLightTesting extends LinearOpMode {
 
     private Limelight3A limelight;
 
@@ -109,7 +109,7 @@ public class SensorLimelight3A extends LinearOpMode {
                 telemetry.addData("LL Latency", captureLatency + targetingLatency);
                 telemetry.addData("Parse Latency", parseLatency);
                 telemetry.addData("PythonOutput", java.util.Arrays.toString(result.getPythonOutput()));
-                
+
                 if (result.isValid()) {
                     telemetry.addData("tx", result.getTx());
                     telemetry.addData("txnc", result.getTxNC());
