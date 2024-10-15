@@ -1,0 +1,56 @@
+@startuml
+
+"Auto OpMode" --> "Geronimo" : Initialize Robot
+Geronimo --> "Geronimo" : Configure Drive Motors, Servos, etc...
+"Auto OpMode" --> "Road Runner" : Set Start Position
+
+== Specimen Hang ==
+"Auto OpMode" --> "Road Runner" : Drive to Position-1 (Pit box)
+activate "Road Runner"
+"Road Runner" --> "Auto OpMode" : Position-1 achieved
+deactivate "Road Runner"
+"Auto OpMode" --> "Geronimo" : Hang Specimen Action & Reset Arm
+
+== Sample Acquisition and Drop-Off ==
+"Auto OpMode" --> "Geronimo" : Acquire Sample Color (Blue) Action
+activate "Geronimo"
+"Geronimo" --> "Geronimo" : Extend Arm for Sample Collection Action
+"Geronimo" --> "Geronimo" : Use Camera to find correct color Action
+"Geronimo" --> "Geronimo" : Move Arm slightly till acquire correct color & Reset Arm
+"Geronimo" --> "Auto OpMode" : Sample obtained
+deactivate "Geronimo"
+
+"Auto OpMode" --> "Road Runner" : Drive to Position-2 (sample drop off location)
+"Road Runner" --> "Auto OpMode" : Position-2 achieved
+"Auto OpMode" --> "Geronimo" : Drop Off Sample Action and Reset Arm
+
+== Sample Acquisition and Drop-Off ==
+"Auto OpMode" --> "Road Runner" : Drive to Position-1 (pit box)
+"Road Runner" --> "Auto OpMode" : Position-1 achieved
+
+"Auto OpMode" --> "Geronimo" : Acquire Sample Color (Blue) Action
+activate "Geronimo"
+"Geronimo" --> "Geronimo" : Extend Arm for Sample Collection Action
+"Geronimo" --> "Geronimo" : Use Camera to find correct color Action
+"Geronimo" --> "Geronimo" : Move Arm slightly till acquire correct color & Reset Arm
+"Geronimo" --> "Auto OpMode" : Sample obtained
+deactivate "Geronimo"
+
+"Auto OpMode" --> "Road Runner" : Drive to Position-2 (sample drop off location)
+"Road Runner" --> "Auto OpMode" : Position-2 achieved
+"Auto OpMode" --> "Geronimo" : Drop Off Sample Action and Reset Arm
+
+== Specimen Acquisition and Hang ==
+"Auto OpMode" --> "Road Runner" : Drive to Position-3 (specimen pick up location)
+"Road Runner" --> "Auto OpMode" : Position-3 Achieved
+"Auto OpMode" --> "Geronimo" : Pick up Specimen action & Reset Arm
+
+"Auto OpMode" --> "Road Runner" : Drive to Position-1 (Pit box)
+"Road Runner" --> "Auto OpMode" : Position-1 achieved
+"Auto OpMode" --> "Geronimo" : Hang Specimen Action & Reset Arm
+
+== Parking ==
+"Auto OpMode" --> "Road Runner" : Drive to Position-4 (Parking Location)
+"Road Runner" --> "Auto OpMode" : Position-4 achieved
+
+@enduml

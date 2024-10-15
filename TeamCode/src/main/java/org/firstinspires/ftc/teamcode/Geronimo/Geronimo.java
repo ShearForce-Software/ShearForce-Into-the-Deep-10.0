@@ -2,6 +2,9 @@ package org.firstinspires.ftc.teamcode.Geronimo;
 import static org.firstinspires.ftc.teamcode.Geronimo.MecanumDrive_Geronimo.PARAMS;
 
 import com.qualcomm.hardware.dfrobot.HuskyLens;
+import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.LLResultTypes;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -10,6 +13,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.usb.RobotUsbDevice;
 import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -74,6 +78,7 @@ public class Geronimo {
     int blueRight = 0;
     public static boolean allianceColorIsBlue = false;
     public static double autoTimeLeft = 0.0;
+    Limelight3A limelightbox;
 
     public Geronimo(boolean isDriverControl, boolean isFieldCentric, LinearOpMode opMode) {
         this.IsDriverControl = isDriverControl;
@@ -104,6 +109,8 @@ public class Geronimo {
         leftColorSensor.enableLed(false);
         rightColorSensor.enableLed(false);
 
+       // limelightbox = hardwareMap.get(Limelight3A.class, "limelight");
+
         InitBlinkin(hardwareMap);
 
         imu = hardwareMap.get(IMU.class, "imu");
@@ -111,6 +118,9 @@ public class Geronimo {
                 PARAMS.logoFacingDirection, PARAMS.usbFacingDirection));
         imu.initialize(parameters);
         imu.resetYaw();
+
+
+        //LimeLight
     }
 
     public void WebcamInit (HardwareMap hardwareMap){
@@ -130,6 +140,12 @@ public class Geronimo {
         //     visionPortal = VisionPortal.easyCreateWithDefaults(
         //             hardwareMap.get(WebcamName.class, "Webcam 1"), tfod);
     }
+    public void InitLimelight(HardwareMap hardwareMap){
+        limelightbox = hardwareMap.get(Limelight3A.class, "limelight");
+        limelightbox.pipelineSwitch(1);
+        limelightbox.start();
+    }
+
     public void NavToTag(){
         desiredTag  = null;
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
@@ -144,6 +160,21 @@ public class Geronimo {
                 // set some range and yaw error
             }
         }
+    }
+
+    public boolean limelightHasTarget() {
+        LLResult result = limelightbox.getLatestResult();
+        if (result != null && result.isValid()) {
+            List<LLResultTypes.ColorResult> colorResults = result.getColorResults();
+            for (LLResultTypes.ColorResult colorResult : colorResults) {
+                // Example: Check if Limelight sees a color target
+                if (colorResult.getTargetXDegrees() != 0 && colorResult.getTargetYDegrees() != 0) {
+                    opMode.telemetry.addData("Color Detected", "X: %.2f, Y: %.2f", colorResult.getTargetXDegrees(), colorResult.getTargetYDegrees());
+                    return true;
+                }
+            }
+        }
+        return false;
     }
     public void DriveToTag() {
         double drive = 0.0;        // Desired forward power/speed (-1 to +1)

@@ -32,6 +32,8 @@ package org.firstinspires.ftc.robotcontroller.external.samples;
 import android.app.Activity;
 import android.graphics.Color;
 import android.view.View;
+
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -65,7 +67,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 @TeleOp(name = "Sensor: Color", group = "Sensor")
-@Disabled
+//@Disabled
 public class SensorColor extends LinearOpMode {
 
   /** The colorSensor field will contain a reference to our color sensor hardware object */
@@ -133,7 +135,8 @@ public class SensorColor extends LinearOpMode {
     // Get a reference to our sensor object. It's recommended to use NormalizedColorSensor over
     // ColorSensor, because NormalizedColorSensor consistently gives values between 0 and 1, while
     // the values you get from ColorSensor are dependent on the specific sensor you're using.
-    colorSensor = hardwareMap.get(NormalizedColorSensor.class, "sensor_color");
+    //colorSensor = hardwareMap.get(NormalizedColorSensor.class, "sensor_color");
+    colorSensor = hardwareMap.get(NormalizedColorSensor.class, "ColorSensorLeft");
 
     // If possible, turn the light on in the beginning (it might already be on anyway,
     // we just make sure it is if we can).
@@ -190,6 +193,24 @@ public class SensorColor extends LinearOpMode {
 
       // Update the hsvValues array by passing it to Color.colorToHSV()
       Color.colorToHSV(colors.toColor(), hsvValues);
+
+      // Red HSV Color ranges
+      double hMinRed = 17.903;
+      double hMaxRed = 120.000;
+      double sMinRed = 0.091;
+      double sMaxRed = 0.741;
+      double vMinRed = 0.039;
+      double vMaxRed = 1.000;
+
+      // determine color
+      if (hsvValues[0] >= hMinRed && hsvValues[0] <= hMaxRed && hsvValues[1] >= sMinRed && hsvValues[1] <= sMaxRed && hsvValues[2] >= vMinRed && hsvValues[2] <= vMaxRed)
+      {
+        telemetry.addLine("Red detected");
+      }
+      else
+      {
+        telemetry.addLine("Red not detected");
+      }
 
       telemetry.addLine()
               .addData("Red", "%.3f", colors.red)

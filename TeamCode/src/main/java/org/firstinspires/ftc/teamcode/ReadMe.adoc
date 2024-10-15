@@ -1,0 +1,11 @@
+= Shear Force Team Code
+
+== TODO List
+
+- [ ] Calibrate Geronimo
+- [ ] Create routine in Geronimo that uses the Limelight to report Red, Blue, or Yellow
+- [ ] Create routine in Geronimo that uses color sensor to report red, blue, or yellow
+- [ ] Create routine in Geronimo that returns X, Y distance to an object
+- [ ] Create autonomous to put specimen on bar
+
+
