@@ -1,0 +1,51 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+"AutoOpMode" -> "Geronimo" : Initialize Robot
+Geronimo -> "Geronimo" : Init motors, sensors, etc.
+"AutoOpMode" -> "RoadRunner": Set start position
+
+== Specimen Hang ==
+"AutoOpMode" -> "RoadRunner" : Drive to Position 1 (Pit Box)
+"AutoOpMode" <- "RoadRunner" : Position 1 Achieved
+"AutoOpMode" -> "Geronimo" : Hang Specimen action and reset arm
+
+
+== FIRST Sample Acquisition and Drop Off (Baskets) ==
+"AutoOpMode" -> "Geronimo" : Aquire sample color (red) action
+
+activate "Geronimo"
+"Geronimo" --> "Geronimo" : Extend Arm for Sample Collection Action
+"Geronimo" --> "Geronimo" : Use Camera to find correct color Action
+"Geronimo" --> "Geronimo" : Move Arm slightly till acquire correct color & Reset Arm
+"Geronimo" --> "Auto OpMode" : Sample obtained
+deactivate "Geronimo"
+
+"AutoOpMode" -> "RoadRunner" : Drive to Position 2 (baskets)
+"Roadrunner" -> "AutoOpMode" : Position 2 Achieved
+"AutoOpMode" -> "Geronimo" : Drop off sample action and reset arm
+
+== SECOND Sample Acquisition and Drop Off (Baskets) ==
+"AutoOpMode" -> "Geronimo" : Aquire sample color (red) action
+
+activate "Geronimo"
+"Geronimo" --> "Geronimo" : Extend Arm for Sample Collection Action
+"Geronimo" --> "Geronimo" : Use Camera to find correct color Action
+"Geronimo" --> "Geronimo" : Move Arm slightly till acquire correct color & Reset Arm
+"Geronimo" --> "Auto OpMode" : Sample obtained
+deactivate "Geronimo"
+
+"AutoOpMode" -> "RoadRunner" : Drive to Position 2 (baskets)
+"Roadrunner" -> "AutoOpMode" : Position 2 Achieved
+"AutoOpMode" -> "Geronimo" : Drop off sample action and reset arm
+
+== Parking ==
+"AutoOpMode" -> "RoadRunner" : Spline to Position 4 (parking)
+"RoadRunner" -> "AutoOpMode" : Position 4 Achieved
+
+
+
+
+
+@enduml

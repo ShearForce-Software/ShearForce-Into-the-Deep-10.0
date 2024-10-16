@@ -40,7 +40,12 @@ public class Geronimo {
     DcMotor rightRear;
     DcMotor leftRotater;
     DcMotor rightRotater;
+    DcMotor slideLeft;
+    DcMotor slideRight;
     IMU imu;
+    Servo clawServo;
+    Servo intakeRotater;
+    Servo intakeStar;
 
     public double imuOffsetInDegrees;
 
