@@ -104,9 +104,19 @@ public class Geronimo {
         // ************* Slide MOTORS ****************
         leftRotater = hardwareMap.get(DcMotorEx.class, "leftRotater");
         rightRotater = hardwareMap.get(DcMotorEx.class, "rightRotater");
+        slideLeft = hardwareMap.get(DcMotorEx.class, "slideLeft");
+        slideRight = hardwareMap.get(DcMotorEx.class, "slideRight");
 
         leftRotater.setDirection(DcMotor.Direction.REVERSE);
         rightRotater.setDirection(DcMotorSimple.Direction.FORWARD);
+        slideLeft.setDirection(DcMotor.Direction.REVERSE);
+        slideRight.setDirection(DcMotorSimple.Direction.FORWARD);
+
+
+        // ********** Servos ********************
+        clawServo = hardwareMap.get(Servo.class, "clawServo");
+        intakeRotater = hardwareMap.get(Servo.class, "intakeRotater");
+        intakeStar = hardwareMap.get(Servo.class, "intakeStar");
 
         // ********** Color Sensors ********************
         leftColorSensor = hardwareMap.get(RevColorSensorV3.class, "ColorSensorLeft");
