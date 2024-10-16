@@ -94,7 +94,7 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                   //  theRobot.DeliverPixelToBoardPos();
                 }
                 if (gamepad2.left_stick_button){
-                    theRobot.SlidesRotating(0.1);
+                    theRobot.SlidesRotating(0.1  );
                  //   theRobot.PickupOne();
                 }
                 // RESET Slides, ARM, and Wrist
