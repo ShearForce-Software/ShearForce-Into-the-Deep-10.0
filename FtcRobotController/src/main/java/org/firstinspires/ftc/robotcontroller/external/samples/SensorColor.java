@@ -217,7 +217,6 @@ public class SensorColor extends LinearOpMode {
       double sMaxBlue = 0.832;
       double vMinBlue = 0.071;
       double vMaxBlue = 1.000;
-
       // determine if color is blue, red or yellow and show telemetry
       if (hsvValues[0] >= hMinBlue)
         telemetry.addLine("Blue detected");
