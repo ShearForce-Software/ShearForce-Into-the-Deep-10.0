@@ -119,7 +119,7 @@ public class SensorColor extends LinearOpMode {
     // colors will report at or near 1, and you won't be able to determine what color you are
     // actually looking at. For this reason, it's better to err on the side of a lower gain
     // (but always greater than  or equal to 1).
-    float gain = 2;
+    float gain = 51;
 
     // Once per loop, we will update this hsvValues array. The first element (0) will contain the
     // hue, the second element (1) will contain the saturation, and the third element (2) will
@@ -202,15 +202,35 @@ public class SensorColor extends LinearOpMode {
       double vMinRed = 0.039;
       double vMaxRed = 1.000;
 
-      // determine color
-      if (hsvValues[0] >= hMinRed && hsvValues[0] <= hMaxRed && hsvValues[1] >= sMinRed && hsvValues[1] <= sMaxRed && hsvValues[2] >= vMinRed && hsvValues[2] <= vMaxRed)
-      {
-        telemetry.addLine("Red detected");
-      }
-      else
-      {
-        telemetry.addLine("Red not detected");
-      }
+      // Yellow HSV Color Values
+      double hMinYellow = 60.000;
+      double hMaxYellow = 100.000;
+      double sMinYellow = 0.352;
+      double sMaxYellow = 0.730;
+      double vMinYellow = 0.106;
+      double vMaxYellow = 1.000;
+
+      // Blue HSV Color Values
+      double hMinBlue = 206.851;
+      double hMaxBlue = 225.455;
+      double sMinBlue = 0.710;
+      double sMaxBlue = 0.832;
+      double vMinBlue = 0.071;
+      double vMaxBlue = 1.000;
+
+      // determine if color is blue, red or yellow and show telemetry
+      if (hsvValues[0] >= hMinBlue)
+        telemetry.addLine("Blue detected");
+
+      else if (hsvValues[2] <= vMinYellow)
+        if (hsvValues[1] >= sMaxYellow || hsvValues[1] <= sMinYellow) {
+          telemetry.addLine("Red detected 1");
+          if ((hsvValues[0] <= hMinYellow) || (hsvValues[0] >= hMaxYellow && hsvValues[0] <= hMinBlue))
+            telemetry.addLine("Red detected 2");
+        }
+
+      else /*if (hsvValues[1] <= sMaxYellow && hsvValues[1] >= sMinYellow)*/
+        telemetry.addLine("Yellow detected");
 
       telemetry.addLine()
               .addData("Red", "%.3f", colors.red)
