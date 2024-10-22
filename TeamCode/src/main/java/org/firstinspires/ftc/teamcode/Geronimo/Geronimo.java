@@ -40,7 +40,12 @@ public class Geronimo {
     DcMotor rightRear;
     DcMotor leftRotater;
     DcMotor rightRotater;
+    DcMotor slideLeft;
+    DcMotor slideRight;
     IMU imu;
+    Servo clawServo;
+    Servo intakeRotater;
+    CRServo intakeStar;
 
     public double imuOffsetInDegrees;
 
@@ -92,16 +97,28 @@ public class Geronimo {
         rightRear = hardwareMap.get(DcMotorEx.class, "rightRear_rightOdometry");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront_centerOdometry");
 
+        leftRear.setDirection(DcMotor.Direction.REVERSE);
+        leftFront.setDirection(DcMotor.Direction.REVERSE);
+        rightRear.setDirection(DcMotor.Direction.FORWARD);
+        rightFront.setDirection(DcMotor.Direction.FORWARD);
 
-        rightFront.setDirection(DcMotor.Direction.REVERSE);
-        rightRear.setDirection(DcMotor.Direction.REVERSE);
 
         // ************* Slide MOTORS ****************
         leftRotater = hardwareMap.get(DcMotorEx.class, "leftRotater");
         rightRotater = hardwareMap.get(DcMotorEx.class, "rightRotater");
+        slideLeft = hardwareMap.get(DcMotorEx.class, "slideLeft");
+        slideRight = hardwareMap.get(DcMotorEx.class, "slideRight");
 
         leftRotater.setDirection(DcMotor.Direction.REVERSE);
         rightRotater.setDirection(DcMotorSimple.Direction.FORWARD);
+        slideLeft.setDirection(DcMotor.Direction.REVERSE);
+        slideRight.setDirection(DcMotorSimple.Direction.FORWARD);
+
+
+        // ********** Servos ********************
+        clawServo = hardwareMap.get(Servo.class, "clawServo");
+        intakeRotater = hardwareMap.get(Servo.class, "intakeRotater");
+        intakeStar = hardwareMap.get(CRServo.class, "intakeStar");
 
         // ********** Color Sensors ********************
         leftColorSensor = hardwareMap.get(RevColorSensorV3.class, "ColorSensorLeft");

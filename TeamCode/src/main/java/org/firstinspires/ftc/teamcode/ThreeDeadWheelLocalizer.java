@@ -44,7 +44,7 @@ public final class ThreeDeadWheelLocalizer implements Localizer {
 
         par0.setDirection(DcMotorEx.Direction.REVERSE);
         par1.setDirection(DcMotorEx.Direction.REVERSE);
-        perp.setDirection(DcMotorEx.Direction.REVERSE);  /* *** HAD TO SWITCH from REVERSE to FORWARD on 2/22/2024 *** */
+        perp.setDirection(DcMotorEx.Direction.FORWARD);  /* *** HAD TO SWITCH from REVERSE to FORWARD on 2/22/2024 *** */
 
         this.inPerTick = inPerTick;
 

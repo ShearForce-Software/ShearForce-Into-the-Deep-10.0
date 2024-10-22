@@ -5,12 +5,12 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp(name = "Geronimo 1 Manual Control")
-@Disabled
+//@Disabled
 public class Geronimo_Manual_Control extends LinearOpMode {
     Geronimo theRobot;
     static final double SCALE = 0.001;
     public void runOpMode() {
-        theRobot = new Geronimo(true, true, this);
+        theRobot = new Geronimo(true, false, this);
 
         theRobot.Init(this.hardwareMap);
         theRobot.ShowTelemetry();
@@ -29,7 +29,8 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                  *************************************************
                  */
                 // Drive Controls uses left_stick_y, left_stick_x, and right_stick_x
-                theRobot.driveControlsFieldCentric();
+                //theRobot.driveControlsFieldCentric();
+                theRobot.driveControlsRobotCentric();
                 if (gamepad1.a && !gamepad1.start) {
                    // theRobot.LaunchAirplane();
                 }
@@ -94,7 +95,7 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                   //  theRobot.DeliverPixelToBoardPos();
                 }
                 if (gamepad2.left_stick_button){
-                    theRobot.SlidesRotating(0.1);
+                    theRobot.SlidesRotating(0.1  );
                  //   theRobot.PickupOne();
                 }
                 // RESET Slides, ARM, and Wrist
