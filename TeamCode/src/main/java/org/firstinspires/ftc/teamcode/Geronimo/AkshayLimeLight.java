@@ -64,7 +64,7 @@ public class AkshayLimeLight extends LinearOpMode {
     VelConstraint velocityConstraint;
     AccelConstraint accelerationConstraint;
 
-    Geronimo geronimo;
+
 
     public void runOpMode(){
         startPose = new Pose2d(-12,-60, Math.toRadians(90));
@@ -82,15 +82,7 @@ public class AkshayLimeLight extends LinearOpMode {
         /* Initialize the Robot */
         drive = new MecanumDrive_Geronimo(hardwareMap, startPose);
         control.Init(hardwareMap); //Init the hardwareMap
-
-
-
-        limelight=hardwareMap.get(Limelight3A.class, "limelight");
-
-
-
-
-
+        control.InitLimelight(hardwareMap); // Init the limeLight
 
 
         telemetry.update();
