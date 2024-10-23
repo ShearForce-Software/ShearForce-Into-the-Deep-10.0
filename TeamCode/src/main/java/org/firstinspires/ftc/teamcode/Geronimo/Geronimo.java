@@ -5,6 +5,7 @@ import com.qualcomm.hardware.dfrobot.HuskyLens;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -31,6 +32,8 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+
 @Config
 public class Geronimo {
     LinearOpMode opMode;
@@ -40,7 +43,12 @@ public class Geronimo {
     DcMotor rightRear;
     DcMotor leftRotater;
     DcMotor rightRotater;
+    DcMotor slideLeft;
+    DcMotor slideRight;
     IMU imu;
+    Servo clawServo;
+    Servo intakeRotater;
+    CRServo intakeStar;
 
     public double imuOffsetInDegrees;
 
@@ -76,6 +84,10 @@ public class Geronimo {
     int redRight = 0;
     int greenRight = 0;
     int blueRight = 0;
+    double LimelightMountingHeight = 6;  //Adjust when robot is built
+    double distance_to_object = 0;
+    double objectHeight = 0;
+    double angletoObject = Math.toRadians(60);
     public static boolean allianceColorIsBlue = false;
     public static double autoTimeLeft = 0.0;
     Limelight3A limelightbox;
@@ -92,16 +104,28 @@ public class Geronimo {
         rightRear = hardwareMap.get(DcMotorEx.class, "rightRear_rightOdometry");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront_centerOdometry");
 
+        leftRear.setDirection(DcMotor.Direction.REVERSE);
+        leftFront.setDirection(DcMotor.Direction.REVERSE);
+        rightRear.setDirection(DcMotor.Direction.FORWARD);
+        rightFront.setDirection(DcMotor.Direction.FORWARD);
 
-        rightFront.setDirection(DcMotor.Direction.REVERSE);
-        rightRear.setDirection(DcMotor.Direction.REVERSE);
 
         // ************* Slide MOTORS ****************
         leftRotater = hardwareMap.get(DcMotorEx.class, "leftRotater");
         rightRotater = hardwareMap.get(DcMotorEx.class, "rightRotater");
+        slideLeft = hardwareMap.get(DcMotorEx.class, "slideLeft");
+        slideRight = hardwareMap.get(DcMotorEx.class, "slideRight");
 
         leftRotater.setDirection(DcMotor.Direction.REVERSE);
         rightRotater.setDirection(DcMotorSimple.Direction.FORWARD);
+        slideLeft.setDirection(DcMotor.Direction.REVERSE);
+        slideRight.setDirection(DcMotorSimple.Direction.FORWARD);
+
+
+        // ********** Servos ********************
+        clawServo = hardwareMap.get(Servo.class, "clawServo");
+        intakeRotater = hardwareMap.get(Servo.class, "intakeRotater");
+        intakeStar = hardwareMap.get(CRServo.class, "intakeStar");
 
         // ********** Color Sensors ********************
         leftColorSensor = hardwareMap.get(RevColorSensorV3.class, "ColorSensorLeft");
@@ -144,6 +168,11 @@ public class Geronimo {
         limelightbox = hardwareMap.get(Limelight3A.class, "limelight");
         limelightbox.pipelineSwitch(1);
         limelightbox.start();
+        distance_to_object = (objectHeight-LimelightMountingHeight)/(Math.tan(angletoObject));
+        // Equation above was pulled from the Limelight documentation online
+        limelightbox.getLatestResult().getTx();
+        limelightbox.getLatestResult().getTy();
+
     }
 
     public void NavToTag(){
@@ -176,6 +205,27 @@ public class Geronimo {
         }
         return false;
     }
+
+    public boolean limelightHasCustomTarget() {
+        LLResult result = limelightbox.getLatestResult();
+        if (result != null && result.isValid()) {
+            List<LLResultTypes.DetectorResult> detectorResults = result.getDetectorResults();
+            if (detectorResults != null && !detectorResults.isEmpty()) {
+                for (LLResultTypes.DetectorResult detectorResult : detectorResults) {
+                    // Optionally, check for a specific class ID if you have multiple objects
+                    //int classID = detectorResult.getClassID();
+                    double confidence = detectorResult.getConfidence();
+                    //opMode.telemetry.addData("Object Detected", "Class ID: %d, Confidence: %.2f", classID, confidence);
+                    // If you want to check for a specific object, replace 'YOUR_CUSTOM_OBJECT_CLASS_ID' with your object's class ID
+                    // if (classID == YOUR_CUSTOM_OBJECT_CLASS_ID) {
+                    return true;
+                    // }
+                }
+            }
+        }
+        return false;
+    }
+
     public void DriveToTag() {
         double drive = 0.0;        // Desired forward power/speed (-1 to +1)
         double strafe = 0.0;        // Desired strafe power/speed (-1 to +1)

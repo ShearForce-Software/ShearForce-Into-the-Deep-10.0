@@ -53,7 +53,7 @@ public class ShreyAutoTest {
 
         Action SpecimenDrop = myBot.getDrive().actionBuilder(new Pose2d(40,-58,Math.toRadians(90)))
                .strafeToLinearHeading(VectorTwo, Math.toRadians(90))
-                       .build();
+                .build();
 
         myBot.runAction(new SequentialAction(
                 //Drive to submersible and pick up sample
