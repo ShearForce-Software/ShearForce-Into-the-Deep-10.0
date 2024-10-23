@@ -5,6 +5,7 @@ import com.qualcomm.hardware.dfrobot.HuskyLens;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -31,6 +32,8 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+
 @Config
 public class Geronimo {
     LinearOpMode opMode;
@@ -202,6 +205,27 @@ public class Geronimo {
         }
         return false;
     }
+
+    public boolean limelightHasCustomTarget() {
+        LLResult result = limelightbox.getLatestResult();
+        if (result != null && result.isValid()) {
+            List<LLResultTypes.DetectorResult> detectorResults = result.getDetectorResults();
+            if (detectorResults != null && !detectorResults.isEmpty()) {
+                for (LLResultTypes.DetectorResult detectorResult : detectorResults) {
+                    // Optionally, check for a specific class ID if you have multiple objects
+                    //int classID = detectorResult.getClassID();
+                    double confidence = detectorResult.getConfidence();
+                    //opMode.telemetry.addData("Object Detected", "Class ID: %d, Confidence: %.2f", classID, confidence);
+                    // If you want to check for a specific object, replace 'YOUR_CUSTOM_OBJECT_CLASS_ID' with your object's class ID
+                    // if (classID == YOUR_CUSTOM_OBJECT_CLASS_ID) {
+                    return true;
+                    // }
+                }
+            }
+        }
+        return false;
+    }
+
     public void DriveToTag() {
         double drive = 0.0;        // Desired forward power/speed (-1 to +1)
         double strafe = 0.0;        // Desired strafe power/speed (-1 to +1)
