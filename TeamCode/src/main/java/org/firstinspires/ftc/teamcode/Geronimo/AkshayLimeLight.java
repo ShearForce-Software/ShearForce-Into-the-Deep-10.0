@@ -71,13 +71,13 @@ public class AkshayLimeLight extends LinearOpMode {
         // stackPose = new Pose2d(stackX, stackY, Math.toRadians(180)); //-54.5,-11.5
 
         // Define some custom constraints to use when wanting to go faster than defaults
-        speedUpVelocityConstraint = new TranslationalVelConstraint(60.0);
-        speedUpAccelerationConstraint = new ProfileAccelConstraint(-40.0, 60.0);
-        slowDownVelocityConstraint = new TranslationalVelConstraint(5);
-        slowDownAccelerationConstraint = new ProfileAccelConstraint(-20, 50);
+        //speedUpVelocityConstraint = new TranslationalVelConstraint(60.0);
+        //speedUpAccelerationConstraint = new ProfileAccelConstraint(-40.0, 60.0);
+        //slowDownVelocityConstraint = new TranslationalVelConstraint(5);
+        //slowDownAccelerationConstraint = new ProfileAccelConstraint(-20, 50);
 
-        velocityConstraint = new TranslationalVelConstraint(30);
-        accelerationConstraint = new ProfileAccelConstraint(15.0, 20.0);
+        //velocityConstraint = new TranslationalVelConstraint(30);
+        //accelerationConstraint = new ProfileAccelConstraint(15.0, 20.0);
 
         /* Initialize the Robot */
         drive = new MecanumDrive_Geronimo(hardwareMap, startPose);
@@ -96,7 +96,10 @@ public class AkshayLimeLight extends LinearOpMode {
         while(opModeIsActive()){
             //Check Limelight detection
             if(control.limelightHasTarget()){
-                telemetry.addLine("Found Color");
+                telemetry.addLine("Object Detected");
+            }
+            else{
+                telemetry.addLine("No Object Detected");
             }
             telemetry.update();
         }
