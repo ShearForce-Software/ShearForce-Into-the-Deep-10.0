@@ -141,7 +141,7 @@ public class TestSensorColorWithOutLED extends LinearOpMode {
     // If possible, turn the light on in the beginning (it might already be on anyway,
     // we just make sure it is if we can).
     if (colorSensor instanceof SwitchableLight) {
-      ((SwitchableLight)colorSensor).enableLight(true);
+      ((SwitchableLight)colorSensor).enableLight(false);
     }
 
     // Wait for the start button to be pressed.
