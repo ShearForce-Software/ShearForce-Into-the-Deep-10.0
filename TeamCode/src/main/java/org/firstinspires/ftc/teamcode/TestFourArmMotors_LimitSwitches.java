@@ -75,6 +75,7 @@ public class TestFourArmMotors_LimitSwitches extends LinearOpMode {
     DcMotor slideRight;
     TouchSensor touchSensorRight;
     TouchSensor touchSensorLeft;
+    TouchSensor touchSensorRotator;
 
 
     //  private ElapsedTime     runtime = new ElapsedTime();
@@ -107,6 +108,7 @@ public class TestFourArmMotors_LimitSwitches extends LinearOpMode {
 
         touchSensorRight = hardwareMap.get(TouchSensor.class, "sensor_touchRight");
         touchSensorLeft = hardwareMap.get(TouchSensor.class, "sensor_touchLeft");
+        touchSensorRotator = hardwareMap.get(TouchSensor.class, "sensor_touchRotate");
 
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
@@ -141,28 +143,42 @@ public class TestFourArmMotors_LimitSwitches extends LinearOpMode {
 
         while (opModeIsActive()) {
 
+            // Horizontal extension motors
             if (gamepad2.left_stick_y > 0.1) {
                 slideLeft.setPower(gamepad2.left_stick_y);
+                slideRight.setPower(gamepad2.left_stick_y);
                 slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             } else if (gamepad2.left_stick_y <= 0.1) {
                 slideLeft.setPower(gamepad2.left_stick_y);
+                slideRight.setPower(gamepad2.left_stick_y);
                 slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
 
             }else
             {
                   slideLeft.setPower(0);
+                  slideRight.setPower(0);
             }
 
-            if (gamepad2.right_stick_y > 0.1) {
-                slideRight.setPower(gamepad2.right_stick_y);
-                slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            //Rotater Motors
+            if (gamepad2.right_stick_y> 0.1) {
+                rightRotater.setPower(gamepad2.right_stick_y);
+                leftRotater.setPower(gamepad2.right_stick_y);
+                rightRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                leftRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             } else if (gamepad2.right_stick_y <= 0.1) {
-                slideRight.setPower(gamepad2.right_stick_y);
-                slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                rightRotater.setPower(gamepad2.right_stick_y);
+                leftRotater.setPower(gamepad2.right_stick_y);
+                rightRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                leftRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
             }else
             {
-                slideRight.setPower(0);
+                rightRotater.setPower(0);
+                leftRotater.setPower(0);
             }
             // TOUCH SENSORS
             if (touchSensorRight.isPressed()) {
@@ -183,10 +199,28 @@ public class TestFourArmMotors_LimitSwitches extends LinearOpMode {
                 telemetry.addData("Touch Sensor Left", "Is Not Pressed");
             }
 
+            //Rotaters Touch Sensor. Only Use ONE because of the connection.
+            if (touchSensorRotator.isPressed()) {
+                telemetry.addData("Touch Sensor Rotate", "Is Pressed");
+                leftRotater.setPower(0);
+                rightRotater.setPower(0);
+                leftRotater.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                rightRotater.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+            } else {
+                leftRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                rightRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                telemetry.addData("Touch Sensor Rotater", "Is Not Pressed");
+            }
+
 
 
             telemetry.addData("Motor Ticks slideLeft: ", slideLeft.getCurrentPosition());
             telemetry.addData("Motor Ticks slideRight: ", slideRight.getCurrentPosition());
+            telemetry.addData("Motor Ticks rightRotater: ", rightRotater.getCurrentPosition());
+            telemetry.addData("Motor Ticks leftRotater: ", leftRotater.getCurrentPosition());
+
+
             telemetry.update();
 
           //  telemetry.addData("Motor Ticks slideLeft: ", slideLeft.getCurrentPosition());
