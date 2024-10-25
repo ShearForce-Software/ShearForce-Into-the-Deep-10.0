@@ -194,7 +194,33 @@ public class TestSensorColorWithOutLED extends LinearOpMode {
       // Update the hsvValues array by passing it to Color.colorToHSV()
       Color.colorToHSV(colors.toColor(), hsvValues);
 
+      // before box
       // Red HSV Color ranges
+      /*
+      double hMinRed = 20.000;
+      double hMaxRed = 30.000;
+      double sMinRed = 0.600;
+      double sMaxRed = 1.000;
+      double vMinRed = 0.004;
+      double vMaxRed = 0.027;
+
+      // Yellow HSV Color Values
+      double hMinYellow = 30.000;
+      double hMaxYellow = 54.000;
+      double sMinYellow = 0.873;
+      double sMaxYellow = 1.000;
+      double vMinYellow = 0.008;
+      double vMaxYellow = 0.051;
+
+      // Blue HSV Color Values
+      double hMinBlue = 0.004;
+      double hMaxBlue = 0.020;
+      double sMinBlue = 0.200;
+      double sMaxBlue = 1.000;
+      double vMinBlue = 180.000;
+      double vMaxBlue = 240.000;
+      */
+
       double hMinRed = 20.000;
       double hMaxRed = 30.000;
       double sMinRed = 0.600;
@@ -219,11 +245,11 @@ public class TestSensorColorWithOutLED extends LinearOpMode {
       double vMaxBlue = 240.000;
 
       // determine if color is blue, red or yellow and show telemetry
-      if (hsvValues[0] <= hMaxBlue && hsvValues[2] >= vMinBlue)
+      if
         telemetry.addLine("Blue detected");
-      if ((hsvValues[0] <= hMinRed && hsvValues[0] >= hMaxRed) && (hsvValues[2] >= vMinRed && hsvValues[2] <= vMaxRed))
+      if
         telemetry.addLine("Red detected");
-      if ((hsvValues[0] >= hMinYellow) && (hsvValues[2] >= vMinYellow && hsvValues[2] <= vMaxYellow))
+      if
         telemetry.addLine("Blue detected");
       else
         telemetry.addLine("No color detected");
