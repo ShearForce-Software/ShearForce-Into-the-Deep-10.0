@@ -88,8 +88,11 @@ public class Geronimo {
     int greenRight = 0;
     int blueRight = 0;
     double LimelightMountingHeight = 6;  //Adjust when robot is built
+    double LimelightMountingAngle = Math.toDegrees(90);
     double distance_to_object = 0;
     double objectHeight = 0;
+    double XDistance_to_object = 0;
+    double YDistance_to_object = 0;
     double angletoObject = Math.toRadians(60);
     public static boolean allianceColorIsBlue = false;
     public static double autoTimeLeft = 0.0;
@@ -176,12 +179,14 @@ public class Geronimo {
         limelightbox = hardwareMap.get(Limelight3A.class, "limelight");
         limelightbox.pipelineSwitch(1);
         limelightbox.start();
-        distance_to_object = (objectHeight-LimelightMountingHeight)/(Math.tan(angletoObject));
-        // Equation above was pulled from the Limelight documentation online
         limelightbox.getLatestResult().getTx();
         limelightbox.getLatestResult().getTy();
-
-    }
+        angletoObject = LimelightMountingAngle + (limelightbox.getLatestResult().getTy());
+        distance_to_object = (objectHeight-LimelightMountingHeight)/(Math.tan(angletoObject));
+        // Equation above was pulled from the Limelight documentation online
+        XDistance_to_object = distance_to_object*Math.cos((limelightbox.getLatestResult().getTx()));
+        YDistance_to_object = distance_to_object*Math.sin((limelightbox.getLatestResult().getTx()));
+}
 
     public void NavToTag(){
         desiredTag  = null;
