@@ -50,9 +50,9 @@ package ServoNames #Orange {
 }
 
 package DigitalNames #Pink {
-  () "LimitSwitch-1" --> [Digital_0_1] : 0-1
-  () "LimitSwitch-2" --> [Digital_2_3] : 2-3
-  () "LimitSwitch-3" --> [Digital_4_5] : 4-5
+  () "sensor_touchRight" --> [Digital_0_1] : 0-1
+  () "sensor_touchLeft" --> [Digital_2_3] : 2-3
+  () "sensor_touchRotate" --> [Digital_4_5] : 4-5
   () "LimitSwitch-4" --> [Digital_6_7] : 6-7
 }
 

@@ -49,6 +49,9 @@ public class Geronimo {
     Servo clawServo;
     Servo intakeRotater;
     CRServo intakeStar;
+    TouchSensor touchSensorRight;
+    TouchSensor touchSensorLeft;
+    TouchSensor touchSensorRotator;
 
     public double imuOffsetInDegrees;
 
@@ -135,8 +138,13 @@ public class Geronimo {
         rightColorSensor = hardwareMap.get(RevColorSensorV3.class, "ColorSensorRight");
         leftColorSensor.enableLed(false);
         rightColorSensor.enableLed(false);
+        // ********** Touch Sensors ********************
+        touchSensorRight = hardwareMap.get(TouchSensor.class, "sensor_touchRight");
+        touchSensorLeft = hardwareMap.get(TouchSensor.class, "sensor_touchLeft");
+        touchSensorRotator = hardwareMap.get(TouchSensor.class, "sensor_touchRotate");
 
-       // limelightbox = hardwareMap.get(Limelight3A.class, "limelight");
+
+        // limelightbox = hardwareMap.get(Limelight3A.class, "limelight");
 
         InitBlinkin(hardwareMap);
 
