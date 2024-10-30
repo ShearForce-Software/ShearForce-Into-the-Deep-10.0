@@ -245,7 +245,7 @@ public class TestSensorColorWithOutLED extends LinearOpMode {
       double vMaxBlue = 240.000;
 
       // determine if color is blue, red or yellow and show telemetry
-      if
+   /*   if
         telemetry.addLine("Blue detected");
       if
         telemetry.addLine("Red detected");
@@ -253,7 +253,7 @@ public class TestSensorColorWithOutLED extends LinearOpMode {
         telemetry.addLine("Blue detected");
       else
         telemetry.addLine("No color detected");
-
+*/
       telemetry.addLine()
               .addData("Red", "%.3f", colors.red)
               .addData("Green", "%.3f", colors.green)
