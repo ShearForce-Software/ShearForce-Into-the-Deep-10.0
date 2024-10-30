@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.Geronimo;
 import static org.firstinspires.ftc.teamcode.Geronimo.MecanumDrive_Geronimo.PARAMS;
 
-import com.qualcomm.hardware.dfrobot.HuskyLens;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
@@ -14,7 +13,6 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.usb.RobotUsbDevice;
 import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -32,6 +30,12 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import android.graphics.Color;
+
+import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
+import com.qualcomm.robotcore.hardware.NormalizedRGBA;
+import com.qualcomm.robotcore.hardware.SwitchableLight;
 
 
 @Config
@@ -97,6 +101,15 @@ public class Geronimo {
     public static boolean allianceColorIsBlue = false;
     public static double autoTimeLeft = 0.0;
     Limelight3A limelightbox;
+
+    // REV v3 color sensor variables
+    enum colorEnum {
+        noColor,
+        red,
+        yellow,
+        blue;
+    }
+    colorEnum colorDetected = colorEnum.noColor;
 
     public Geronimo(boolean isDriverControl, boolean isFieldCentric, LinearOpMode opMode) {
         this.IsDriverControl = isDriverControl;
@@ -238,6 +251,61 @@ public class Geronimo {
         }
         return false;
     }
+
+    protected void InitColorRevV3Sensor() {
+        float gain = 51;
+        final float[] hsvValues = new float[3];
+        boolean xButtonPreviouslyPressed = false;
+        boolean xButtonCurrentlyPressed = false;
+        if (leftColorSensor instanceof SwitchableLight) {
+            ((SwitchableLight)leftColorSensor).enableLight(true);
+        }
+
+        // returns color enum
+        while (opModeIsActive()) {
+            NormalizedRGBA colors = leftColorSensor.getNormalizedColors();
+            Color.colorToHSV(colors.toColor(), hsvValues);
+
+            // Red HSV Color ranges
+            double hMinRed = 19.811;
+            double hMaxRed = 128.000;
+            double sMinRed = 0.397;
+            double sMaxRed = 0.671;
+            double vMinRed = 0.263;
+            double vMaxRed = 0.722;
+
+            // Yellow HSV Color Values
+            double hMinYellow = 59.000;
+            double hMaxYellow = 113.043;
+            double sMinYellow = 0.501;
+            double sMaxYellow = 0.702;
+            double vMinYellow = 0.565;
+            double vMaxYellow = 1.000;
+
+            // Blue HSV Color Values
+            double hMinBlue = 187.152;
+            double hMaxBlue = 219.568;
+            double sMinBlue = 0.741;
+            double sMaxBlue = 0.832;
+            double vMinBlue = 0.514;
+            double vMaxBlue = 1.000;
+
+            // determine if color is blue, red or yellow and show telemetry
+            if (hsvValues[0] >= hMinBlue && hsvValues[1] >= sMinBlue)
+                colorDetected = colorEnum.blue;
+
+            else if (hsvValues[1] <= sMaxYellow && hsvValues[1] >= sMinYellow && hsvValues[0] <= hMaxYellow && hsvValues[0] >= hMinYellow)
+                colorDetected = colorEnum.yellow;
+
+            else if (hsvValues[1] <= sMaxRed && hsvValues[1] >= sMinRed && hsvValues[0] <= hMaxRed && hsvValues[0] >= hMinRed)
+                colorDetected = colorEnum.red;
+
+            else
+                colorDetected = colorEnum.noColor;
+                }
+            }
+
+
 
     public void DriveToTag() {
         double drive = 0.0;        // Desired forward power/speed (-1 to +1)
