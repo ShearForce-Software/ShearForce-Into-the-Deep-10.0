@@ -29,8 +29,8 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                  *************************************************
                  */
                 // Drive Controls uses left_stick_y, left_stick_x, and right_stick_x
-                //theRobot.driveControlsFieldCentric();
-                theRobot.driveControlsRobotCentric();
+                theRobot.driveControlsFieldCentric();
+                //theRobot.driveControlsRobotCentric();
                 if (gamepad1.a && !gamepad1.start) {
                    // theRobot.LaunchAirplane();
                 }
