@@ -103,7 +103,7 @@ public class Geronimo {
     Limelight3A limelightbox;
 
     // REV v3 color sensor variables
-    enum colorEnum {
+    public enum colorEnum {
         noColor,
         red,
         yellow,
@@ -258,54 +258,69 @@ public class Geronimo {
         boolean xButtonPreviouslyPressed = false;
         boolean xButtonCurrentlyPressed = false;
         if (leftColorSensor instanceof SwitchableLight) {
-            ((SwitchableLight)leftColorSensor).enableLight(true);
+            ((SwitchableLight) leftColorSensor).enableLight(true);
         }
+    }
 
-        // returns color enum
-        while (opModeIsActive()) {
-            NormalizedRGBA colors = leftColorSensor.getNormalizedColors();
-            Color.colorToHSV(colors.toColor(), hsvValues);
-
-            // Red HSV Color ranges
-            double hMinRed = 19.811;
-            double hMaxRed = 128.000;
-            double sMinRed = 0.397;
-            double sMaxRed = 0.671;
-            double vMinRed = 0.263;
-            double vMaxRed = 0.722;
-
-            // Yellow HSV Color Values
-            double hMinYellow = 59.000;
-            double hMaxYellow = 113.043;
-            double sMinYellow = 0.501;
-            double sMaxYellow = 0.702;
-            double vMinYellow = 0.565;
-            double vMaxYellow = 1.000;
-
-            // Blue HSV Color Values
-            double hMinBlue = 187.152;
-            double hMaxBlue = 219.568;
-            double sMinBlue = 0.741;
-            double sMaxBlue = 0.832;
-            double vMinBlue = 0.514;
-            double vMaxBlue = 1.000;
-
-            // determine if color is blue, red or yellow and show telemetry
-            if (hsvValues[0] >= hMinBlue && hsvValues[1] >= sMinBlue)
-                colorDetected = colorEnum.blue;
-
-            else if (hsvValues[1] <= sMaxYellow && hsvValues[1] >= sMinYellow && hsvValues[0] <= hMaxYellow && hsvValues[0] >= hMinYellow)
-                colorDetected = colorEnum.yellow;
-
-            else if (hsvValues[1] <= sMaxRed && hsvValues[1] >= sMinRed && hsvValues[0] <= hMaxRed && hsvValues[0] >= hMinRed)
-                colorDetected = colorEnum.red;
-
-            else
-                colorDetected = colorEnum.noColor;
-                }
+    // colorFound loop
+    public boolean ColorRevV3SensorChecker(colorEnum targetColor) {
+        boolean colorFound = false;
+        double breakLoop = 10 + opMode.getRuntime();
+        while (!colorFound && opMode.getRuntime() <= breakLoop) {
+            ColorRevV3Sensor();
+            if (colorDetected == targetColor) {
+                colorFound = true;
             }
+            opMode.sleep(100);
+        }
+        return colorFound;
+    }
 
+    // returns colorEnum color detected
+    public colorEnum ColorRevV3Sensor() {
+        NormalizedRGBA colors = leftColorSensor.getNormalizedColors();
+        float[] hsvValues = {0,0,0};
+        Color.colorToHSV(colors.toColor(), hsvValues);
 
+        // Red HSV Color ranges
+        double hMinRed = 19.811;
+        double hMaxRed = 128.000;
+        double sMinRed = 0.397;
+        double sMaxRed = 0.671;
+        double vMinRed = 0.263;
+        double vMaxRed = 0.722;
+
+        // Yellow HSV Color Values
+        double hMinYellow = 59.000;
+        double hMaxYellow = 113.043;
+        double sMinYellow = 0.501;
+        double sMaxYellow = 0.702;
+        double vMinYellow = 0.565;
+        double vMaxYellow = 1.000;
+
+        // Blue HSV Color Values
+        double hMinBlue = 187.152;
+        double hMaxBlue = 219.568;
+        double sMinBlue = 0.741;
+        double sMaxBlue = 0.832;
+        double vMinBlue = 0.514;
+        double vMaxBlue = 1.000;
+
+        // determine if color is blue, red or yellow and show telemetry
+        if (hsvValues[0] >= hMinBlue && hsvValues[1] >= sMinBlue)
+            colorDetected = colorEnum.blue;
+
+        else if (hsvValues[1] <= sMaxYellow && hsvValues[1] >= sMinYellow && hsvValues[0] <= hMaxYellow && hsvValues[0] >= hMinYellow)
+            colorDetected = colorEnum.yellow;
+
+        else if (hsvValues[1] <= sMaxRed && hsvValues[1] >= sMinRed && hsvValues[0] <= hMaxRed && hsvValues[0] >= hMinRed)
+            colorDetected = colorEnum.red;
+
+        else
+            colorDetected = colorEnum.noColor;
+
+        return colorDetected;
+    }
 
     public void DriveToTag() {
         double drive = 0.0;        // Desired forward power/speed (-1 to +1)
