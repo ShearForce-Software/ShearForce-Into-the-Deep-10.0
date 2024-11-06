@@ -9,5 +9,6 @@
 - [ ] Create autonomous to put specimen on bar AIDAN & SHREY
 - [X] Create Test op mode for testing the 4 arm motors and limit switches --- CLAIRE
 - [ ] Create Test op mode for testing color sensor
+- [ ] Add Comments to Four Arm Motors Limit Switch Class
 
 
