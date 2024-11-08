@@ -1,4 +1,8 @@
 package org.firstinspires.ftc.teamcode.Geronimo;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
@@ -16,6 +20,10 @@ import com.qualcomm.robotcore.util.Range;
 @TeleOp(name = "LL AutoAim", group = "Linear OpMode")
 public class AkshayLLAutoAim extends LinearOpMode{
     Geronimo control = new Geronimo(true, false,this);
+
+
+
+
     private Limelight3A limelight;
     private DcMotor leftMotor;
     private DcMotor rightMotor;
@@ -42,74 +50,38 @@ public class AkshayLLAutoAim extends LinearOpMode{
     private static final double KpAim = 0.1; //Proportional control constant for aiming
     private static final double KpDrive = 0.05; //Proportional control constant for driving
 
-    private DcMotorEx leftFront, leftBack, rightBack, rightFront;
+    public DcMotorEx leftFront, leftRear, rightRear, rightFront;
 
 
     @Override
     public void runOpMode(){
+        startPose = new Pose2d(0,0, Math.toRadians(0));
         drive = new MecanumDrive_Geronimo(hardwareMap, startPose);
         control.Init(hardwareMap); //Init the hardwareMap
         control.InitLimelight(hardwareMap); // Init the limeLight
 
+
+
+
+
         waitForStart();
 
         while(opModeIsActive()){
-            LLResult result = limelight.getLatestResult();
+            ArrayList<Double> currentOffset = new ArrayList<>(control.AlignToTargetImage("TestingObject", 1, 1));
 
-            if (result!=null && result.isValid()) {
-                double tx = result.getTx(); // Horizontal offset from crosshair to target
-                double ty = result.getTy(); // Vertical offset from crosshair to target
-
-                //Calculate distance to target using trigonometry
-                double distance = calculateDistance(ty);
-                double drive = Range.clip((distance - DESIRED_DISTANCE) * KpDrive, -1.0, 1.0);
-                double strafe = Range.clip(tx * KpAim, -1.0, 1.0);
-                double rotation = 0.0; // not needed
-
-                // Apply powers to mecanum wheels
-                double leftFrontPower = drive + strafe - rotation;
-                double leftRearPower = drive - strafe - rotation;
-                double rightFrontPower = drive - strafe + rotation;
-                double rightRearPower = drive + strafe + rotation;
-
-                // Normalize power values to avoid exceeding max motor power
-                double max = Math.max(1.0, Math.abs(leftFrontPower));
-                max = Math.max(max, Math.abs(leftRearPower));
-                max = Math.max(max, Math.abs(rightFrontPower));
-                max = Math.max(max, Math.abs(rightRearPower));
-
-                leftFront.setPower(leftFrontPower / max);
-                leftBack.setPower(leftRearPower / max);
-                rightFront.setPower(rightFrontPower / max);
-                rightBack.setPower(rightRearPower / max);
-
-                telemetry.addData("Target X", tx);
-                telemetry.addData("Target Y", ty);
-                telemetry.addData("Distance (inches)", distance);
-                telemetry.addData("Left Front Power", leftFrontPower / max);
-                telemetry.addData("Left Rear Power", leftRearPower / max);
-                telemetry.addData("Right Front Power", rightFrontPower / max);
-                telemetry.addData("Right Rear Power", rightRearPower / max);
-            } else {
-                // No target detected; stop motors
-                telemetry.addData("Limelight", "No Targets");
+            if(!currentOffset.isEmpty()){
+                double offsetX = currentOffset.get(0);
+                double offsetY = currentOffset.get(1);
+                System.out.println("Offset X:" + offsetX);
+                System.out.println("Offset Y: " + offsetY);
+            }
+            else{
+                System.out.println("NOTHING FOUND");
             }
 
             telemetry.update();
         }
 
     }
-    private double calculateDistance(double ty){
-        //Convert angles from degrees to radians
-        double cameraAnglesRadians = Math.toRadians(CAMERA_ANGLE);
-        double targetAngleRadians = Math.toRadians(ty);
 
-        //Calculate total angle
-        double totalAngle = cameraAnglesRadians + targetAngleRadians;
-
-        //Calculate distance
-        double distance = (TARGET_HEIGHT - CAMERA_HEIGHT) / Math.tan(totalAngle);
-
-        return distance;
-    }
 }
