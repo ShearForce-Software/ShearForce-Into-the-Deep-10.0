@@ -1,14 +1,15 @@
 package Into_The_Deep;
+
+import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.noahbres.meepmeep.MeepMeep;
-import com.acmerobotics.roadrunner.SleepAction;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
-import com.acmerobotics.roadrunner.SequentialAction;
-import com.acmerobotics.roadrunner.Action;
 
-public class ShreyAutoTest {
+public class AidansRealllllllllllyCrazyAutoTest {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(600);
 
@@ -24,12 +25,23 @@ public class ShreyAutoTest {
 
 
         Pose2d StartPose = new Pose2d(36, -60, 90);
-        Vector2d VectorTwo = new Vector2d(5, -30);
+        Vector2d VectorTwo = new Vector2d(48, -35);
         //myBot.runAction(myBot.getDrive().actionBuilder(StartPose)
                            //  .splineToLinearHeading(new Pose2d(36,48,36.6), Math.toRadians(270))
-        Action DriveToSubmersible1 = myBot.getDrive().actionBuilder(StartPose)
-                                .strafeToLinearHeading(VectorTwo, Math.toRadians(90))
+        Action DriveToSamplesandDeliver1 = myBot.getDrive().actionBuilder(StartPose)
+                                .splineTo(new Vector2d(15,-30), Math.toRadians(90))
+                                .splineTo(new Vector2d(48,-12), Math.toRadians(270))
+                                .strafeToLinearHeading(new Vector2d(48,-60), Math.toRadians(270))
                                 .build();
+        Action DriveToSamplesandDeliver2 = myBot.getDrive().actionBuilder(new Pose2d(48,-60, Math.toRadians(270)))
+                .strafeToLinearHeading(new Vector2d(48, -8), Math.toRadians(270))
+                .splineTo(new Vector2d(58,-12), Math.toRadians(270))
+                //.strafeToLinearHeading(new Vector2d(48,-60), Math.toRadians(270))
+                .build();
+        Action DriveToSamplesandDeliver3 = myBot.getDrive().actionBuilder(StartPose)
+                .splineTo(VectorTwo, Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(48,-60), Math.toRadians(270))
+                .build();
 
         Action DropOff1 = myBot.getDrive().actionBuilder(new Pose2d(5,-30,Math.toRadians(90)))
                 .strafeToLinearHeading(new Vector2d(60, -58), Math.toRadians(270))
@@ -57,13 +69,14 @@ public class ShreyAutoTest {
 
         myBot.runAction(new SequentialAction(
                 //Drive to submersible and pick up sample
-                DriveToSubmersible1,
-                new SleepAction(1),
+                DriveToSamplesandDeliver1,
+                DriveToSamplesandDeliver2
+                //new SleepAction(1)
                 //Drop submersible
-                DropOff1,
-                new SleepAction(1),
+                //DropOff1,
+                //new SleepAction(1),
                 //drive to submersible and pickup sample
-                DriveToSubmersible2,
+               /* DriveToSubmersible2,
                 new SleepAction(1),
                 //drop sample and pick up specimen
                 DropOff2,
@@ -72,7 +85,7 @@ public class ShreyAutoTest {
                 new SleepAction(1),
                 //drop specimen and pick up sample
                 SpecimenDrop//,
-                //new SleepAction(1)
+               */ //new SleepAction(1)
                 ));
 
 
