@@ -28,6 +28,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 //import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -100,7 +101,11 @@ public class Geronimo {
     double angletoObject = Math.toRadians(60);
     public static boolean allianceColorIsBlue = false;
     public static double autoTimeLeft = 0.0;
+
+    //LimeLight
     Limelight3A limelightbox;
+    private static final double KpDistance = -0.1; // Proportional control constant for distance adjustment
+    private static final double KpAim = 0.1; // Proportional control constant for aiming adjustment
 
     // REV v3 color sensor variables
     public enum colorEnum {
@@ -140,7 +145,7 @@ public class Geronimo {
         slideLeft.setDirection(DcMotor.Direction.REVERSE);
         slideRight.setDirection(DcMotorSimple.Direction.FORWARD);
 
-
+        /*
         // ********** Servos ********************
         clawServo = hardwareMap.get(Servo.class, "clawServo");
         intakeRotater = hardwareMap.get(Servo.class, "intakeRotater");
@@ -155,10 +160,9 @@ public class Geronimo {
         touchSensorRight = hardwareMap.get(TouchSensor.class, "sensor_touchRight");
         touchSensorLeft = hardwareMap.get(TouchSensor.class, "sensor_touchLeft");
         touchSensorRotator = hardwareMap.get(TouchSensor.class, "sensor_touchRotate");
-
+*/
 
         // limelightbox = hardwareMap.get(Limelight3A.class, "limelight");
-
         InitBlinkin(hardwareMap);
 
         imu = hardwareMap.get(IMU.class, "imu");
@@ -167,8 +171,6 @@ public class Geronimo {
         imu.initialize(parameters);
         imu.resetYaw();
 
-
-        //LimeLight
     }
 
     public void WebcamInit (HardwareMap hardwareMap){
@@ -192,13 +194,13 @@ public class Geronimo {
         limelightbox = hardwareMap.get(Limelight3A.class, "limelight");
         limelightbox.pipelineSwitch(1);
         limelightbox.start();
-        limelightbox.getLatestResult().getTx();
-        limelightbox.getLatestResult().getTy();
-        angletoObject = LimelightMountingAngle + (limelightbox.getLatestResult().getTy());
-        distance_to_object = (objectHeight-LimelightMountingHeight)/(Math.tan(angletoObject));
+        //limelightbox.getLatestResult().getTx();
+       // limelightbox.getLatestResult().getTy();
+       // angletoObject = LimelightMountingAngle + (limelightbox.getLatestResult().getTy());
+        //distance_to_object = (objectHeight-LimelightMountingHeight)/(Math.tan(angletoObject));
         // Equation above was pulled from the Limelight documentation online
-        XDistance_to_object = distance_to_object*Math.cos((limelightbox.getLatestResult().getTx()));
-        YDistance_to_object = distance_to_object*Math.sin((limelightbox.getLatestResult().getTx()));
+       // XDistance_to_object = distance_to_object*Math.cos((limelightbox.getLatestResult().getTx()));
+       // YDistance_to_object = distance_to_object*Math.sin((limelightbox.getLatestResult().getTx()));
 }
 
     public void NavToTag(){
@@ -217,6 +219,35 @@ public class Geronimo {
         }
     }
 
+
+    public List<Double>  AlignToTargetImage(String targetImageName, double KpDistance, double KpAim) {
+        List<Double> offset = new ArrayList<>();
+        offset.add(-1.0);
+        offset.add(-1.0);
+
+        //Aligns the Robot to the Target Image horiontally and return True if success else False
+        LLResult result = limelightbox.getLatestResult();
+
+        if (result.isValid()) {
+            // Access detector results
+            List<LLResultTypes.DetectorResult> detectorResults = result.getDetectorResults();
+            for (LLResultTypes.DetectorResult dr : detectorResults) {
+                String BoxType = dr.getClassName();
+
+                // Confirm once that Target Image is Found, before attempting alignment
+                if (BoxType.equals(targetImageName)) {
+                    double currentOffsetX = result.getTx() * KpAim;
+                    double currentOffsetY = result.getTy() * KpDistance;
+
+                    //Return both offsets as a list
+                    offset.add(currentOffsetX);
+                    offset.add(currentOffsetY);
+                    return offset;
+                }
+            }
+        }
+        return offset;
+    }
     public boolean limelightHasTarget() {
         LLResult result = limelightbox.getLatestResult();
         if (result != null && result.isValid()) {

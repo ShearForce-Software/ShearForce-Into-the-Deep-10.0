@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -64,8 +65,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Test FourArmMotors_LimitSwitches", group="Test")
-@Disabled
+@TeleOp(name="Test FourArmMotors_LimitSwitches", group="Test")
+//@Disabled
 public class TestFourArmMotors_LimitSwitches extends LinearOpMode {
 
     /* Declare OpMode members. */
@@ -76,7 +77,7 @@ public class TestFourArmMotors_LimitSwitches extends LinearOpMode {
     TouchSensor touchSensorRight;
     TouchSensor touchSensorLeft;
     TouchSensor touchSensorRotator;
-
+    int rotatorSetPosition = 0;
 
     //  private ElapsedTime     runtime = new ElapsedTime();
 
@@ -125,22 +126,28 @@ public class TestFourArmMotors_LimitSwitches extends LinearOpMode {
         slideRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         //idk if this is necessary...
-        leftRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightRotater.setTargetPosition(rotatorSetPosition);
+        leftRotater.setTargetPosition(rotatorSetPosition);
+        leftRotater.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightRotater.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightRotater.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftRotater.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Send telemetry message to indicate successful Encoder reset
-        telemetry.addData("Starting at", "%7d :%7d",
+        telemetry.addData("Starting rotators at", "%7d :%7d",
                 leftRotater.getCurrentPosition(),
-                rightRotater.getCurrentPosition(),
+                rightRotater.getCurrentPosition());
+        telemetry.addData("Starting sliders at", "%7d :%7d",
                 slideLeft.getCurrentPosition(),
                 slideRight.getCurrentPosition());
         telemetry.update();
 
         // Wait for the game to start (driver presses START)
         waitForStart();
-
+        leftRotater.setPower(0.5);
+        rightRotater.setPower(0.5);
         while (opModeIsActive()) {
 
             // Horizontal extension motors
@@ -165,21 +172,28 @@ public class TestFourArmMotors_LimitSwitches extends LinearOpMode {
 
             //Rotater Motors
             if (gamepad2.right_stick_y> 0.1) {
-                rightRotater.setPower(gamepad2.right_stick_y);
-                leftRotater.setPower(gamepad2.right_stick_y);
-                rightRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                leftRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            } else if (gamepad2.right_stick_y <= 0.1) {
-                rightRotater.setPower(gamepad2.right_stick_y);
-                leftRotater.setPower(gamepad2.right_stick_y);
-                rightRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                leftRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+               rotatorSetPosition += Math.round(gamepad2.right_stick_y * 100);
+               // rightRotater.setPower(gamepad2.right_stick_y);
+               //leftRotater.setPower(gamepad2.right_stick_y);
+               // rightRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                //leftRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            } else if (gamepad2.right_stick_y <= -0.1) {
+                rotatorSetPosition += Math.round(gamepad2.right_stick_y * 100);
+              //  rightRotater.setPower(gamepad2.right_stick_y);
+              //  leftRotater.setPower(gamepad2.right_stick_y);
+               // rightRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+               // leftRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
             }else
             {
-                rightRotater.setPower(0);
-                leftRotater.setPower(0);
+                //rightRotater.setPower(0);
+               // leftRotater.setPower(0);
             }
+            if (rotatorSetPosition < 0) {
+                rotatorSetPosition = 0;
+            }
+            rightRotater.setTargetPosition(rotatorSetPosition);
+            leftRotater.setTargetPosition(rotatorSetPosition);
             // TOUCH SENSORS
             if (touchSensorRight.isPressed()) {
                 telemetry.addData("Touch Sensor Right", "Is Pressed");
@@ -219,6 +233,7 @@ public class TestFourArmMotors_LimitSwitches extends LinearOpMode {
             telemetry.addData("Motor Ticks slideRight: ", slideRight.getCurrentPosition());
             telemetry.addData("Motor Ticks rightRotater: ", rightRotater.getCurrentPosition());
             telemetry.addData("Motor Ticks leftRotater: ", leftRotater.getCurrentPosition());
+            telemetry.addData("Target Rotator Position ", rotatorSetPosition);
 
 
             telemetry.update();
