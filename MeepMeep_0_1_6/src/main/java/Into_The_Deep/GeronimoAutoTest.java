@@ -17,19 +17,31 @@ public class GeronimoAutoTest {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        Pose2d StartPose = new Pose2d(-12, -60, 90);
-        Vector2d VectorTwo = new Vector2d(-12, -30);
+        Pose2d StartPose = new Pose2d(-36, -60, 90);
+        Vector2d VectorTwo = new Vector2d(-12, -36);
         myBot.runAction(myBot.getDrive().actionBuilder(StartPose)
                            //  .splineToLinearHeading(new Pose2d(36,48,36.6), Math.toRadians(270))
                                 .strafeToLinearHeading(VectorTwo, Math.toRadians(90))
-                                 .strafeToLinearHeading(new Vector2d(-12, -36), Math.toRadians(225))
+                                .strafeToLinearHeading(new Vector2d(-48, -29), Math.toRadians(180))
+                             //    .strafeToLinearHeading(new Vector2d(-12, -36), Math.toRadians(225))
                                 .strafeToLinearHeading(new Vector2d(-48, -48), Math.toRadians(225))
-               // .turn(Math.toRadians(270))
-              /*  .lineToX(0)
-                .turn(Math.toRadians(90))
+                                .strafeToLinearHeading(new Vector2d(-53, -29), Math.toRadians(90))
+                                .strafeToLinearHeading(new Vector2d(-48, -48), Math.toRadians(225))
+                                .strafeToLinearHeading(new Vector2d(-64, -29), Math.toRadians(90))
+                                .strafeToLinearHeading(new Vector2d(-48, -48), Math.toRadians(225))
+                                .strafeToLinearHeading(VectorTwo, Math.toRadians(90))
+                                .strafeToLinearHeading(new Vector2d(-48, -48), Math.toRadians(225))
+                                .strafeToLinearHeading(VectorTwo, Math.toRadians(90))
 
-               */ //.turn(Math.toRadians(90))
-               //  .lineToY(-24)
+                // assume using some sensor to sense basket and deliver
+
+                 /* .turn(Math.toRadians(270))
+                  .lineToX(0)
+                  .turn(Math.toRadians(90))
+                  .turn(Math.toRadians(90))
+                  .lineToY(-24)
+
+                  */
                 .build());
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_OFFICIAL)

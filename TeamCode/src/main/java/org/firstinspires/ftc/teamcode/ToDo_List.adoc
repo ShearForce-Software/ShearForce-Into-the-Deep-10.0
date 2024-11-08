@@ -2,13 +2,14 @@
 
 == TODO List
 
-- [ ] Calibrate Geronimo
+- [ ] Calibrate Geronimo GIANNA & CLAIRE
+- [ ] Test using trajectory
 - [ ] Create routine in Geronimo that uses the Limelight to report Red, Blue, or Yellow --- AKSHAY
 - [ ] Create routine in Geronimo that uses color sensor to report red, blue, or yellow --- MATTHEW
 - [X]  Create routine in Geronimo that returns X, Y distance to an object --- AIDAN
 - [X] Create autonomous to put specimen on bar AIDAN & SHREY
 - [X] Create Test op mode for testing the 4 arm motors and limit switches --- CLAIRE
-- [ ] Create Test op mode for testing color sensor
-- [ ] Add Comments to Four Arm Motors Limit Switch Class
+- [X] Add Comments to Four Arm Motors Limit Switch Class CLAIRE
+- [ ] Improve class so the arm doesn't slam down when y is released. CLAIRE & GIANNA
 
 
