@@ -52,7 +52,7 @@ public class Geronimo {
     IMU imu;
     Servo clawServo;
     Servo intakeRotater;
-    CRServo intakeStar;
+    public CRServo intakeStar;
     TouchSensor touchSensorRight;
     TouchSensor touchSensorLeft;
     TouchSensor touchSensorRotator;
