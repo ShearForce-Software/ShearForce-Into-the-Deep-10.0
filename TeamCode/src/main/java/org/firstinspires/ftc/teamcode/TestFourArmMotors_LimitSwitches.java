@@ -77,9 +77,7 @@ public class TestFourArmMotors_LimitSwitches extends LinearOpMode {
     TouchSensor touchSensorRight;
     TouchSensor touchSensorLeft;
     TouchSensor touchSensorRotator;
-
-    public double slidePower = 0.0;
-
+    int rotatorSetPosition = 0;
 
     //  private ElapsedTime     runtime = new ElapsedTime();
 
@@ -128,41 +126,29 @@ public class TestFourArmMotors_LimitSwitches extends LinearOpMode {
         slideRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         //idk if this is necessary...
-        leftRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightRotater.setTargetPosition(rotatorSetPosition);
+        leftRotater.setTargetPosition(rotatorSetPosition);
+        leftRotater.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightRotater.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightRotater.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftRotater.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Send telemetry message to indicate successful Encoder reset
-        telemetry.addData("Starting at", "%7d :%7d",
+        telemetry.addData("Starting rotators at", "%7d :%7d",
                 leftRotater.getCurrentPosition(),
-                rightRotater.getCurrentPosition(),
+                rightRotater.getCurrentPosition());
+        telemetry.addData("Starting sliders at", "%7d :%7d",
                 slideLeft.getCurrentPosition(),
                 slideRight.getCurrentPosition());
         telemetry.update();
 
         // Wait for the game to start (driver presses START)
         waitForStart();
-
+        leftRotater.setPower(0.5);
+        rightRotater.setPower(0.5);
         while (opModeIsActive()) {
-        /*
-            public void SetSlidePower(double power){
-                if ((touchSensorRotator.isPressed() && power < 0))
-                {
-                    slidePower = 0;
-                    leftRotater.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    rightRotater.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                }
-                else
-                {
-                    slidePower = power;
-                }
-                leftRotater.setPower(slidePower);
-                rightRotater.setPower(slidePower);
-            }
-
-         */
-
 
             // Horizontal extension motors
             if (gamepad2.left_stick_y > 0.1) {
@@ -185,57 +171,35 @@ public class TestFourArmMotors_LimitSwitches extends LinearOpMode {
 
 
             //Rotater Motors
-            // use something digital rather than analog (ie. a button click)
-
-
-
             if (gamepad2.right_stick_y> 0.1) {
-                rightRotater.setPower(gamepad2.right_stick_y);
-                leftRotater.setPower(gamepad2.right_stick_y);
-                rightRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                leftRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            }
+               rotatorSetPosition += Math.round(gamepad2.right_stick_y * 100);
+               // rightRotater.setPower(gamepad2.right_stick_y);
+               //leftRotater.setPower(gamepad2.right_stick_y);
+               // rightRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                //leftRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            } else if (gamepad2.right_stick_y <= -0.1) {
+                rotatorSetPosition += Math.round(gamepad2.right_stick_y * 100);
+              //  rightRotater.setPower(gamepad2.right_stick_y);
+              //  leftRotater.setPower(gamepad2.right_stick_y);
+               // rightRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+               // leftRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-
-                /*
-                rightRotater.setTargetPosition(-1800);
-                leftRotater.setTargetPosition(-1800);
-                rightRotater.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                leftRotater.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                rightRotater.setPower(0.5);
-                leftRotater.setPower(0.5);
-
-
-
-
-              else if (gamepad2.right_stick_y <= -0.1) {
-                rightRotater.setPower(gamepad2.right_stick_y);
-                leftRotater.setPower(gamepad2.right_stick_y);
-                rightRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                leftRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            }
-
-
-                /*
-                rightRotater.setTargetPosition(0);
-                leftRotater.setTargetPosition(0);
-                rightRotater.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                leftRotater.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                rightRotater.setPower(0.5);
-                leftRotater.setPower(0.5);
-
-                 */
-
-            else
+            }else
             {
-                rightRotater.setPower(0);
-                leftRotater.setPower(0);
+                //rightRotater.setPower(0);
+               // leftRotater.setPower(0);
             }
+            if (rotatorSetPosition < 0) {
+                rotatorSetPosition = 0;
+            }
+            rightRotater.setTargetPosition(rotatorSetPosition);
+            leftRotater.setTargetPosition(rotatorSetPosition);
             // TOUCH SENSORS
             if (touchSensorRight.isPressed()) {
                 telemetry.addData("Touch Sensor Right", "Is Pressed");
                 slideRight.setPower(0);
                 slideRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+               // theRobot.motorpower = 0.0;
             } else {
                 slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 telemetry.addData("Touch Sensor Right", "Is Not Pressed");
@@ -257,7 +221,6 @@ public class TestFourArmMotors_LimitSwitches extends LinearOpMode {
                 leftRotater.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 rightRotater.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-
             } else {
                 leftRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 rightRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -270,13 +233,90 @@ public class TestFourArmMotors_LimitSwitches extends LinearOpMode {
             telemetry.addData("Motor Ticks slideRight: ", slideRight.getCurrentPosition());
             telemetry.addData("Motor Ticks rightRotater: ", rightRotater.getCurrentPosition());
             telemetry.addData("Motor Ticks leftRotater: ", leftRotater.getCurrentPosition());
-
-            telemetry.addData(">", "gamepad2.right_stick_y for rotater motors");
-            telemetry.addData(">", "gamepad2.left_stick_y for horizontal extension motors");
+            telemetry.addData("Target Rotator Position ", rotatorSetPosition);
 
 
             telemetry.update();
 
+          //  telemetry.addData("Motor Ticks slideLeft: ", slideLeft.getCurrentPosition());
+          //  telemetry.addData("Motor Ticks slideRight: ", slideRight.getCurrentPosition());
+
+
+            // Step through each leg of the path,
+            // Note: Reverse movement is obtained by setting a negative distance (not speed)
+    /*    encoderDrive(DRIVE_SPEED,  48,  48, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
+        encoderDrive(TURN_SPEED,   12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
+        encoderDrive(DRIVE_SPEED, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
+
+        telemetry.addData("Path", "Complete");
+        telemetry.update();
+        sleep(1000);  // pause to display final telemetry message.
+    }
+
+     */
+
+            /*
+             *  Method to perform a relative move, based on encoder counts.
+             *  Encoders are not reset as the move is based on the current position.
+             *  Move will stop if any of three conditions occur:
+             *  1) Move gets to the desired position
+             *  2) Move runs out of time
+             *  3) Driver stops the OpMode running.
+             */
+        /*
+    public void encoderDrive(double speed,
+                             double leftInches, double rightInches,
+                             double timeoutS) {
+        int newLeftTarget;
+        int newRightTarget;
+
+        // Ensure that the OpMode is still active
+        if (opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            newLeftTarget = leftDrive.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
+            newRightTarget = rightDrive.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
+            leftDrive.setTargetPosition(newLeftTarget);
+            rightDrive.setTargetPosition(newRightTarget);
+
+            // Turn On RUN_TO_POSITION
+            leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+            leftDrive.setPower(Math.abs(speed));
+            rightDrive.setPower(Math.abs(speed));
+
+            // keep looping while we are still active, and there is time left, and both motors are running.
+            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
+            // its target position, the motion will stop.  This is "safer" in the event that the robot will
+            // always end the motion as soon as possible.
+            // However, if you require that BOTH motors have finished their moves before the robot continues
+            // onto the next step, use (isBusy() || isBusy()) in the loop test.
+            while (opModeIsActive() &&
+                    (runtime.seconds() < timeoutS) &&
+                    (leftDrive.isBusy() && rightDrive.isBusy())) {
+
+                // Display it for the driver.
+                telemetry.addData("Running to",  " %7d :%7d", newLeftTarget,  newRightTarget);
+                telemetry.addData("Currently at",  " at %7d :%7d",
+                        leftDrive.getCurrentPosition(), rightDrive.getCurrentPosition());
+                telemetry.update();
+            }
+
+            // Stop all motion;
+            leftDrive.setPower(0);
+            rightDrive.setPower(0);
+
+            // Turn off RUN_TO_POSITION
+            leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            sleep(250);   // optional pause after each move.
+        }
+
+         */
         }
     }
 }
