@@ -50,7 +50,7 @@ public class AkshayLLAutoAim extends LinearOpMode{
     private static final double KpAim = 0.1; //Proportional control constant for aiming
     private static final double KpDrive = 0.05; //Proportional control constant for driving
 
-    public DcMotorEx leftFront, leftRear, rightRear, rightFront;
+    //public DcMotorEx leftFront, leftRear, rightRear, rightFront;
 
 
     @Override
@@ -67,7 +67,7 @@ public class AkshayLLAutoAim extends LinearOpMode{
         waitForStart();
 
         while(opModeIsActive()){
-            ArrayList<Double> currentOffset = new ArrayList<>(control.AlignToTargetImage("TestingObject", 1, 1));
+            ArrayList<Double> currentOffset = new ArrayList<>(control.AlignToTargetImage("bottle", 1, 1));
 
             if(!currentOffset.isEmpty()){
                 double offsetX = currentOffset.get(0);
@@ -76,7 +76,7 @@ public class AkshayLLAutoAim extends LinearOpMode{
                 System.out.println("Offset Y: " + offsetY);
             }
             else{
-                System.out.println("NOTHING FOUND");
+                System.out.println("NOTHINGUND");
             }
 
             telemetry.update();

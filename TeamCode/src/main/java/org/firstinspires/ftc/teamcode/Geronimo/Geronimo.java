@@ -135,6 +135,7 @@ public class Geronimo {
 
 
         // ************* Slide MOTORS ****************
+        /*
         leftRotater = hardwareMap.get(DcMotorEx.class, "leftRotater");
         rightRotater = hardwareMap.get(DcMotorEx.class, "rightRotater");
         slideLeft = hardwareMap.get(DcMotorEx.class, "slideLeft");
@@ -145,7 +146,7 @@ public class Geronimo {
         slideLeft.setDirection(DcMotor.Direction.REVERSE);
         slideRight.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        /*
+       */
         // ********** Servos ********************
         clawServo = hardwareMap.get(Servo.class, "clawServo");
         intakeRotater = hardwareMap.get(Servo.class, "intakeRotater");
@@ -160,7 +161,7 @@ public class Geronimo {
         touchSensorRight = hardwareMap.get(TouchSensor.class, "sensor_touchRight");
         touchSensorLeft = hardwareMap.get(TouchSensor.class, "sensor_touchLeft");
         touchSensorRotator = hardwareMap.get(TouchSensor.class, "sensor_touchRotate");
-*/
+
 
         // limelightbox = hardwareMap.get(Limelight3A.class, "limelight");
         InitBlinkin(hardwareMap);
@@ -192,7 +193,7 @@ public class Geronimo {
     }
     public void InitLimelight(HardwareMap hardwareMap){
         limelightbox = hardwareMap.get(Limelight3A.class, "limelight");
-        limelightbox.pipelineSwitch(1);
+        limelightbox.pipelineSwitch(0);
         limelightbox.start();
         //limelightbox.getLatestResult().getTx();
        // limelightbox.getLatestResult().getTy();
@@ -222,8 +223,6 @@ public class Geronimo {
 
     public List<Double>  AlignToTargetImage(String targetImageName, double KpDistance, double KpAim) {
         List<Double> offset = new ArrayList<>();
-        offset.add(-1.0);
-        offset.add(-1.0);
 
         //Aligns the Robot to the Target Image horiontally and return True if success else False
         LLResult result = limelightbox.getLatestResult();
@@ -246,6 +245,9 @@ public class Geronimo {
                 }
             }
         }
+        //If the target is not found, add -1.0 to both offsets
+        offset.add(-1.0);
+        offset.add(-1.0);
         return offset;
     }
     public boolean limelightHasTarget() {
@@ -461,12 +463,12 @@ public class Geronimo {
         //  opMode.telemetry.addData("Claw Distance: ", clawDistanceSensor.getDistance(DistanceUnit.MM));
         //  opMode.telemetry.update();
     }
-
+/*
     public void SlidesRotating(double slidePower){
         leftRotater.setPower(slidePower);
         rightRotater.setPower(slidePower);
     }
-
+*/
     public void EndgameBuzzer(){
         if(opMode.getRuntime() < 109.5 && opMode.getRuntime() > 109.0){
             opMode.gamepad1.rumble(1000);
