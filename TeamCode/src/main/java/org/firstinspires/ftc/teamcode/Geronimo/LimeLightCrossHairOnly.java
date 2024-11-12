@@ -32,12 +32,13 @@ public class LimeLightCrossHairOnly extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            String TargetImageName = "bottle";
+            String TargetImageName = "block";
 
             //Use the AlignToTargetImage to get tx and ty values
             List<Double> offsets = control.AlignToTargetImage(TargetImageName, 0.1, 0.8);
             double distanceAdjust = offsets.get(0);
             double strafeAdjust = offsets.get(1);
+
 
 
 //            control.moveRobot(distanceAdjust, strafeAdjust, 0);
