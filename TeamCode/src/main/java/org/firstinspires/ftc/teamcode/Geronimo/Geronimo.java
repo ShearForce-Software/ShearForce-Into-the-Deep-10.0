@@ -150,14 +150,18 @@ public class Geronimo {
         // ********** Servos ********************
         clawServo = hardwareMap.get(Servo.class, "clawServo");
         intakeRotater = hardwareMap.get(Servo.class, "intakeRotater");
-        intakeStar = hardwareMap.get(CRServo.class, "intakeStar");
+       // intakeStar = hardwareMap.get(CRServo.class, "intakeStar");
 
         // ********** Color Sensors ********************
+        /*
         leftColorSensor = hardwareMap.get(RevColorSensorV3.class, "ColorSensorLeft");
         rightColorSensor = hardwareMap.get(RevColorSensorV3.class, "ColorSensorRight");
         leftColorSensor.enableLed(false);
         rightColorSensor.enableLed(false);
+        /*
+         */
         // ********** Touch Sensors ********************
+
         touchSensorRight = hardwareMap.get(TouchSensor.class, "sensor_touchRight");
         touchSensorLeft = hardwareMap.get(TouchSensor.class, "sensor_touchLeft");
         touchSensorRotator = hardwareMap.get(TouchSensor.class, "sensor_touchRotate");
