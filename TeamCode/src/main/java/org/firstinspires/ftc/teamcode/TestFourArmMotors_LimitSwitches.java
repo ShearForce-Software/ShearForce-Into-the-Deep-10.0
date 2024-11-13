@@ -104,8 +104,8 @@ public class TestFourArmMotors_LimitSwitches extends LinearOpMode {
         // ************* Slide MOTORS ****************
         leftRotater = hardwareMap.get(DcMotorEx.class, "leftRotater");
         rightRotater = hardwareMap.get(DcMotorEx.class, "rightRotater");
-        slideLeft = hardwareMap.get(DcMotorEx.class, "slideLeft");
-        slideRight = hardwareMap.get(DcMotorEx.class, "slideRight");
+        slideLeft = hardwareMap.get(DcMotorEx.class, "slidesLeft");
+        slideRight = hardwareMap.get(DcMotorEx.class, "slidesRight");
 
         touchSensorRight = hardwareMap.get(TouchSensor.class, "sensor_touchRight");
         touchSensorLeft = hardwareMap.get(TouchSensor.class, "sensor_touchLeft");
@@ -146,10 +146,10 @@ public class TestFourArmMotors_LimitSwitches extends LinearOpMode {
 
         // Wait for the game to start (driver presses START)
         waitForStart();
-        leftRotater.setPower(0.5);
-        rightRotater.setPower(0.5);
+        leftRotater.setPower(1.0);
+        rightRotater.setPower(1.0);
         while (opModeIsActive()) {
-
+            //45=-250 60=-450 90=820 extreme hang -1200
             // Horizontal extension motors
             if (gamepad2.left_stick_y > 0.1) {
                 slideLeft.setPower(gamepad2.left_stick_y);
@@ -172,13 +172,13 @@ public class TestFourArmMotors_LimitSwitches extends LinearOpMode {
 
             //Rotater Motors
             if (gamepad2.right_stick_y> 0.1) {
-               rotatorSetPosition += Math.round(gamepad2.right_stick_y * 100);
+               rotatorSetPosition += Math.round(gamepad2.right_stick_y * 10);
                // rightRotater.setPower(gamepad2.right_stick_y);
                //leftRotater.setPower(gamepad2.right_stick_y);
                // rightRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 //leftRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             } else if (gamepad2.right_stick_y <= -0.1) {
-                rotatorSetPosition += Math.round(gamepad2.right_stick_y * 100);
+                rotatorSetPosition += Math.round(gamepad2.right_stick_y * 10);
               //  rightRotater.setPower(gamepad2.right_stick_y);
               //  leftRotater.setPower(gamepad2.right_stick_y);
                // rightRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -192,8 +192,10 @@ public class TestFourArmMotors_LimitSwitches extends LinearOpMode {
             if (rotatorSetPosition < 0) {
                 rotatorSetPosition = 0;
             }
-            rightRotater.setTargetPosition(rotatorSetPosition);
-            leftRotater.setTargetPosition(rotatorSetPosition);
+            rightRotater.setTargetPosition(-rotatorSetPosition);
+            leftRotater.setTargetPosition(-rotatorSetPosition);
+
+            /*
             // TOUCH SENSORS
             if (touchSensorRight.isPressed()) {
                 telemetry.addData("Touch Sensor Right", "Is Pressed");
@@ -226,7 +228,7 @@ public class TestFourArmMotors_LimitSwitches extends LinearOpMode {
                 rightRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 telemetry.addData("Touch Sensor Rotater", "Is Not Pressed");
             }
-
+*/
 
 
             telemetry.addData("Motor Ticks slideLeft: ", slideLeft.getCurrentPosition());
@@ -237,6 +239,7 @@ public class TestFourArmMotors_LimitSwitches extends LinearOpMode {
 
 
             telemetry.update();
+            sleep(100);
 
           //  telemetry.addData("Motor Ticks slideLeft: ", slideLeft.getCurrentPosition());
           //  telemetry.addData("Motor Ticks slideRight: ", slideRight.getCurrentPosition());
