@@ -107,6 +107,8 @@ public class Geronimo {
     private static final double KpDistance = -0.1; // Proportional control constant for distance adjustment
     private static final double KpAim = 0.1; // Proportional control constant for aiming adjustment
 
+
+
     // REV v3 color sensor variables
     public enum colorEnum {
         noColor,
@@ -254,6 +256,43 @@ public class Geronimo {
         offset.add(-1.0);
         return offset;
     }
+
+    public List<Double> getStrafeOffsetInInches(String targetImageName, double KpDistance, double KpAim) {
+        List<Double> scaledOffsets = AlignToTargetImage(targetImageName, KpDistance, KpAim);
+
+        // Check if target was found
+        if (scaledOffsets.get(0) == -1.0 && scaledOffsets.get(1) == -1.0) {
+            // Target not found; propagate the -1.0 flags
+            return scaledOffsets;
+        }
+
+        // Retrieve scaled offsets
+        double scaledOffsetX = scaledOffsets.get(0);
+        double scaledOffsetY = scaledOffsets.get(1);
+
+        // Convert scaled offsets back to raw angles
+        double rawTx = scaledOffsetX / KpAim;
+        double rawTy = scaledOffsetY / KpDistance;
+
+        // Fixed distance from the target in inches guaranteed by roadrunner
+        final double D = 6.0;
+
+        // Convert angles from degrees to radians for trigonometric functions
+        double txRadians = Math.toRadians(rawTx);
+        double tyRadians = Math.toRadians(rawTy);
+
+        // Calculate strafing distances
+        double strafeX = D * Math.tan(txRadians); // Left/Right adjustment
+        double strafeY = D * Math.tan(tyRadians); // Forward/Backward adjustment
+
+        // Create a new list to hold the strafing distances
+        List<Double> strafeOffsetsInInches = new ArrayList<>();
+        strafeOffsetsInInches.add(strafeX);
+        strafeOffsetsInInches.add(strafeY);
+
+        return strafeOffsetsInInches;
+    }
+
     public boolean limelightHasTarget() {
         LLResult result = limelightbox.getLatestResult();
         if (result != null && result.isValid()) {
