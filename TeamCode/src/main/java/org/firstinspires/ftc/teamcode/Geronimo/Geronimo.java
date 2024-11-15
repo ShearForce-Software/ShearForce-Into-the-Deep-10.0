@@ -46,13 +46,13 @@ public class Geronimo {
     DcMotor leftRear;
     DcMotor rightFront;
     DcMotor rightRear;
-    DcMotor leftRotater;
-    DcMotor rightRotater;
+    public DcMotor leftRotater;
+    public DcMotor rightRotater;
     DcMotor slideLeft;
     DcMotor slideRight;
     IMU imu;
     Servo clawServo;
-    Servo intakeRotater;
+    public Servo intakeRotater;
     public CRServo intakeStar;
     TouchSensor touchSensorRight;
     TouchSensor touchSensorLeft;
@@ -137,18 +137,31 @@ public class Geronimo {
 
 
         // ************* Slide MOTORS ****************
-        /*
+
         leftRotater = hardwareMap.get(DcMotorEx.class, "leftRotater");
         rightRotater = hardwareMap.get(DcMotorEx.class, "rightRotater");
-        slideLeft = hardwareMap.get(DcMotorEx.class, "slideLeft");
-        slideRight = hardwareMap.get(DcMotorEx.class, "slideRight");
+        slideLeft = hardwareMap.get(DcMotorEx.class, "slidesLeft");
+        slideRight = hardwareMap.get(DcMotorEx.class, "slidesRight");
 
         leftRotater.setDirection(DcMotor.Direction.REVERSE);
         rightRotater.setDirection(DcMotorSimple.Direction.FORWARD);
         slideLeft.setDirection(DcMotor.Direction.REVERSE);
         slideRight.setDirection(DcMotorSimple.Direction.FORWARD);
 
-       */
+        leftRotater.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightRotater.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slideRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        rightRotater.setTargetPosition(0);
+        leftRotater.setTargetPosition(0);
+        leftRotater.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightRotater.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightRotater.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftRotater.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         // ********** Servos ********************
         clawServo = hardwareMap.get(Servo.class, "clawServo");
         intakeRotater = hardwareMap.get(Servo.class, "intakeRotater");
@@ -468,11 +481,11 @@ public class Geronimo {
         }
     }
     public void ShowTelemetry(){
-        opMode.telemetry.addData("Left Hopper: ", leftColorSensor.getDistance(DistanceUnit.MM));
-        opMode.telemetry.addData("Right Hopper: ", rightColorSensor.getDistance(DistanceUnit.MM));
+        //opMode.telemetry.addData("Left Hopper: ", leftColorSensor.getDistance(DistanceUnit.MM));
+        //opMode.telemetry.addData("Right Hopper: ", rightColorSensor.getDistance(DistanceUnit.MM));
         opMode.telemetry.addData("Auto Last Time Left: ", autoTimeLeft);
         opMode.telemetry.addData("imu Heading: ", GetIMU_HeadingInDegrees());
-        showColorSensorTelemetry();
+        //showColorSensorTelemetry();
         opMode.telemetry.update();
     }
 

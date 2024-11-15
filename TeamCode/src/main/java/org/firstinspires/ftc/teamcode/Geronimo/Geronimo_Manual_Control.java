@@ -3,12 +3,15 @@ package org.firstinspires.ftc.teamcode.Geronimo;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 @TeleOp(name = "Geronimo 1 Manual Control")
 //@Disabled
 public class Geronimo_Manual_Control extends LinearOpMode {
     Geronimo theRobot;
     static final double SCALE = 0.001;
+    int rotatorSetPosition = 0;
+
     public void runOpMode() {
         theRobot = new Geronimo(true, false, this);
 
@@ -18,7 +21,8 @@ public class Geronimo_Manual_Control extends LinearOpMode {
         telemetry.update();
         waitForStart();
         resetRuntime();
-
+        theRobot.leftRotater.setPower(1.0);
+        theRobot.rightRotater.setPower(1.0);
 
             while (opModeIsActive()) {
                 theRobot.EndgameBuzzer();
@@ -48,7 +52,25 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 } else {
                     theRobot.SetScissorLiftPower(0); */
                 }
+                if (gamepad2.left_stick_y > 0.1) {
+                    theRobot.slideLeft.setPower(gamepad2.left_stick_y);
+                    theRobot.slideRight.setPower(gamepad2.left_stick_y);
+                    theRobot.slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    theRobot.slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                } else if (gamepad2.left_stick_y <= 0.1) {
+                    theRobot.slideLeft.setPower(gamepad2.left_stick_y);
+                    theRobot.slideRight.setPower(gamepad2.left_stick_y);
+                    theRobot.slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    theRobot.slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+
+                }
+
+                else
+                {
+                    theRobot.slideLeft.setPower(0);
+                    theRobot.slideRight.setPower(0);
+                }
                 /* *************************************************
                  *************************************************
                  * Gunner / Arm Controls (gamepad2)
@@ -56,6 +78,37 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                  *************************************************
                  *************************************************
                  */
+                //Rotater Motors
+                if (gamepad2.right_stick_y> 0.1) {
+                    rotatorSetPosition += Math.round(gamepad2.right_stick_y * 10);
+
+                } else if (gamepad2.right_stick_y <= -0.1) {
+                    rotatorSetPosition += Math.round(gamepad2.right_stick_y * 10);
+
+                }
+                else if (gamepad2.circle) {
+                    rotatorSetPosition = 250;
+                }
+                else if (gamepad2.triangle) {
+                    rotatorSetPosition = 450;
+                }
+                else if (gamepad2.square) {
+                    rotatorSetPosition = 820;
+                }
+                else if (gamepad2.cross) {
+                    rotatorSetPosition = 0;
+                }
+                else
+                {
+                    //rightRotater.setPower(0);
+                    // leftRotater.setPower(0);
+                }
+                if (rotatorSetPosition < 0) {
+                    rotatorSetPosition = 0;
+                }
+                theRobot.leftRotater.setTargetPosition(-rotatorSetPosition);
+                theRobot.rightRotater.setTargetPosition(-rotatorSetPosition);
+
                 if (gamepad2.right_bumper) { // intake in
                    // theRobot.EnableAutoIntake();
                 }
@@ -81,12 +134,12 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                   //  theRobot.DeliverPixelToBoardPos();
                 }
                 // Slides MEDIUM
-                if (gamepad2.x) {
+               // if (gamepad2.x) {
                   //  theRobot.ServoStop();
                    // theRobot.SlidesMedium();
                   //  theRobot.SpecialSleep(500);
                   //  theRobot.DeliverPixelToBoardPos();
-                }
+               // }
                 // Slides LOW
                 if (gamepad2.a && !gamepad2.start) {
                 //    theRobot.ServoStop();
@@ -114,7 +167,7 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                  //   theRobot.SpecialSleep(150);
                 }
                 // Manual incremental control to rotate the arm servo
-                if (gamepad2.left_stick_y != 0) {
+               // if (gamepad2.left_stick_y != 0) {
                 /*    armRotationLeftPosition += -gamepad2.left_stick_y * SCALE;
                     armRotationRightPosition += -gamepad2.left_stick_y * SCALE;
                     if (armRotationLeftPosition >= MAX_POS) {
@@ -134,7 +187,7 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                     theRobot.armRotRight.setPosition(armRotationRightPosition);
 
                  */
-                }
+               // }
                 // Manual control of the slides
                 if (gamepad2.dpad_up)
                 {

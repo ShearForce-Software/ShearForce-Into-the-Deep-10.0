@@ -149,7 +149,7 @@ public class TestFourArmMotors_LimitSwitches extends LinearOpMode {
         leftRotater.setPower(1.0);
         rightRotater.setPower(1.0);
         while (opModeIsActive()) {
-            //45=-250 60=-450 90=820 extreme hang -1200
+            //todo 45=-250 60=-450 90=-820 extreme hang -1200
             // Horizontal extension motors
             if (gamepad2.left_stick_y > 0.1) {
                 slideLeft.setPower(gamepad2.left_stick_y);
@@ -163,7 +163,9 @@ public class TestFourArmMotors_LimitSwitches extends LinearOpMode {
                 slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
-            }else
+            }
+
+            else
             {
                   slideLeft.setPower(0);
                   slideRight.setPower(0);
@@ -173,18 +175,24 @@ public class TestFourArmMotors_LimitSwitches extends LinearOpMode {
             //Rotater Motors
             if (gamepad2.right_stick_y> 0.1) {
                rotatorSetPosition += Math.round(gamepad2.right_stick_y * 10);
-               // rightRotater.setPower(gamepad2.right_stick_y);
-               //leftRotater.setPower(gamepad2.right_stick_y);
-               // rightRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                //leftRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
             } else if (gamepad2.right_stick_y <= -0.1) {
                 rotatorSetPosition += Math.round(gamepad2.right_stick_y * 10);
-              //  rightRotater.setPower(gamepad2.right_stick_y);
-              //  leftRotater.setPower(gamepad2.right_stick_y);
-               // rightRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-               // leftRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-            }else
+            }
+            else if (gamepad2.circle) {
+                rotatorSetPosition = 250;
+            }
+            else if (gamepad2.triangle) {
+                rotatorSetPosition = 450;
+            }
+            else if (gamepad2.square) {
+                rotatorSetPosition = 820;
+            }
+            else if (gamepad2.cross) {
+                rotatorSetPosition = 0;
+            }
+            else
             {
                 //rightRotater.setPower(0);
                // leftRotater.setPower(0);
