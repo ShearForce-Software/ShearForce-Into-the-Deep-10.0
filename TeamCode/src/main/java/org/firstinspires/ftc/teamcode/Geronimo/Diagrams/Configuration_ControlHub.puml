@@ -44,9 +44,9 @@ package MotorNames #LightGreen {
 package ServoNames #Orange {
   () "leftBlinkin" --> [Servo-0] : 0
   () "rightBlinkin" --> [Servo-1] : 1
-  () "clawServo" --> [Servo-2] : 2
-  () "intakeRotater" --> [Servo-3] : 3
-  () "intakeStar" --> [Servo-4] : 4
+  () "clawServo" --> [Servo-2] : wire 6
+  () "intakeRotater" --> [Servo-3] : wire 4
+  () "intakeStar" --> [Servo-4] : wire 1
 }
 
 package DigitalNames #Pink {
@@ -58,7 +58,7 @@ package DigitalNames #Pink {
 
 package I2C_Names #LightBlue {
   () "imu" --> [I2C_0] : 0
-  () "ColorSensorLeft" --> [I2C_1] : 1
+  () "ColorSensorLeft" --> [I2C_1] : wire x
   () "ColorSensorRight" --> [I2C_2] : 2
 
 }
