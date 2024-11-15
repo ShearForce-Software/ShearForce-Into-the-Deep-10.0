@@ -46,13 +46,15 @@ public class Geronimo {
     DcMotor leftRear;
     DcMotor rightFront;
     DcMotor rightRear;
-    public DcMotor leftRotater;
-    public DcMotor rightRotater;
+    DcMotor leftRotater;
+    DcMotor rightRotater;
     DcMotor slideLeft;
     DcMotor slideRight;
     IMU imu;
     Servo clawServo;
-    public Servo intakeRotater;
+    Servo intakeRotater;
+    Servo intakeHangerLeft;
+    Servo intakeHangerRight;
     public CRServo intakeStar;
     TouchSensor touchSensorRight;
     TouchSensor touchSensorLeft;
@@ -137,34 +139,23 @@ public class Geronimo {
 
 
         // ************* Slide MOTORS ****************
-
+        /*
         leftRotater = hardwareMap.get(DcMotorEx.class, "leftRotater");
         rightRotater = hardwareMap.get(DcMotorEx.class, "rightRotater");
-        slideLeft = hardwareMap.get(DcMotorEx.class, "slidesLeft");
-        slideRight = hardwareMap.get(DcMotorEx.class, "slidesRight");
+        slideLeft = hardwareMap.get(DcMotorEx.class, "slideLeft");
+        slideRight = hardwareMap.get(DcMotorEx.class, "slideRight");
 
         leftRotater.setDirection(DcMotor.Direction.REVERSE);
         rightRotater.setDirection(DcMotorSimple.Direction.FORWARD);
         slideLeft.setDirection(DcMotor.Direction.REVERSE);
         slideRight.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        leftRotater.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightRotater.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        slideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        slideRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        rightRotater.setTargetPosition(0);
-        leftRotater.setTargetPosition(0);
-        leftRotater.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightRotater.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightRotater.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftRotater.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
+       */
         // ********** Servos ********************
         clawServo = hardwareMap.get(Servo.class, "clawServo");
         intakeRotater = hardwareMap.get(Servo.class, "intakeRotater");
+        intakeHangerLeft = hardwareMap.get(Servo.class, "intakeHangerLeft");
+        intakeHangerRight = hardwareMap.get(Servo.class, "intakeHangerRight");
        // intakeStar = hardwareMap.get(CRServo.class, "intakeStar");
 
         // ********** Color Sensors ********************
@@ -240,7 +231,7 @@ public class Geronimo {
     }
 
 
-    public List<Double>  AlignToTargetImage(String targetImageName, double KpDistance, double KpAim) {
+    public List<Double>  AlignToTargetImage(String targetImageName) {
         List<Double> offset = new ArrayList<>();
 
         //Aligns the Robot to the Target Image horiontally and return True if success else False
@@ -254,8 +245,8 @@ public class Geronimo {
 
                 // Confirm once that Target Image is Found, before attempting alignment
                 if (BoxType.equals(targetImageName)) {
-                    double currentOffsetX = result.getTx() * KpAim;
-                    double currentOffsetY = result.getTy() * KpDistance;
+                    double currentOffsetX = result.getTx() ;
+                    double currentOffsetY = result.getTy() ;
 
                     //Return both offsets as a list
                     offset.add(currentOffsetX);
@@ -270,8 +261,9 @@ public class Geronimo {
         return offset;
     }
 
-    public List<Double> getStrafeOffsetInInches(String targetImageName, double KpDistance, double KpAim) {
-        List<Double> scaledOffsets = AlignToTargetImage(targetImageName, KpDistance, KpAim);
+    public List<Double> GetStrafeOffsetInInches(String targetImageName) {
+
+        List<Double> scaledOffsets = AlignToTargetImage(targetImageName);
 
         // Check if target was found
         if (scaledOffsets.get(0) == -1.0 && scaledOffsets.get(1) == -1.0) {
@@ -279,13 +271,9 @@ public class Geronimo {
             return scaledOffsets;
         }
 
-        // Retrieve scaled offsets
-        double scaledOffsetX = scaledOffsets.get(0);
-        double scaledOffsetY = scaledOffsets.get(1);
-
         // Convert scaled offsets back to raw angles
-        double rawTx = scaledOffsetX / KpAim;
-        double rawTy = scaledOffsetY / KpDistance;
+        double rawTx = scaledOffsets.get(0);;
+        double rawTy = scaledOffsets.get(1);;
 
         // Fixed distance from the target in inches guaranteed by roadrunner
         final double D = 6.0;
@@ -294,6 +282,7 @@ public class Geronimo {
         double txRadians = Math.toRadians(rawTx);
         double tyRadians = Math.toRadians(rawTy);
 
+        // H1 -- height of camera, H2,.. height of object.
         // Calculate strafing distances
         double strafeX = D * Math.tan(txRadians); // Left/Right adjustment
         double strafeY = D * Math.tan(tyRadians); // Forward/Backward adjustment
@@ -481,11 +470,11 @@ public class Geronimo {
         }
     }
     public void ShowTelemetry(){
-        //opMode.telemetry.addData("Left Hopper: ", leftColorSensor.getDistance(DistanceUnit.MM));
-        //opMode.telemetry.addData("Right Hopper: ", rightColorSensor.getDistance(DistanceUnit.MM));
+        opMode.telemetry.addData("Left Hopper: ", leftColorSensor.getDistance(DistanceUnit.MM));
+        opMode.telemetry.addData("Right Hopper: ", rightColorSensor.getDistance(DistanceUnit.MM));
         opMode.telemetry.addData("Auto Last Time Left: ", autoTimeLeft);
         opMode.telemetry.addData("imu Heading: ", GetIMU_HeadingInDegrees());
-        //showColorSensorTelemetry();
+        showColorSensorTelemetry();
         opMode.telemetry.update();
     }
 

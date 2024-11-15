@@ -35,10 +35,18 @@ public class LimeLightCrossHairOnly extends LinearOpMode {
             String TargetImageName = "block";
 
             //Use the AlignToTargetImage to get tx and ty values
-            List<Double> offsets = control.AlignToTargetImage(TargetImageName, 0.1, 0.8);
+            List<Double> offsets = control.AlignToTargetImage(TargetImageName);
             double distanceAdjust = offsets.get(0);
             double strafeAdjust = offsets.get(1);
 
+            List<Double> inches = control.GetStrafeOffsetInInches("targetImageName");
+
+            if (inches.get(0) == -1.0 && inches.get(1) == -1.0) {
+                telemetry.addData("Status", "Target not found");
+            } else {
+                telemetry.addData("Strafe Offset X (inches)", inches.get(0));
+                telemetry.addData("Strafe Offset Y (inches)", inches.get(1));
+            }
 
 
 //            control.moveRobot(distanceAdjust, strafeAdjust, 0);
