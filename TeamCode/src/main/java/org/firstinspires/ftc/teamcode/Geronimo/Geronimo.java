@@ -53,6 +53,8 @@ public class Geronimo {
     IMU imu;
     Servo clawServo;
     Servo intakeRotater;
+    Servo intakeHangerLeft;
+    Servo intakeHangerRight;
     public CRServo intakeStar;
     TouchSensor touchSensorRight;
     TouchSensor touchSensorLeft;
@@ -152,6 +154,8 @@ public class Geronimo {
         // ********** Servos ********************
         clawServo = hardwareMap.get(Servo.class, "clawServo");
         intakeRotater = hardwareMap.get(Servo.class, "intakeRotater");
+        intakeHangerLeft = hardwareMap.get(Servo.class, "intakeHangerLeft");
+        intakeHangerRight = hardwareMap.get(Servo.class, "intakeHangerRight");
        // intakeStar = hardwareMap.get(CRServo.class, "intakeStar");
 
         // ********** Color Sensors ********************
