@@ -9,8 +9,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 //@Disabled
 public class Geronimo_Manual_Control extends LinearOpMode {
     Geronimo theRobot;
-    static final double SCALE = 0.001;
-    int rotatorSetPosition = 0;
 
     public void runOpMode() {
         theRobot = new Geronimo(true, false, this);
@@ -21,8 +19,6 @@ public class Geronimo_Manual_Control extends LinearOpMode {
         telemetry.update();
         waitForStart();
         resetRuntime();
-        theRobot.leftRotater.setPower(1.0);
-        theRobot.rightRotater.setPower(1.0);
 
             while (opModeIsActive()) {
                 theRobot.EndgameBuzzer();
@@ -35,42 +31,11 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 // Drive Controls uses left_stick_y, left_stick_x, and right_stick_x
                 theRobot.driveControlsFieldCentric();
                 //theRobot.driveControlsRobotCentric();
-                if (gamepad1.a && !gamepad1.start) {
-                   // theRobot.LaunchAirplane();
-                }
-                if (gamepad1.b && !gamepad1.start){
-                    // Auto drives to the board using the arm distance sensor
-                  //  theRobot.StopNearBoard();
-                }
+
                 if(gamepad1.y){
                     theRobot.imu.resetYaw();
                 }
-                if (gamepad1.left_trigger != 0) {
-                /*    theRobot.SetScissorLiftPower(gamepad1.left_trigger);
-                } else if (gamepad1.right_trigger != 0) {
-                    theRobot.SetScissorLiftPower(-gamepad1.right_trigger);
-                } else {
-                    theRobot.SetScissorLiftPower(0); */
-                }
-                if (gamepad2.left_stick_y > 0.1) {
-                    theRobot.slideLeft.setPower(gamepad2.left_stick_y);
-                    theRobot.slideRight.setPower(gamepad2.left_stick_y);
-                    theRobot.slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                    theRobot.slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                } else if (gamepad2.left_stick_y <= 0.1) {
-                    theRobot.slideLeft.setPower(gamepad2.left_stick_y);
-                    theRobot.slideRight.setPower(gamepad2.left_stick_y);
-                    theRobot.slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                    theRobot.slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-
-                }
-
-                else
-                {
-                    theRobot.slideLeft.setPower(0);
-                    theRobot.slideRight.setPower(0);
-                }
                 /* *************************************************
                  *************************************************
                  * Gunner / Arm Controls (gamepad2)
@@ -78,148 +43,86 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                  *************************************************
                  *************************************************
                  */
-                //Rotater Motors
-                if (gamepad2.right_stick_y> 0.1) {
-                    rotatorSetPosition += Math.round(gamepad2.right_stick_y * 10);
-
-                } else if (gamepad2.right_stick_y <= -0.1) {
-                    rotatorSetPosition += Math.round(gamepad2.right_stick_y * 10);
-
-                }
-                else if (gamepad2.circle) {
-                    rotatorSetPosition = 250;
-                }
-                else if (gamepad2.triangle) {
-                    rotatorSetPosition = 450;
-                }
-                else if (gamepad2.square) {
-                    rotatorSetPosition = 820;
-                }
-                else if (gamepad2.cross) {
-                    rotatorSetPosition = 0;
+                // SLIDE MOTOR CONTROL
+                if ((gamepad2.left_stick_y > 0.1) || (gamepad2.left_stick_y <= -0.1)) {
+                    theRobot.SetSlidesPower(gamepad2.left_stick_y);
                 }
                 else
                 {
-                    //rightRotater.setPower(0);
-                    // leftRotater.setPower(0);
+                    theRobot.SetSlidesPower(0.0);
                 }
-                if (rotatorSetPosition < 0) {
-                    rotatorSetPosition = 0;
-                }
-                theRobot.leftRotater.setTargetPosition(-rotatorSetPosition);
-                theRobot.rightRotater.setTargetPosition(-rotatorSetPosition);
 
-                if (gamepad2.right_bumper) { // intake in
-                   // theRobot.EnableAutoIntake();
+                // Rotater MOTOR CONTROL
+                if ((gamepad2.right_stick_y > 0.1) || (gamepad2.right_stick_y <= -0.1)) {
+                    theRobot.SetRotatorArmPower(gamepad2.right_stick_y);
                 }
-                if (gamepad2.dpad_right) {
-                  //  theRobot.ServoStop();
-                  //  theRobot.DisableAutoIntake();
+                else if (gamepad2.circle) {
+                    theRobot.SetRotatorToPosition(250);
                 }
-                if (gamepad2.left_bumper) { // release pixels
-                  //  theRobot.ReleaseRight();
-                  //  theRobot.ReleaseLeft();
+                else if (gamepad2.triangle) {
+                    theRobot.SetRotatorToPosition(450);
                 }
-                if (gamepad2.left_trigger != 0){
-                  //  theRobot.ReleaseRight();
+                else if (gamepad2.square) {
+                    theRobot.SetRotatorToPosition(820);
                 }
-                if (gamepad2.right_trigger != 0){
-                 //   theRobot.ReleaseLeft();
+                else if (gamepad2.cross) {
+                    theRobot.SetRotatorToPosition(0);
                 }
-                // Slides HIGH
-                if (gamepad2.y && !gamepad2.back) {
-                   // theRobot.ServoStop();
-                   // theRobot.SlidesHigh();
-                   // theRobot.SpecialSleep(500);
-                  //  theRobot.DeliverPixelToBoardPos();
-                }
-                // Slides MEDIUM
-               // if (gamepad2.x) {
-                  //  theRobot.ServoStop();
-                   // theRobot.SlidesMedium();
-                  //  theRobot.SpecialSleep(500);
-                  //  theRobot.DeliverPixelToBoardPos();
-               // }
-                // Slides LOW
-                if (gamepad2.a && !gamepad2.start) {
-                //    theRobot.ServoStop();
-                //    theRobot.SlidesToAuto();
-                    //theRobot.SpecialSleep(500);
-                  //  theRobot.DeliverPixelToBoardPos();
-                }
-                if (gamepad2.left_stick_button){
-                    //theRobot.SlidesRotating(0.1  );
-                 //   theRobot.PickupOne();
-                }
-                // RESET Slides, ARM, and Wrist
-                if (gamepad2.b && !gamepad2.start) {
-                //    theRobot.ResetArm();
-                }
-                // Manual incremental control of the wrist
-                if (gamepad2.right_stick_x > 0.1)
+                else if (theRobot.GetRotatorArmRunningToPosition())
                 {
-                //    theRobot.ArmWrist(theRobot.getWristPosition() + 0.01);
-                 //   theRobot.SpecialSleep(150);
-                }
-                else if (gamepad2.right_stick_x < -0.1)
-                {
-                 //   theRobot.ArmWrist(theRobot.getWristPosition() - 0.01);
-                 //   theRobot.SpecialSleep(150);
-                }
-                // Manual incremental control to rotate the arm servo
-               // if (gamepad2.left_stick_y != 0) {
-                /*    armRotationLeftPosition += -gamepad2.left_stick_y * SCALE;
-                    armRotationRightPosition += -gamepad2.left_stick_y * SCALE;
-                    if (armRotationLeftPosition >= MAX_POS) {
-                        armRotationLeftPosition = MAX_POS;
+                    int leftDifference = Math.abs(theRobot.GetRotatorArmTargetPosition() - theRobot.GetRotatorLeftArmCurrentPosition());
+                    int rightDifference = Math.abs(theRobot.GetRotatorArmTargetPosition() - theRobot.GetRotatorRightArmCurrentPosition());
+                    if ((leftDifference <= 2) || (rightDifference <= 2))
+                    {
+                        theRobot.SetRotatorArmHoldPositon();
                     }
-                    if (armRotationLeftPosition <= MIN_POS_ARM) {
+                }
+                else
+                {
+                    theRobot.SetRotatorArmPower(0.0);
+                }
 
-                        armRotationLeftPosition = MIN_POS_ARM;
-                    }
-                    if (armRotationRightPosition >= MAX_POS) {
-                        armRotationRightPosition = MAX_POS;
-                    }
-                    if (armRotationRightPosition <= MIN_POS_ARM) {
-                        armRotationRightPosition = MIN_POS_ARM;
-                    }
-                    theRobot.armRotLeft.setPosition(armRotationLeftPosition);
-                    theRobot.armRotRight.setPosition(armRotationRightPosition);
-
-                 */
-               // }
-                // Manual control of the slides
-                if (gamepad2.dpad_up)
-                {
-                    /*
-                    // slowly raise the slides up
-                    theRobot.leftSlide.setTargetPosition(-1800);
-                    theRobot.rightSlide.setTargetPosition(-1800);
-                    theRobot.leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    theRobot.rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    theRobot.SetSlidePower(.5);
-
-                     */
+                // Claw Control
+                if (gamepad2.right_bumper) {
+                    theRobot.SetClawPosition(Geronimo.CLAW_MAX_POS);
                 }
-                if (gamepad2.dpad_down)
-                {
-                    // slowly lower the slides
-                 //   theRobot.SlidesDown();
+                else if (gamepad2.left_bumper) {
+                    theRobot.SetClawPosition(Geronimo.CLAW_MIN_POS);
                 }
-                // special combo (left tiny button and top right button together)
-                if (gamepad2.back && gamepad2.y) {
-                   // theRobot.ResetWristGrabPixelPos();
-                   // theRobot.SpecialSleep(150);
+
+                // intake Hanger Control
+                if (gamepad2.dpad_up) {
+                    theRobot.SetHangerMaxUp();
+                }
+                else if (gamepad2.dpad_down)
+                {
+                    theRobot.SetHangerMaxDown();
+                }
+                else if (gamepad2.dpad_left)
+                {
+                    theRobot.HangerIncrementUp();
+                }
+                else if (gamepad2.dpad_right)
+                {
+                    theRobot.HangerDecrementDown();
+                }
+
+                // intake Star Control
+                if (gamepad2.right_trigger > 0.1)
+                {
+                    theRobot.SetIntakeStarPower(gamepad2.right_trigger);
+                }
+                else if (gamepad2.left_trigger < -0.1)
+                {
+                    theRobot.SetIntakeStarPower(gamepad2.left_trigger);
+                }
+                else {
+                    theRobot.SetIntakeStarPower(0.0);
                 }
 
                 theRobot.ShowTelemetry();
                 telemetry.update();
             } // end while (opModeIsActive())
-
-            // Stop must have been pressed to get here, make sure the continuous rotation servos are stopped
-           // theRobot.ServoStop();
-          //  theRobot.DisableAutoIntake();
-          //  sleep(150);
 
         }
 }
