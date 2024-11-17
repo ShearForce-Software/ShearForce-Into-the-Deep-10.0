@@ -61,15 +61,18 @@ public class Geronimo {
     IMU imu;
 
     Servo clawServo;
-    public static final double CLAW_MAX_POS = 1.0;
+    public static final double CLAW_MAX_POS = 0.45;
     public static final double CLAW_MIN_POS = 0.0;
     double claw_position = 0.5;
 
     Servo intakeRotater;
+    public static final double INTAKE_ROTATOR_MAX_POS = 1.0;
+    public static final double INTAKE_ROTATOR_MIN_POS = 0.0;
+    double intakeRotatorPosition = 0.5;
 
     Servo intakeHangerLeft;
     Servo intakeHangerRight;
-    public static final double HANGER_MAX_POS = 1.0;
+    public static final double HANGER_MAX_POS = 0.95;
     public static final double HANGER_MIN_POS = 0.0;
     double intakeHangerLeftPosition = 0.5;
     double intakeHangerRightPosition = 0.5;
@@ -174,8 +177,8 @@ public class Geronimo {
         rightRotater.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightRotater.setTargetPosition(rotatorTargetPosition);
         leftRotater.setTargetPosition(rotatorTargetPosition);
-        slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // ************* Slide MOTORS ****************
         slideLeft = hardwareMap.get(DcMotorEx.class, "slideLeft");
@@ -529,6 +532,22 @@ public class Geronimo {
         clawServo.setPosition(claw_position);
     }
 
+    public void SetIntakeStarRotatorPosition(double position)
+    {
+        if (position > INTAKE_ROTATOR_MAX_POS)
+        {
+            intakeRotatorPosition = INTAKE_ROTATOR_MAX_POS;
+        }
+        else if (position < INTAKE_ROTATOR_MIN_POS)
+        {
+            intakeRotatorPosition = INTAKE_ROTATOR_MIN_POS;
+        }
+        else {
+            intakeRotatorPosition = position;
+        }
+        intakeRotater.setPosition(intakeRotatorPosition);
+    }
+
     public void SetHangerMaxUp()
     {
         intakeHangerRightPosition = HANGER_MAX_POS;
@@ -671,6 +690,9 @@ public class Geronimo {
         opMode.telemetry.addData("Rotator Arm Power: ", rotatorArmPower);
         opMode.telemetry.addData("Rotator mode in RUN_TO_POSITION? ", rotatorArmRunningToPosition);
         opMode.telemetry.addData(">", "rotateArms - use rightStick Y, and buttons for control" );
+        opMode.telemetry.addData("intake star ROTATOR Pos: ", intakeRotatorPosition);
+        opMode.telemetry.addData(">", "intake star rotator - use G1 - dpad for control" );
+
 
         showColorSensorTelemetry();
         opMode.telemetry.update();

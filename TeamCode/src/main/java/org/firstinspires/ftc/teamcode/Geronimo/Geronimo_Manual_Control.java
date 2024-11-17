@@ -120,6 +120,17 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                     theRobot.SetIntakeStarPower(0.0);
                 }
 
+                // intake star rotator control
+                if (gamepad1.dpad_up)
+                {
+                    theRobot.SetIntakeStarRotatorPosition(Geronimo.INTAKE_ROTATOR_MAX_POS);
+                }
+                else if (gamepad1.dpad_down)
+                {
+                    theRobot.SetIntakeStarRotatorPosition(Geronimo.INTAKE_ROTATOR_MIN_POS);
+                }
+
+
                 theRobot.ShowTelemetry();
                 telemetry.update();
             } // end while (opModeIsActive())
