@@ -13,6 +13,8 @@ public class Geronimo_Manual_Control extends LinearOpMode {
     public void runOpMode() {
         theRobot = new Geronimo(true, false, this);
 
+        int rotatorSetPosition = 0;
+
         theRobot.Init(this.hardwareMap);
         theRobot.ShowTelemetry();
 
@@ -54,7 +56,10 @@ public class Geronimo_Manual_Control extends LinearOpMode {
 
                 // Rotater MOTOR CONTROL
                 if ((gamepad2.right_stick_y > 0.1) || (gamepad2.right_stick_y <= -0.1)) {
-                    theRobot.SetRotatorArmPower(gamepad2.right_stick_y);
+                    //theRobot.SetRotatorArmPower(gamepad2.right_stick_y);
+                    rotatorSetPosition = theRobot.GetRotatorArmTargetPosition();
+                    rotatorSetPosition += Math.round(gamepad2.right_stick_y * 10);
+                    theRobot.SetRotatorToPosition(rotatorSetPosition);
                 }
                 else if (gamepad2.circle) {
                     theRobot.SetRotatorToPosition(250);
@@ -77,10 +82,10 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                         theRobot.SetRotatorArmHoldPositon();
                     }
                 }
-                else
-                {
-                    theRobot.SetRotatorArmPower(0.0);
-                }
+                //else
+                //{
+                //    theRobot.SetRotatorArmPower(0.0);
+                //}
 
                 // Claw Control
                 if (gamepad2.right_bumper) {
@@ -112,9 +117,9 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 {
                     theRobot.SetIntakeStarPower(gamepad2.right_trigger);
                 }
-                else if (gamepad2.left_trigger < -0.1)
+                else if (gamepad2.left_trigger > 0.1)
                 {
-                    theRobot.SetIntakeStarPower(gamepad2.left_trigger);
+                    theRobot.SetIntakeStarPower(-gamepad2.left_trigger);
                 }
                 else {
                     theRobot.SetIntakeStarPower(0.0);
@@ -128,6 +133,14 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 else if (gamepad1.dpad_down)
                 {
                     theRobot.SetIntakeStarRotatorPosition(Geronimo.INTAKE_ROTATOR_MIN_POS);
+                }
+                else if (gamepad1.dpad_left)
+                {
+                    theRobot.IntakeStarRotatorDecrementDown();
+                }
+                else if (gamepad1.dpad_right)
+                {
+                    theRobot.IntakeStarRotatorIncrementUp();
                 }
 
 

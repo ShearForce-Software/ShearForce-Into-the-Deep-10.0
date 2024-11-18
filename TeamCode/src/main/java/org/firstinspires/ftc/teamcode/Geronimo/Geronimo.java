@@ -54,7 +54,7 @@ public class Geronimo {
     boolean rotatorArmRunningToPosition = false;
     public static final int ROTATOR_ARMS_MIN_POS = 0;
     public static final int ROTATOR_ARMS_MAX_POS = 1000;
-    public static final double ROTATOR_ARMS_POS_POWER = 0.5;
+    public static final double ROTATOR_ARMS_POS_POWER = 0.75;
 
     DcMotor slideLeft;
     DcMotor slideRight;
@@ -68,6 +68,7 @@ public class Geronimo {
     Servo intakeRotater;
     public static final double INTAKE_ROTATOR_MAX_POS = 1.0;
     public static final double INTAKE_ROTATOR_MIN_POS = 0.0;
+    public static final double INTAKE_ROTATOR_INCREMENT = 0.05;
     double intakeRotatorPosition = 0.5;
 
     Servo intakeHangerLeft;
@@ -548,6 +549,18 @@ public class Geronimo {
         intakeRotater.setPosition(intakeRotatorPosition);
     }
 
+    public void IntakeStarRotatorIncrementUp()
+    {
+        intakeRotatorPosition += INTAKE_ROTATOR_INCREMENT;
+        SetIntakeStarRotatorPosition(intakeRotatorPosition);
+    }
+
+    public void IntakeStarRotatorDecrementDown()
+    {
+        intakeRotatorPosition -= INTAKE_ROTATOR_INCREMENT;
+        SetIntakeStarRotatorPosition(intakeRotatorPosition);
+    }
+
     public void SetHangerMaxUp()
     {
         intakeHangerRightPosition = HANGER_MAX_POS;
@@ -566,29 +579,13 @@ public class Geronimo {
     }
     public void HangerIncrementUp()
     {
-        intakeHangerRightPosition = intakeHangerRightPosition + HANGER_INCREMENT;
-        intakeHangerLeftPosition = intakeHangerLeftPosition - HANGER_INCREMENT;
-
-        if (intakeHangerRightPosition > HANGER_MAX_POS || intakeHangerLeftPosition < HANGER_MIN_POS) {
-            intakeHangerRightPosition = HANGER_MAX_POS;
-            intakeHangerLeftPosition = HANGER_MIN_POS;
-        }
-
-        intakeHangerLeft.setPosition(intakeHangerLeftPosition);
-        intakeHangerRight.setPosition(intakeHangerRightPosition);
+        intakeHangerRightPosition += HANGER_INCREMENT;
+        SetHangerPosition(intakeHangerRightPosition);
     }
     public void HangerDecrementDown()
     {
-        intakeHangerRightPosition = intakeHangerRightPosition - HANGER_INCREMENT;
-        intakeHangerLeftPosition = intakeHangerLeftPosition + HANGER_INCREMENT;
-
-        if (intakeHangerRightPosition < HANGER_MIN_POS || intakeHangerLeftPosition > HANGER_MAX_POS) {
-            intakeHangerRightPosition = HANGER_MIN_POS;
-            intakeHangerLeftPosition = HANGER_MAX_POS;
-        }
-
-        intakeHangerLeft.setPosition(intakeHangerLeftPosition);
-        intakeHangerRight.setPosition(intakeHangerRightPosition);
+        intakeHangerRightPosition -= HANGER_INCREMENT;
+        SetHangerPosition(intakeHangerRightPosition);
     }
     public void SetHangerPosition(double position)
     {
@@ -644,12 +641,12 @@ public class Geronimo {
     }
     public void SetRotatorArmHoldPositon()
     {
-        rotatorArmPower = 0.0;
+        rotatorArmPower = 0.25;
         leftRotater.setPower(rotatorArmPower);
         rightRotater.setPower(rotatorArmPower);
-        leftRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rotatorArmRunningToPosition = false;
+        //leftRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //rightRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //rotatorArmRunningToPosition = false;
     }
     public boolean GetRotatorArmRunningToPosition()
     {
