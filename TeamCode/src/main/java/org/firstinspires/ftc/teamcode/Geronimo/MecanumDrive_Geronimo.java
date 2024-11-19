@@ -59,8 +59,7 @@ import org.firstinspires.ftc.teamcode.messages.MecanumCommandMessage;
 import org.firstinspires.ftc.teamcode.messages.MecanumLocalizerInputsMessage;
 import org.firstinspires.ftc.teamcode.messages.PoseMessage;
 
-
-
+import java.lang.Math;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -77,14 +76,14 @@ public final class MecanumDrive_Geronimo {
                 RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
 
         // drive model parameters
-        public double inPerTick = .000756;
-        public double lateralInPerTick = 0.000570261594370559;
-        public double trackWidthTicks = 15985.855585854693;//15548.620725915256;
+        public double inPerTick = 0.00104655; //45148.5       0.00951437
+        public double lateralInPerTick =  0.0007371805024633574;
+        public double trackWidthTicks = 11171.777210064613;//15548.620725915256;
 
         // feedforward parameters (in tick units)
-        public double kS = 0.6497006489935595;
-        public double kV = 0.00014050494245645588;
-        public double kA = 0.000009;
+        public double kS = 0.9855547873117123;
+        public double kV = 0.00021130672422951157;
+        public double kA = 0.00005;
 
         // path profile parameters (in inches)
         public double maxWheelVel = 60; //40 //60
@@ -96,12 +95,12 @@ public final class MecanumDrive_Geronimo {
         public double maxAngAccel = Math.PI*.8;
 
         // path controller gains
-        public double axialGain = 10;
-        public double lateralGain = 8;
-        public double headingGain = 10; // shared with turn //10 //15
+        public double axialGain = 10;  //13
+        public double lateralGain = 5;
+        public double headingGain = 13; // shared with turn //10 //15
         public double axialVelGain = 0.0;
-        public double lateralVelGain = 0.0;
-        public double headingVelGain = 0.0; // shared with turn
+        public double lateralVelGain = 1.0;
+        public double headingVelGain = 0.5; // shared with turn
     }
 
     public static int useIMU_Heading = 1;
@@ -156,8 +155,10 @@ public final class MecanumDrive_Geronimo {
             imu = lazyImu.get();
 
             // reverse encoders if needed
-               rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
-               rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
+            leftFront.setDirection(DcMotorSimple.Direction.FORWARD);
+            leftBack.setDirection(DcMotorSimple.Direction.FORWARD);
+            rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
+            rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
         }
 
         @Override
@@ -239,8 +240,10 @@ public final class MecanumDrive_Geronimo {
         rightBack = hardwareMap.get(DcMotorEx.class, "rightRear_rightOdometry");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront_centerOdometry");
 
-        rightBack.setDirection(DcMotor.Direction.REVERSE);
-        rightFront.setDirection(DcMotor.Direction.REVERSE);
+        leftBack.setDirection(DcMotor.Direction.REVERSE);
+        leftFront.setDirection(DcMotor.Direction.REVERSE);
+        rightBack.setDirection(DcMotor.Direction.FORWARD);
+        rightFront.setDirection(DcMotor.Direction.FORWARD);
 
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

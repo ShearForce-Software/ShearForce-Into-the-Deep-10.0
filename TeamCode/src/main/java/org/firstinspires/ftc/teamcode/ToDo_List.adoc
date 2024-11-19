@@ -3,7 +3,11 @@
 == TODO List
 
 - [ ] Calibrate Geronimo GIANNA & CLAIRE
+- [ ] Test Manual control - adjust game-controller controls to be easy to use
+- [ ] Test & Document best arm intake positions for different common actions (intake from floor, deliver to high/low basket, pick up specimen off wall, deliver specimen to high/low)
+- [ ] Create & TEST ON GERONIMO auto routines to park from all 4 start locations
 - [ ] Test using trajectory
+- [ ] Test on Geronimo an auto trajectory that uses arm actions while driving
 - [ ] Create routine in Geronimo that uses the Limelight to report Red, Blue, or Yellow --- AKSHAY
 - [ ] Create routine in Geronimo that uses color sensor to report red, blue, or yellow --- MATTHEW
 - [X]  Create routine in Geronimo that returns X, Y distance to an object --- AIDAN
