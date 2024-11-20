@@ -43,7 +43,7 @@ public class GeronimoParkBlueAscent extends LinearOpMode {
     double autoPosition = 3;
 
     public void runOpMode(){
-        startPose = new Pose2d(-12,-60, Math.toRadians(90));
+        startPose = new Pose2d(12,63, Math.toRadians(270));
         // stackPose = new Pose2d(stackX, stackY, Math.toRadians(180)); //-54.5,-11.5
 
         // Define some custom constraints to use when wanting to go faster than defaults
@@ -70,9 +70,9 @@ public class GeronimoParkBlueAscent extends LinearOpMode {
         // ***************************************************
 
         SubmersibleTraj= drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(36,  36), Math.toRadians(-90))
-                .strafeToLinearHeading(new Vector2d(36, 12), Math.toRadians((-90)))
-                .strafeToLinearHeading(new Vector2d(28,6), Math.toRadians(-90))
+                .strafeToLinearHeading(new Vector2d(36,  36), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(36, 12), Math.toRadians((270)))
+                .strafeToLinearHeading(new Vector2d(24,12), Math.toRadians(270))
                 //
                 .build();
 
@@ -86,13 +86,11 @@ public class GeronimoParkBlueAscent extends LinearOpMode {
 
         /* Drive to the Board */
         Actions.runBlocking(
+
                 new SequentialAction(
                         SubmersibleTraj,
-                        new SequentialAction(
-                                grabsample(),
                                 new SleepAction(3)
-                        ),
-                        WallTraj
+
                 )
 
         );
