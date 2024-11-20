@@ -18,13 +18,14 @@ public class AidanAutoTest {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        Pose2d StartPose = new Pose2d(-12, -60, 90);
-        Vector2d VectorTwo = new Vector2d(-12, -30);
+        Pose2d StartPose = new Pose2d(12, 63, Math.toRadians(270));
+        Vector2d VectorTwo = new Vector2d(36, 36);
         myBot.runAction(myBot.getDrive().actionBuilder(StartPose)
                            //  .splineToLinearHeading(new Pose2d(36,48,36.6), Math.toRadians(270))
-                                .strafeToLinearHeading(VectorTwo, Math.toRadians(90))
-                                 .strafeToLinearHeading(new Vector2d(-12, -36), Math.toRadians(225))
-                                .strafeToLinearHeading(new Vector2d(-48, -48), Math.toRadians(225))
+                                .strafeToLinearHeading(VectorTwo, Math.toRadians(270))
+                                .strafeToLinearHeading(new Vector2d(36,12), Math.toRadians(270))
+                                .strafeToLinearHeading(new Vector2d(24,12), Math.toRadians(270))
+                        //.splineToLinearHeading(new Pose2d(12,10,Math.toRadians(180)), Math.toRadians(180))
                                         .build());
 
 
