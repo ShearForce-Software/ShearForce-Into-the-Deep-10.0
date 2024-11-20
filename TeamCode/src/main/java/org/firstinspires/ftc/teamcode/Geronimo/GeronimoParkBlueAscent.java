@@ -73,7 +73,8 @@ public class GeronimoParkBlueAscent extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(36,  36), Math.toRadians(270))
                 .strafeToLinearHeading(new Vector2d(36, 12), Math.toRadians((270)))
                 .strafeToLinearHeading(new Vector2d(24,12), Math.toRadians(270))
-                //
+                // Add the limelight camera code here in the future(limelightGetInches method in Geronimo returns how many inches you have to strafe left or right)
+                // in order to autoalign with the target.
                 .build();
 
 
