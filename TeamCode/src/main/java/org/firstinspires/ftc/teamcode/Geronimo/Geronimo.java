@@ -158,10 +158,10 @@ public class Geronimo {
         rightRear = hardwareMap.get(DcMotorEx.class, "rightRear_rightOdometry");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront_centerOdometry");
 
-        leftRear.setDirection(DcMotor.Direction.REVERSE);
-        leftFront.setDirection(DcMotor.Direction.REVERSE);
-        rightRear.setDirection(DcMotor.Direction.FORWARD);
-        rightFront.setDirection(DcMotor.Direction.FORWARD);
+        leftRear.setDirection(DcMotor.Direction.FORWARD);
+        leftFront.setDirection(DcMotor.Direction.FORWARD);
+        rightRear.setDirection(DcMotor.Direction.REVERSE);
+        rightFront.setDirection(DcMotor.Direction.REVERSE);
 
         // ************* Rotator ARM MOTORS ****************
         leftRotater = hardwareMap.get(DcMotorEx.class, "leftRotater");
@@ -641,11 +641,21 @@ public class Geronimo {
     }
     public void SetRotatorArmHoldPositon()
     {
-        rotatorArmPower = 0.25;
-        leftRotater.setPower(rotatorArmPower);
-        rightRotater.setPower(rotatorArmPower);
-        //leftRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //rightRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        if (rotatorTargetPosition == 0) {
+            rotatorArmPower = 0.0;
+            leftRotater.setPower(rotatorArmPower);
+            rightRotater.setPower(rotatorArmPower);
+            leftRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            rightRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+        else {
+            rotatorArmPower = 0.25;
+            leftRotater.setPower(rotatorArmPower);
+            rightRotater.setPower(rotatorArmPower);
+        }
+
+
+
         //rotatorArmRunningToPosition = false;
     }
     public boolean GetRotatorArmRunningToPosition()

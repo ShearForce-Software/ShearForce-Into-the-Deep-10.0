@@ -61,7 +61,7 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                     rotatorSetPosition += Math.round(gamepad2.right_stick_y * 10);
                     theRobot.SetRotatorToPosition(rotatorSetPosition);
                 }
-                else if (gamepad2.circle) {
+                else if (gamepad2.circle && !gamepad2.options) {
                     theRobot.SetRotatorToPosition(250);
                 }
                 else if (gamepad2.triangle) {
@@ -70,7 +70,7 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 else if (gamepad2.square) {
                     theRobot.SetRotatorToPosition(820);
                 }
-                else if (gamepad2.cross) {
+                else if (gamepad2.cross && !gamepad2.options) {
                     theRobot.SetRotatorToPosition(0);
                 }
                 else if (theRobot.GetRotatorArmRunningToPosition())
