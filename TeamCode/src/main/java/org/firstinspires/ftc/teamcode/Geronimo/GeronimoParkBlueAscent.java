@@ -74,14 +74,10 @@ public class GeronimoParkBlueAscent extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(36, 12), Math.toRadians((270)))
                 .strafeToLinearHeading(new Vector2d(24,12), Math.toRadians(270))
                 // Add the limelight camera code here in the future(limelightGetInches method in Geronimo returns how many inches you have to strafe left or right)
-                // in order to autoalign with the target.
+                // in order to autoalign with the target. Other limelight methods: limelighttest, limelighttesting, limelightcrosshaironly,
                 .build();
 
 
-        WallTraj = drive.actionBuilder(new Pose2d(-12,-30,Math.toRadians(90)))
-                .strafeToLinearHeading(new Vector2d(-12, -36), Math.toRadians(225))
-                .strafeToLinearHeading(new Vector2d(-48, -48), Math.toRadians(225))
-                .build();
 
 
 
