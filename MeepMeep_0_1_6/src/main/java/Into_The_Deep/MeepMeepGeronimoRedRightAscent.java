@@ -5,7 +5,7 @@ import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
-public class GeronimoAutoRightTouch {
+public class MeepMeepGeronimoRedRightAscent {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(600);
 
@@ -18,7 +18,7 @@ public class GeronimoAutoRightTouch {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        Pose2d StartPose = new Pose2d(12, -60, Math.toRadians(90));
+        Pose2d StartPose = new Pose2d(12, -63, Math.toRadians(90));
         Vector2d VectorTwo = new Vector2d(38, -16);
         myBot.runAction(myBot.getDrive().actionBuilder(StartPose)
                //   .splineToLinearHeading(new Pose2d(36,48,36.6), Math.toRadians(270))
