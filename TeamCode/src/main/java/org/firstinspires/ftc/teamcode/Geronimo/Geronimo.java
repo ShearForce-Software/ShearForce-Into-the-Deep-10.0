@@ -55,6 +55,10 @@ public class Geronimo {
     public static final int ROTATOR_ARMS_MIN_POS = 0;
     public static final int ROTATOR_ARMS_MAX_POS = 1000;
     public static final double ROTATOR_ARMS_POS_POWER = 0.75;
+    int slidesTargetPosition = 0;
+    boolean slidesRunningToPosition = false;
+    public static final double SLIDES_POS_POWER = 0.75;
+
 
     DcMotor slideLeft;
     DcMotor slideRight;
@@ -619,6 +623,75 @@ public class Geronimo {
         slideLeft.setPower(slidePower);
         slideRight.setPower(slidePower);
     }
+
+    public void SetSlideToPosition (int position)
+    {
+        slidesTargetPosition = position;
+        slidesRunningToPosition = true;
+        slideLeft.setTargetPosition(slidesTargetPosition);
+        slideRight.setTargetPosition(slidesTargetPosition);
+        slideLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slidePower = SLIDES_POS_POWER;
+        slideLeft.setPower(slidePower);
+        slideRight.setPower(slidePower);
+    }
+
+    public void IntakeFromFloor()
+    {
+        SetSlideToPosition(-695);
+        SpecialSleep(500); //reduce in future
+        SetRotatorToPosition(0);
+        SpecialSleep(250);
+        SetHangerPosition(0.7);
+        SetIntakeStarRotatorPosition(1);
+    }
+
+    public void AutoStartPosition()
+    {
+        SetIntakeStarRotatorPosition(0.9);
+        SetHangerPosition(0);
+        SetSlideToPosition(0);
+        SetRotatorToPosition(0);
+    }
+
+    public void SpecimenDeliverLow(){
+        SetIntakeStarRotatorPosition(0.75);
+        SetHangerPosition(0.1);
+        SetSlideToPosition(-695);
+        SetRotatorToPosition(250); //subject to change
+    }
+
+    public void SpecimenDeliverHigh(){
+        SetIntakeStarRotatorPosition(0.75);
+        SetHangerPosition(0.1);
+        SetSlideToPosition(-750);
+        SetRotatorToPosition(450); //subject to change
+    }
+
+    public void SpecimenPickupFromWall(){
+        SetIntakeStarRotatorPosition(0.75);
+        SetHangerPosition(0.1);
+        SetSlideToPosition(-695);
+        SetRotatorToPosition(180); //subject to change
+    }
+
+    public void BasketHigh(){
+        SetIntakeStarRotatorPosition(1);
+        SetHangerPosition(0.6);
+        SetSlideToPosition(-850);
+        SetRotatorToPosition(450);
+    }
+
+    public void BasketLow(){
+        SetIntakeStarRotatorPosition(1);
+        SetHangerPosition(0.6);
+        SetSlideToPosition(-700);
+        SetRotatorToPosition(450);
+    }
+
+
+
 
     public void SetRotatorArmPower (double power)
     {

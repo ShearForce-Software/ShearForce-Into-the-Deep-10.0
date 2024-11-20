@@ -24,7 +24,7 @@ public class MeepMeepGeronimoRedRightAscent {
                //   .splineToLinearHeading(new Pose2d(36,48,36.6), Math.toRadians(270))
                 .splineToLinearHeading(new Pose2d(48, -11,Math.toRadians(180)),Math.toRadians(90))
              //   .splineToConstantHeading(VectorTwo, Math.toRadians(90))
-                        .strafeTo(new Vector2d(25,-11))
+                        .strafeTo(new Vector2d(30,-11))
                         //  .strafeToLinearHeading(new Vector2d(12, -36), Math.toRadians(90))
             //    .strafeToLinearHeading(new Vector2d(48, -48), Math.toRadians(225))
                 .build());
