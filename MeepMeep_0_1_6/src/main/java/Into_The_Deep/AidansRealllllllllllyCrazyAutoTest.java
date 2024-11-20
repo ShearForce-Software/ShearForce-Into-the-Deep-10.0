@@ -24,15 +24,15 @@ public class AidansRealllllllllllyCrazyAutoTest {
 
 
 
-        Pose2d StartPose = new Pose2d(36, -60, 90);
+        Pose2d StartPose = new Pose2d(12, -64, 90);
         Vector2d VectorTwo = new Vector2d(48, -35);
         //myBot.runAction(myBot.getDrive().actionBuilder(StartPose)
                            //  .splineToLinearHeading(new Pose2d(36,48,36.6), Math.toRadians(270))
         Action DeliverStartingSpecimen = myBot.getDrive().actionBuilder(StartPose)
-                                .splineToConstantHeading(new Vector2d(7,-35), Math.toRadians(90))
+                                .splineTo(new Vector2d(7,-35), Math.toRadians(90))
                                 .build();
         Action DriveToSamplesandDeliver1 = myBot.getDrive().actionBuilder(new Pose2d(7, -35, 90))
-                .strafeToLinearHeading(new Vector2d(25,-48), Math.toRadians(270))
+                .splineToLinearHeading(new Pose2d(25,-48,Math.toRadians(270)), Math.toRadians(180))
                 //.splineToConstantHeading(new Vector2d(18,-48), Math.toRadians(270))
                 .splineToConstantHeading(new Vector2d(36,-9), Math.toRadians(270))
                 .splineToConstantHeading(new Vector2d(48,-12), Math.toRadians(270))

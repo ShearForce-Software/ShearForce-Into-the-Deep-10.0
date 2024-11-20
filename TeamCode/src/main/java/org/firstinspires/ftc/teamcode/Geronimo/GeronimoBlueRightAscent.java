@@ -15,19 +15,16 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import java.util.Vector;
 
-
-@Autonomous(name="Level1AscentBlue")
+@Autonomous(name="Level1AscentBlueRight")
 // @Disabled
-public class GeronimoParkBlueAscent extends LinearOpMode {
+public class GeronimoBlueRightAscent extends LinearOpMode {
     Geronimo control = new Geronimo(true, false,this);
     MecanumDrive_Geronimo drive;
     Pose2d startPose;
     Pose2d deliverToFloorPose;
     Pose2d deliverToBoardPose;
     Pose2d stackPose;
-    Action WallTraj;
     Action DriveToStack;
     Action SubmersibleTraj;
     Action Park;
@@ -43,7 +40,7 @@ public class GeronimoParkBlueAscent extends LinearOpMode {
     double autoPosition = 3;
 
     public void runOpMode(){
-        startPose = new Pose2d(12,63, Math.toRadians(270));
+        startPose = new Pose2d(-12,63, Math.toRadians(270));
         // stackPose = new Pose2d(stackX, stackY, Math.toRadians(180)); //-54.5,-11.5
 
         // Define some custom constraints to use when wanting to go faster than defaults
@@ -70,28 +67,25 @@ public class GeronimoParkBlueAscent extends LinearOpMode {
         // ***************************************************
 
         SubmersibleTraj= drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(36,  36), Math.toRadians(270))
-                .strafeToLinearHeading(new Vector2d(36, 12), Math.toRadians((270)))
-                .strafeToLinearHeading(new Vector2d(24,12), Math.toRadians(270))
-                // Add the limelight camera code here in the future(limelightGetInches method in Geronimo returns how many inches you have to strafe left or right)
-                // in order to autoalign with the target.
+                .strafeToLinearHeading(new Vector2d(-36,  36), Math.toRadians(-90))
+                .strafeToLinearHeading(new Vector2d(-36, 12), Math.toRadians((-90)))
+                .strafeToLinearHeading(new Vector2d(-24,12), Math.toRadians(-90))
+                //
                 .build();
 
 
-        WallTraj = drive.actionBuilder(new Pose2d(-12,-30,Math.toRadians(90)))
+     /*   WallTraj = drive.actionBuilder(new Pose2d(-12,-30,Math.toRadians(90)))
                 .strafeToLinearHeading(new Vector2d(-12, -36), Math.toRadians(225))
                 .strafeToLinearHeading(new Vector2d(-48, -48), Math.toRadians(225))
-                .build();
+        */
 
 
 
         /* Drive to the Board */
         Actions.runBlocking(
-
                 new SequentialAction(
                         SubmersibleTraj,
-                                new SleepAction(3)
-
+                        new SleepAction(3)
                 )
 
         );
