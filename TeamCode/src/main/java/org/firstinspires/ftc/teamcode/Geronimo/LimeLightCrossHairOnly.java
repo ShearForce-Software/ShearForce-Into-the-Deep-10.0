@@ -39,13 +39,13 @@ public class LimeLightCrossHairOnly extends LinearOpMode {
             double distanceAdjust = offsets.get(0);
             double strafeAdjust = offsets.get(1);
 
-            List<Double> inches = control.GetStrafeOffsetInInches("targetImageName");
+            double inches = control.GetStrafeOffsetInInches("targetImageName");
 
-            if (inches.get(0) == -1.0 && inches.get(1) == -1.0) {
+            if (inches == -1.0 && inches == -1.0) {
                 telemetry.addData("Status", "Target not found");
             } else {
-                telemetry.addData("Strafe Offset X (inches)", inches.get(0));
-                telemetry.addData("Strafe Offset Y (inches)", inches.get(1));
+                telemetry.addData("Strafe Offset X (inches)", inches);
+                telemetry.addData("Strafe Offset Y (inches)", inches);
             }
 
 
