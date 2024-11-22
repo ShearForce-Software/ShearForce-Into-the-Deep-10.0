@@ -2,7 +2,7 @@
 
 == TODO List
 
-- [ ] Test new manual control combo buttons
+- [ ] Test new manual control combo butt ons
 - [ ] Test all 4 auto park routines
 - [ ] Create control methods to lift specimen off wall and to pull down on bar
 - [ ] Test & Document best arm intake positions for different common actions (intake from floor, deliver to high/low basket, pick up specimen off wall, deliver specimen to high/low)

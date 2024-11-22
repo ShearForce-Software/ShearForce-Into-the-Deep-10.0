@@ -8,6 +8,7 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.ProfileAccelConstraint;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
+//import com.acmerobotics.roadrunner.Trajectory;
 import com.acmerobotics.roadrunner.TranslationalVelConstraint;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.VelConstraint;
@@ -22,15 +23,16 @@ public class AidansCrazyAutoTest extends LinearOpMode {
     Geronimo control = new Geronimo(true, false,this);
     MecanumDrive_Geronimo drive;
     Pose2d startPose;
-    Pose2d deliverToFloorPose;
-    Pose2d deliverToBoardPose;
-    Pose2d stackPose;
     Vector2d VectorTwo;
+    Action DeliverStartingSpecimen;
+    Action DriveToSamplesandDeliver1;
+    Action DriveToSamplesandDeliver2;
+    Action DriveToSamplesandDeliver3;
     Action DriveToSubmersible1;
-    Action DriveToStack;
-    Action BoxTraj;
-    Action Park;
-    Action DriveBackToStack;
+    Action DriveToSubmersible2;
+    Action DriveToSubmersible3;
+
+
     VelConstraint speedUpVelocityConstraint;
     AccelConstraint speedUpAccelerationConstraint;
     VelConstraint slowDownVelocityConstraint;
@@ -69,8 +71,36 @@ public class AidansCrazyAutoTest extends LinearOpMode {
         // ****  START DRIVING    ****************************
         // ***************************************************
 
-        DriveToSubmersible1 = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(VectorTwo, Math.toRadians(90))
+        DeliverStartingSpecimen = drive.actionBuilder(startPose)
+                .splineTo(new Vector2d(7,-35), Math.toRadians(90))
+                .build();
+        DriveToSamplesandDeliver1 = drive.actionBuilder(new Pose2d(7, -35, Math.toRadians(90)))
+                .strafeToLinearHeading(new Vector2d(25,-48), Math.toRadians(270))
+                .splineToConstantHeading(new Vector2d(36,-9), Math.toRadians(270))
+                .splineToConstantHeading(new Vector2d(48,-12), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(48,-60), Math.toRadians(270))
+                .build();
+        DriveToSamplesandDeliver2 = drive.actionBuilder(new Pose2d(48,-60, Math.toRadians(270)))
+                .strafeToLinearHeading(new Vector2d(48, -8), Math.toRadians(270))
+                .splineToConstantHeading(new Vector2d(58,-12), Math.toRadians(270))
+                .lineToYConstantHeading(-60)
+                .build();
+        DriveToSamplesandDeliver3 = drive.actionBuilder(new Pose2d(58,-60,Math.toRadians(270)))
+                .strafeToLinearHeading(new Vector2d(58, -8), Math.toRadians(270))
+                .splineToConstantHeading(new Vector2d(62,-12), Math.toRadians(270))
+                .lineToYConstantHeading(-60)
+                .build();
+        DriveToSubmersible1 = drive.actionBuilder(new Pose2d(62,-60,Math.toRadians(270)))
+                .strafeToLinearHeading(new Vector2d(48, -57), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(7,-35), Math.toRadians(90))
+                .build();
+        DriveToSubmersible2 = drive.actionBuilder(new Pose2d(7,-35,Math.toRadians(90)))
+                .strafeToLinearHeading(new Vector2d(48,-57), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(7,-35), Math.toRadians(90)) //May change to 270 heading once delivery is clarified
+                .build();
+        DriveToSubmersible3 = drive.actionBuilder(new Pose2d(7,-35,Math.toRadians(90)))
+                .strafeToLinearHeading(new Vector2d(48,-57), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(7,-35), Math.toRadians(90))
                 .build();
 /*
 
@@ -85,11 +115,18 @@ public class AidansCrazyAutoTest extends LinearOpMode {
         Actions.runBlocking(
                 new SequentialAction(
                         DriveToSubmersible1,
-                        new SequentialAction(
-                                grabsample(),
-                                new SleepAction(3)
+                        new SleepAction(1),
+                        DriveToSamplesandDeliver1,
+                        DriveToSamplesandDeliver2,
+                        DriveToSamplesandDeliver3,
+                        DriveToSubmersible1,
+                        new SleepAction(1.5),
+                        DriveToSubmersible2,
+                        new SleepAction(1.5),
+                        DriveToSubmersible3
+
                         )
-                )
+
 
         );
 

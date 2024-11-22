@@ -32,7 +32,7 @@ public class GeronimoAutoRedLeft extends LinearOpMode {
     Pose2d stackPose;
     Action WallTraj;
     Action DriveToStack;
-    Action BoxTraj;
+    Action SubmersibleTraj;
     Action Park;
     Action DriveBackToStack;
     VelConstraint speedUpVelocityConstraint;
@@ -46,7 +46,7 @@ public class GeronimoAutoRedLeft extends LinearOpMode {
     double autoPosition = 3;
 
     public void runOpMode(){
-        startPose = new Pose2d(-12,-60, Math.toRadians(90));
+        startPose = new Pose2d(-12,-63, Math.toRadians(90));
        // stackPose = new Pose2d(stackX, stackY, Math.toRadians(180)); //-54.5,-11.5
 
         // Define some custom constraints to use when wanting to go faster than defaults
@@ -72,26 +72,20 @@ public class GeronimoAutoRedLeft extends LinearOpMode {
         // ****  START DRIVING    ****************************
         // ***************************************************
 
-            BoxTraj = drive.actionBuilder(drive.pose)
-                    .strafeToLinearHeading(new Vector2d(-12, -30), Math.toRadians(90))
+            SubmersibleTraj = drive.actionBuilder(drive.pose)
+                    .splineToLinearHeading(new Pose2d(-48, -11,Math.toRadians(0)),Math.toRadians(90))
                     .build();
 
 
-            WallTraj = drive.actionBuilder(new Pose2d(-12,-30,Math.toRadians(90)))
+           /* WallTraj = drive.actionBuilder(new Pose2d(-12,-30,Math.toRadians(90)))
                     .strafeToLinearHeading(new Vector2d(-12, -36), Math.toRadians(225))
                     .strafeToLinearHeading(new Vector2d(-48, -48), Math.toRadians(225))
-                    .build();
+                    .build(); */
 
         /* Drive to the Board */
          Actions.runBlocking(
                 new SequentialAction(
-                        BoxTraj,
-                                new SequentialAction(
-                                        grabsample(),
-                                        new SleepAction(3)
-                                ),
-                        WallTraj
-                        )
+                        SubmersibleTraj)
 
         );
 

@@ -85,8 +85,8 @@ public class GeronimoBlueLeftAscent extends LinearOpMode {
         /* Drive to the Board */
         Actions.runBlocking(
                 new SequentialAction(
-                        SubmersibleTraj,
-                        new SleepAction(3)
+                        SubmersibleTraj
+
                 )
 
         );
