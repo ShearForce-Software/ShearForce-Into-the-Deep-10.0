@@ -53,6 +53,11 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 {
                     theRobot.SetSlidesPower(0.0);
                 }
+
+                // gamepad_1.square --> stop and reset on the slides
+                if (gamepad1.square) {
+                    theRobot.ResetSlidesPower();
+                }
 /*
                 // Rotater MOTOR CONTROL
                 if ((gamepad2.right_stick_y > 0.1) || (gamepad2.right_stick_y <= -0.1)) {

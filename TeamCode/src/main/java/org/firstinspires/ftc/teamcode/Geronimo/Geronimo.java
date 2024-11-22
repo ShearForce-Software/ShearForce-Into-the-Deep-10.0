@@ -626,6 +626,16 @@ public class Geronimo {
         slideRight.setPower(slidePower);
     }
 
+    public void ResetSlidesPower (){
+        slidePower = 0;
+        slideLeft.setPower(slidePower);
+        slideRight.setPower(slidePower);
+        slideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slideRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
     public void SetSlideToPosition (int position)
     {
         slidesTargetPosition = position;
@@ -658,22 +668,22 @@ public class Geronimo {
     }
 
     public void SpecimenDeliverLow(){
-        SetIntakeStarRotatorPosition(0.75);
-        SetHangerPosition(0.1);
+        SetIntakeStarRotatorPosition(0.85);
+        SetHangerPosition(0.35);
         SetSlideToPosition(-695);
         SetRotatorToPosition(250); //subject to change
     }
 
     public void SpecimenDeliverHigh(){
-        SetIntakeStarRotatorPosition(0.75);
-        SetHangerPosition(0.1);
+        SetIntakeStarRotatorPosition(0.85);
+        SetHangerPosition(0.35);
         SetSlideToPosition(-750);
         SetRotatorToPosition(450); //subject to change
     }
 
     public void SpecimenPickupFromWall(){
-        SetIntakeStarRotatorPosition(0.75);
-        SetHangerPosition(0.1);
+        SetIntakeStarRotatorPosition(0.85);
+        SetHangerPosition(0.35);
         SetSlideToPosition(-695);
         SetRotatorToPosition(180); //subject to change
     }
@@ -731,7 +741,7 @@ public class Geronimo {
     }
     public boolean GetRotatorLimitSwitchPressed(){
         boolean returnValue = false;
-        if (touchSensorRotatorRight.isPressed() || touchSensorRotatorLeft.isPressed()){
+        if ((touchSensorRotatorRight.isPressed() == false) || (touchSensorRotatorLeft.isPressed() == false)){
             returnValue = true;
         }
 
@@ -793,8 +803,8 @@ public class Geronimo {
         opMode.telemetry.addData("rightRotater Position: ", rightRotater.getCurrentPosition());
         opMode.telemetry.addData("Rotator Tgt Position: ", rotatorTargetPosition);
         opMode.telemetry.addData("Rotator Arm Power: ", rotatorArmPower);
-        opMode.telemetry.addData("touchSensorRotatorLeft: ", touchSensorRotatorLeft.isPressed());
-        opMode.telemetry.addData("touchSensorRotatorRight: ", touchSensorRotatorRight.isPressed());
+        opMode.telemetry.addData("touchSensorRotatorLeft: ", !touchSensorRotatorLeft.isPressed());
+        opMode.telemetry.addData("touchSensorRotatorRight: ", !touchSensorRotatorRight.isPressed());
         opMode.telemetry.addData("Rotator mode in RUN_TO_POSITION? ", rotatorArmRunningToPosition);
         opMode.telemetry.addData(">", "rotateArms - use rightStick Y, and buttons for control" );
         opMode.telemetry.addData("intake star ROTATOR Pos: ", intakeRotatorPosition);
