@@ -88,6 +88,20 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 //}
 
  */
+                if (theRobot.GetRotatorArmRunningToPosition()) {
+                    if (theRobot.GetRotatorArmTargetPosition() == 0 && theRobot.GetRotatorLimitSwitchPressed() == true){
+                        theRobot.setRotatorArmZeroize();
+
+                    }
+                    else{
+                        int leftDifference = Math.abs(theRobot.GetRotatorArmTargetPosition() - theRobot.GetRotatorLeftArmCurrentPosition());
+                        int rightDifference = Math.abs(theRobot.GetRotatorArmTargetPosition() - theRobot.GetRotatorRightArmCurrentPosition());
+                        if ((leftDifference <= 2) || (rightDifference <= 2)) {
+                            theRobot.SetRotatorArmHoldPosition();
+                        }
+                    }
+                }
+
                 if (gamepad2.cross && !gamepad2.options) {
                     theRobot.IntakeFromFloor();
                 }
@@ -169,6 +183,9 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 else if (gamepad2.dpad_up){
 
                     theRobot.BasketHigh();
+                }
+                else if (gamepad2.dpad_down){
+                    theRobot.BasketLow();
                 }
 
 

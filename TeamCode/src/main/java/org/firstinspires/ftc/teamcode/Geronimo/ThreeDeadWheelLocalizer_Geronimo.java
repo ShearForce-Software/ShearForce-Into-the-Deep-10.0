@@ -44,9 +44,9 @@ ThreeDeadWheelLocalizer_Geronimo implements Localizer {
         par1 = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "rightRear_rightOdometry")));
         perp = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "rightFront_centerOdometry")));
 
-        par0.setDirection(DcMotorEx.Direction.REVERSE);
-        par1.setDirection(DcMotorEx.Direction.FORWARD);
-        perp.setDirection(DcMotorEx.Direction.FORWARD);  /* *** HAD TO SWITCH from REVERSE to FORWARD on 2/22/2024 *** */
+        par0.setDirection(DcMotorEx.Direction.FORWARD);
+        par1.setDirection(DcMotorEx.Direction.REVERSE);
+        perp.setDirection(DcMotorEx.Direction.REVERSE);  /* *** HAD TO SWITCH from REVERSE to FORWARD on 2/22/2024 *** */
 
         this.inPerTick = inPerTick;
 
