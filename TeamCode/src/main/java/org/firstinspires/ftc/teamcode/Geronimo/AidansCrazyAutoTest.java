@@ -17,7 +17,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 
-@Autonomous(name="ShreyAutoTestTrajectory")
+@Autonomous(name="Aidan'sCrazyAutoTest")
 // @Disabled
 public class AidansCrazyAutoTest extends LinearOpMode {
     Geronimo control = new Geronimo(true, false,this);
@@ -31,6 +31,7 @@ public class AidansCrazyAutoTest extends LinearOpMode {
     Action DriveToSubmersible1;
     Action DriveToSubmersible2;
     Action DriveToSubmersible3;
+    Action grabSpecimenfromwall;
 
 
     VelConstraint speedUpVelocityConstraint;
@@ -162,13 +163,14 @@ public class AidansCrazyAutoTest extends LinearOpMode {
 
     }
 
-    public Action grabsample (){return new GrabSample();}
-    public class GrabSample implements Action{
+    public Action grabSpecimenfromwall (){return new GrabSpecimenFromWall();}
+    public class GrabSpecimenFromWall implements Action{
         private boolean initialized = false;
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!initialized) {
-
+                control.limelightHasTarget();
+                control.SpecimenPickupFromWall();
                 initialized = true;
             }
             packet.put("lock purple pixel", 0);
