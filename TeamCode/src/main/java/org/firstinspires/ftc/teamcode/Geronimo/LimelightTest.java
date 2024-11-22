@@ -17,6 +17,7 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 @Autonomous(name="LimelightTest")
 
@@ -57,6 +58,7 @@ public class LimelightTest extends LinearOpMode {
             /* Initialize the Robot */
             drive = new MecanumDrive_Geronimo(hardwareMap, startPose);
             control.Init(hardwareMap);
+            control.InitLimelight(hardwareMap);
             //control.WebcamInit(hardwareMap);
             telemetry.update();
             control.imuOffsetInDegrees = 270; // Math.toDegrees(startPose.heading.toDouble());
@@ -78,9 +80,16 @@ public class LimelightTest extends LinearOpMode {
                     .strafeToLinearHeading(new Vector2d(57, 48), Math.toRadians(0))
                     .build();
 
+            Actions.runBlocking(
+                    drive.actionBuilder(drive.pose)
+                            .strafeToLinearHeading(new Vector2d(drive.pose.position.x + .5, drive.pose.position.y - control.GetStrafeOffsetInInches("block")), Math.toRadians(180))
+                            .build());
+
+
 
 
             /* Drive to the Board */
+            /*
             Actions.runBlocking(
                     new SequentialAction(
                             GoToSpecimen
@@ -90,6 +99,8 @@ public class LimelightTest extends LinearOpMode {
 
 
             );
+
+             */
 
 
             drive.updatePoseEstimate();
