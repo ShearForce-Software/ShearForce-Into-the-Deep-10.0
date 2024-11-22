@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.AccelConstraint;
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.ProfileAccelConstraint;
 import com.acmerobotics.roadrunner.SequentialAction;
@@ -84,10 +85,14 @@ public class GeronimoBlueLeftAscent extends LinearOpMode {
 
         /* Drive to the Board */
         Actions.runBlocking(
-                new SequentialAction(
-                        SubmersibleTraj
-
+                new ParallelAction(
+                        SubmersibleTraj,
+                       // new SleepAction(3),
+                    new SequentialAction(
+                            specimenDeliverLow()
+                          )
                 )
+
 
         );
 
@@ -136,5 +141,19 @@ public class GeronimoBlueLeftAscent extends LinearOpMode {
             return false;  // returning true means not done, and will be called again.  False means action is completely done
         }
     }
+    public Action specimenDeliverLow (){return new SpecimenDeliverLow();}
+    public class SpecimenDeliverLow implements Action{
+        private boolean initialized = false;
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            if (!initialized) {
+                control.SpecimenDeliverLow();
+                initialized = true;
+            }
+            packet.put("SpecimenDeliverLow", 0);
+            return false;  // returning true means not done, and will be called again.  False means action is completely done
+        }
+    }
+
 }
 

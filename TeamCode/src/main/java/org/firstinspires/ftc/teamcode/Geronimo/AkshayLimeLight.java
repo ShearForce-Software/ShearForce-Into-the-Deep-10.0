@@ -36,7 +36,7 @@ import org.firstinspires.ftc.teamcode.Geronimo.MecanumDrive_Geronimo;
 import org.firstinspires.ftc.teamcode.Gertrude.Gertrude;
 
 
-@Autonomous(name="GeronimoAutoRedLeft")
+@Autonomous(name="NOT GeronimoAutoRedLeft")
 // @Disabled
 public class AkshayLimeLight extends LinearOpMode {
     Geronimo control = new Geronimo(true, false,this);

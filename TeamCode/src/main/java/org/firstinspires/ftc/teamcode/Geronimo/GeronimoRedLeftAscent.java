@@ -16,32 +16,28 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import java.util.Vector;
 
-@Autonomous(name="Level1AscentBlueRight")
+
+@Autonomous(name="Level1AscentRedLeft")
 // @Disabled
-public class GeronimoBlueRightAscent extends LinearOpMode {
+public class GeronimoRedLeftAscent extends LinearOpMode {
     Geronimo control = new Geronimo(true, false,this);
     MecanumDrive_Geronimo drive;
     Pose2d startPose;
-    Pose2d deliverToFloorPose;
-    Pose2d deliverToBoardPose;
-    Pose2d stackPose;
-    Action DriveToStack;
+    Action WallTraj;
     Action SubmersibleTraj;
     Action Park;
-    Action DriveBackToStack;
     VelConstraint speedUpVelocityConstraint;
     AccelConstraint speedUpAccelerationConstraint;
     VelConstraint slowDownVelocityConstraint;
     AccelConstraint slowDownAccelerationConstraint;
-    double stackY = 36;
-    double stackX = -59;
+
     double wallDriveY = 58.5;
 
-    double autoPosition = 3;
 
     public void runOpMode(){
-        startPose = new Pose2d(-12,63, Math.toRadians(270));
+        startPose = new Pose2d(-12,-63, Math.toRadians(90));
         // stackPose = new Pose2d(stackX, stackY, Math.toRadians(180)); //-54.5,-11.5
 
         // Define some custom constraints to use when wanting to go faster than defaults
@@ -68,17 +64,20 @@ public class GeronimoBlueRightAscent extends LinearOpMode {
         // ***************************************************
 
         SubmersibleTraj= drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(-36,  36), Math.toRadians(-90))
-                .strafeToLinearHeading(new Vector2d(-36, 12), Math.toRadians((-90)))
-                .strafeToLinearHeading(new Vector2d(-24,12), Math.toRadians(-90))
-                //
+                // .strafeToLinearHeading(new Vector2d(36,  36), Math.toRadians(-90))
+                //   .strafeToLinearHeading(new Vector2d(36, 12), Math.toRadians((-90)))
+                //  .strafeToLinearHeading(new Vector2d(28,6), Math.toRadians(-90))
+                .splineToLinearHeading(new Pose2d(-48,-11, Math.toRadians(0)), Math.toRadians(90))
+                .strafeTo(new Vector2d(-30, -11))
                 .build();
 
 
-     /*   WallTraj = drive.actionBuilder(new Pose2d(-12,-30,Math.toRadians(90)))
+      /*  WallTraj = drive.actionBuilder(new Pose2d(-12,-30,Math.toRadians(90)))
                 .strafeToLinearHeading(new Vector2d(-12, -36), Math.toRadians(225))
                 .strafeToLinearHeading(new Vector2d(-48, -48), Math.toRadians(225))
-        */
+                .build();
+
+       */
 
 
 
@@ -86,7 +85,6 @@ public class GeronimoBlueRightAscent extends LinearOpMode {
         Actions.runBlocking(
                 new ParallelAction(
                         SubmersibleTraj,
-                        // new SleepAction(3),
                         new SequentialAction(
                                 specimenDeliverLow()
                         )
@@ -94,6 +92,7 @@ public class GeronimoBlueRightAscent extends LinearOpMode {
 
 
         );
+
 
         drive.updatePoseEstimate();
 
@@ -125,6 +124,19 @@ public class GeronimoBlueRightAscent extends LinearOpMode {
         telemetry.update();
 
     }
+    public Action specimenDeliverLow (){return new SpecimenDeliverLow();}
+    public class SpecimenDeliverLow implements Action{
+        private boolean initialized = false;
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            if (!initialized) {
+                control.SpecimenDeliverLow();
+                initialized = true;
+            }
+            packet.put("SpecimenDeliverLow", 0);
+            return false;  // returning true means not done, and will be called again.  False means action is completely done
+        }
+    }
 
     public Action grabsample (){return new GrabSample();}
     public class GrabSample implements Action{
@@ -138,19 +150,7 @@ public class GeronimoBlueRightAscent extends LinearOpMode {
             packet.put("lock purple pixel", 0);
             return false;  // returning true means not done, and will be called again.  False means action is completely done
         }
-    }
-    public Action specimenDeliverLow (){return new SpecimenDeliverLow();}
-    public class SpecimenDeliverLow implements Action{
-        private boolean initialized = false;
-        @Override
-        public boolean run(@NonNull TelemetryPacket packet) {
-            if (!initialized) {
-                control.SpecimenDeliverLow();
-                initialized = true;
-            }
-            packet.put("SpecimenDeliverLow", 0);
-            return false;  // returning true means not done, and will be called again.  False means action is completely done
-        }
+
     }
 }
 

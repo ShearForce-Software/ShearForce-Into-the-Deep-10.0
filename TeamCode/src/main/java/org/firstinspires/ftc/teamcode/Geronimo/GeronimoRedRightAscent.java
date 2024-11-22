@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.AccelConstraint;
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.ProfileAccelConstraint;
 import com.acmerobotics.roadrunner.SequentialAction;
@@ -15,6 +16,8 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.Gertrude.BlueFarWORLDS_Gertrude;
+
 import java.util.Vector;
 
 
@@ -24,23 +27,15 @@ public class GeronimoRedRightAscent extends LinearOpMode {
     Geronimo control = new Geronimo(true, false,this);
     MecanumDrive_Geronimo drive;
     Pose2d startPose;
-    Pose2d deliverToFloorPose;
-    Pose2d deliverToBoardPose;
-    Pose2d stackPose;
     Action WallTraj;
-    Action DriveToStack;
     Action SubmersibleTraj;
     Action Park;
-    Action DriveBackToStack;
     VelConstraint speedUpVelocityConstraint;
     AccelConstraint speedUpAccelerationConstraint;
     VelConstraint slowDownVelocityConstraint;
     AccelConstraint slowDownAccelerationConstraint;
-    double stackY = 36;
-    double stackX = -59;
     double wallDriveY = 58.5;
 
-    double autoPosition = 3;
 
     public void runOpMode(){
         startPose = new Pose2d(12,-63, Math.toRadians(90));
@@ -74,7 +69,7 @@ public class GeronimoRedRightAscent extends LinearOpMode {
              //   .strafeToLinearHeading(new Vector2d(36, 12), Math.toRadians((-90)))
               //  .strafeToLinearHeading(new Vector2d(28,6), Math.toRadians(-90))
                 .splineToLinearHeading(new Pose2d(48,-11, Math.toRadians(180)), Math.toRadians(90))
-                .strafeTo(new Vector2d(25, -11))
+                .strafeTo(new Vector2d(30, -11))
                 .build();
 
 
@@ -89,9 +84,13 @@ public class GeronimoRedRightAscent extends LinearOpMode {
 
         /* Drive to the Board */
         Actions.runBlocking(
-                new SequentialAction(
-                        SubmersibleTraj
-                )
+                        new ParallelAction(
+                                SubmersibleTraj,
+                                    new SequentialAction(
+                                            specimenDeliverLow()
+                                        )
+
+                                )
 
         );
 
@@ -137,6 +136,20 @@ public class GeronimoRedRightAscent extends LinearOpMode {
                 initialized = true;
             }
             packet.put("lock purple pixel", 0);
+            return false;  // returning true means not done, and will be called again.  False means action is completely done
+        }
+    }
+
+    public Action specimenDeliverLow (){return new SpecimenDeliverLow();}
+    public class SpecimenDeliverLow implements Action{
+        private boolean initialized = false;
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            if (!initialized) {
+                control.SpecimenDeliverLow();
+                initialized = true;
+            }
+            packet.put("SpecimenDeliverLow", 0);
             return false;  // returning true means not done, and will be called again.  False means action is completely done
         }
     }

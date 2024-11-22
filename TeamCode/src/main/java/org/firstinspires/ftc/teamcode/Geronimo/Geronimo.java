@@ -54,7 +54,7 @@ public class Geronimo {
     boolean rotatorArmRunningToPosition = false;
     public static final int ROTATOR_ARMS_MIN_POS = 0;
     public static final int ROTATOR_ARMS_MAX_POS = 1000;
-    public static final double ROTATOR_ARMS_POS_POWER = 0.75;
+    public static final double ROTATOR_ARMS_POS_POWER = 0.5;
     int slidesTargetPosition = 0;
     boolean slidesRunningToPosition = false;
     public static final double SLIDES_POS_POWER = 0.75;
@@ -86,8 +86,8 @@ public class Geronimo {
     public CRServo intakeStar;
     double intakeStarPower = 0.0;
 
-    TouchSensor touchSensorRight;
-    TouchSensor touchSensorLeft;
+    TouchSensor touchSensorRotatorRight;
+    TouchSensor touchSensorRotatorLeft;
     TouchSensor touchSensorRotator;
 
     public double imuOffsetInDegrees;
@@ -162,17 +162,17 @@ public class Geronimo {
         rightRear = hardwareMap.get(DcMotorEx.class, "rightRear_rightOdometry");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront_centerOdometry");
 
-        leftRear.setDirection(DcMotor.Direction.FORWARD);
-        leftFront.setDirection(DcMotor.Direction.FORWARD);
-        rightRear.setDirection(DcMotor.Direction.REVERSE);
-        rightFront.setDirection(DcMotor.Direction.REVERSE);
+        leftRear.setDirection(DcMotor.Direction.REVERSE);
+        leftFront.setDirection(DcMotor.Direction.REVERSE);
+        rightRear.setDirection(DcMotor.Direction.FORWARD);
+        rightFront.setDirection(DcMotor.Direction.FORWARD);
 
         // ************* Rotator ARM MOTORS ****************
         leftRotater = hardwareMap.get(DcMotorEx.class, "leftRotater");
         rightRotater = hardwareMap.get(DcMotorEx.class, "rightRotater");
 
-        leftRotater.setDirection(DcMotor.Direction.FORWARD);
-        rightRotater.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftRotater.setDirection(DcMotor.Direction.REVERSE);
+        rightRotater.setDirection(DcMotorSimple.Direction.FORWARD);
 
         leftRotater.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
         rightRotater.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
@@ -189,8 +189,8 @@ public class Geronimo {
         slideLeft = hardwareMap.get(DcMotorEx.class, "slideLeft");
         slideRight = hardwareMap.get(DcMotorEx.class, "slideRight");
 
-        slideLeft.setDirection(DcMotor.Direction.REVERSE);
-        slideRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        slideLeft.setDirection(DcMotor.Direction.FORWARD);
+        slideRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
         slideLeft.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
         slideRight.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
@@ -218,8 +218,8 @@ public class Geronimo {
         */
         // ********** Touch Sensors ********************
 
-        touchSensorRight = hardwareMap.get(TouchSensor.class, "sensor_touchRight");
-        touchSensorLeft = hardwareMap.get(TouchSensor.class, "sensor_touchLeft");
+        touchSensorRotatorRight = hardwareMap.get(TouchSensor.class, "sensor_touchRight");
+        touchSensorRotatorLeft = hardwareMap.get(TouchSensor.class, "sensor_touchLeft");
         touchSensorRotator = hardwareMap.get(TouchSensor.class, "sensor_touchRotate");
 
         // limelightbox = hardwareMap.get(Limelight3A.class, "limelight");
@@ -310,14 +310,14 @@ public class Geronimo {
         return offset;
     }
 
-    public List<Double> GetStrafeOffsetInInches(String targetImageName) {
+    public double GetStrafeOffsetInInches(String targetImageName) {
 
         List<Double> scaledOffsets = AlignToTargetImage(targetImageName);
 
         // Check if target was found
         if (scaledOffsets.get(0) == -1.0 && scaledOffsets.get(1) == -1.0) {
             // Target not found; propagate the -1.0 flags
-            return scaledOffsets;
+            return 0;
         }
 
         // Convert scaled offsets back to raw angles
@@ -341,7 +341,7 @@ public class Geronimo {
         strafeOffsetsInInches.add(strafeX);
         strafeOffsetsInInches.add(strafeY);
 
-        return strafeOffsetsInInches;
+        return strafeOffsetsInInches.get(0);
     }
 
     public boolean limelightHasTarget() {
@@ -620,6 +620,8 @@ public class Geronimo {
     public void SetSlidesPower (double power)
     {
         slidePower = power;
+        slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         slideLeft.setPower(slidePower);
         slideRight.setPower(slidePower);
     }
@@ -686,7 +688,7 @@ public class Geronimo {
     public void BasketLow(){
         SetIntakeStarRotatorPosition(1);
         SetHangerPosition(0.6);
-        SetSlideToPosition(-700);
+        SetSlideToPosition(-1300);
         SetRotatorToPosition(450);
     }
 
@@ -702,17 +704,40 @@ public class Geronimo {
     }
     public void SetRotatorToPosition (int position)
     {
+        if (rotatorTargetPosition > position){
+            rotatorArmPower = ROTATOR_ARMS_POS_POWER/2.0;
+        }
+        else{
+            rotatorArmPower = ROTATOR_ARMS_POS_POWER;
+        }
         rotatorTargetPosition = position;
         rotatorArmRunningToPosition = true;
         rightRotater.setTargetPosition(rotatorTargetPosition);
         leftRotater.setTargetPosition(rotatorTargetPosition);
         leftRotater.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightRotater.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rotatorArmPower = ROTATOR_ARMS_POS_POWER;
         leftRotater.setPower(rotatorArmPower);
         rightRotater.setPower(rotatorArmPower);
     }
-    public void SetRotatorArmHoldPositon()
+    public void setRotatorArmZeroize(){
+        rotatorArmPower = 0.0;
+        leftRotater.setPower(rotatorArmPower);
+        rightRotater.setPower(rotatorArmPower);
+        this.SpecialSleep(50);
+        leftRotater.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightRotater.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+    public boolean GetRotatorLimitSwitchPressed(){
+        boolean returnValue = false;
+        if (touchSensorRotatorRight.isPressed() || touchSensorRotatorLeft.isPressed()){
+            returnValue = true;
+        }
+
+        return returnValue;
+    }
+    public void SetRotatorArmHoldPosition()
     {
         if (rotatorTargetPosition == 0) {
             rotatorArmPower = 0.0;
@@ -725,11 +750,11 @@ public class Geronimo {
             rotatorArmPower = 0.25;
             leftRotater.setPower(rotatorArmPower);
             rightRotater.setPower(rotatorArmPower);
+            leftRotater.setTargetPosition(leftRotater.getCurrentPosition());
+            rightRotater.setTargetPosition(rightRotater.getCurrentPosition());
+
         }
-
-
-
-        //rotatorArmRunningToPosition = false;
+        rotatorArmRunningToPosition = false;
     }
     public boolean GetRotatorArmRunningToPosition()
     {
@@ -768,6 +793,8 @@ public class Geronimo {
         opMode.telemetry.addData("rightRotater Position: ", rightRotater.getCurrentPosition());
         opMode.telemetry.addData("Rotator Tgt Position: ", rotatorTargetPosition);
         opMode.telemetry.addData("Rotator Arm Power: ", rotatorArmPower);
+        opMode.telemetry.addData("touchSensorRotatorLeft: ", touchSensorRotatorLeft.isPressed());
+        opMode.telemetry.addData("touchSensorRotatorRight: ", touchSensorRotatorRight.isPressed());
         opMode.telemetry.addData("Rotator mode in RUN_TO_POSITION? ", rotatorArmRunningToPosition);
         opMode.telemetry.addData(">", "rotateArms - use rightStick Y, and buttons for control" );
         opMode.telemetry.addData("intake star ROTATOR Pos: ", intakeRotatorPosition);
