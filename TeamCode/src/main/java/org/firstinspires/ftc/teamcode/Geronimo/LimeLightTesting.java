@@ -129,6 +129,7 @@ public class LimeLightTesting extends LinearOpMode {
                     for (LLResultTypes.ClassifierResult cr : classifierResults) {
                         telemetry.addData("Classifier", "Class: %s, Confidence: %.2f", cr.getClassName(), cr.getConfidence());
                     }
+                    // You access the classifier results from here.
 
                     // Access detector results
                     List<LLResultTypes.DetectorResult> detectorResults = result.getDetectorResults();

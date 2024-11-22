@@ -310,14 +310,14 @@ public class Geronimo {
         return offset;
     }
 
-    public List<Double> GetStrafeOffsetInInches(String targetImageName) {
+    public double GetStrafeOffsetInInches(String targetImageName) {
 
         List<Double> scaledOffsets = AlignToTargetImage(targetImageName);
 
         // Check if target was found
         if (scaledOffsets.get(0) == -1.0 && scaledOffsets.get(1) == -1.0) {
             // Target not found; propagate the -1.0 flags
-            return scaledOffsets;
+            return 0;
         }
 
         // Convert scaled offsets back to raw angles
@@ -341,7 +341,7 @@ public class Geronimo {
         strafeOffsetsInInches.add(strafeX);
         strafeOffsetsInInches.add(strafeY);
 
-        return strafeOffsetsInInches;
+        return strafeOffsetsInInches.get(0);
     }
 
     public boolean limelightHasTarget() {
