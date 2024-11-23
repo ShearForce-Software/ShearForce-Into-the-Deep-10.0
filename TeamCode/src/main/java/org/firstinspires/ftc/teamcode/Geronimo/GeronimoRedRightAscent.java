@@ -146,7 +146,7 @@ public class GeronimoRedRightAscent extends LinearOpMode {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!initialized) {
-                control.SpecimenDeliverLow();
+                control.BasketHigh();
                 initialized = true;
             }
             packet.put("SpecimenDeliverLow", 0);
