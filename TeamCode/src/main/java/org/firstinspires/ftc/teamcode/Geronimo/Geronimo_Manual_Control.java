@@ -9,10 +9,13 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 //@Disabled
 public class Geronimo_Manual_Control extends LinearOpMode {
     Geronimo theRobot;
+    boolean rotatorPowerApplied = false;
+
     // Scrimmage Meet Ideas:
     // Press intake button, have claw grab the sample
     // Have claw go down when slides extend forward?
     // 1 button to grab specimen off wall (rotate slides, Limelight correction, grab, rotate claw up to get off wall)
+
     public void runOpMode() {
         theRobot = new Geronimo(true, false, this);
 
@@ -55,6 +58,21 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 else
                 {
                     theRobot.SetSlidesPower(0.0);
+                }
+
+                // RightStickOne Driver 2
+                if(gamepad2.right_stick_y > 0.25){
+                    rotatorPowerApplied = true;
+                    theRobot.SetRotatorArmPower(0.4);
+                }
+                else if(gamepad2.right_stick_y <= -0.25){
+                    rotatorPowerApplied = true;
+                    theRobot.SetRotatorArmPower(-0.4);
+                }
+                else if (rotatorPowerApplied && !theRobot.GetRotatorArmRunningToPosition() && !theRobot.GetRotatorLimitSwitchPressed()) {
+                    rotatorPowerApplied = false;
+                    theRobot.SetRotatorToPosition(theRobot.GetRotatorLeftArmCurrentPosition());
+                 //  theRobot.SetRotatorArmHoldPosition();
                 }
 
                 // gamepad_1.square --> stop and reset on the slides
@@ -116,15 +134,19 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 else if (gamepad2.share){
                     theRobot.AutoStartPosition();
                 }
-                else if (gamepad2.circle){
+             /*   else if (gamepad2.circle){
                     theRobot.SpecimenDeliverLow();
                 }
+
+              */
                 else if(gamepad2.triangle){
                     theRobot.SpecimenDeliverHigh();
                 }
                 else if(gamepad2.square){
                     theRobot.SpecimenPickupFromWall();
                 }
+
+
 
 
                 // Claw Control
@@ -156,13 +178,13 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 }
 
                 // intake Star Control
-                if (gamepad2.right_trigger > 0.1)
+                if (gamepad2.right_trigger > 0.2)
                 {
-                    theRobot.SetIntakeStarPower(gamepad2.right_trigger);
+                    theRobot.SetIntakeStarPower(1);
                 }
-                else if (gamepad2.left_trigger > 0.1)
+                else if (gamepad2.left_trigger > 0.2)
                 {
-                    theRobot.SetIntakeStarPower(-gamepad2.left_trigger);
+                    theRobot.SetIntakeStarPower(-1);
                 }
                 else {
                     theRobot.SetIntakeStarPower(0.0);
@@ -192,9 +214,11 @@ public class Geronimo_Manual_Control extends LinearOpMode {
 
                     theRobot.BasketHigh();
                 }
-                else if (gamepad2.dpad_down){
+               /* else if (gamepad2.dpad_down){
                     theRobot.BasketLow();
                 }
+
+                */
 
 
                 theRobot.ShowTelemetry();

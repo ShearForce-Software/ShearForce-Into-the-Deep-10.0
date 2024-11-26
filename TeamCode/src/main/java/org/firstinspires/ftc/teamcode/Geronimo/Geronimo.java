@@ -21,7 +21,6 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 //import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
@@ -34,7 +33,6 @@ import java.util.concurrent.TimeUnit;
 
 import android.graphics.Color;
 
-import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.SwitchableLight;
 
@@ -54,7 +52,7 @@ public class Geronimo {
     boolean rotatorArmRunningToPosition = false;
     public static final int ROTATOR_ARMS_MIN_POS = 0;
     public static final int ROTATOR_ARMS_MAX_POS = 1000;
-    public static final double ROTATOR_ARMS_POS_POWER = 0.5;
+    public static final double ROTATOR_ARMS_POS_POWER = 0.75;
     int slidesTargetPosition = 0;
     boolean slidesRunningToPosition = false;
     public static final double SLIDES_POS_POWER = 0.75;
@@ -70,9 +68,9 @@ public class Geronimo {
     double claw_position = 0.5;
 
     Servo intakeRotater;
-    public static final double INTAKE_ROTATOR_MAX_POS = 1.0;
-    public static final double INTAKE_ROTATOR_MIN_POS = 0.0;
-    public static final double INTAKE_ROTATOR_INCREMENT = 0.05;
+    public static final double INTAKE_STAR_BOX_ROTATOR_MAX_POS = 1.0;
+    public static final double INTAKE_STAR_BOX_ROTATOR_MIN_POS = 0.0;
+    public static final double INTAKE_STAR_BOX_ROTATOR_INCREMENT = 0.005;
     double intakeRotatorPosition = 0.5;
 
     Servo intakeHangerLeft;
@@ -539,13 +537,13 @@ public class Geronimo {
 
     public void SetIntakeStarRotatorPosition(double position)
     {
-        if (position > INTAKE_ROTATOR_MAX_POS)
+        if (position > INTAKE_STAR_BOX_ROTATOR_MAX_POS)
         {
-            intakeRotatorPosition = INTAKE_ROTATOR_MAX_POS;
+            intakeRotatorPosition = INTAKE_STAR_BOX_ROTATOR_MAX_POS;
         }
-        else if (position < INTAKE_ROTATOR_MIN_POS)
+        else if (position < INTAKE_STAR_BOX_ROTATOR_MIN_POS)
         {
-            intakeRotatorPosition = INTAKE_ROTATOR_MIN_POS;
+            intakeRotatorPosition = INTAKE_STAR_BOX_ROTATOR_MIN_POS;
         }
         else {
             intakeRotatorPosition = position;
@@ -555,13 +553,13 @@ public class Geronimo {
 
     public void IntakeStarRotatorIncrementUp()
     {
-        intakeRotatorPosition += INTAKE_ROTATOR_INCREMENT;
+        intakeRotatorPosition += INTAKE_STAR_BOX_ROTATOR_INCREMENT;
         SetIntakeStarRotatorPosition(intakeRotatorPosition);
     }
 
     public void IntakeStarRotatorDecrementDown()
     {
-        intakeRotatorPosition -= INTAKE_ROTATOR_INCREMENT;
+        intakeRotatorPosition -= INTAKE_STAR_BOX_ROTATOR_INCREMENT;
         SetIntakeStarRotatorPosition(intakeRotatorPosition);
     }
 
@@ -649,6 +647,7 @@ public class Geronimo {
         slideRight.setPower(slidePower);
     }
 
+
     public void IntakeFromFloor()
     {
         SetSlideToPosition(-695);
@@ -665,6 +664,7 @@ public class Geronimo {
         SetHangerPosition(0);
         SetSlideToPosition(0);
         SetRotatorToPosition(0);
+        // TODO add something that adjusts green box?
     }
 
     public void SpecimenDeliverLow(){
@@ -683,22 +683,30 @@ public class Geronimo {
 
     public void SpecimenPickupFromWall(){
         SetIntakeStarRotatorPosition(0.85);
-        SetHangerPosition(0.35);
-        SetSlideToPosition(-695);
-        SetRotatorToPosition(180); //subject to change
-        //SetRotatorToPosition(0);
-        //SetSlideToPosition(0);
-        //SetHangerPosition(1);
-        //SetIntakeStarRotatorPosition(0.85);
+        SetHangerPosition(0.15);
+        SetSlideToPosition(0);
+        SetRotatorToPosition(0);
+        //0.85 IntakeStarRotator, hanger position (0.15/0.8)
     }
 
 
     public void BasketHigh(){
-        SetIntakeStarRotatorPosition(1);
+        SetIntakeStarRotatorPosition(0.85);
+        SetHangerPosition(0.8);
+        SetSlideToPosition(-2320);
+        SetRotatorToPosition(8008);
+       /* SetIntakeStarRotatorPosition(1);
         SetHangerPosition(0.6);
         SetSlideToPosition(-850);
         SetRotatorToPosition(450);
+
+        */
     }
+    // hanger position 0.8
+    // .15 right
+    //slides - -2320
+    //rotator 8008
+    //0.85 IntakeStarRotator, hanger position (0.15/0.8)
 
     public void BasketLow(){
         SetIntakeStarRotatorPosition(1);
@@ -710,12 +718,17 @@ public class Geronimo {
 
 
 
+
+
     public void SetRotatorArmPower (double power)
     {
         rotatorArmPower = power;
         rotatorArmRunningToPosition = false;
         leftRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightRotater.setPower(rotatorArmPower);
+        leftRotater.setPower(rotatorArmPower);
+
     }
     public void SetRotatorToPosition (int position)
     {
@@ -762,7 +775,7 @@ public class Geronimo {
             rightRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
         else {
-            rotatorArmPower = 0.25;
+            rotatorArmPower = 0.75;
             leftRotater.setPower(rotatorArmPower);
             rightRotater.setPower(rotatorArmPower);
             leftRotater.setTargetPosition(leftRotater.getCurrentPosition());
