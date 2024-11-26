@@ -2,7 +2,7 @@
 
 == TODO List
 
-- [ ] Create updated auto routines that puts specimen on bar, and then moves the 3 floor samples to corner, then parks
+- [ ] Create updated auto routines that puts specimen on bar, and then moves the 3 floor samples to corner, then parks --- AIDAN
 - [ ] Split up Slide Arm Rotator motor control logic to run independently, so motors can catch up
 - [ ] Split up Slide motor control logic to run independently, so motors can catch up
 - [ ] Find servo and arm positions to put specimen into so can just drive forward to snap onto bar
