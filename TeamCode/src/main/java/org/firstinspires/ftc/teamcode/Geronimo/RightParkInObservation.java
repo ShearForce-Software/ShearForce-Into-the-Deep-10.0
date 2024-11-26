@@ -7,44 +7,32 @@ import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.ProfileAccelConstraint;
-import com.acmerobotics.roadrunner.SequentialAction;
-import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.TranslationalVelConstraint;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.VelConstraint;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 
-//////////////////////// DON'T USE; use Level1AscentLeft
-@Autonomous(name="Level1AscentBlueLeft")
- @Disabled
-public class GeronimoBlueLeftAscent extends LinearOpMode {
+@Autonomous(name="RightParkInObservation", preselectTeleOp = "Geronimo 1 Manual Control")
+// @Disabled
+public class RightParkInObservation extends LinearOpMode {
     Geronimo control = new Geronimo(true, false,this);
     MecanumDrive_Geronimo drive;
     Pose2d startPose;
-    Pose2d deliverToFloorPose;
-    Pose2d deliverToBoardPose;
-    Pose2d stackPose;
     Action WallTraj;
-    Action DriveToStack;
     Action SubmersibleTraj;
     Action Park;
-    Action DriveBackToStack;
     VelConstraint speedUpVelocityConstraint;
     AccelConstraint speedUpAccelerationConstraint;
     VelConstraint slowDownVelocityConstraint;
     AccelConstraint slowDownAccelerationConstraint;
-    double stackY = 36;
-    double stackX = -59;
     double wallDriveY = 58.5;
 
-    double autoPosition = 3;
 
     public void runOpMode(){
-        startPose = new Pose2d(12,63, Math.toRadians(90));
+        startPose = new Pose2d(12,-63, Math.toRadians(90));
         // stackPose = new Pose2d(stackX, stackY, Math.toRadians(180)); //-54.5,-11.5
 
         // Define some custom constraints to use when wanting to go faster than defaults
@@ -59,6 +47,9 @@ public class GeronimoBlueLeftAscent extends LinearOpMode {
         //control.WebcamInit(hardwareMap);
         telemetry.update();
         control.imuOffsetInDegrees = 270; // Math.toDegrees(startPose.heading.toDouble());
+        control.SetClawPosition(Geronimo.CLAW_MAX_POS);
+        sleep(500);
+        control.AutoStartPosition();
 
         while(!isStarted()){
             telemetry.update();
@@ -70,31 +61,32 @@ public class GeronimoBlueLeftAscent extends LinearOpMode {
         // ****  START DRIVING    ****************************
         // ***************************************************
 
-        SubmersibleTraj= drive.actionBuilder(startPose)
-                .strafeToLinearHeading(new Vector2d(36,  36), Math.toRadians(-90))
-                .strafeToLinearHeading(new Vector2d(36, 12), Math.toRadians((-90)))
-                .strafeToLinearHeading(new Vector2d(24,12), Math.toRadians(-90))
-                //
+        SubmersibleTraj= drive.actionBuilder(drive.pose)
+                // .strafeToLinearHeading(new Vector2d(36,  36), Math.toRadians(-90))
+                //   .strafeToLinearHeading(new Vector2d(36, 12), Math.toRadians((-90)))
+                //  .strafeToLinearHeading(new Vector2d(28,6), Math.toRadians(-90))
+            //    .splineToLinearHeading(new Pose2d(48,-11, Math.toRadians(180)), Math.toRadians(90))
+                .splineToConstantHeading(new Vector2d(12, -60), Math.toRadians(90))
+                .strafeTo(new Vector2d(60, -60))
                 .build();
 
 
-        WallTraj = drive.actionBuilder(new Pose2d(-12,-30,Math.toRadians(90)))
+      /*  WallTraj = drive.actionBuilder(new Pose2d(-12,-30,Math.toRadians(90)))
                 .strafeToLinearHeading(new Vector2d(-12, -36), Math.toRadians(225))
                 .strafeToLinearHeading(new Vector2d(-48, -48), Math.toRadians(225))
                 .build();
+
+       */
 
 
 
         /* Drive to the Board */
         Actions.runBlocking(
                 new ParallelAction(
-                        SubmersibleTraj,
-                       // new SleepAction(3),
-                    new SequentialAction(
-                            specimenDeliverLow()
-                          )
-                )
+                        SubmersibleTraj
 
+
+                )
 
         );
 
@@ -143,6 +135,7 @@ public class GeronimoBlueLeftAscent extends LinearOpMode {
             return false;  // returning true means not done, and will be called again.  False means action is completely done
         }
     }
+
     public Action specimenDeliverLow (){return new SpecimenDeliverLow();}
     public class SpecimenDeliverLow implements Action{
         private boolean initialized = false;
@@ -156,6 +149,5 @@ public class GeronimoBlueLeftAscent extends LinearOpMode {
             return false;  // returning true means not done, and will be called again.  False means action is completely done
         }
     }
-
 }
 

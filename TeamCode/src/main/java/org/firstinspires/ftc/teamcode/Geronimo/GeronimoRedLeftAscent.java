@@ -19,7 +19,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import java.util.Vector;
 
 
-@Autonomous(name="Level1AscentRedLeft")
+@Autonomous(name="Level1AscentLeft", preselectTeleOp = "Geronimo 1 Manual Control")
 // @Disabled
 public class GeronimoRedLeftAscent extends LinearOpMode {
     Geronimo control = new Geronimo(true, false,this);
@@ -52,6 +52,9 @@ public class GeronimoRedLeftAscent extends LinearOpMode {
         //control.WebcamInit(hardwareMap);
         telemetry.update();
         control.imuOffsetInDegrees = 270; // Math.toDegrees(startPose.heading.toDouble());
+        control.SetClawPosition(Geronimo.CLAW_MAX_POS);
+        sleep(500);
+        control.AutoStartPosition();
 
         while(!isStarted()){
             telemetry.update();
@@ -68,7 +71,7 @@ public class GeronimoRedLeftAscent extends LinearOpMode {
                 //   .strafeToLinearHeading(new Vector2d(36, 12), Math.toRadians((-90)))
                 //  .strafeToLinearHeading(new Vector2d(28,6), Math.toRadians(-90))
                 .splineToLinearHeading(new Pose2d(-48,-11, Math.toRadians(0)), Math.toRadians(90))
-                .strafeTo(new Vector2d(-30, -11))
+                .strafeTo(new Vector2d(-28, -11))
                 .build();
 
 
@@ -130,7 +133,7 @@ public class GeronimoRedLeftAscent extends LinearOpMode {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!initialized) {
-                control.SpecimenDeliverLow();
+                control.BasketHigh();
                 initialized = true;
             }
             packet.put("SpecimenDeliverLow", 0);

@@ -9,7 +9,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 //@Disabled
 public class Geronimo_Manual_Control extends LinearOpMode {
     Geronimo theRobot;
-
+    // Scrimmage Meet Ideas:
+    // Press intake button, have claw grab the sample
+    // Have claw go down when slides extend forward?
+    // 1 button to grab specimen off wall (rotate slides, Limelight correction, grab, rotate claw up to get off wall)
     public void runOpMode() {
         theRobot = new Geronimo(true, false, this);
 

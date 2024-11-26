@@ -15,10 +15,12 @@ import com.acmerobotics.roadrunner.VelConstraint;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 
+//////////////////////// DON'T USE; use Level1AscentRight
 @Autonomous(name="Level1AscentBlueRight")
-// @Disabled
+@Disabled
 public class GeronimoBlueRightAscent extends LinearOpMode {
     Geronimo control = new Geronimo(true, false,this);
     MecanumDrive_Geronimo drive;
@@ -145,7 +147,7 @@ public class GeronimoBlueRightAscent extends LinearOpMode {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!initialized) {
-                control.SpecimenDeliverLow();
+                control.BasketHigh();
                 initialized = true;
             }
             packet.put("SpecimenDeliverLow", 0);

@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.Gertrude.BlueFarWORLDS_Gertrude;
 import java.util.Vector;
 
 
-@Autonomous(name="Level1AscentRedRight")
+@Autonomous(name="Level1AscentRight", preselectTeleOp = "Geronimo 1 Manual Control")
 // @Disabled
 public class GeronimoRedRightAscent extends LinearOpMode {
     Geronimo control = new Geronimo(true, false,this);
@@ -69,7 +69,7 @@ public class GeronimoRedRightAscent extends LinearOpMode {
              //   .strafeToLinearHeading(new Vector2d(36, 12), Math.toRadians((-90)))
               //  .strafeToLinearHeading(new Vector2d(28,6), Math.toRadians(-90))
                 .splineToLinearHeading(new Pose2d(48,-11, Math.toRadians(180)), Math.toRadians(90))
-                .strafeTo(new Vector2d(30, -11))
+                .strafeTo(new Vector2d(23, -11))
                 .build();
 
 
@@ -146,7 +146,7 @@ public class GeronimoRedRightAscent extends LinearOpMode {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!initialized) {
-                control.SpecimenDeliverLow();
+                control.BasketHigh();
                 initialized = true;
             }
             packet.put("SpecimenDeliverLow", 0);
