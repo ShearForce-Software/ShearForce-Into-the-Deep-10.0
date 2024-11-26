@@ -2,17 +2,22 @@
 
 == TODO List
 
-- [ ] Test new manual control combo butt ons
-- [ ] Test all 4 auto park routines
-- [ ] Create control methods to lift specimen off wall and to pull down on bar
-- [ ] Test & Document best arm intake positions for different common actions (intake from floor, deliver to high/low basket, pick up specimen off wall, deliver specimen to high/low)
 - [ ] Create updated auto routines that puts specimen on bar, and then moves the 3 floor samples to corner, then parks
+- [ ] Split up Slide Arm Rotator motor control logic to run independently, so motors can catch up
+- [ ] Split up Slide motor control logic to run independently, so motors can catch up
+- [ ] Find servo and arm positions to put specimen into so can just drive forward to snap onto bar
+- [ ] Experiment with different box orientations for intake from the floor
 - [ ] Create routine in Geronimo that uses the Limelight to report Red, Blue, or Yellow --- AKSHAY
 - [ ] Create routine in Geronimo that uses the Limelight to report left or right inches from specimen
 - [ ] Create routine in Geronimo that uses color sensor to report red, blue, or yellow --- MATTHEW
-- [ ] Improve arm control so the arm doesn't slam down when set to position 0.
-- [ ] Test on Geronimo an auto trajectory that uses arm actions in parallel while driving
 - [ ] Fully Re-Calibrate Geronimo
+- [ ] Fix the bad laptop
+- [x] Improve arm control so the arm doesn't slam down when set to position 0.
+- [x] Create control methods to lift specimen off wall and to pull down on bar
+- [x] Test & Document best arm intake positions for different common actions (intake from floor, deliver to high/low basket, pick up specimen off wall, deliver specimen to high/low)
+- [x] Test on Geronimo an auto trajectory that uses arm actions in parallel while driving
+- [x] Test new manual control combo butt ons
+- [x] Test all 4 auto park routines
 - [x] Create auto routines to park from all 4 start locations
 - [x] Test Manual control - adjust game-controller controls to be easy to use
 - [x] Test using trajectory
