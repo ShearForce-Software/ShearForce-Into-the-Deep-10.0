@@ -686,7 +686,12 @@ public class Geronimo {
         SetHangerPosition(0.35);
         SetSlideToPosition(-695);
         SetRotatorToPosition(180); //subject to change
+        //SetRotatorToPosition(0);
+        //SetSlideToPosition(0);
+        //SetHangerPosition(1);
+        //SetIntakeStarRotatorPosition(0.85);
     }
+
 
     public void BasketHigh(){
         SetIntakeStarRotatorPosition(1);
