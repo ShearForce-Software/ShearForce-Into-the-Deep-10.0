@@ -205,14 +205,17 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 if (gamepad2.dpad_left)
                 {
                     theRobot.IntakeStarRotatorDecrementDown();
+                    telemetry.addLine("WORKSSSSSSS DOWNNNNNN");
                 }
                 else if (gamepad2.dpad_right)
                 {
                     theRobot.IntakeStarRotatorIncrementUp();
+                    telemetry.addLine("WORKSSSSSSS UPPPPPPPPPPPP");
                 }
                 else if (gamepad2.dpad_up){
 
                     theRobot.BasketHigh();
+                    telemetry.addLine("WORKSSSSSSS");
                 }
                 else if (gamepad2.dpad_down){
                     theRobot.CycleIntakeStarMode();
