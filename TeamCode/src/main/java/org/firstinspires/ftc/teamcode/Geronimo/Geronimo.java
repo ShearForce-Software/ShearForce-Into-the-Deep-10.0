@@ -766,7 +766,7 @@ public class Geronimo {
 
         return returnValue;
     }
-    public void SetRotatorArmHoldPosition()
+    public void  SetRotatorArmHoldPosition()
     {
         if (rotatorTargetPosition == 0) {
             rotatorArmPower = 0.0;
