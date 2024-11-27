@@ -693,7 +693,7 @@ public class Geronimo {
     public void BasketHigh(){
         SetIntakeStarRotatorPosition(0.85);
         SetHangerPosition(0.8);
-        SetRotatorToPosition(8008);
+        SetRotatorToPosition(800); //8008, 450
         SpecialSleep(20000);
         SetSlideToPosition(-2320);
        /* SetIntakeStarRotatorPosition(1);
