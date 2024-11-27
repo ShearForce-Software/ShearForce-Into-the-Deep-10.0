@@ -208,12 +208,12 @@ public class Geronimo {
         intakeStar = hardwareMap.get(CRServo.class, "intakeStar");
 
         // ********** Color Sensors ********************
-        /*
+
         leftColorSensor = hardwareMap.get(RevColorSensorV3.class, "ColorSensorLeft");
         rightColorSensor = hardwareMap.get(RevColorSensorV3.class, "ColorSensorRight");
         leftColorSensor.enableLed(false);
         rightColorSensor.enableLed(false);
-        */
+
         // ********** Touch Sensors ********************
 
         touchSensorRotatorRight = hardwareMap.get(TouchSensor.class, "sensor_touchRight");
