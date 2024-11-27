@@ -386,7 +386,7 @@ public class Geronimo {
             ((SwitchableLight) leftColorSensor).enableLight(true);
         }
     }
-
+/*
     // colorFound loop
     public boolean ColorRevV3SensorChecker(colorEnum targetColor) {
         boolean colorFound = false;
@@ -400,6 +400,8 @@ public class Geronimo {
         }
         return colorFound;
     }
+
+ */
 
     // returns colorEnum color detected
     public colorEnum ColorRevV3Sensor() {
@@ -431,7 +433,7 @@ public class Geronimo {
         double vMinBlue = 0.514;
         double vMaxBlue = 1.000;
 
-        // determine if color is blue, red or yellow and show telemetry
+        // determine if color is blue, red or yellow
         if (hsvValues[0] >= hMinBlue && hsvValues[1] >= sMinBlue)
             colorDetected = colorEnum.blue;
 
@@ -828,6 +830,7 @@ public class Geronimo {
         opMode.telemetry.addData(">", "rotateArms - use rightStick Y, and buttons for control" );
         opMode.telemetry.addData("intake star ROTATOR Pos: ", intakeRotatorPosition);
         opMode.telemetry.addData(">", "intake star rotator - use G1 - dpad for control" );
+        opMode.telemetry.addData("Color sensed: " , ColorRevV3Sensor().toString());
 
 
         showColorSensorTelemetry();

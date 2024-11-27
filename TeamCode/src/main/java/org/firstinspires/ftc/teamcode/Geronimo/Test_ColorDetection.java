@@ -89,7 +89,7 @@ public class Test_ColorDetection extends LinearOpMode {
             }
             if (gamepad2.a)
             {
-                theRobot.ColorRevV3SensorChecker(targetColor);
+                /*theRobot.ColorRevV3SensorChecker(targetColor);*/
             }
 
 
