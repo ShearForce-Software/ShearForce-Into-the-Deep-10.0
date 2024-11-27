@@ -45,21 +45,23 @@ public class Geronimo {
     DcMotor rightFront;
     DcMotor rightRear;
 
-    DcMotor leftRotater;
-    DcMotor rightRotater;
-    int rotatorTargetPosition = 0;
-    double rotatorArmPower = 0.0;
-    boolean rotatorArmRunningToPosition = false;
-    public static final int ROTATOR_ARMS_MIN_POS = 0;
-    public static final int ROTATOR_ARMS_MAX_POS = 1000;
-    public static final double ROTATOR_ARMS_POS_POWER = 0.75;
-    int slidesTargetPosition = 0;
-    boolean slidesRunningToPosition = false;
-    public static final double SLIDES_POS_POWER = 0.75;
-
+    DcMotor leftSlideArmRotatorMotor;
+    DcMotor rightSlideArmRotatorMotor;
+    int slideArmRotatorTargetPosition = 0;
+    double slideArmRotatorPower = 0.0;
+    boolean slideArmRotatorRunningToPosition = false;
+    public static final int SLIDE_ARM_ROTATOR_MIN_POS = 0;
+    public static final int SLIDE_ARM_ROTATOR_MAX_POS = 1000;
+    public static final double SLIDE_ARM_ROTATOR_POWER = 0.75;
 
     DcMotor slideLeft;
     DcMotor slideRight;
+    int slidesTargetPosition = 0;
+    boolean slidesRunningToPosition = false;
+    public static final double SLIDES_POS_POWER = 0.75;
+    public static final int SLIDE_ARM_MIN_POS = 0;
+    public static final int SLIDE_ARM_MAX_POS = 1000;
+
     IMU imu;
 
     Servo clawServo;
@@ -67,21 +69,21 @@ public class Geronimo {
     public static final double CLAW_MIN_POS = 0.0;
     double claw_position = 0.5;
 
-    Servo intakeRotater;
+    Servo intakeBoxRotaterServo;
     public static final double INTAKE_STAR_BOX_ROTATOR_MAX_POS = 1.0;
     public static final double INTAKE_STAR_BOX_ROTATOR_MIN_POS = 0.0;
     public static final double INTAKE_STAR_BOX_ROTATOR_INCREMENT = 0.005;
-    double intakeRotatorPosition = 0.5;
+    double intakeBoxRotatorPosition = 0.5;
 
-    Servo intakeHangerLeft;
-    Servo intakeHangerRight;
-    public static final double HANGER_MAX_POS = 0.95;
-    public static final double HANGER_MIN_POS = 0.0;
-    double intakeHangerLeftPosition = 0.5;
-    double intakeHangerRightPosition = 0.5;
-    static final double HANGER_INCREMENT   = 0.05;
+    Servo smallArmHangerLeftServo;
+    Servo smallArmHangerRightServo;
+    public static final double SMALL_ARMHANGER_MAX_POS = 0.95;
+    public static final double SMALL_ARM_HANGER_MIN_POS = 0.0;
+    double smallArmHangerLeftPosition = 0.5;
+    double smallArmHangerRightPosition = 0.5;
+    static final double SMALL_ARM_HANGER_INCREMENT = 0.05;
 
-    public CRServo intakeStar;
+    public CRServo intakeStarServo;
     double intakeStarPower = 0.0;
 
     boolean intakeStarLastForward = false;
@@ -139,8 +141,6 @@ public class Geronimo {
     private static final double KpDistance = -0.1; // Proportional control constant for distance adjustment
     private static final double KpAim = 0.1; // Proportional control constant for aiming adjustment
 
-
-
     // REV v3 color sensor variables
     public enum colorEnum {
         noColor,
@@ -168,22 +168,22 @@ public class Geronimo {
         rightFront.setDirection(DcMotor.Direction.FORWARD);
 
         // ************* Rotator ARM MOTORS ****************
-        leftRotater = hardwareMap.get(DcMotorEx.class, "leftRotater");
-        rightRotater = hardwareMap.get(DcMotorEx.class, "rightRotater");
+        leftSlideArmRotatorMotor = hardwareMap.get(DcMotorEx.class, "leftRotater");
+        rightSlideArmRotatorMotor = hardwareMap.get(DcMotorEx.class, "rightRotater");
 
-        leftRotater.setDirection(DcMotor.Direction.REVERSE);
-        rightRotater.setDirection(DcMotorSimple.Direction.FORWARD);
+        leftSlideArmRotatorMotor.setDirection(DcMotor.Direction.REVERSE);
+        rightSlideArmRotatorMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        leftRotater.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
-        rightRotater.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
-        leftRotater.setPower(0.0);
-        rightRotater.setPower(0.0);
-        leftRotater.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightRotater.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightRotater.setTargetPosition(rotatorTargetPosition);
-        leftRotater.setTargetPosition(rotatorTargetPosition);
-        leftRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftSlideArmRotatorMotor.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
+        rightSlideArmRotatorMotor.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
+        leftSlideArmRotatorMotor.setPower(0.0);
+        rightSlideArmRotatorMotor.setPower(0.0);
+        leftSlideArmRotatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightSlideArmRotatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightSlideArmRotatorMotor.setTargetPosition(slideArmRotatorTargetPosition);
+        leftSlideArmRotatorMotor.setTargetPosition(slideArmRotatorTargetPosition);
+        leftSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // ************* Slide MOTORS ****************
         slideLeft = hardwareMap.get(DcMotorEx.class, "slideLeft");
@@ -204,10 +204,10 @@ public class Geronimo {
 
         // ********** Servos ********************
         clawServo = hardwareMap.get(Servo.class, "clawServo");
-        intakeRotater = hardwareMap.get(Servo.class, "intakeRotater");
-        intakeHangerLeft = hardwareMap.get(Servo.class, "intakeHangerLeft");
-        intakeHangerRight = hardwareMap.get(Servo.class, "intakeHangerRight");
-        intakeStar = hardwareMap.get(CRServo.class, "intakeStar");
+        intakeBoxRotaterServo = hardwareMap.get(Servo.class, "intakeRotater");
+        smallArmHangerLeftServo = hardwareMap.get(Servo.class, "intakeHangerLeft");
+        smallArmHangerRightServo = hardwareMap.get(Servo.class, "intakeHangerRight");
+        intakeStarServo = hardwareMap.get(CRServo.class, "intakeStar");
 
         // ********** Color Sensors ********************
         /*
@@ -494,18 +494,6 @@ public class Geronimo {
         blinkinLedDriverLeft = hardwareMap.get(RevBlinkinLedDriver.class,"leftBlinkin");
         blinkinLedDriverRight = hardwareMap.get(RevBlinkinLedDriver.class,"rightBlinkin");
 
-        /*
-        Servo fakeBlinkinLeft = hardwareMap.get(Servo.class, "leftBlinkin");
-        Servo fakeBlinkinRight = hardwareMap.get(Servo.class, "rightBlinkin");
-        fakeBlinkinLeft.getController().setServoPosition(fakeBlinkinLeft.getPortNumber(), 2125);
-        fakeBlinkinRight.getController().setServoPosition(fakeBlinkinRight.getPortNumber(), 2125);
-        opMode.sleep(100);
-        */
-
-
-        //setBlinken_to5Volt();
-        //leftColorSensor = hardwareMap.get(RevColorSensorV3.class, "ColorSensorLeft");
-
         if(allianceColorIsBlue){
             Blinken_left_pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;
             Blinken_right_pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;
@@ -519,102 +507,118 @@ public class Geronimo {
         }
     }
 
-    // Servo Methods
-    public void SetClawPosition(double position)
+
+
+    // *********************************************************
+    // ****      COMBO MOVES                                ****
+    // *********************************************************
+
+    public void AutoStartPosition()
     {
-        if (position > CLAW_MAX_POS)
-        {
-            claw_position = CLAW_MAX_POS;
-        }
-        else if (position < CLAW_MIN_POS)
-        {
-            claw_position = CLAW_MIN_POS;
-        }
-        else
-        {
-            claw_position = position;
-        }
-        clawServo.setPosition(claw_position);
+        SetIntakeBoxRotatorPosition(0.9);
+        SetSmallArmSetHangerPosition(0);
+        SetSlideToPosition(0);
+        SetSlideRotatorArmToPosition(0);
+        // TODO add something that adjusts green box?
     }
 
-    public void SetIntakeStarRotatorPosition(double position)
+    public void IntakeFromFloor()
+    {
+        SetSlideToPosition(-695);
+        SpecialSleep(500); //reduce in future
+        SetSlideRotatorArmToPosition(0);
+        SpecialSleep(250);
+        SetSmallArmSetHangerPosition(0.7);
+        SetIntakeBoxRotatorPosition(1);
+    }
+
+    public void SpecimenDeliverLow(){
+        SetIntakeBoxRotatorPosition(0.44);
+        SetSmallArmSetHangerPosition(0.4);
+    }
+
+    public void RemoveFromWall(){
+        SetIntakeBoxRotatorPosition(0.85);
+        SetSmallArmSetHangerPosition(0.15);
+        SetSlideToPosition(0);
+        SetSlideRotatorArmToPosition(0);
+    }
+
+    public void SpecimenDeliverHigh(){
+        SetIntakeBoxRotatorPosition(0.85);
+        SetSmallArmSetHangerPosition(0.35);
+        SetSlideToPosition(-750);
+        SetSlideRotatorArmToPosition(450); //subject to change
+    }
+
+    public void SpecimenPickupFromWall(){
+        SetIntakeBoxRotatorPosition(0.85);
+        SetSmallArmSetHangerPosition(0.14);
+        SetSlideToPosition(0);
+        SetSlideRotatorArmToPosition(0);
+        //0.85 IntakeStarRotator, hanger position (0.15/0.8)
+    }
+
+    public void BasketHigh(){
+        SetIntakeBoxRotatorPosition(0.85);
+        SetSmallArmSetHangerPosition(0.8);
+        SetSlideRotatorArmToPosition(800); //8008, 450
+        SpecialSleep(20000);
+        SetSlideToPosition(-2320);
+    }
+    // hanger position 0.8
+    // .15 right
+    //slides - -2320
+    //rotator 8008
+    //0.85 IntakeStarRotator, hanger position (0.15/0.8)
+
+    public void BasketLow(){
+        SetIntakeBoxRotatorPosition(1);
+        SetSmallArmSetHangerPosition(0.6);
+        SetSlideToPosition(-1300);
+        SetSlideRotatorArmToPosition(450);
+    }
+
+    // *********************************************************
+    // ****       Green Intake Box Controls                 ****
+    // *********************************************************
+
+    public void SetIntakeBoxRotatorPosition(double position)
     {
         if (position > INTAKE_STAR_BOX_ROTATOR_MAX_POS)
         {
-            intakeRotatorPosition = INTAKE_STAR_BOX_ROTATOR_MAX_POS;
+            intakeBoxRotatorPosition = INTAKE_STAR_BOX_ROTATOR_MAX_POS;
         }
         else if (position < INTAKE_STAR_BOX_ROTATOR_MIN_POS)
         {
-            intakeRotatorPosition = INTAKE_STAR_BOX_ROTATOR_MIN_POS;
+            intakeBoxRotatorPosition = INTAKE_STAR_BOX_ROTATOR_MIN_POS;
         }
         else {
-            intakeRotatorPosition = position;
+            intakeBoxRotatorPosition = position;
         }
-        intakeRotater.setPosition(intakeRotatorPosition);
+        intakeBoxRotaterServo.setPosition(intakeBoxRotatorPosition);
     }
 
-    public void IntakeStarRotatorIncrementUp()
+    public void SetIntakeBoxRotatorIncrementUp()
     {
-        intakeRotatorPosition += INTAKE_STAR_BOX_ROTATOR_INCREMENT;
-        SetIntakeStarRotatorPosition(intakeRotatorPosition);
+        intakeBoxRotatorPosition += INTAKE_STAR_BOX_ROTATOR_INCREMENT;
+        SetIntakeBoxRotatorPosition(intakeBoxRotatorPosition);
     }
 
-    public void IntakeStarRotatorDecrementDown()
+    public void SetIntakeBoxRotatorDecrementDown()
     {
-        intakeRotatorPosition -= INTAKE_STAR_BOX_ROTATOR_INCREMENT;
-        SetIntakeStarRotatorPosition(intakeRotatorPosition);
+        intakeBoxRotatorPosition -= INTAKE_STAR_BOX_ROTATOR_INCREMENT;
+        SetIntakeBoxRotatorPosition(intakeBoxRotatorPosition);
     }
 
-    public void SetHangerMaxUp()
-    {
-        intakeHangerRightPosition = HANGER_MAX_POS;
-        intakeHangerLeftPosition = HANGER_MIN_POS;
-
-        intakeHangerLeft.setPosition(intakeHangerLeftPosition);
-        intakeHangerRight.setPosition(intakeHangerRightPosition);
-    }
-    public void SetHangerMaxDown()
-    {
-        intakeHangerRightPosition = HANGER_MIN_POS;
-        intakeHangerLeftPosition = HANGER_MAX_POS;
-
-        intakeHangerLeft.setPosition(intakeHangerLeftPosition);
-        intakeHangerRight.setPosition(intakeHangerRightPosition);
-    }
-    public void HangerIncrementUp()
-    {
-        intakeHangerRightPosition += HANGER_INCREMENT;
-        SetHangerPosition(intakeHangerRightPosition);
-    }
-    public void HangerDecrementDown()
-    {
-        intakeHangerRightPosition -= HANGER_INCREMENT;
-        SetHangerPosition(intakeHangerRightPosition);
-    }
-    public void SetHangerPosition(double position)
-    {
-        if (position > HANGER_MAX_POS)
-        {
-            intakeHangerRightPosition = HANGER_MAX_POS;
-            intakeHangerLeftPosition = HANGER_MIN_POS;
-        }
-        else if (position < HANGER_MIN_POS) {
-            intakeHangerRightPosition = HANGER_MIN_POS;
-            intakeHangerLeftPosition = HANGER_MAX_POS;
-        }
-        else {
-            intakeHangerRightPosition = position;
-            intakeHangerLeftPosition = HANGER_MAX_POS - position;
-        }
-
-        intakeHangerLeft.setPosition(intakeHangerLeftPosition);
-        intakeHangerRight.setPosition(intakeHangerRightPosition);
-    }
+    // *********************************************************
+    // ****       Intake Stars Controls                     ****
+    // *********************************************************
 
     public void SetIntakeStarPower(double power)
     {
         intakeStarPower = power;
-        intakeStar.setPower(intakeStarPower);
+        intakeStarServo.setPower(intakeStarPower);
     }
 
     public void CycleIntakeStarMode(){
@@ -634,8 +638,70 @@ public class Geronimo {
         }
     }
 
+    // *********************************************************
+    // ****       CLAW Controls                             ****
+    // *********************************************************
 
+    public void SetClawPosition(double position)
+    {
+        if (position > CLAW_MAX_POS)
+        {
+            claw_position = CLAW_MAX_POS;
+        }
+        else if (position < CLAW_MIN_POS)
+        {
+            claw_position = CLAW_MIN_POS;
+        }
+        else
+        {
+            claw_position = position;
+        }
+        clawServo.setPosition(claw_position);
+    }
 
+    // *********************************************************
+    // ****       Small Arm (Hangers) Controls              ****
+    // *********************************************************
+
+    public void SetSmallArmHangerIncrementUp()
+    {
+        smallArmHangerRightPosition += SMALL_ARM_HANGER_INCREMENT;
+        SetSmallArmSetHangerPosition(smallArmHangerRightPosition);
+    }
+
+    public void SetSmallArmHangerDecrementDown()
+    {
+        smallArmHangerRightPosition -= SMALL_ARM_HANGER_INCREMENT;
+        SetSmallArmSetHangerPosition(smallArmHangerRightPosition);
+    }
+
+    public void SetSmallArmSetHangerPosition(double position)
+    {
+        if (position > SMALL_ARMHANGER_MAX_POS)
+        {
+            smallArmHangerRightPosition = SMALL_ARMHANGER_MAX_POS;
+            smallArmHangerLeftPosition = SMALL_ARM_HANGER_MIN_POS;
+        }
+        else if (position < SMALL_ARM_HANGER_MIN_POS) {
+            smallArmHangerRightPosition = SMALL_ARM_HANGER_MIN_POS;
+            smallArmHangerLeftPosition = SMALL_ARMHANGER_MAX_POS;
+        }
+        else {
+            smallArmHangerRightPosition = position;
+            smallArmHangerLeftPosition = SMALL_ARMHANGER_MAX_POS - position;
+        }
+
+        smallArmHangerLeftServo.setPosition(smallArmHangerLeftPosition);
+        smallArmHangerRightServo.setPosition(smallArmHangerRightPosition);
+    }
+
+    // *********************************************************
+    // ****       Slide Arm Controls                ****
+    // *********************************************************
+
+    // TODO -- need to implement software limits to prevent going too far in horizontal directions
+    // TODO -- need to add limit switch logic
+    // TODO -- need to put in limit safety checks
     public void SetSlidesPower (double power)
     {
         slidePower = power;
@@ -668,168 +734,94 @@ public class Geronimo {
         slideRight.setPower(slidePower);
     }
 
-
-    public void IntakeFromFloor()
+    // *********************************************************
+    // ****       Slide Rotator Arm Controls                ****
+    // *********************************************************
+    public void SetSlideRotatorToPowerMode(double power)
     {
-        SetSlideToPosition(-695);
-        SpecialSleep(500); //reduce in future
-        SetRotatorToPosition(0);
-        SpecialSleep(250);
-        SetHangerPosition(0.7);
-        SetIntakeStarRotatorPosition(1);
-    }
+        slideArmRotatorPower = power;
+        slideArmRotatorRunningToPosition = false;
+        leftSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightSlideArmRotatorMotor.setPower(slideArmRotatorPower);
+        leftSlideArmRotatorMotor.setPower(slideArmRotatorPower);
 
-    public void AutoStartPosition()
+    }
+    public void SetSlideRotatorArmToPosition(int position)
     {
-        SetIntakeStarRotatorPosition(0.9);
-        SetHangerPosition(0);
-        SetSlideToPosition(0);
-        SetRotatorToPosition(0);
-        // TODO add something that adjusts green box?
-    }
-
-    public void SpecimenDeliverLow(){
-        SetIntakeStarRotatorPosition(0.44);
-        SetHangerPosition(0.4);
-        //SetSlideToPosition(-695);
-        //SetRotatorToPosition(250); //subject to change
-    }
-
-    public void RemoveFromWall(){
-        SetIntakeStarRotatorPosition(0.85);
-        SetHangerPosition(0.15);
-        SetSlideToPosition(0);
-        SetRotatorToPosition(0);
-    }
-
-    public void SpecimenDeliverHigh(){
-        SetIntakeStarRotatorPosition(0.85);
-        SetHangerPosition(0.35);
-        SetSlideToPosition(-750);
-        SetRotatorToPosition(450); //subject to change
-    }
-
-    public void SpecimenPickupFromWall(){
-        SetIntakeStarRotatorPosition(0.85);
-        SetHangerPosition(0.14);
-        SetSlideToPosition(0);
-        SetRotatorToPosition(0);
-        //0.85 IntakeStarRotator, hanger position (0.15/0.8)
-    }
-
-
-
-
-    public void BasketHigh(){
-        SetIntakeStarRotatorPosition(0.85);
-        SetHangerPosition(0.8);
-        SetRotatorToPosition(800); //8008, 450
-        SpecialSleep(20000);
-        SetSlideToPosition(-2320);
-       /* SetIntakeStarRotatorPosition(1);
-        SetHangerPosition(0.6);
-        SetSlideToPosition(-850);
-        SetRotatorToPosition(450);
-
-        */
-    }
-    // hanger position 0.8
-    // .15 right
-    //slides - -2320
-    //rotator 8008
-    //0.85 IntakeStarRotator, hanger position (0.15/0.8)
-
-    public void BasketLow(){
-        SetIntakeStarRotatorPosition(1);
-        SetHangerPosition(0.6);
-        SetSlideToPosition(-1300);
-        SetRotatorToPosition(450);
-    }
-
-
-
-
-
-
-    public void SetRotatorArmPower (double power)
-    {
-        rotatorArmPower = power;
-        rotatorArmRunningToPosition = false;
-        leftRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightRotater.setPower(rotatorArmPower);
-        leftRotater.setPower(rotatorArmPower);
-
-    }
-    public void SetRotatorToPosition (int position)
-    {
-        if (rotatorTargetPosition > position){
-            rotatorArmPower = ROTATOR_ARMS_POS_POWER/2.0;
+        if (slideArmRotatorTargetPosition > position){
+            slideArmRotatorPower = SLIDE_ARM_ROTATOR_POWER /2.0;
         }
         else{
-            rotatorArmPower = ROTATOR_ARMS_POS_POWER;
+            slideArmRotatorPower = SLIDE_ARM_ROTATOR_POWER;
         }
-        rotatorTargetPosition = position;
-        rotatorArmRunningToPosition = true;
-        rightRotater.setTargetPosition(rotatorTargetPosition);
-        leftRotater.setTargetPosition(rotatorTargetPosition);
-        leftRotater.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightRotater.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftRotater.setPower(rotatorArmPower);
-        rightRotater.setPower(rotatorArmPower);
+        if (position > SLIDE_ARM_ROTATOR_MAX_POS)
+        {
+            slideArmRotatorTargetPosition = SLIDE_ARM_ROTATOR_MAX_POS;
+        }
+        else if (position < SLIDE_ARM_ROTATOR_MIN_POS)
+        {
+            slideArmRotatorTargetPosition = SLIDE_ARM_ROTATOR_MIN_POS;
+        }
+        else {
+            slideArmRotatorTargetPosition = position;
+        }
+        slideArmRotatorRunningToPosition = true;
+        rightSlideArmRotatorMotor.setTargetPosition(slideArmRotatorTargetPosition);
+        leftSlideArmRotatorMotor.setTargetPosition(slideArmRotatorTargetPosition);
+        leftSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftSlideArmRotatorMotor.setPower(slideArmRotatorPower);
+        rightSlideArmRotatorMotor.setPower(slideArmRotatorPower);
     }
-    public void setRotatorArmZeroize(){
-        rotatorArmPower = 0.0;
-        leftRotater.setPower(rotatorArmPower);
-        rightRotater.setPower(rotatorArmPower);
+    public void ResetSlideRotatorArmToZero(){
+        slideArmRotatorPower = 0.0;
+        leftSlideArmRotatorMotor.setPower(slideArmRotatorPower);
+        rightSlideArmRotatorMotor.setPower(slideArmRotatorPower);
         this.SpecialSleep(50);
-        leftRotater.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightRotater.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftSlideArmRotatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightSlideArmRotatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
-    public boolean GetRotatorLimitSwitchPressed(){
+    public boolean GetSlideRotatorArmLimitSwitchPressed(){
         boolean returnValue = false;
-        if ((touchSensorRotatorRight.isPressed() == false) || (touchSensorRotatorLeft.isPressed() == false)){
+
+        if ((!touchSensorRotatorRight.isPressed()) || (!touchSensorRotatorLeft.isPressed())){
             returnValue = true;
         }
 
         return returnValue;
     }
-    public void  SetRotatorArmHoldPosition()
+    public void SetSlideRotatorArmToHoldCurrentPosition()
     {
-        if (rotatorTargetPosition == 0) {
-            rotatorArmPower = 0.0;
-            leftRotater.setPower(rotatorArmPower);
-            rightRotater.setPower(rotatorArmPower);
-            leftRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            rightRotater.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        if (slideArmRotatorTargetPosition == 0) {
+            ResetSlideRotatorArmToZero();
         }
         else {
-            rotatorArmPower = 0.75;
-            leftRotater.setPower(rotatorArmPower);
-            rightRotater.setPower(rotatorArmPower);
-            leftRotater.setTargetPosition(leftRotater.getCurrentPosition());
-            rightRotater.setTargetPosition(rightRotater.getCurrentPosition());
-
+            slideArmRotatorPower = SLIDE_ARM_ROTATOR_POWER;
+            leftSlideArmRotatorMotor.setPower(slideArmRotatorPower);
+            rightSlideArmRotatorMotor.setPower(slideArmRotatorPower);
+            leftSlideArmRotatorMotor.setTargetPosition(leftSlideArmRotatorMotor.getCurrentPosition());
+            rightSlideArmRotatorMotor.setTargetPosition(leftSlideArmRotatorMotor.getCurrentPosition());
         }
-        rotatorArmRunningToPosition = false;
+        slideArmRotatorRunningToPosition = false;
     }
     public boolean GetRotatorArmRunningToPosition()
     {
-        return rotatorArmRunningToPosition;
+        return slideArmRotatorRunningToPosition;
     }
     public int GetRotatorArmTargetPosition()
     {
-        return rotatorTargetPosition;
+        return slideArmRotatorTargetPosition;
     }
     public int GetRotatorLeftArmCurrentPosition()
     {
-        return (leftRotater.getCurrentPosition());
+        return (leftSlideArmRotatorMotor.getCurrentPosition());
     }
     public int GetRotatorRightArmCurrentPosition()
     {
-        return (rightRotater.getCurrentPosition());
+        return (rightSlideArmRotatorMotor.getCurrentPosition());
     }
 
     public void ShowTelemetry(){
@@ -839,26 +831,25 @@ public class Geronimo {
         opMode.telemetry.addData("imu Heading: ", GetIMU_HeadingInDegrees());
         opMode.telemetry.addData("Claw Position: ", claw_position);
         opMode.telemetry.addData(">", "Claw - use bumpers for control" );
-        opMode.telemetry.addData("Hanger Right Position: ", intakeHangerRightPosition);
-        opMode.telemetry.addData("Hanger Left Position: ", intakeHangerLeftPosition);
-        opMode.telemetry.addData(">", "Hangers - use dpad for control" );
+        opMode.telemetry.addData("Arm Hanger Right Position: ", smallArmHangerRightPosition);
+        opMode.telemetry.addData("Arm Hanger Left Position: ", smallArmHangerLeftPosition);
+        opMode.telemetry.addData(">", "Arm Hangers - rightStick X-Axis for control" );
         opMode.telemetry.addData("Intake Star Power: ", intakeStarPower);
-        opMode.telemetry.addData(">", "Intake Star - use triggers for control" );
+        opMode.telemetry.addData(">", "Intake Star - use dpad down for control" );
         opMode.telemetry.addData("slideLeft Position: ", slideLeft.getCurrentPosition());
         opMode.telemetry.addData("slideRight Position: ", slideRight.getCurrentPosition());
         opMode.telemetry.addData("slide Power: ", slidePower);
         opMode.telemetry.addData(">", "slides - use leftStick Y for control" );
-        opMode.telemetry.addData("leftRotater Position: ", leftRotater.getCurrentPosition());
-        opMode.telemetry.addData("rightRotater Position: ", rightRotater.getCurrentPosition());
-        opMode.telemetry.addData("Rotator Tgt Position: ", rotatorTargetPosition);
-        opMode.telemetry.addData("Rotator Arm Power: ", rotatorArmPower);
-        opMode.telemetry.addData("touchSensorRotatorLeft: ", !touchSensorRotatorLeft.isPressed());
-        opMode.telemetry.addData("touchSensorRotatorRight: ", !touchSensorRotatorRight.isPressed());
-        opMode.telemetry.addData("Rotator mode in RUN_TO_POSITION? ", rotatorArmRunningToPosition);
-        opMode.telemetry.addData(">", "rotateArms - use rightStick Y, and buttons for control" );
-        opMode.telemetry.addData("intake star ROTATOR Pos: ", intakeRotatorPosition);
-        opMode.telemetry.addData(">", "intake star rotator - use G1 - dpad for control" );
-
+        opMode.telemetry.addData("leftSlideArmRotater Position: ", leftSlideArmRotatorMotor.getCurrentPosition());
+        opMode.telemetry.addData("rightSlideArmRotater Position: ", rightSlideArmRotatorMotor.getCurrentPosition());
+        opMode.telemetry.addData("Slide Arm Rotator Tgt Position: ", slideArmRotatorTargetPosition);
+        opMode.telemetry.addData("Slide Arm Rotator Arm Power: ", slideArmRotatorPower);
+        opMode.telemetry.addData("touchSensorSlideArmRotatorLeft: ", !touchSensorRotatorLeft.isPressed());
+        opMode.telemetry.addData("touchSensorSlideArmRotatorRight: ", !touchSensorRotatorRight.isPressed());
+        opMode.telemetry.addData("Rotator mode in RUN_TO_POSITION? ", slideArmRotatorRunningToPosition);
+        opMode.telemetry.addData(">", "rotateArms - use triggers for control" );
+        opMode.telemetry.addData("Green Intake BOX ROTATOR Pos: ", intakeBoxRotatorPosition);
+        opMode.telemetry.addData(">", "green intake box rotator - use dpad L/R for control" );
 
         showColorSensorTelemetry();
         opMode.telemetry.update();
@@ -894,12 +885,7 @@ public class Geronimo {
         //  opMode.telemetry.addData("Claw Distance: ", clawDistanceSensor.getDistance(DistanceUnit.MM));
         //  opMode.telemetry.update();
     }
-/*
-    public void SlidesRotating(double slidePower){
-        leftRotater.setPower(slidePower);
-        rightRotater.setPower(slidePower);
-    }
-*/
+
     public void EndgameBuzzer(){
         if(opMode.getRuntime() < 109.5 && opMode.getRuntime() > 109.0){
             opMode.gamepad1.rumble(1000);
