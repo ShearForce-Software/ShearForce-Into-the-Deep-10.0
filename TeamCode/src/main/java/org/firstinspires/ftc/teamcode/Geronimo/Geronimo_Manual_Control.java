@@ -79,6 +79,8 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 if (gamepad1.square) {
                     theRobot.ResetSlidesPower();
                 }
+
+
 /*
                 // Rotater MOTOR CONTROL
                 if ((gamepad2.right_stick_y > 0.1) || (gamepad2.right_stick_y <= -0.1)) {
@@ -134,16 +136,17 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 else if (gamepad2.share){
                     theRobot.AutoStartPosition();
                 }
-             /*   else if (gamepad2.circle){
+                else if (gamepad2.circle){
                     theRobot.SpecimenDeliverLow();
                 }
-
-              */
                 else if(gamepad2.triangle){
                     theRobot.SpecimenDeliverHigh();
                 }
                 else if(gamepad2.square){
                     theRobot.SpecimenPickupFromWall();
+                }
+                else if(gamepad2.options){
+                    theRobot.RemoveFromWall();
                 }
 
 
@@ -162,10 +165,7 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 if (gamepad2.dpad_up) {
                     theRobot.SetHangerMaxUp();
                 }
-                else if (gamepad2.dpad_down)
-                {
-                    theRobot.SetHangerMaxDown();
-                }
+
 
                  */
                 if (gamepad2.right_stick_x > 0.2)
@@ -214,11 +214,11 @@ public class Geronimo_Manual_Control extends LinearOpMode {
 
                     theRobot.BasketHigh();
                 }
-               /* else if (gamepad2.dpad_down){
-                    theRobot.BasketLow();
+                else if (gamepad2.dpad_down){
+                    theRobot.CycleIntakeStarMode();
                 }
 
-                */
+
 
 
                 theRobot.ShowTelemetry();

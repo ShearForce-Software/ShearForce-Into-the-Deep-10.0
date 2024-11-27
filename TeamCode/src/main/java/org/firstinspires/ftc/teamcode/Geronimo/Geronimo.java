@@ -84,6 +84,8 @@ public class Geronimo {
     public CRServo intakeStar;
     double intakeStarPower = 0.0;
 
+    boolean intakeStarLastForward = false;
+
     TouchSensor touchSensorRotatorRight;
     TouchSensor touchSensorRotatorLeft;
     TouchSensor touchSensorRotator;
@@ -615,6 +617,25 @@ public class Geronimo {
         intakeStar.setPower(intakeStarPower);
     }
 
+    public void CycleIntakeStarMode(){
+        if(intakeStarPower>0){
+            SetIntakeStarPower(0);
+        } else if (intakeStarPower<0) {
+            SetIntakeStarPower(0);
+
+        }
+        else if(intakeStarLastForward){
+            SetIntakeStarPower(-1);
+            intakeStarLastForward = false;
+        }
+        else{
+            SetIntakeStarPower(1);
+            intakeStarLastForward = true;
+        }
+    }
+
+
+
     public void SetSlidesPower (double power)
     {
         slidePower = power;
@@ -668,10 +689,17 @@ public class Geronimo {
     }
 
     public void SpecimenDeliverLow(){
+        SetIntakeStarRotatorPosition(0.44);
+        SetHangerPosition(0.4);
+        //SetSlideToPosition(-695);
+        //SetRotatorToPosition(250); //subject to change
+    }
+
+    public void RemoveFromWall(){
         SetIntakeStarRotatorPosition(0.85);
-        SetHangerPosition(0.35);
-        SetSlideToPosition(-695);
-        SetRotatorToPosition(250); //subject to change
+        SetHangerPosition(0.15);
+        SetSlideToPosition(0);
+        SetRotatorToPosition(0);
     }
 
     public void SpecimenDeliverHigh(){
@@ -683,11 +711,13 @@ public class Geronimo {
 
     public void SpecimenPickupFromWall(){
         SetIntakeStarRotatorPosition(0.85);
-        SetHangerPosition(0.15);
+        SetHangerPosition(0.14);
         SetSlideToPosition(0);
         SetRotatorToPosition(0);
         //0.85 IntakeStarRotator, hanger position (0.15/0.8)
     }
+
+
 
 
     public void BasketHigh(){
