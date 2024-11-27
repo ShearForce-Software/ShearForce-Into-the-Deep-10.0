@@ -16,7 +16,7 @@
 - [x] Create control methods to lift specimen off wall and to pull down on bar
 - [x] Test & Document best arm intake positions for different common actions (intake from floor, deliver to high/low basket, pick up specimen off wall, deliver specimen to high/low)
 - [x] Test on Geronimo an auto trajectory that uses arm actions in parallel while driving
-- [x] Test new manual control combo butt ons
+- [x] Test new manual control combo buttons
 - [x] Test all 4 auto park routines
 - [x] Create auto routines to park from all 4 start locations
 - [x] Test Manual control - adjust game-controller controls to be easy to use

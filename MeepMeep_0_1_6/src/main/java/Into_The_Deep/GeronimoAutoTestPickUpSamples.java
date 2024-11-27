@@ -4,7 +4,7 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
-public class GeronimoAutoTest {
+public class GeronimoAutoTestPickUpSamples {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(600);
 
@@ -17,21 +17,31 @@ public class GeronimoAutoTest {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        Pose2d StartPose = new Pose2d(-36, -60, 90);
+        Pose2d StartPose = new Pose2d(-12, -63, Math.toRadians(90));
         Vector2d VectorTwo = new Vector2d(-12, -36);
         myBot.runAction(myBot.getDrive().actionBuilder(StartPose)
                            //  .splineToLinearHeading(new Pose2d(36,48,36.6), Math.toRadians(270))
                                 .strafeToLinearHeading(VectorTwo, Math.toRadians(90))
-                                .strafeToLinearHeading(new Vector2d(-48, -29), Math.toRadians(180))
+                                 .strafeTo(new Vector2d(-12, -40))
+                                .splineToLinearHeading(new Pose2d(-48,-29, Math.toRadians(180)), Math.toRadians(180))
+                       //         .strafeToLinearHeading(new Vector2d(-48, -29), Math.toRadians(180))
                              //    .strafeToLinearHeading(new Vector2d(-12, -36), Math.toRadians(225))
                                 .strafeToLinearHeading(new Vector2d(-48, -48), Math.toRadians(225))
+                     //   .splineToLinearHeading(new Pose2d(-53, -29, Math.toRadians(90)), Math.toRadians(90))
                                 .strafeToLinearHeading(new Vector2d(-53, -29), Math.toRadians(90))
                                 .strafeToLinearHeading(new Vector2d(-48, -48), Math.toRadians(225))
-                                .strafeToLinearHeading(new Vector2d(-64, -29), Math.toRadians(90))
-                                .strafeToLinearHeading(new Vector2d(-48, -48), Math.toRadians(225))
+                                .strafeToLinearHeading(new Vector2d(-60,-48), Math.toRadians(90))
+                               .strafeToLinearHeading(new Vector2d(-62, -48), Math.toRadians(90))
+                                .strafeToLinearHeading(new Vector2d(-62, -29), Math.toRadians(90))
+                        .strafeToLinearHeading(new Vector2d(-60, -29), Math.toRadians(90))
+                              .strafeToLinearHeading(new Vector2d(-48, -48), Math.toRadians(225))
+                              //  .strafeToLinearHeading(new Vector2d(-48, -48), Math.toRadians(225))
+                /*
                                 .strafeToLinearHeading(VectorTwo, Math.toRadians(90))
                                 .strafeToLinearHeading(new Vector2d(-48, -48), Math.toRadians(225))
                                 .strafeToLinearHeading(VectorTwo, Math.toRadians(90))
+
+                                */
 
                 // assume using some sensor to sense basket and deliver
 
