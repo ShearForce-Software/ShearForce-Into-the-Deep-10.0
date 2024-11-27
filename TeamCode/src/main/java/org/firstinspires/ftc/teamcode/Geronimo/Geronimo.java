@@ -402,13 +402,14 @@ public class Geronimo {
     }
 
  */
-
+    // hsvValues list
+    float[] hsvValues = {0,0,0};
     // returns colorEnum color detected
     public colorEnum ColorRevV3Sensor() {
         NormalizedRGBA colors = leftColorSensor.getNormalizedColors();
-        float[] hsvValues = {0,0,0};
         Color.colorToHSV(colors.toColor(), hsvValues);
-
+        /*
+        // previous values
         // Red HSV Color ranges
         double hMinRed = 19.811;
         double hMaxRed = 128.000;
@@ -432,6 +433,31 @@ public class Geronimo {
         double sMaxBlue = 0.832;
         double vMinBlue = 0.514;
         double vMaxBlue = 1.000;
+         */
+
+        // Red HSV Color ranges
+        double hMinRed = 0.0;
+        double hMaxRed = 120.0;
+        double sMinRed = 0.0;
+        double sMaxRed = 1.0;
+        double vMinRed = 0.0078;
+        double vMaxRed = 0.0039;
+
+        // Yellow HSV Color Values
+        double hMinYellow = 80.0;
+        double hMaxYellow = 120.0;
+        double sMinYellow = 0.5;
+        double sMaxYellow = 1.0;
+        double vMinYellow = 0.0038;
+        double vMaxYellow = 0.0157;
+
+        // Blue HSV Color Values
+        double hMinBlue = 180.0;
+        double hMaxBlue = 220.0;
+        double sMinBlue = 1.0;
+        double sMaxBlue = 1.0;
+        double vMinBlue = 0.0039;
+        double vMaxBlue = 0.0196;
 
         // determine if color is blue, red or yellow
         if (hsvValues[0] >= hMinBlue && hsvValues[1] >= sMinBlue)
@@ -830,7 +856,10 @@ public class Geronimo {
         opMode.telemetry.addData(">", "rotateArms - use rightStick Y, and buttons for control" );
         opMode.telemetry.addData("intake star ROTATOR Pos: ", intakeRotatorPosition);
         opMode.telemetry.addData(">", "intake star rotator - use G1 - dpad for control" );
-        opMode.telemetry.addData("Color sensed: " , ColorRevV3Sensor().toString());
+        opMode.telemetry.addData("hue detected: ", hsvValues[0]);
+        opMode.telemetry.addData("saturation detected: ", hsvValues[1]);
+        opMode.telemetry.addData("value detected: ", hsvValues[2]);
+        opMode.telemetry.addData("Color sensed: ", ColorRevV3Sensor().toString());
 
 
         showColorSensorTelemetry();
@@ -883,6 +912,7 @@ public class Geronimo {
         //double rightColor = rightColorSensor.getLightDetected();
     }
     public void showColorSensorTelemetry(){
+        /*
         //int leftColor = leftColorSensor.getNormalizedColors().toColor();
         //opMode.telemetry.addData("leftColorNorm: ", leftColor);
         opMode.telemetry.addData("leftColor(red): ", redLeft);
@@ -895,7 +925,7 @@ public class Geronimo {
         //opMode.telemetry.addData("leftColorNorm(red): ", leftColorSensor.getNormalizedColors().red);
         //opMode.telemetry.addData("leftColorNorm(green): ", leftColorSensor.getNormalizedColors().green);
         //opMode.telemetry.addData("leftColorNorm(blue): ", leftColorSensor.getNormalizedColors().blue);
-        /*
+
         int red = leftColorSensor.red();
         int green = leftColorSensor.green();
         int blue = leftColorSensor.blue();
