@@ -122,7 +122,7 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                     else{
                         int leftDifference = Math.abs(theRobot.GetRotatorArmTargetPosition() - theRobot.GetRotatorLeftArmCurrentPosition());
                         int rightDifference = Math.abs(theRobot.GetRotatorArmTargetPosition() - theRobot.GetRotatorRightArmCurrentPosition());
-                        if ((leftDifference <= 2) || (rightDifference <= 2)) {
+                        if ((leftDifference <= 2) && (rightDifference <= 2)) {
                             theRobot.SetRotatorArmHoldPosition();
                         }
                     }
