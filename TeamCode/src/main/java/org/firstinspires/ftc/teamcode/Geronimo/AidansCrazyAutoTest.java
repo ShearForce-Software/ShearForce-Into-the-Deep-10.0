@@ -45,14 +45,14 @@ public class AidansCrazyAutoTest extends LinearOpMode {
     double autoPosition = 3;
 
     public void runOpMode(){
-        startPose = new Pose2d(30,-60, Math.toRadians(90));
+        startPose = new Pose2d(12,-64, Math.toRadians(90));
         VectorTwo = new Vector2d(5, -30);
         // stackPose = new Pose2d(stackX, stackY, Math.toRadians(180)); //-54.5,-11.5
 
         // Define some custom constraints to use when wanting to go faster than defaults
         speedUpVelocityConstraint = new TranslationalVelConstraint(60.0);
         speedUpAccelerationConstraint = new ProfileAccelConstraint(-40.0, 60.0);
-        slowDownVelocityConstraint = new TranslationalVelConstraint(5);
+        slowDownVelocityConstraint = new TranslationalVelConstraint(35);
         slowDownAccelerationConstraint = new ProfileAccelConstraint(-20, 50);
 
         /* Initialize the Robot */
@@ -77,21 +77,21 @@ public class AidansCrazyAutoTest extends LinearOpMode {
                 .build();
         DriveToSamplesandDeliver1 = drive.actionBuilder(new Pose2d(7, -35, Math.toRadians(90)))
                 .strafeToLinearHeading(new Vector2d(25,-48), Math.toRadians(270))
-                .splineToConstantHeading(new Vector2d(36,-9), Math.toRadians(270))
-                .splineToConstantHeading(new Vector2d(48,-12), Math.toRadians(270))
-                .strafeToLinearHeading(new Vector2d(48,-60), Math.toRadians(270))
+                .splineToConstantHeading(new Vector2d(36,-12), Math.toRadians(270))
+                .splineToConstantHeading(new Vector2d(44,-12), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(44,-56), Math.toRadians(270), slowDownVelocityConstraint)
                 .build();
-        DriveToSamplesandDeliver2 = drive.actionBuilder(new Pose2d(48,-60, Math.toRadians(270)))
-                .strafeToLinearHeading(new Vector2d(48, -8), Math.toRadians(270))
-                .splineToConstantHeading(new Vector2d(58,-12), Math.toRadians(270))
-                .lineToYConstantHeading(-60)
+        DriveToSamplesandDeliver2 = drive.actionBuilder(new Pose2d(44,-60, Math.toRadians(270)))
+                .strafeToLinearHeading(new Vector2d(48, -12), Math.toRadians(270), slowDownVelocityConstraint)
+                .splineToConstantHeading(new Vector2d(54,-12), Math.toRadians(270))
+                .lineToYConstantHeading(-56,slowDownVelocityConstraint)
                 .build();
-        DriveToSamplesandDeliver3 = drive.actionBuilder(new Pose2d(58,-60,Math.toRadians(270)))
-                .strafeToLinearHeading(new Vector2d(58, -8), Math.toRadians(270))
-                .splineToConstantHeading(new Vector2d(62,-12), Math.toRadians(270))
-                .lineToYConstantHeading(-60)
+        DriveToSamplesandDeliver3 = drive.actionBuilder(new Pose2d(54,-60,Math.toRadians(270)))
+                .strafeToLinearHeading(new Vector2d(54, -12), Math.toRadians(270), slowDownVelocityConstraint)
+                .splineToConstantHeading(new Vector2d(59,-12), Math.toRadians(270))
+                .lineToYConstantHeading(-56,slowDownVelocityConstraint)
                 .build();
-        DriveToSubmersible1 = drive.actionBuilder(new Pose2d(62,-60,Math.toRadians(270)))
+        DriveToSubmersible1 = drive.actionBuilder(new Pose2d(59,-56, Math.toRadians(270)))
                 .strafeToLinearHeading(new Vector2d(48, -57), Math.toRadians(270))
                 .strafeToLinearHeading(new Vector2d(7,-35), Math.toRadians(90))
                 .build();
@@ -115,8 +115,8 @@ public class AidansCrazyAutoTest extends LinearOpMode {
         /* Drive to the Board */
         Actions.runBlocking(
                 new SequentialAction(
-                        DriveToSubmersible1,
-                        new SleepAction(1),
+                        DeliverStartingSpecimen,
+                        new SleepAction(1.5),
                         DriveToSamplesandDeliver1,
                         DriveToSamplesandDeliver2,
                         DriveToSamplesandDeliver3,
