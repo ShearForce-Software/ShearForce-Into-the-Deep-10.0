@@ -39,7 +39,14 @@ import com.qualcomm.robotcore.hardware.SwitchableLight;
 
 @Config
 public class Geronimo {
+    IMU imu;
+    public double imuOffsetInDegrees = 0.0;
     LinearOpMode opMode;
+    public static boolean allianceColorIsBlue = false;
+    public static double autoTimeLeft = 0.0;
+    boolean IsDriverControl = true;
+    boolean IsFieldCentric = true;
+
     DcMotor leftFront;
     DcMotor leftRear;
     DcMotor rightFront;
@@ -47,6 +54,8 @@ public class Geronimo {
 
     DcMotor leftSlideArmRotatorMotor;
     DcMotor rightSlideArmRotatorMotor;
+    TouchSensor touchSensorSlideArmRotatorRight;
+    TouchSensor touchSensorSlideArmRotatorLeft;
     int slideArmRotatorTargetPosition = 0;
     double slideArmRotatorPower = 0.0;
     boolean slideArmRotatorRunningToPosition = false;
@@ -61,8 +70,7 @@ public class Geronimo {
     public static final double SLIDES_POS_POWER = 0.75;
     public static final int SLIDE_ARM_MIN_POS = 0;
     public static final int SLIDE_ARM_MAX_POS = 1000;
-
-    IMU imu;
+    private double slidePower = 0.0;
 
     Servo clawServo;
     public static final double CLAW_MAX_POS = 0.45;
@@ -77,7 +85,7 @@ public class Geronimo {
 
     Servo smallArmHangerLeftServo;
     Servo smallArmHangerRightServo;
-    public static final double SMALL_ARMHANGER_MAX_POS = 0.95;
+    public static final double SMALL_ARM_HANGER_MAX_POS = 0.95;
     public static final double SMALL_ARM_HANGER_MIN_POS = 0.0;
     double smallArmHangerLeftPosition = 0.5;
     double smallArmHangerRightPosition = 0.5;
@@ -85,14 +93,7 @@ public class Geronimo {
 
     public CRServo intakeStarServo;
     double intakeStarPower = 0.0;
-
     boolean intakeStarLastForward = false;
-
-    TouchSensor touchSensorRotatorRight;
-    TouchSensor touchSensorRotatorLeft;
-    TouchSensor touchSensorRotator;
-
-    public double imuOffsetInDegrees;
 
     RevBlinkinLedDriver.BlinkinPattern Blinken_left_pattern;
     RevBlinkinLedDriver.BlinkinPattern Blinken_right_pattern;
@@ -101,9 +102,20 @@ public class Geronimo {
 
     RevColorSensorV3 leftColorSensor;
     RevColorSensorV3 rightColorSensor;
-
-    boolean IsDriverControl;
-    boolean IsFieldCentric;
+    int redLeft = 0;
+    int greenLeft = 0;
+    int blueLeft = 0;
+    int redRight = 0;
+    int greenRight = 0;
+    int blueRight = 0;
+    // REV v3 color sensor variables
+    public enum colorEnum {
+        noColor,
+        red,
+        yellow,
+        blue;
+    }
+    colorEnum colorDetected = colorEnum.noColor;
 
     //NAV TO TAG VARIABLES
     final double DESIRED_DISTANCE = 12.0; //  this is how close the camera should get to the target (inches)
@@ -119,13 +131,6 @@ public class Geronimo {
     private AprilTagDetection desiredTag = null;     // Used to hold the data for a detected AprilTag
     double rangeError = 0;
     double yawError = 0;
-    private double slidePower = 0.0;
-    int redLeft = 0;
-    int greenLeft = 0;
-    int blueLeft = 0;
-    int redRight = 0;
-    int greenRight = 0;
-    int blueRight = 0;
     double LimelightMountingHeight = 6;  //Adjust when robot is built
     double LimelightMountingAngle = Math.toDegrees(90);
     double distance_to_object = 0;
@@ -133,22 +138,11 @@ public class Geronimo {
     double XDistance_to_object = 0;
     double YDistance_to_object = 0;
     double angletoObject = Math.toRadians(60);
-    public static boolean allianceColorIsBlue = false;
-    public static double autoTimeLeft = 0.0;
 
     //LimeLight
     Limelight3A limelightbox;
     private static final double KpDistance = -0.1; // Proportional control constant for distance adjustment
     private static final double KpAim = 0.1; // Proportional control constant for aiming adjustment
-
-    // REV v3 color sensor variables
-    public enum colorEnum {
-        noColor,
-        red,
-        yellow,
-        blue;
-    }
-    colorEnum colorDetected = colorEnum.noColor;
 
     public Geronimo(boolean isDriverControl, boolean isFieldCentric, LinearOpMode opMode) {
         this.IsDriverControl = isDriverControl;
@@ -167,7 +161,7 @@ public class Geronimo {
         rightRear.setDirection(DcMotor.Direction.FORWARD);
         rightFront.setDirection(DcMotor.Direction.FORWARD);
 
-        // ************* Rotator ARM MOTORS ****************
+        // ************* Slide Arm Rotator MOTORS ****************
         leftSlideArmRotatorMotor = hardwareMap.get(DcMotorEx.class, "leftRotater");
         rightSlideArmRotatorMotor = hardwareMap.get(DcMotorEx.class, "rightRotater");
 
@@ -216,11 +210,10 @@ public class Geronimo {
         leftColorSensor.enableLed(false);
         rightColorSensor.enableLed(false);
         */
-        // ********** Touch Sensors ********************
 
-        touchSensorRotatorRight = hardwareMap.get(TouchSensor.class, "sensor_touchRight");
-        touchSensorRotatorLeft = hardwareMap.get(TouchSensor.class, "sensor_touchLeft");
-        touchSensorRotator = hardwareMap.get(TouchSensor.class, "sensor_touchRotate");
+        // ********** Touch Sensors ********************
+        touchSensorSlideArmRotatorRight = hardwareMap.get(TouchSensor.class, "sensor_touchRight");
+        touchSensorSlideArmRotatorLeft = hardwareMap.get(TouchSensor.class, "sensor_touchLeft");
 
         // limelightbox = hardwareMap.get(Limelight3A.class, "limelight");
         InitBlinkin(hardwareMap);
@@ -233,23 +226,9 @@ public class Geronimo {
 
     }
 
-    public void WebcamInit (HardwareMap hardwareMap){
-        double  drive           = 0;        // Desired forward power/speed (-1 to +1)
-        double  strafe          = 0;        // Desired strafe power/speed (-1 to +1)
-        double  turn            = 0;        // Desired turning power/speed (-1 to +1)
-        /*aprilTag = new AprilTagProcessor.Builder().build();
-        visionPortal = new VisionPortal.Builder()
-                .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
-                .addProcessor(aprilTag)
-                .build();*/
-        // Create the TensorFlow processor the easy way.
-        // = TfodProcessor.easyCreateWithDefaults();
-
-        // Create the vision portal the easy way.
-
-        //     visionPortal = VisionPortal.easyCreateWithDefaults(
-        //             hardwareMap.get(WebcamName.class, "Webcam 1"), tfod);
-    }
+    // *********************************************************
+    // ****      LIME LIGHT Methods                         ****
+    // *********************************************************
     public void InitLimelight(HardwareMap hardwareMap){
         limelightbox = hardwareMap.get(Limelight3A.class, "limelight");
         limelightbox.pipelineSwitch(0);
@@ -261,22 +240,6 @@ public class Geronimo {
         // Equation above was pulled from the Limelight documentation online
        // XDistance_to_object = distance_to_object*Math.cos((limelightbox.getLatestResult().getTx()));
        // YDistance_to_object = distance_to_object*Math.sin((limelightbox.getLatestResult().getTx()));
-}
-
-    public void NavToTag(){
-        desiredTag  = null;
-        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
-        for (AprilTagDetection detection : currentDetections) {
-            if ((detection.metadata != null) && (detection.id == DESIRED_TAG_ID) ){
-                desiredTag = detection;
-                rangeError      = (desiredTag.ftcPose.range - DESIRED_DISTANCE);
-                yawError        = desiredTag.ftcPose.yaw;
-                break;  // don't look any further.
-            } else {
-                opMode.telemetry.addData("Unknown Target - ", "No Tag Detected");
-                // set some range and yaw error
-            }
-        }
     }
 
 
@@ -379,6 +342,81 @@ public class Geronimo {
         return false;
     }
 
+    public void WebcamInit (HardwareMap hardwareMap){
+        double  drive           = 0;        // Desired forward power/speed (-1 to +1)
+        double  strafe          = 0;        // Desired strafe power/speed (-1 to +1)
+        double  turn            = 0;        // Desired turning power/speed (-1 to +1)
+        /*aprilTag = new AprilTagProcessor.Builder().build();
+        visionPortal = new VisionPortal.Builder()
+                .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
+                .addProcessor(aprilTag)
+                .build();*/
+        // Create the TensorFlow processor the easy way.
+        // = TfodProcessor.easyCreateWithDefaults();
+
+        // Create the vision portal the easy way.
+
+        //     visionPortal = VisionPortal.easyCreateWithDefaults(
+        //             hardwareMap.get(WebcamName.class, "Webcam 1"), tfod);
+    }
+
+    public void NavToTag(){
+        desiredTag  = null;
+        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+        for (AprilTagDetection detection : currentDetections) {
+            if ((detection.metadata != null) && (detection.id == DESIRED_TAG_ID) ){
+                desiredTag = detection;
+                rangeError      = (desiredTag.ftcPose.range - DESIRED_DISTANCE);
+                yawError        = desiredTag.ftcPose.yaw;
+                break;  // don't look any further.
+            } else {
+                opMode.telemetry.addData("Unknown Target - ", "No Tag Detected");
+                // set some range and yaw error
+            }
+        }
+    }
+
+    public void DriveToTag() {
+        double drive = 0.0;        // Desired forward power/speed (-1 to +1)
+        double strafe = 0.0;        // Desired strafe power/speed (-1 to +1)
+        double turn = 0.0;        // Desired turning power/speed (-1 to +1)
+
+        // Determine heading, range and Yaw (tag image rotation) error so we can use them to control the robot automatically.
+        NavToTag();
+        double headingError = desiredTag.ftcPose.bearing;
+
+        double timeout = opMode.getRuntime() + 5;
+
+        while ((rangeError > DESIRED_DISTANCE) &&
+                ((headingError > 2.0) || (headingError < -2.0)) &&
+                ((yawError > 2.0) || (yawError < -2.0)) && (opMode.getRuntime() < timeout)) {
+            // Determine heading, range and Yaw (tag image rotation) errors
+            NavToTag();
+            headingError = desiredTag.ftcPose.bearing;
+
+            // Use the speed and turn "gains" to calculate how we want the robot to move.
+            // Speed has been reduced for the AirShow on June 9th
+            drive = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
+            turn = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN);
+            strafe = Range.clip(-yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
+
+            opMode.telemetry.addData("Target", "ID %d (%s)", desiredTag.id, desiredTag.metadata.name);
+            opMode.telemetry.addData("Range", "%5.1f inches", desiredTag.ftcPose.range);
+            opMode.telemetry.addData("Bearing", "%3.0f degrees", desiredTag.ftcPose.bearing);
+            opMode.telemetry.addData("Yaw", "%3.0f degrees", desiredTag.ftcPose.yaw);
+            opMode.telemetry.addData("Auto", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
+            opMode.telemetry.update();
+
+            // Apply desired axes motions to the drivetrain.
+            moveRobot(drive, strafe, turn);
+            opMode.sleep(10);
+        }
+    }
+
+    // *********************************************************
+    // ****      Color Sensor Methods                       ****
+    // *********************************************************
+
     protected void InitColorRevV3Sensor() {
         float gain = 51;
         final float[] hsvValues = new float[3];
@@ -448,48 +486,53 @@ public class Geronimo {
 
         return colorDetected;
     }
-
-    public void DriveToTag() {
-        double drive = 0.0;        // Desired forward power/speed (-1 to +1)
-        double strafe = 0.0;        // Desired strafe power/speed (-1 to +1)
-        double turn = 0.0;        // Desired turning power/speed (-1 to +1)
-
-        // Determine heading, range and Yaw (tag image rotation) error so we can use them to control the robot automatically.
-        NavToTag();
-        double headingError = desiredTag.ftcPose.bearing;
-
-        double timeout = opMode.getRuntime() + 5;
-
-        while ((rangeError > DESIRED_DISTANCE) &&
-                ((headingError > 2.0) || (headingError < -2.0)) &&
-                ((yawError > 2.0) || (yawError < -2.0)) && (opMode.getRuntime() < timeout)) {
-            // Determine heading, range and Yaw (tag image rotation) errors
-            NavToTag();
-            headingError = desiredTag.ftcPose.bearing;
-
-            // Use the speed and turn "gains" to calculate how we want the robot to move.
-            // Speed has been reduced for the AirShow on June 9th
-            drive = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
-            turn = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN);
-            strafe = Range.clip(-yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
-
-            opMode.telemetry.addData("Target", "ID %d (%s)", desiredTag.id, desiredTag.metadata.name);
-            opMode.telemetry.addData("Range", "%5.1f inches", desiredTag.ftcPose.range);
-            opMode.telemetry.addData("Bearing", "%3.0f degrees", desiredTag.ftcPose.bearing);
-            opMode.telemetry.addData("Yaw", "%3.0f degrees", desiredTag.ftcPose.yaw);
-            opMode.telemetry.addData("Auto", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
-            opMode.telemetry.update();
-
-            // Apply desired axes motions to the drivetrain.
-            moveRobot(drive, strafe, turn);
-            opMode.sleep(10);
+    public void showColorSensorTelemetry(){
+        //int leftColor = leftColorSensor.getNormalizedColors().toColor();
+        //opMode.telemetry.addData("leftColorNorm: ", leftColor);
+        opMode.telemetry.addData("leftColor(red): ", redLeft);
+        opMode.telemetry.addData("leftColor(green): ", greenLeft);
+        opMode.telemetry.addData("leftColor(blue): ", blueLeft);
+        opMode.telemetry.addData("rightColor(red): ", redRight);
+        opMode.telemetry.addData("rightColor(green): ", greenRight);
+        opMode.telemetry.addData("rightColor(blue): ", blueRight);
+        //opMode.telemetry.addData("rightColor: ", rightColor);
+        //opMode.telemetry.addData("leftColorNorm(red): ", leftColorSensor.getNormalizedColors().red);
+        //opMode.telemetry.addData("leftColorNorm(green): ", leftColorSensor.getNormalizedColors().green);
+        //opMode.telemetry.addData("leftColorNorm(blue): ", leftColorSensor.getNormalizedColors().blue);
+        /*
+        int red = leftColorSensor.red();
+        int green = leftColorSensor.green();
+        int blue = leftColorSensor.blue();
+        // Check for White Pixel
+        if(red < 4000 && red > 1000 && green < 6000 && green > 3000 && blue < 7000 && blue > 3000) {
+            opMode.telemetry.addData("Left: ", "is white");
         }
+        // Check for yellow pixel
+        else if(red < 2500 && red > 1000 && green < 3500 && green > 1500 && blue < 1000 && blue >0 )
+        {
+            opMode.telemetry.addData("Left: ", "is yellow");
+        }
+        // Check for green pixel
+        else if(red < 1000 && red > 0 && green < 6000 && green > 1500 && blue < 1000 && blue >0 )
+        {
+            opMode.telemetry.addData("Left: ", "is green");
+        }
+        // Check for purple pixel
+        else if(red < 3500 && red > 1000 && green < 4000 && green > 2000 && blue < 7000 && blue > 3500 )
+        {
+            opMode.telemetry.addData("Left: ", "is purple");
+        }
+        else {
+            opMode.telemetry.addData("Left: ", "unknown");
+        }
+
+         */
     }
-   public void setBlinken_to5Volt()
-    {
-        blinkinLedDriverLeft.setPattern(RevBlinkinLedDriver.BlinkinPattern.fromNumber(1625));
-        blinkinLedDriverRight.setPattern(RevBlinkinLedDriver.BlinkinPattern.fromNumber(1625));
-    }
+
+    // *********************************************************
+    // ****      BLINKIN LED Lights Controls                ****
+    // *********************************************************
+
     public void InitBlinkin(HardwareMap hardwareMap) {
         blinkinLedDriverLeft = hardwareMap.get(RevBlinkinLedDriver.class,"leftBlinkin");
         blinkinLedDriverRight = hardwareMap.get(RevBlinkinLedDriver.class,"rightBlinkin");
@@ -507,7 +550,74 @@ public class Geronimo {
         }
     }
 
+    public void SetBlinkinToPixelColor() {
+        redLeft = leftColorSensor.red();
+        greenLeft = leftColorSensor.green();
+        blueLeft = leftColorSensor.blue();
+        redRight = rightColorSensor.red();
+        greenRight = rightColorSensor.green();
+        blueRight = rightColorSensor.blue();
 
+        // Left sensor left blinkin
+        if(redLeft > (blueLeft / 2) && greenLeft > redLeft && blueLeft > redLeft) {
+            Blinken_left_pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
+            blinkinLedDriverLeft.setPattern(Blinken_left_pattern);
+        }
+        else if(greenLeft > redLeft && redLeft > blueLeft) {
+            Blinken_left_pattern = RevBlinkinLedDriver.BlinkinPattern.GOLD;
+            blinkinLedDriverLeft.setPattern(Blinken_left_pattern);
+        }
+        else if(greenLeft > (redLeft * 2) && greenLeft > (blueLeft * 2)) {
+            Blinken_left_pattern = RevBlinkinLedDriver.BlinkinPattern.GREEN;
+            blinkinLedDriverLeft.setPattern(Blinken_left_pattern);
+        }
+        else if(blueLeft > greenLeft && greenLeft > redLeft) {
+            Blinken_left_pattern = RevBlinkinLedDriver.BlinkinPattern.HOT_PINK;
+            blinkinLedDriverLeft.setPattern(Blinken_left_pattern);
+        }
+        else if(allianceColorIsBlue){
+            Blinken_left_pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;
+            blinkinLedDriverLeft.setPattern(Blinken_left_pattern);
+        }else {
+            Blinken_left_pattern = RevBlinkinLedDriver.BlinkinPattern.RED;
+            blinkinLedDriverLeft.setPattern(Blinken_left_pattern);
+        }
+
+        //Right sensor right blinkin
+        if(redRight > (blueRight / 2) && greenRight > redRight && blueRight > redRight) {
+            Blinken_right_pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
+            blinkinLedDriverRight.setPattern(Blinken_right_pattern);
+        }
+        else if(greenRight > redRight && redRight > blueRight) {
+            Blinken_right_pattern = RevBlinkinLedDriver.BlinkinPattern.GOLD;
+            blinkinLedDriverRight.setPattern(Blinken_right_pattern);
+        }
+        else if(greenRight > (redRight * 2) && greenRight > (blueRight * 2)) {
+            Blinken_right_pattern = RevBlinkinLedDriver.BlinkinPattern.GREEN;
+            blinkinLedDriverRight.setPattern(Blinken_right_pattern);
+        }
+        else if(blueRight > greenRight && greenRight > redRight) {
+            Blinken_right_pattern = RevBlinkinLedDriver.BlinkinPattern.HOT_PINK;
+            blinkinLedDriverRight.setPattern(Blinken_right_pattern);
+        }
+        else if(allianceColorIsBlue){
+            Blinken_right_pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;
+            blinkinLedDriverRight.setPattern(Blinken_right_pattern);
+        }else {
+            Blinken_right_pattern = RevBlinkinLedDriver.BlinkinPattern.RED;
+            blinkinLedDriverRight.setPattern(Blinken_right_pattern);
+        }
+    }
+    public void ShowBlinkinTelemetry() {
+        opMode.telemetry.addData("Blinkin Left: ", Blinken_left_pattern.toString());
+        opMode.telemetry.addData("Blinkin Right: ", Blinken_right_pattern.toString());
+    }
+
+    public void setBlinken_to5Volt()
+    {
+        blinkinLedDriverLeft.setPattern(RevBlinkinLedDriver.BlinkinPattern.fromNumber(1625));
+        blinkinLedDriverRight.setPattern(RevBlinkinLedDriver.BlinkinPattern.fromNumber(1625));
+    }
 
     // *********************************************************
     // ****      COMBO MOVES                                ****
@@ -677,18 +787,18 @@ public class Geronimo {
 
     public void SetSmallArmSetHangerPosition(double position)
     {
-        if (position > SMALL_ARMHANGER_MAX_POS)
+        if (position > SMALL_ARM_HANGER_MAX_POS)
         {
-            smallArmHangerRightPosition = SMALL_ARMHANGER_MAX_POS;
+            smallArmHangerRightPosition = SMALL_ARM_HANGER_MAX_POS;
             smallArmHangerLeftPosition = SMALL_ARM_HANGER_MIN_POS;
         }
         else if (position < SMALL_ARM_HANGER_MIN_POS) {
             smallArmHangerRightPosition = SMALL_ARM_HANGER_MIN_POS;
-            smallArmHangerLeftPosition = SMALL_ARMHANGER_MAX_POS;
+            smallArmHangerLeftPosition = SMALL_ARM_HANGER_MAX_POS;
         }
         else {
             smallArmHangerRightPosition = position;
-            smallArmHangerLeftPosition = SMALL_ARMHANGER_MAX_POS - position;
+            smallArmHangerLeftPosition = SMALL_ARM_HANGER_MAX_POS - position;
         }
 
         smallArmHangerLeftServo.setPosition(smallArmHangerLeftPosition);
@@ -787,7 +897,7 @@ public class Geronimo {
     public boolean GetSlideRotatorArmLimitSwitchPressed(){
         boolean returnValue = false;
 
-        if ((!touchSensorRotatorRight.isPressed()) || (!touchSensorRotatorLeft.isPressed())){
+        if ((!touchSensorSlideArmRotatorRight.isPressed()) || (!touchSensorSlideArmRotatorLeft.isPressed())){
             returnValue = true;
         }
 
@@ -844,8 +954,8 @@ public class Geronimo {
         opMode.telemetry.addData("rightSlideArmRotater Position: ", rightSlideArmRotatorMotor.getCurrentPosition());
         opMode.telemetry.addData("Slide Arm Rotator Tgt Position: ", slideArmRotatorTargetPosition);
         opMode.telemetry.addData("Slide Arm Rotator Arm Power: ", slideArmRotatorPower);
-        opMode.telemetry.addData("touchSensorSlideArmRotatorLeft: ", !touchSensorRotatorLeft.isPressed());
-        opMode.telemetry.addData("touchSensorSlideArmRotatorRight: ", !touchSensorRotatorRight.isPressed());
+        opMode.telemetry.addData("touchSensorSlideArmRotatorLeft: ", !touchSensorSlideArmRotatorLeft.isPressed());
+        opMode.telemetry.addData("touchSensorSlideArmRotatorRight: ", !touchSensorSlideArmRotatorRight.isPressed());
         opMode.telemetry.addData("Rotator mode in RUN_TO_POSITION? ", slideArmRotatorRunningToPosition);
         opMode.telemetry.addData(">", "rotateArms - use triggers for control" );
         opMode.telemetry.addData("Green Intake BOX ROTATOR Pos: ", intakeBoxRotatorPosition);
@@ -892,114 +1002,6 @@ public class Geronimo {
             opMode.gamepad2.rumble(1000);
         }
     }
-    public void ColorDetect(){
-        //double rightColor = rightColorSensor.getLightDetected();
-    }
-    public void showColorSensorTelemetry(){
-        //int leftColor = leftColorSensor.getNormalizedColors().toColor();
-        //opMode.telemetry.addData("leftColorNorm: ", leftColor);
-        opMode.telemetry.addData("leftColor(red): ", redLeft);
-        opMode.telemetry.addData("leftColor(green): ", greenLeft);
-        opMode.telemetry.addData("leftColor(blue): ", blueLeft);
-        opMode.telemetry.addData("rightColor(red): ", redRight);
-        opMode.telemetry.addData("rightColor(green): ", greenRight);
-        opMode.telemetry.addData("rightColor(blue): ", blueRight);
-        //opMode.telemetry.addData("rightColor: ", rightColor);
-        //opMode.telemetry.addData("leftColorNorm(red): ", leftColorSensor.getNormalizedColors().red);
-        //opMode.telemetry.addData("leftColorNorm(green): ", leftColorSensor.getNormalizedColors().green);
-        //opMode.telemetry.addData("leftColorNorm(blue): ", leftColorSensor.getNormalizedColors().blue);
-        /*
-        int red = leftColorSensor.red();
-        int green = leftColorSensor.green();
-        int blue = leftColorSensor.blue();
-        // Check for White Pixel
-        if(red < 4000 && red > 1000 && green < 6000 && green > 3000 && blue < 7000 && blue > 3000) {
-            opMode.telemetry.addData("Left: ", "is white");
-        }
-        // Check for yellow pixel
-        else if(red < 2500 && red > 1000 && green < 3500 && green > 1500 && blue < 1000 && blue >0 )
-        {
-            opMode.telemetry.addData("Left: ", "is yellow");
-        }
-        // Check for green pixel
-        else if(red < 1000 && red > 0 && green < 6000 && green > 1500 && blue < 1000 && blue >0 )
-        {
-            opMode.telemetry.addData("Left: ", "is green");
-        }
-        // Check for purple pixel
-        else if(red < 3500 && red > 1000 && green < 4000 && green > 2000 && blue < 7000 && blue > 3500 )
-        {
-            opMode.telemetry.addData("Left: ", "is purple");
-        }
-        else {
-            opMode.telemetry.addData("Left: ", "unknown");
-        }
-
-         */
-    }
-
-    public void SetBlinkinToPixelColor() {
-        redLeft = leftColorSensor.red();
-        greenLeft = leftColorSensor.green();
-        blueLeft = leftColorSensor.blue();
-        redRight = rightColorSensor.red();
-        greenRight = rightColorSensor.green();
-        blueRight = rightColorSensor.blue();
-
-        // Left sensor left blinkin
-        if(redLeft > (blueLeft / 2) && greenLeft > redLeft && blueLeft > redLeft) {
-            Blinken_left_pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
-            blinkinLedDriverLeft.setPattern(Blinken_left_pattern);
-        }
-        else if(greenLeft > redLeft && redLeft > blueLeft) {
-            Blinken_left_pattern = RevBlinkinLedDriver.BlinkinPattern.GOLD;
-            blinkinLedDriverLeft.setPattern(Blinken_left_pattern);
-        }
-        else if(greenLeft > (redLeft * 2) && greenLeft > (blueLeft * 2)) {
-            Blinken_left_pattern = RevBlinkinLedDriver.BlinkinPattern.GREEN;
-            blinkinLedDriverLeft.setPattern(Blinken_left_pattern);
-        }
-        else if(blueLeft > greenLeft && greenLeft > redLeft) {
-            Blinken_left_pattern = RevBlinkinLedDriver.BlinkinPattern.HOT_PINK;
-            blinkinLedDriverLeft.setPattern(Blinken_left_pattern);
-        }
-        else if(allianceColorIsBlue){
-            Blinken_left_pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;
-            blinkinLedDriverLeft.setPattern(Blinken_left_pattern);
-        }else {
-            Blinken_left_pattern = RevBlinkinLedDriver.BlinkinPattern.RED;
-            blinkinLedDriverLeft.setPattern(Blinken_left_pattern);
-        }
-
-        //Right sensor right blinkin
-        if(redRight > (blueRight / 2) && greenRight > redRight && blueRight > redRight) {
-            Blinken_right_pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
-            blinkinLedDriverRight.setPattern(Blinken_right_pattern);
-        }
-        else if(greenRight > redRight && redRight > blueRight) {
-            Blinken_right_pattern = RevBlinkinLedDriver.BlinkinPattern.GOLD;
-            blinkinLedDriverRight.setPattern(Blinken_right_pattern);
-        }
-        else if(greenRight > (redRight * 2) && greenRight > (blueRight * 2)) {
-            Blinken_right_pattern = RevBlinkinLedDriver.BlinkinPattern.GREEN;
-            blinkinLedDriverRight.setPattern(Blinken_right_pattern);
-        }
-        else if(blueRight > greenRight && greenRight > redRight) {
-            Blinken_right_pattern = RevBlinkinLedDriver.BlinkinPattern.HOT_PINK;
-            blinkinLedDriverRight.setPattern(Blinken_right_pattern);
-        }
-        else if(allianceColorIsBlue){
-            Blinken_right_pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;
-            blinkinLedDriverRight.setPattern(Blinken_right_pattern);
-        }else {
-            Blinken_right_pattern = RevBlinkinLedDriver.BlinkinPattern.RED;
-            blinkinLedDriverRight.setPattern(Blinken_right_pattern);
-        }
-    }
-    public void ShowBlinkinTelemetry() {
-        opMode.telemetry.addData("Blinkin Left: ", Blinken_left_pattern.toString());
-        opMode.telemetry.addData("Blinkin Right: ", Blinken_right_pattern.toString());
-    }
 
     public void driveControlsRobotCentric() {
         double y = -opMode.gamepad1.left_stick_y;
@@ -1017,6 +1019,7 @@ public class Geronimo {
         rightFront.setPower(frontRightPower);
         rightRear.setPower(backRightPower);
     }
+
     public void driveControlsRobotCentricKID() {
         double y = -opMode.gamepad2.left_stick_y;
         double x = opMode.gamepad2.left_stick_x * 1.1;
