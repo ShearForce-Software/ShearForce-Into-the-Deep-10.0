@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 public class Geronimo_Manual_Control extends LinearOpMode {
     Geronimo theRobot;
     boolean rotatorPowerApplied = false;
+    boolean slidePowerApplied = false;
 
     // Scrimmage Meet Ideas:
     // Press intake button, have claw grab the sample
@@ -35,7 +36,6 @@ public class Geronimo_Manual_Control extends LinearOpMode {
              */
             // Drive Controls uses left_stick_y, left_stick_x, and right_stick_x
             theRobot.RunDriveControls();
-            theRobot.Horizontal_MAX_Limit();
 
             // Press the triangle button / "y" while facing directly away from the driver to set the IMU correctly for field-centric mode if off
             if (gamepad1.triangle && !gamepad1.options) {
@@ -51,10 +51,6 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             {
                 theRobot.SetFieldCentricMode(false);
             }
-            // gamepad_1.square --> stop and reset on the slides
-            //else if (gamepad1.square) {
-            //    theRobot.ResetSlidesPower();
-            //}
 
             /* *************************************************
              *************************************************
@@ -63,12 +59,34 @@ public class Geronimo_Manual_Control extends LinearOpMode {
              *************************************************
              *************************************************
              */
-            // SLIDE MOTOR CONTROL
+            // SLIDE MOTOR CONTROL through the LEFT STICK Y (up is negative)
             if ((gamepad2.left_stick_y > 0.1) || (gamepad2.left_stick_y <= -0.1)) {
-                theRobot.SetSlidesPower(gamepad2.left_stick_y);
-            } else {
-                theRobot.SetSlidesPower(0.0);
+                theRobot.SetSlidesToPowerMode(-gamepad2.left_stick_y);
+                slidePowerApplied = true;
             }
+            // else if was moving the slides through the LEFT STICK Y and stopped -- tell the slides to hold the current position
+            else if (slidePowerApplied && !theRobot.GetSlidesRunningToPosition() && !theRobot.GetSlidesLimitSwitchPressed()) {
+                slidePowerApplied = false;
+                theRobot.SetSlideToPosition(theRobot.GetSlideLeftCurrentPosition());
+            }
+            // else if the slide was running to a set position
+            else if (theRobot.GetSlidesRunningToPosition())
+            {
+                // if slides were running to zero and the limit switch got pressed
+                if (theRobot.GetSlidesTargetPosition() == 0 && theRobot.GetSlidesLimitSwitchPressed()) {
+                    theRobot.ResetSlidesToZero();
+                }
+                // else slides just running somewhere else, check if should just hold current position
+                else {
+                    int leftDifference = Math.abs(theRobot.GetSlidesTargetPosition() - theRobot.GetSlideLeftCurrentPosition());
+                    int rightDifference = Math.abs(theRobot.GetSlidesTargetPosition() - theRobot.GetSlideRightCurrentPosition());
+                    if ((leftDifference <= 2) && (rightDifference <= 2)) {
+                        theRobot.SetSlidesToHoldCurrentPosition();
+                    }
+                }
+            }
+            // Make sure the slides aren't ever trying to go past their horizontal limits
+            theRobot.Slides_Horizontal_MAX_Limit();
 
             // Slide Rotator Controls
             if (gamepad2.right_trigger > 0.25) {
@@ -99,39 +117,41 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             if (gamepad2.cross && !gamepad2.options) {
                 theRobot.IntakeFromFloor();
             } else if (gamepad2.share) {
-                theRobot.AutoStartPosition();
+                theRobot.RemoveFromWall();
             } else if (gamepad2.circle && !gamepad2.options) {
                 theRobot.SpecimenDeliverLow();
             } else if (gamepad2.triangle && !gamepad2.options) {
                 theRobot.SpecimenDeliverHigh();
             } else if (gamepad2.square && !gamepad2.options) {
                 theRobot.SpecimenPickupFromWall();
-            } else if (gamepad2.options && !gamepad2.circle && !gamepad2.cross && !gamepad2.triangle && !gamepad2.square) {
-                theRobot.RemoveFromWall();
             } else if (gamepad2.dpad_up) {
                 theRobot.BasketHigh();
             }
+
             // Claw Control
-            else if (gamepad2.right_bumper) {
+            if (gamepad2.right_bumper) {
                 theRobot.SetClawPosition(Geronimo.CLAW_MAX_POS);
             } else if (gamepad2.left_bumper) {
                 theRobot.SetClawPosition(Geronimo.CLAW_MIN_POS);
             }
+
             // Green Box Control
-            else if (gamepad2.dpad_left) {
+            if (gamepad2.dpad_left) {
                 theRobot.SetIntakeBoxRotatorDecrementDown();
             } else if (gamepad2.dpad_right) {
                 theRobot.SetIntakeBoxRotatorIncrementUp();
             }
-            // Intake Stars Control -- Intake --> OFF --> Outtake --> OFF --> Intake
-            else if (gamepad2.dpad_down) {
-                theRobot.CycleIntakeStarMode();
-            }
+
             // Small Arms (Hangers)
-            else if (gamepad2.right_stick_x > 0.2) {
+            if (gamepad2.right_stick_x > 0.2) {
                 theRobot.SetSmallArmHangerIncrementUp();
             } else if (gamepad2.right_stick_x < -0.2) {
                 theRobot.SetSmallArmHangerDecrementDown();
+            }
+
+            // Intake Stars Control -- Intake --> OFF --> Outtake --> OFF --> Intake
+            if (gamepad2.dpad_down) {
+                theRobot.CycleIntakeStarMode();
             }
 
             theRobot.ShowTelemetry();
