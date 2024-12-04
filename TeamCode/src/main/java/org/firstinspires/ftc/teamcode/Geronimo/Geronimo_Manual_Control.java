@@ -27,6 +27,7 @@ public class Geronimo_Manual_Control extends LinearOpMode {
         telemetry.update();
         waitForStart();
         resetRuntime();
+        theRobot.intakeStar.setPower(1.0);
 
             while (opModeIsActive()) {
                 theRobot.EndgameBuzzer();

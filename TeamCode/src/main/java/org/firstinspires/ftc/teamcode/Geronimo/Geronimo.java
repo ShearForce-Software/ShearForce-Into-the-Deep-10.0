@@ -407,6 +407,7 @@ public class Geronimo {
     float[] hsvValues = {0,0,0};
     // returns colorEnum color detected
     public colorEnum ColorRevV3Sensor() {
+        colorDetected = colorEnum.noColor;
         leftColorSensor.setGain(gain);
         NormalizedRGBA colors = leftColorSensor.getNormalizedColors();
         Color.colorToHSV(colors.toColor(), hsvValues);
@@ -422,10 +423,10 @@ public class Geronimo {
 
         // Yellow HSV Color Values
         double hMinYellow = 59.000;
-        double hMaxYellow = 113.043;
+        double hMaxYellow = 115.5224;
         double sMinYellow = 0.501;
         double sMaxYellow = 0.702;
-        double vMinYellow = 0.565;
+        double vMinYellow = 0.4667;
         double vMaxYellow = 1.000;
 
         // Blue HSV Color Values
