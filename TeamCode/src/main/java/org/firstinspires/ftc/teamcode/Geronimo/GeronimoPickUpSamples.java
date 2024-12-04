@@ -107,7 +107,7 @@ public class GeronimoPickUpSamples extends LinearOpMode {
                .build();
 
        CornerTraj4 = drive.actionBuilder(new Pose2d(-62, -29, Math.toRadians(90)))
-               .strafeToLinearHeading(new Vector2d(-60, -29), Math.toRadians(90))
+               .strafeToLinearHeading(new Vector2d(-55, -29), Math.toRadians(90))
                .strafeToLinearHeading(new Vector2d(-48, -48), Math.toRadians(225))
                //outtake
                .build();
