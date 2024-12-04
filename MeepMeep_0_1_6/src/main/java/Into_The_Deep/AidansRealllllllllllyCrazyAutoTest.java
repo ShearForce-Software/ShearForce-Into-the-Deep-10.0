@@ -32,37 +32,39 @@ public class AidansRealllllllllllyCrazyAutoTest {
         //myBot.runAction(myBot.getDrive().actionBuilder(StartPose)
                            //  .splineToLinearHeading(new Pose2d(36,48,36.6), Math.toRadians(270))
         Action DeliverStartingSpecimen = myBot.getDrive().actionBuilder(StartPose)
-                .splineTo(new Vector2d(7,-35), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(12,-35), Math.toRadians(90))
                 .build();
-        Action DriveToSamplesandDeliver1 = myBot.getDrive().actionBuilder(new Pose2d(7, -35, Math.toRadians(90)))
+        Action DriveToSamplesandDeliver1 = myBot.getDrive().actionBuilder(new Pose2d(12, -35, Math.toRadians(90)))
                 .strafeToLinearHeading(new Vector2d(25,-48), Math.toRadians(270))
                 //.splineToConstantHeading(new Vector2d(18,-48), Math.toRadians(270))
-                .splineToConstantHeading(new Vector2d(36,-12), Math.toRadians(270))
-                .splineToConstantHeading(new Vector2d(44,-12), Math.toRadians(270))
+                .splineToConstantHeading(new Vector2d(36,-17), Math.toRadians(270))
+                .splineToConstantHeading(new Vector2d(44,-15), Math.toRadians(270))
                // .strafeToLinearHeading(new Vector2d(48,-9), Math.toRadians(270))
                 .strafeToLinearHeading(new Vector2d(44,-60), Math.toRadians(270))
+               // .strafeToLinearHeading(new Vector2d(47,-60), Math.toRadians(270))
                 .build();
         Action DriveToSamplesandDeliver2 = myBot.getDrive().actionBuilder(new Pose2d(44,-60, Math.toRadians(270)))
-                .strafeToLinearHeading(new Vector2d(48, -12), Math.toRadians(270))
-                .splineToConstantHeading(new Vector2d(54,-12), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(44, -17), Math.toRadians(270))
+                .splineToConstantHeading(new Vector2d(54,-17), Math.toRadians(270))
                 .lineToYConstantHeading(-60)
+                .strafeToLinearHeading(new Vector2d(44, -60), Math.toRadians(270))
                 //.strafeToLinearHeading(new Vector2d(48,-60), Math.toRadians(270))
                 .build();
-        Action DriveToSamplesandDeliver3 = myBot.getDrive().actionBuilder(new Pose2d(54,-60,Math.toRadians(270)))
-                .strafeToLinearHeading(new Vector2d(54, -12), Math.toRadians(270))
-                .splineToConstantHeading(new Vector2d(59,-12), Math.toRadians(270))
+        Action DriveToSamplesandDeliver3 = myBot.getDrive().actionBuilder(new Pose2d(44,-60,Math.toRadians(270)))
+                .strafeToLinearHeading(new Vector2d(44, -17), Math.toRadians(270))
+                .splineToConstantHeading(new Vector2d(60,-17), Math.toRadians(270))
                 .lineToYConstantHeading(-60)
                 .build();
-        Action DriveToSubmersible1 = myBot.getDrive().actionBuilder(new Pose2d(62,-60,Math.toRadians(270)))
+        Action DriveToSubmersible1 = myBot.getDrive().actionBuilder(new Pose2d(60,-60,Math.toRadians(270)))
                 //.strafeToLinearHeading(new Vector2d(48, -48), Math.toRadians(270))
                 .strafeToLinearHeading(new Vector2d(48, -57), Math.toRadians(270))
                // .strafeToConstantHeading(new Vector2d(48, -60))
-                .strafeToLinearHeading(new Vector2d(7,-35), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(12,-35), Math.toRadians(90))
                 .build();
 
-        Action DriveToSubmersible2 = myBot.getDrive().actionBuilder(new Pose2d(7,-35,Math.toRadians(90)))
+        Action DriveToSubmersible2 = myBot.getDrive().actionBuilder(new Pose2d(12,-35,Math.toRadians(90)))
                 .strafeToLinearHeading(new Vector2d(48,-57), Math.toRadians(270))
-                .strafeToLinearHeading(new Vector2d(7,-35), Math.toRadians(90)) //May change to 270 heading once delivery is clarified
+                .strafeToLinearHeading(new Vector2d(12,-35), Math.toRadians(90)) //May change to 270 heading once delivery is clarified
                 .build();
 
         Action DriveToSubmersible3 = myBot.getDrive().actionBuilder(new Pose2d(7,-35,Math.toRadians(90)))

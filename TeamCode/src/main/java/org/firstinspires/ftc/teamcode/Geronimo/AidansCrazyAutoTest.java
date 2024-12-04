@@ -52,7 +52,7 @@ public class AidansCrazyAutoTest extends LinearOpMode {
         // Define some custom constraints to use when wanting to go faster than defaults
         speedUpVelocityConstraint = new TranslationalVelConstraint(60.0);
         speedUpAccelerationConstraint = new ProfileAccelConstraint(-40.0, 60.0);
-        slowDownVelocityConstraint = new TranslationalVelConstraint(35);
+        slowDownVelocityConstraint = new TranslationalVelConstraint(30);
         slowDownAccelerationConstraint = new ProfileAccelConstraint(-20, 50);
 
         /* Initialize the Robot */
@@ -73,35 +73,37 @@ public class AidansCrazyAutoTest extends LinearOpMode {
         // ***************************************************
 
         DeliverStartingSpecimen = drive.actionBuilder(startPose)
-                .splineTo(new Vector2d(7,-35), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(12,-35), Math.toRadians(90))
                 .build();
-        DriveToSamplesandDeliver1 = drive.actionBuilder(new Pose2d(7, -35, Math.toRadians(90)))
+        DriveToSamplesandDeliver1 = drive.actionBuilder(new Pose2d(12, -35, Math.toRadians(90)))
                 .strafeToLinearHeading(new Vector2d(25,-48), Math.toRadians(270))
-                .splineToConstantHeading(new Vector2d(36,-12), Math.toRadians(270))
-                .splineToConstantHeading(new Vector2d(44,-12), Math.toRadians(270))
-                .strafeToLinearHeading(new Vector2d(44,-56), Math.toRadians(270), slowDownVelocityConstraint)
+                .splineToConstantHeading(new Vector2d(36,-17), Math.toRadians(270))
+                .splineToConstantHeading(new Vector2d(44,-15), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(44,-54), Math.toRadians(270), slowDownVelocityConstraint)
+                //.strafeToLinearHeading(new Vector2d(47,-60), Math.toRadians(270))
                 .build();
-        DriveToSamplesandDeliver2 = drive.actionBuilder(new Pose2d(44,-60, Math.toRadians(270)))
-                .strafeToLinearHeading(new Vector2d(48, -12), Math.toRadians(270), slowDownVelocityConstraint)
-                .splineToConstantHeading(new Vector2d(54,-12), Math.toRadians(270))
-                .lineToYConstantHeading(-56,slowDownVelocityConstraint)
+        DriveToSamplesandDeliver2 = drive.actionBuilder(new Pose2d(44,-54, Math.toRadians(270)))
+                .strafeToLinearHeading(new Vector2d(44, -17), Math.toRadians(270), slowDownVelocityConstraint)
+                .splineToConstantHeading(new Vector2d(54,-17), Math.toRadians(270))
+                .lineToYConstantHeading(-54,slowDownVelocityConstraint)
+                .strafeToLinearHeading(new Vector2d(44, -54), Math.toRadians(270))
                 .build();
-        DriveToSamplesandDeliver3 = drive.actionBuilder(new Pose2d(54,-60,Math.toRadians(270)))
-                .strafeToLinearHeading(new Vector2d(54, -12), Math.toRadians(270), slowDownVelocityConstraint)
-                .splineToConstantHeading(new Vector2d(59,-12), Math.toRadians(270))
-                .lineToYConstantHeading(-56,slowDownVelocityConstraint)
+        DriveToSamplesandDeliver3 = drive.actionBuilder(new Pose2d(44,-54,Math.toRadians(270)))
+                .strafeToLinearHeading(new Vector2d(44, -17), Math.toRadians(270), slowDownVelocityConstraint)
+                .splineToConstantHeading(new Vector2d(62,-17), Math.toRadians(270))
+                .lineToYConstantHeading(-54,slowDownVelocityConstraint)
                 .build();
-        DriveToSubmersible1 = drive.actionBuilder(new Pose2d(59,-56, Math.toRadians(270)))
-                .strafeToLinearHeading(new Vector2d(48, -57), Math.toRadians(270))
+        DriveToSubmersible1 = drive.actionBuilder(new Pose2d(62,-54, Math.toRadians(270)))
+                .strafeToLinearHeading(new Vector2d(48, -54), Math.toRadians(270))
                 .strafeToLinearHeading(new Vector2d(7,-35), Math.toRadians(90))
                 .build();
         DriveToSubmersible2 = drive.actionBuilder(new Pose2d(7,-35,Math.toRadians(90)))
-                .strafeToLinearHeading(new Vector2d(48,-57), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(48,-54), Math.toRadians(270))
                 .strafeToLinearHeading(new Vector2d(7,-35), Math.toRadians(90)) //May change to 270 heading once delivery is clarified
                 .build();
         DriveToSubmersible3 = drive.actionBuilder(new Pose2d(7,-35,Math.toRadians(90)))
-                .strafeToLinearHeading(new Vector2d(48,-57), Math.toRadians(270))
-                .strafeToLinearHeading(new Vector2d(7,-35), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(48,-54), Math.toRadians(270))
+                 .strafeToLinearHeading(new Vector2d(7,-35), Math.toRadians(90))
                 .build();
 /*
 
