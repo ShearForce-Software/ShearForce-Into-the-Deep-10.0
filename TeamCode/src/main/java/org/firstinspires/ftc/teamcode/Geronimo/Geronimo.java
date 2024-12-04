@@ -63,6 +63,7 @@ public class Geronimo {
     public static final int SLIDE_ARM_ROTATOR_MAX_POS = 1000;
     public static final double SLIDE_ARM_ROTATOR_POWER = 0.75;
 
+    //slides
     DcMotor slideLeft;
     DcMotor slideRight;
     int slidesTargetPosition = 0;
