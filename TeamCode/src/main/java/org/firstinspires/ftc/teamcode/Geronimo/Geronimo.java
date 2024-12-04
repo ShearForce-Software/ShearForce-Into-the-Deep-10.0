@@ -69,10 +69,8 @@ public class Geronimo {
     boolean slidesRunningToPosition = false;
     public static final double SLIDES_POS_POWER = 0.75;
     public static final int SLIDE_ARM_MIN_POS = 0;
-    public static final int SLIDE_ARM_MAX_POS = -1550;
+    public static final int SLIDE_ARM_MAX_POS = 1000;
     private double slidePower = 0.0;
-    TouchSensor touchSensorSlideLeft;
-    TouchSensor touchSensorSlideRight;
 
     Servo clawServo;
     public static final double CLAW_MAX_POS = 0.45;
@@ -216,8 +214,6 @@ public class Geronimo {
         // ********** Touch Sensors ********************
         touchSensorSlideArmRotatorRight = hardwareMap.get(TouchSensor.class, "sensor_touchRight");
         touchSensorSlideArmRotatorLeft = hardwareMap.get(TouchSensor.class, "sensor_touchLeft");
-        touchSensorSlideLeft = hardwareMap.get(TouchSensor.class, "sensor_touchLeft");
-        touchSensorSlideRight = hardwareMap.get(TouchSensor.class, "sensor_touchRight");
 
         // limelightbox = hardwareMap.get(Limelight3A.class, "limelight");
         InitBlinkin(hardwareMap);
@@ -629,11 +625,11 @@ public class Geronimo {
 
     public void AutoStartPosition()
     {
-        SetIntakeBoxRotatorPosition(0.875);
+        SetIntakeBoxRotatorPosition(0.9);
         SetSmallArmSetHangerPosition(0);
         SetSlideToPosition(0);
         SetSlideRotatorArmToPosition(0);
-        SetIntakeBoxRotatorPosition(0.875);
+        // TODO add something that adjusts green box?
     }
 
     public void IntakeFromFloor()
@@ -666,8 +662,8 @@ public class Geronimo {
     }
 
     public void SpecimenPickupFromWall(){
-        SetIntakeBoxRotatorPosition(0.875);
-        SetSmallArmSetHangerPosition(0.15);
+        SetIntakeBoxRotatorPosition(0.85);
+        SetSmallArmSetHangerPosition(0.14);
         SetSlideToPosition(0);
         SetSlideRotatorArmToPosition(0);
         //0.85 IntakeStarRotator, hanger position (0.15/0.8)
@@ -816,39 +812,13 @@ public class Geronimo {
     // TODO -- need to implement software limits to prevent going too far in horizontal directions
     // TODO -- need to add limit switch logic
     // TODO -- need to put in limit safety checks
-
-    public boolean GetSlidesLimitSwitchPressed(){
-        boolean returnValue = false;
-
-        if ((!touchSensorSlideLeft.isPressed()) || (!touchSensorSlideRight.isPressed())){
-            returnValue = true;
-        }
-
-        return returnValue;
-    }
-
-    public void Horizontal_MAX_Limit(){
-        if ((GetRotatorRightArmCurrentPosition() == 0 || GetRotatorLeftArmCurrentPosition() == 0) &&
-                (slideLeft.getCurrentPosition() >= SLIDE_ARM_MAX_POS || slideRight.getCurrentPosition() >= SLIDE_ARM_MAX_POS)){
-            SetSlidesPower(0);
-        }
-
-    }
-
     public void SetSlidesPower (double power)
     {
-        if ((GetRotatorRightArmCurrentPosition() == 0 || GetRotatorLeftArmCurrentPosition() == 0) &&
-                (slideLeft.getCurrentPosition() >= SLIDE_ARM_MAX_POS || slideRight.getCurrentPosition() >= SLIDE_ARM_MAX_POS)){
-            slidePower = 0;
-        }else {
-
-            slidePower = power;
-        }
-            slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            slideLeft.setPower(slidePower);
-            slideRight.setPower(slidePower);
-
+        slidePower = power;
+        slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        slideLeft.setPower(slidePower);
+        slideRight.setPower(slidePower);
     }
 
     public void ResetSlidesPower (){
@@ -863,13 +833,7 @@ public class Geronimo {
 
     public void SetSlideToPosition (int position)
     {
-        if ((GetRotatorRightArmCurrentPosition() == 0 || GetRotatorLeftArmCurrentPosition() == 0) &&
-                (position >= SLIDE_ARM_MAX_POS)){
-            slidesTargetPosition = SLIDE_ARM_MAX_POS;
-        } else {
-
-            slidesTargetPosition = position;
-        }
+        slidesTargetPosition = position;
         slidesRunningToPosition = true;
         slideLeft.setTargetPosition(slidesTargetPosition);
         slideRight.setTargetPosition(slidesTargetPosition);
