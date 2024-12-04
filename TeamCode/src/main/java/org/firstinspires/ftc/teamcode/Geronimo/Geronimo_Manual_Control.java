@@ -226,7 +226,6 @@ public class Geronimo_Manual_Control extends LinearOpMode {
 
                 theRobot.ShowTelemetry();
                 telemetry.update();
-                sleep(50);
             } // end while (opModeIsActive())
 
         }
