@@ -633,7 +633,7 @@ public class Geronimo {
         SetSmallArmSetHangerPosition(0);
         SetSlideToPosition(0);
         SetSlideRotatorArmToPosition(0);
-        // TODO add something that adjusts green box?
+        SetIntakeBoxRotatorPosition(0.875);
     }
 
     public void IntakeFromFloor()
