@@ -737,11 +737,11 @@ public class Geronimo {
         if(intakeStarPower != 0.0) {
             SetIntakeStarPower(0);
         } else if(intakeStarLastForward) {
-            SetIntakeStarPower(-1);
+            SetIntakeStarPower(-0.75);
             intakeStarLastForward = false;
         }
         else {
-            SetIntakeStarPower(1);
+            SetIntakeStarPower(0.75);
             intakeStarLastForward = true;
         }
     }
