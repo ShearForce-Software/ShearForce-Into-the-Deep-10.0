@@ -80,21 +80,21 @@ public class Test_ColorDetection extends LinearOpMode {
         while(opModeIsActive()){
 
             if (gamepad2.left_stick_y > 0.1 || gamepad2.left_stick_y < 0.1) {
-                theRobot.intakeStarServo.setPower(gamepad2.left_stick_y);
+                theRobot.SetIntakeStarPower(gamepad2.left_stick_y);
                 // servo.setPower(gamepad2.left_stick_y);
             }
             else
             {
-                theRobot.intakeStarServo.setPower(0);
+                theRobot.SetIntakeStarPower(0);
             }
             if (gamepad2.a)
             {
-                theRobot.ColorRevV3SensorChecker(targetColor);
+                /*theRobot.ColorRevV3SensorChecker(targetColor);*/
             }
 
 
             // Display the current value
-            telemetry.addData("Servo Power", "%5.2f", theRobot.intakeStarServo.getPower());
+            telemetry.addData("Servo Power", "%5.2f", theRobot.intakeStar.getPower());
             telemetry.addData(">", "intakeStar is plugged into control hub port 4." );
             telemetry.addData(">", "Uses gamepad 2 leftstick Y." );
             telemetry.update();
