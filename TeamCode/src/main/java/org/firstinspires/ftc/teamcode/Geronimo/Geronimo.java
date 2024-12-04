@@ -402,13 +402,15 @@ public class Geronimo {
     }
 
  */
-    // hsvValues list
+    // initializes gain variable (for color sensor)
+    float gain = 51;
     float[] hsvValues = {0,0,0};
     // returns colorEnum color detected
     public colorEnum ColorRevV3Sensor() {
+        leftColorSensor.setGain(gain);
         NormalizedRGBA colors = leftColorSensor.getNormalizedColors();
         Color.colorToHSV(colors.toColor(), hsvValues);
-        /*
+
         // previous values
         // Red HSV Color ranges
         double hMinRed = 19.811;
@@ -433,8 +435,8 @@ public class Geronimo {
         double sMaxBlue = 0.832;
         double vMinBlue = 0.514;
         double vMaxBlue = 1.000;
-         */
-
+        /*
+        // new values
         // Red HSV Color ranges
         double hMinRed = 0.0;
         double hMaxRed = 120.0;
@@ -458,6 +460,8 @@ public class Geronimo {
         double sMaxBlue = 1.0;
         double vMinBlue = 0.0039;
         double vMaxBlue = 0.0196;
+        */
+
 
         // determine if color is blue, red or yellow
         if (hsvValues[0] >= hMinBlue && hsvValues[1] >= sMinBlue)
@@ -860,6 +864,7 @@ public class Geronimo {
         opMode.telemetry.addData("saturation detected: ", hsvValues[1]);
         opMode.telemetry.addData("value detected: ", hsvValues[2]);
         opMode.telemetry.addData("Color sensed: ", ColorRevV3Sensor().toString());
+        opMode.telemetry.addData("Gain", gain);
 
 
         showColorSensorTelemetry();
