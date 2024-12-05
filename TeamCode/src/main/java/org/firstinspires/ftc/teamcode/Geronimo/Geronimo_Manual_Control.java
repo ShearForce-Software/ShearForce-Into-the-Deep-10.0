@@ -9,6 +9,7 @@ public class Geronimo_Manual_Control extends LinearOpMode {
     Geronimo theRobot;
     boolean rotatorPowerApplied = false;
     boolean slidePowerApplied = false;
+    boolean intakeStarPowerApplied = false;
 
     // Scrimmage Meet Ideas:
     // Press intake button, have claw grab the sample
@@ -61,20 +62,25 @@ public class Geronimo_Manual_Control extends LinearOpMode {
              */
             // SLIDE MOTOR CONTROL through the LEFT STICK Y (up is negative)
             if ((gamepad2.left_stick_y > 0.1) || (gamepad2.left_stick_y <= -0.1)) {
-                theRobot.SetSlidesToPowerMode(-gamepad2.left_stick_y);
                 slidePowerApplied = true;
+                // if slide limit pressed and commanding down
+                if (theRobot.GetSlidesLimitSwitchPressed() && (gamepad2.left_stick_y > 0.1))
+                {
+                    theRobot.ResetSlidesToZero();
+                }
+                else {
+                    theRobot.SetSlidesToPowerMode(-gamepad2.left_stick_y);
+                }
             }
             // else if was moving the slides through the LEFT STICK Y and stopped -- tell the slides to hold the current position
-            else if (slidePowerApplied && !theRobot.GetSlidesRunningToPosition() && !theRobot.GetSlidesLimitSwitchPressed()) {
+            else if (slidePowerApplied) {
                 slidePowerApplied = false;
-                //theRobot.SetSlideToPosition(theRobot.GetSlideLeftCurrentPosition());
                 theRobot.SetSlidesToPowerMode(0.0);
-            }
-            else {
-                theRobot.SetSlidesToPowerMode(0.0);
+                if (theRobot.GetSlidesLimitSwitchPressed()) {
+                    theRobot.ResetSlidesToZero();
+                }
             }
             // else if the slide was running to a set position
-            /*
             else if (theRobot.GetSlidesRunningToPosition())
             {
                 // if slides were running to zero and the limit switch got pressed
@@ -90,10 +96,8 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                     }
                 }
             }
-
-             */
             // Make sure the slides aren't ever trying to go past their horizontal limits
-            //theRobot.Slides_Horizontal_MAX_Limit();
+            theRobot.Slides_Horizontal_MAX_Limit();
 
             // Slide Rotator Controls
             if (gamepad2.right_trigger > 0.25) {
@@ -159,6 +163,18 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             // Intake Stars Control -- Intake --> OFF --> Outtake --> OFF --> Intake
             if (gamepad2.dpad_down) {
                 theRobot.CycleIntakeStarMode();
+            }
+            else if (gamepad1.right_trigger > 0.2) {
+                theRobot.SetIntakeStarPower(gamepad1.right_trigger);
+                intakeStarPowerApplied = true;
+            }
+            else if (gamepad1.left_trigger > 0.2) {
+                theRobot.SetIntakeStarPower(-gamepad1.left_trigger);
+                intakeStarPowerApplied = true;
+            }
+            else if (intakeStarPowerApplied) {
+                intakeStarPowerApplied = false;
+                theRobot.SetIntakeStarPower(0.0);
             }
 
             theRobot.ShowTelemetry();

@@ -675,7 +675,7 @@ public class Geronimo {
         SetSmallArmHangerPosition(0.8);
         SetSlideRotatorArmToPosition(800); //8008, 450
         // wait for the rotators to move to vertical before raising slides
-        SpecialSleep(20000);
+        SpecialSleep(2000);
         SetSlideToPosition(2320);
     }
     // hanger position 0.8
@@ -731,18 +731,25 @@ public class Geronimo {
     {
         intakeStarPower = power;
         intakeStarServo.setPower(intakeStarPower);
+        if (power > 0.0)
+        {
+            intakeStarLastForward = true;
+        }
+        else if (power < 0.0)
+        {
+            intakeStarLastForward = false;
+        }
     }
 
     public void CycleIntakeStarMode() {
-        if(intakeStarPower != 0.0) {
+        if (intakeStarPower != 0.0) {
             SetIntakeStarPower(0);
         } else if(intakeStarLastForward) {
-            SetIntakeStarPower(-0.5);
-            intakeStarLastForward = false;
+            SetIntakeStarPower(-1.0);
         }
         else {
-            SetIntakeStarPower(0.5);
-            intakeStarLastForward = true;
+            SetIntakeStarPower(1.0);
+
         }
     }
 
@@ -859,6 +866,7 @@ public class Geronimo {
     }
 
     public void ResetSlidesToZero (){
+        slidesRunningToPosition = false;
         slidePower = 0;
         slideLeft.setPower(slidePower);
         slideRight.setPower(slidePower);
@@ -871,6 +879,7 @@ public class Geronimo {
 
     public void SetSlideToPosition (int position)
     {
+        // verify not needing to limit because of horizontal limits
         if ((slideArmRotatorTargetPosition == 0) &&
                 (position >= SLIDE_ARM_MAX_HORIZONTAL_POS)) {
             slidesTargetPosition = SLIDE_ARM_MAX_HORIZONTAL_POS;
@@ -903,12 +912,14 @@ public class Geronimo {
             ResetSlidesToZero();
         }
         else {
-            slidePower = SLIDES_POS_POWER;
+            slidePower = 0;
             slideLeft.setPower(slidePower);
             slideRight.setPower(slidePower);
             slidesTargetPosition = slideLeft.getCurrentPosition();
             slideLeft.setTargetPosition(slidesTargetPosition);
             slideRight.setTargetPosition(slideRight.getCurrentPosition());
+            slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
         slidesRunningToPosition = false;
     }
@@ -1013,27 +1024,30 @@ public class Geronimo {
         opMode.telemetry.addData("imu Heading: ", GetIMU_HeadingInDegrees());
 
         opMode.telemetry.addData("Claw Position: ", claw_position);
-        opMode.telemetry.addData(">", "Claw - use bumpers for control" );
+        //opMode.telemetry.addData(">", "Claw - use bumpers for control" );
 
         opMode.telemetry.addData("Arm Hanger Positions ", "R: %.2f, L: %.2f", smallArmHangerRightPosition, smallArmHangerLeftPosition);
-        opMode.telemetry.addData(">", "Arm Hangers - rightStick X-Axis for control" );
+        //opMode.telemetry.addData(">", "Arm Hangers - rightStick X-Axis for control" );
 
         opMode.telemetry.addData("Intake Star Power: ", "%.2f, %.2f", intakeStarPower, intakeStarServo.getPower());
-        opMode.telemetry.addData(">", "Intake Star - use dpad down for control" );
+        //opMode.telemetry.addData(">", "Intake Star - use dpad down for control" );
 
         opMode.telemetry.addData("slides Position ", "L: %d, R: %d", slideLeft.getCurrentPosition(), slideRight.getCurrentPosition());
-        opMode.telemetry.addData("slide Power: ", slidePower);
-        opMode.telemetry.addData(">", "slides - use leftStick Y for control" );
+        opMode.telemetry.addData("slides ", "Target: %d, Power: %.2f", slidesTargetPosition, slidePower);
+        opMode.telemetry.addData("Slides Left Touched: ", !touchSensorSlideLeft.isPressed());
+        opMode.telemetry.addData("Slides Rght Touched: ", !touchSensorSlideRight.isPressed());
+        opMode.telemetry.addData("Slides in RUN_TO_POSITION? ", slidesRunningToPosition);
+        //opMode.telemetry.addData(">", "slides - use leftStick Y for control" );
 
         opMode.telemetry.addData("Slide Arm Rotator Positions: ", "L: %d, R: %d", leftSlideArmRotatorMotor.getCurrentPosition(), rightSlideArmRotatorMotor.getCurrentPosition());
         opMode.telemetry.addData("Slide Arm Rotator ", "Target: %d, Power: %.2f", slideArmRotatorTargetPosition, slideArmRotatorPower);
         opMode.telemetry.addData("Slide Arm Rotator Left Touched: ", !touchSensorSlideArmRotatorLeft.isPressed());
         opMode.telemetry.addData("Slide Arm Rotator Rght Touched: ", !touchSensorSlideArmRotatorRight.isPressed());
         opMode.telemetry.addData("Slide Arm Rotator in RUN_TO_POSITION? ", slideArmRotatorRunningToPosition);
-        opMode.telemetry.addData(">", "rotateArms - use triggers for control" );
+        //opMode.telemetry.addData(">", "rotateArms - use triggers for control" );
 
         opMode.telemetry.addData("Green Intake BOX ROTATOR Pos: ", intakeBoxRotatorPosition);
-        opMode.telemetry.addData(">", "green intake box rotator - use dpad L/R for control" );
+        //opMode.telemetry.addData(">", "green intake box rotator - use dpad L/R for control" );
 
         showColorSensorTelemetry();
         opMode.telemetry.update();
