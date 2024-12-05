@@ -68,7 +68,7 @@ public class Geronimo {
     DcMotor slideRight;
     int slidesTargetPosition = 0;
     boolean slidesRunningToPosition = false;
-    public static final double SLIDES_POS_POWER = 0.75;
+    public static final double SLIDES_POS_POWER = 1.0;
     public static final int SLIDE_ARM_MIN_POS = 0;
     public static final int SLIDE_ARM_MAX_VERTICAL_POS = 2360;
     public static final int SLIDE_ARM_MAX_HORIZONTAL_POS = 1550;
@@ -737,11 +737,11 @@ public class Geronimo {
         if(intakeStarPower != 0.0) {
             SetIntakeStarPower(0);
         } else if(intakeStarLastForward) {
-            SetIntakeStarPower(-0.75);
+            SetIntakeStarPower(-0.5);
             intakeStarLastForward = false;
         }
         else {
-            SetIntakeStarPower(0.75);
+            SetIntakeStarPower(0.5);
             intakeStarLastForward = true;
         }
     }
@@ -1015,10 +1015,10 @@ public class Geronimo {
         opMode.telemetry.addData("Claw Position: ", claw_position);
         opMode.telemetry.addData(">", "Claw - use bumpers for control" );
 
-        opMode.telemetry.addData("Arm Hanger Positions ", "R: %d, L: %d", smallArmHangerRightPosition, smallArmHangerLeftPosition);
+        opMode.telemetry.addData("Arm Hanger Positions ", "R: %.2f, L: %.2f", smallArmHangerRightPosition, smallArmHangerLeftPosition);
         opMode.telemetry.addData(">", "Arm Hangers - rightStick X-Axis for control" );
 
-        opMode.telemetry.addData("Intake Star Power: ", intakeStarPower);
+        opMode.telemetry.addData("Intake Star Power: ", "%.2f, %.2f", intakeStarPower, intakeStarServo.getPower());
         opMode.telemetry.addData(">", "Intake Star - use dpad down for control" );
 
         opMode.telemetry.addData("slides Position ", "L: %d, R: %d", slideLeft.getCurrentPosition(), slideRight.getCurrentPosition());

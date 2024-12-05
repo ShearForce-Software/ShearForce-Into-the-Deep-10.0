@@ -67,9 +67,14 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             // else if was moving the slides through the LEFT STICK Y and stopped -- tell the slides to hold the current position
             else if (slidePowerApplied && !theRobot.GetSlidesRunningToPosition() && !theRobot.GetSlidesLimitSwitchPressed()) {
                 slidePowerApplied = false;
-                theRobot.SetSlideToPosition(theRobot.GetSlideLeftCurrentPosition());
+                //theRobot.SetSlideToPosition(theRobot.GetSlideLeftCurrentPosition());
+                theRobot.SetSlidesToPowerMode(0.0);
+            }
+            else {
+                theRobot.SetSlidesToPowerMode(0.0);
             }
             // else if the slide was running to a set position
+            /*
             else if (theRobot.GetSlidesRunningToPosition())
             {
                 // if slides were running to zero and the limit switch got pressed
@@ -85,8 +90,10 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                     }
                 }
             }
+
+             */
             // Make sure the slides aren't ever trying to go past their horizontal limits
-            theRobot.Slides_Horizontal_MAX_Limit();
+            //theRobot.Slides_Horizontal_MAX_Limit();
 
             // Slide Rotator Controls
             if (gamepad2.right_trigger > 0.25) {

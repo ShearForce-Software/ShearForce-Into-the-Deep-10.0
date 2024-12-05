@@ -58,6 +58,7 @@ public class AidansCrazyAutoTest extends LinearOpMode {
         /* Initialize the Robot */
         drive = new MecanumDrive_Geronimo(hardwareMap, startPose);
         control.Init(hardwareMap);
+        control.AutoStartPosition();
         //control.WebcamInit(hardwareMap);
         telemetry.update();
         control.imuOffsetInDegrees = 270; // Math.toDegrees(startPose.heading.toDouble());
@@ -67,6 +68,7 @@ public class AidansCrazyAutoTest extends LinearOpMode {
         }
         resetRuntime();
         control.autoTimeLeft = 0.0;
+        control.SetClawPosition(Geronimo.CLAW_MAX_POS);
 
         // ***************************************************
         // ****  START DRIVING    ****************************
