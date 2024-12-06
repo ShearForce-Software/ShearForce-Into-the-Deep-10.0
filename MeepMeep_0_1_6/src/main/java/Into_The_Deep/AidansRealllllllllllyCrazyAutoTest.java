@@ -32,43 +32,51 @@ public class AidansRealllllllllllyCrazyAutoTest {
         //myBot.runAction(myBot.getDrive().actionBuilder(StartPose)
                            //  .splineToLinearHeading(new Pose2d(36,48,36.6), Math.toRadians(270))
         Action DeliverStartingSpecimen = myBot.getDrive().actionBuilder(StartPose)
-                .strafeToLinearHeading(new Vector2d(12,-35), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(10,-35), Math.toRadians(90))
                 .build();
         Action DriveToSamplesandDeliver1 = myBot.getDrive().actionBuilder(new Pose2d(12, -35, Math.toRadians(90)))
                 .strafeToLinearHeading(new Vector2d(25,-48), Math.toRadians(270))
                 //.splineToConstantHeading(new Vector2d(18,-48), Math.toRadians(270))
-                .splineToConstantHeading(new Vector2d(36,-17), Math.toRadians(270))
-                .splineToConstantHeading(new Vector2d(44,-15), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(36,-48), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(36,-24), Math.toRadians(270))
+               // .splineTo(new Vector2d(42,-12), Math.toRadians(0))
+                //.splineTo(new Vector2d(48,-24), Math.toRadians(0))
                // .strafeToLinearHeading(new Vector2d(48,-9), Math.toRadians(270))
-                .strafeToLinearHeading(new Vector2d(44,-60), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(36,-12), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(44,-12),Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(44,-54), Math.toRadians(270))
                // .strafeToLinearHeading(new Vector2d(47,-60), Math.toRadians(270))
                 .build();
         Action DriveToSamplesandDeliver2 = myBot.getDrive().actionBuilder(new Pose2d(44,-60, Math.toRadians(270)))
                 .strafeToLinearHeading(new Vector2d(44, -17), Math.toRadians(270))
                 .splineToConstantHeading(new Vector2d(54,-17), Math.toRadians(270))
-                .lineToYConstantHeading(-60)
-                .strafeToLinearHeading(new Vector2d(44, -60), Math.toRadians(270))
+                .lineToYConstantHeading(-54)
+                //.strafeToLinearHeading(new Vector2d(44, -54), Math.toRadians(270))
                 //.strafeToLinearHeading(new Vector2d(48,-60), Math.toRadians(270))
                 .build();
-        Action DriveToSamplesandDeliver3 = myBot.getDrive().actionBuilder(new Pose2d(44,-60,Math.toRadians(270)))
-                .strafeToLinearHeading(new Vector2d(44, -17), Math.toRadians(270))
-                .splineToConstantHeading(new Vector2d(60,-17), Math.toRadians(270))
-                .lineToYConstantHeading(-60)
+        Action DriveToSamplesandDeliver3 = myBot.getDrive().actionBuilder(new Pose2d(54,-54,Math.toRadians(270)))
+                .strafeToLinearHeading(new Vector2d(54, -12), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(62,-12), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(62,-54), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(50,-54),Math.toRadians(270))
                 .build();
-        Action DriveToSubmersible1 = myBot.getDrive().actionBuilder(new Pose2d(60,-60,Math.toRadians(270)))
+        Action ParkinDeck = myBot.getDrive().actionBuilder(new Pose2d(50,-54,Math.toRadians(270)))
+                .splineToLinearHeading(new Pose2d(49,-54,Math.toRadians(90)),Math.toRadians(0))
+                .build();
+        /*Action DriveToSubmersible1 = myBot.getDrive().actionBuilder(new Pose2d(62,-54,Math.toRadians(270)))
                 //.strafeToLinearHeading(new Vector2d(48, -48), Math.toRadians(270))
-                .strafeToLinearHeading(new Vector2d(48, -57), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(48, -54), Math.toRadians(270))
                // .strafeToConstantHeading(new Vector2d(48, -60))
-                .strafeToLinearHeading(new Vector2d(12,-35), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(7,-35), Math.toRadians(90))
                 .build();
 
-        Action DriveToSubmersible2 = myBot.getDrive().actionBuilder(new Pose2d(12,-35,Math.toRadians(90)))
-                .strafeToLinearHeading(new Vector2d(48,-57), Math.toRadians(270))
-                .strafeToLinearHeading(new Vector2d(12,-35), Math.toRadians(90)) //May change to 270 heading once delivery is clarified
+        Action DriveToSubmersible2 = myBot.getDrive().actionBuilder(new Pose2d(7,-35,Math.toRadians(90)))
+                .strafeToLinearHeading(new Vector2d(48,-54), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(7,-35), Math.toRadians(90)) //May change to 270 heading once delivery is clarified
                 .build();
 
         Action DriveToSubmersible3 = myBot.getDrive().actionBuilder(new Pose2d(7,-35,Math.toRadians(90)))
-                .strafeToLinearHeading(new Vector2d(48,-57), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(48,-54), Math.toRadians(270))
                 .strafeToLinearHeading(new Vector2d(7,-35), Math.toRadians(90))
                 .build();
         Action DropOff2 = myBot.getDrive().actionBuilder(new Pose2d(5,-30,Math.toRadians(90)))
@@ -83,6 +91,9 @@ public class AidansRealllllllllllyCrazyAutoTest {
                .strafeToLinearHeading(VectorTwo, Math.toRadians(90))
                 .build();
 
+         */
+
+
         myBot.runAction(new SequentialAction(
                 //Drive to submersible and pick up sample
                 DeliverStartingSpecimen,
@@ -90,11 +101,7 @@ public class AidansRealllllllllllyCrazyAutoTest {
                 DriveToSamplesandDeliver1,
                 DriveToSamplesandDeliver2,
                 DriveToSamplesandDeliver3,
-                DriveToSubmersible1,
-                new SleepAction(1.5),
-                DriveToSubmersible2,
-                new SleepAction(1.5),
-                DriveToSubmersible3
+                ParkinDeck));
 
                 //new SleepAction(1)
                 //Drop submersible
@@ -110,8 +117,7 @@ public class AidansRealllllllllllyCrazyAutoTest {
                 new SleepAction(1),
                 //drop specimen and pick up sample
                 SpecimenDrop//,
-               */ //new SleepAction(1)
-                ));
+               */ //new SleepAction(1);
 
 
 

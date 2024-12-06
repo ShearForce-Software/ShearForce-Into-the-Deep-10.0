@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.AccelConstraint;
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.ProfileAccelConstraint;
 import com.acmerobotics.roadrunner.SequentialAction;
@@ -32,6 +33,7 @@ public class AidansCrazyAutoTest extends LinearOpMode {
     Action DriveToSubmersible2;
     Action DriveToSubmersible3;
     Action grabSpecimenfromwall;
+    Action ParkinDeck;
 
 
     VelConstraint speedUpVelocityConstraint;
@@ -59,6 +61,7 @@ public class AidansCrazyAutoTest extends LinearOpMode {
         drive = new MecanumDrive_Geronimo(hardwareMap, startPose);
         control.Init(hardwareMap);
         control.AutoStartPosition();
+
         //control.WebcamInit(hardwareMap);
         telemetry.update();
         control.imuOffsetInDegrees = 270; // Math.toDegrees(startPose.heading.toDouble());
@@ -75,27 +78,30 @@ public class AidansCrazyAutoTest extends LinearOpMode {
         // ***************************************************
 
         DeliverStartingSpecimen = drive.actionBuilder(startPose)
-                .strafeToLinearHeading(new Vector2d(12,-35), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(8,-35), Math.toRadians(90))
                 .build();
         DriveToSamplesandDeliver1 = drive.actionBuilder(new Pose2d(12, -35, Math.toRadians(90)))
                 .strafeToLinearHeading(new Vector2d(25,-48), Math.toRadians(270))
-                .splineToConstantHeading(new Vector2d(36,-17), Math.toRadians(270))
-                .splineToConstantHeading(new Vector2d(44,-15), Math.toRadians(270))
-                .strafeToLinearHeading(new Vector2d(44,-54), Math.toRadians(270), slowDownVelocityConstraint)
+                .strafeToLinearHeading(new Vector2d(36,-48), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(36,-24), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(36,-12), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(44,-12),Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(44,-54), Math.toRadians(270),slowDownVelocityConstraint)
                 //.strafeToLinearHeading(new Vector2d(47,-60), Math.toRadians(270))
                 .build();
         DriveToSamplesandDeliver2 = drive.actionBuilder(new Pose2d(44,-54, Math.toRadians(270)))
                 .strafeToLinearHeading(new Vector2d(44, -17), Math.toRadians(270), slowDownVelocityConstraint)
                 .splineToConstantHeading(new Vector2d(54,-17), Math.toRadians(270))
                 .lineToYConstantHeading(-54,slowDownVelocityConstraint)
-                .strafeToLinearHeading(new Vector2d(44, -54), Math.toRadians(270))
+               // .strafeToLinearHeading(new Vector2d(44, -54), Math.toRadians(270))
                 .build();
-        DriveToSamplesandDeliver3 = drive.actionBuilder(new Pose2d(44,-54,Math.toRadians(270)))
-                .strafeToLinearHeading(new Vector2d(44, -17), Math.toRadians(270), slowDownVelocityConstraint)
-                .splineToConstantHeading(new Vector2d(62,-17), Math.toRadians(270))
-                .lineToYConstantHeading(-54,slowDownVelocityConstraint)
+        DriveToSamplesandDeliver3 = drive.actionBuilder(new Pose2d(54,-54,Math.toRadians(270)))
+                .strafeToLinearHeading(new Vector2d(54, -12), Math.toRadians(270), slowDownVelocityConstraint)
+                .strafeToLinearHeading(new Vector2d(62,-12), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(62,-54), Math.toRadians(270), slowDownVelocityConstraint)
+                .strafeToLinearHeading(new Vector2d(50,-54),Math.toRadians(270))
                 .build();
-        DriveToSubmersible1 = drive.actionBuilder(new Pose2d(62,-54, Math.toRadians(270)))
+      /*  DriveToSubmersible1 = drive.actionBuilder(new Pose2d(62,-54, Math.toRadians(270)))
                 .strafeToLinearHeading(new Vector2d(48, -54), Math.toRadians(270))
                 .strafeToLinearHeading(new Vector2d(7,-35), Math.toRadians(90))
                 .build();
@@ -107,6 +113,11 @@ public class AidansCrazyAutoTest extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(48,-54), Math.toRadians(270))
                  .strafeToLinearHeading(new Vector2d(7,-35), Math.toRadians(90))
                 .build();
+
+       */
+         ParkinDeck = drive.actionBuilder(new Pose2d(50,-54,Math.toRadians(270)))
+                .strafeToLinearHeading(new Vector2d(49,-54),Math.toRadians(90),slowDownVelocityConstraint)
+                        .build();
 /*
 
         BoxTraj = drive.actionBuilder(new Pose2d(-12,-30,Math.toRadians(90)))
@@ -119,21 +130,20 @@ public class AidansCrazyAutoTest extends LinearOpMode {
         /* Drive to the Board */
         Actions.runBlocking(
                 new SequentialAction(
-                        DeliverStartingSpecimen,
-                        new SleepAction(1.5),
+                        new ParallelAction(DeliverStartingSpecimen,
+                                deliverLowSpecimen()),
+                        releaseSpecimen(),
+                        new SleepAction(.3),
                         DriveToSamplesandDeliver1,
                         DriveToSamplesandDeliver2,
                         DriveToSamplesandDeliver3,
-                        DriveToSubmersible1,
-                        new SleepAction(1.5),
-                        DriveToSubmersible2,
-                        new SleepAction(1.5),
-                        DriveToSubmersible3
-
-                        )
+                        new ParallelAction(ParkinDeck,stowPosition())
 
 
-        );
+
+
+
+        ));
 
 
         drive.updatePoseEstimate();
@@ -175,6 +185,49 @@ public class AidansCrazyAutoTest extends LinearOpMode {
             if (!initialized) {
                 control.limelightHasTarget();
                 control.SpecimenPickupFromWall();
+                initialized = true;
+            }
+            packet.put("lock purple pixel", 0);
+            return false;  // returning true means not done, and will be called again.  False means action is completely done
+        }
+    }
+    public Action deliverLowSpecimen (){return new DeliverLowSpecimen();}
+    public class DeliverLowSpecimen implements Action {
+        private boolean initialized = false;
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            if (!initialized) {
+                control.SpecimenDeliverLow();
+                initialized = true;
+            }
+            packet.put("lock purple pixel", 0);
+            return false;  // returning true means not done, and will be called again.  False means action is completely done
+        }
+    }
+    public Action releaseSpecimen (){return new ReleaseSpecimen();}
+    public class ReleaseSpecimen implements Action {
+        private boolean initialized = false;
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            if (!initialized) {
+                control.SetClawPosition((Geronimo.CLAW_MIN_POS));
+                control.SpecimenPickupFromWall();
+                initialized = true;
+            }
+            packet.put("lock purple pixel", 0);
+            return false;  // returning true means not done, and will be called again.  False means action is completely done
+        }
+    }
+    public Action stowPosition (){return new StowPosition();}
+    public class StowPosition implements Action {
+        private boolean initialized = false;
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            if (!initialized) {
+                control.RemoveFromWall();
                 initialized = true;
             }
             packet.put("lock purple pixel", 0);
