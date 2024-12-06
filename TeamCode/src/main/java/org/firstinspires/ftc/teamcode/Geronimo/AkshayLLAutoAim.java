@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Geronimo;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
@@ -18,6 +19,7 @@ import com.acmerobotics.roadrunner.VelConstraint;
 import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name = "LL AutoAim", group = "Linear OpMode")
+@Disabled
 public class AkshayLLAutoAim extends LinearOpMode{
     Geronimo control = new Geronimo(true, false,this);
 

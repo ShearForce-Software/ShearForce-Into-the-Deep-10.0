@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode.Geronimo;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -49,7 +50,7 @@ import com.qualcomm.robotcore.hardware.Servo;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 @TeleOp(name = "Test_Claw", group = "Test")
-//@Disabled
+@Disabled
 public class Test_Claw extends LinearOpMode {
 
     // Define class members

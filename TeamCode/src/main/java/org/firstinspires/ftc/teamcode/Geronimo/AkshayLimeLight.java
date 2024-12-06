@@ -37,7 +37,7 @@ import org.firstinspires.ftc.teamcode.Gertrude.Gertrude;
 
 
 @Autonomous(name="NOT GeronimoAutoRedLeft")
-// @Disabled
+@Disabled
 public class AkshayLimeLight extends LinearOpMode {
     Geronimo control = new Geronimo(true, false,this);
     MecanumDrive_Geronimo drive;

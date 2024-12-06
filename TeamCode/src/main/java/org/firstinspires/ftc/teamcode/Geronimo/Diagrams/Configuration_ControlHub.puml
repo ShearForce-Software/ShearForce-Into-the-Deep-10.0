@@ -50,10 +50,10 @@ package ServoNames #Orange {
 }
 
 package DigitalNames #Pink {
-  () "sensor_touchRight" --> [Digital_0_1] : 3
-  () "sensor_touchLeft" --> [Digital_2_3] : 1
-  () "sensor_touchRotate" --> [Digital_4_5] : 5
-  () "LimitSwitch-4" --> [Digital_6_7] : 6-7
+  () "sensor_touchRightRotator" --> [Digital_0_1] : 3
+  () "sensor_touchLeftRotator" --> [Digital_2_3] : 1
+  () "sensor_touchLeft" --> [Digital_4_5] : 5
+  () "sensor_touchRight" --> [Digital_6_7] : 6-7
 }
 
 package I2C_Names #LightBlue {

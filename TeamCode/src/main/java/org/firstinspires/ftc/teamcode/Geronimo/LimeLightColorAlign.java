@@ -3,10 +3,12 @@ package org.firstinspires.ftc.teamcode.Geronimo;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import java.util.List;
 
 @Autonomous(name = "LimeLightColorAlign", group = "Linear OpMode")
+@Disabled
 public class LimeLightColorAlign extends LinearOpMode {
     public Limelight3A limelight;
     public Geronimo control;

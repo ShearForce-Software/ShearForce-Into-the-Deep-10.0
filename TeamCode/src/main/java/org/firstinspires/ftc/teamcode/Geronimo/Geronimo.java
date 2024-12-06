@@ -71,7 +71,7 @@ public class Geronimo {
     public static final double SLIDES_POS_POWER = 1.0;
     public static final int SLIDE_ARM_MIN_POS = 0;
     public static final int SLIDE_ARM_MAX_VERTICAL_POS = 2360;
-    public static final int SLIDE_ARM_MAX_HORIZONTAL_POS = 1550;
+    public static final int SLIDE_ARM_MAX_HORIZONTAL_POS = 3690; //1550
     private double slidePower = 0.0;
     TouchSensor touchSensorSlideLeft;
     TouchSensor touchSensorSlideRight;
@@ -216,8 +216,8 @@ public class Geronimo {
         */
 
         // ********** Touch Sensors ********************
-        touchSensorSlideArmRotatorRight = hardwareMap.get(TouchSensor.class, "sensor_touchRight");
-        touchSensorSlideArmRotatorLeft = hardwareMap.get(TouchSensor.class, "sensor_touchLeft");
+        touchSensorSlideArmRotatorRight = hardwareMap.get(TouchSensor.class, "sensor_touchRightRotator");
+        touchSensorSlideArmRotatorLeft = hardwareMap.get(TouchSensor.class, "sensor_touchLeftRotator");
         touchSensorSlideLeft = hardwareMap.get(TouchSensor.class, "sensor_touchLeft");
         touchSensorSlideRight = hardwareMap.get(TouchSensor.class, "sensor_touchRight");
 
@@ -636,7 +636,7 @@ public class Geronimo {
 
     public void IntakeFromFloor()
     {
-        SetSlideToPosition(695);
+        SetSlideToPosition(1946); //695
         SpecialSleep(500); //reduce in future
         SetSlideRotatorArmToPosition(0);
         SpecialSleep(250);
@@ -659,7 +659,7 @@ public class Geronimo {
     public void SpecimenDeliverHigh(){
         SetIntakeBoxRotatorPosition(0.495);
         SetSmallArmHangerPosition(0.4);
-        SetSlideToPosition(600);
+        SetSlideToPosition(1680); //600
         SetSlideRotatorArmToPosition(323); //subject to change
     }
 
@@ -676,7 +676,7 @@ public class Geronimo {
         SetSlideRotatorArmToPosition(800); //8008, 450
         // wait for the rotators to move to vertical before raising slides
         SpecialSleep(2000);
-        SetSlideToPosition(2320);
+        SetSlideToPosition(6496); //2320
     }
     // hanger position 0.8
     // .15 right
