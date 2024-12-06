@@ -208,12 +208,12 @@ public class Geronimo {
         intakeStarServo = hardwareMap.get(CRServo.class, "intakeStar");
 
         // ********** Color Sensors ********************
-        /*
+
         leftColorSensor = hardwareMap.get(RevColorSensorV3.class, "ColorSensorLeft");
-        rightColorSensor = hardwareMap.get(RevColorSensorV3.class, "ColorSensorRight");
+        //rightColorSensor = hardwareMap.get(RevColorSensorV3.class, "ColorSensorRight");
         leftColorSensor.enableLed(false);
-        rightColorSensor.enableLed(false);
-        */
+        //rightColorSensor.enableLed(false);
+
 
         // ********** Touch Sensors ********************
         touchSensorSlideArmRotatorRight = hardwareMap.get(TouchSensor.class, "sensor_touchRightRotator");
@@ -434,6 +434,7 @@ public class Geronimo {
     }
 
     // colorFound loop
+    /*
     public boolean ColorRevV3SensorChecker(colorEnum targetColor) {
         boolean colorFound = false;
         double breakLoop = 10 + opMode.getRuntime();
@@ -446,18 +447,23 @@ public class Geronimo {
         }
         return colorFound;
     }
+    */
 
     // returns colorEnum color detected
+    float gain = 51;
+    float[] hsvValues = {0,0,0};
     public colorEnum ColorRevV3Sensor() {
+        leftColorSensor.setGain(gain);
         NormalizedRGBA colors = leftColorSensor.getNormalizedColors();
-        float[] hsvValues = {0,0,0};
         Color.colorToHSV(colors.toColor(), hsvValues);
 
         // Red HSV Color ranges
-        double hMinRed = 19.811;
+        // changed
+        double hMinRed = 18.800;
         double hMaxRed = 128.000;
         double sMinRed = 0.397;
-        double sMaxRed = 0.671;
+        // changed
+        double sMaxRed = 0.7235;
         double vMinRed = 0.263;
         double vMaxRed = 0.722;
 
@@ -465,7 +471,8 @@ public class Geronimo {
         double hMinYellow = 59.000;
         double hMaxYellow = 113.043;
         double sMinYellow = 0.501;
-        double sMaxYellow = 0.702;
+        // changed
+        double sMaxYellow = 0.772;
         double vMinYellow = 0.565;
         double vMaxYellow = 1.000;
 
@@ -495,8 +502,8 @@ public class Geronimo {
     public void showColorSensorTelemetry(){
         //int leftColor = leftColorSensor.getNormalizedColors().toColor();
         //opMode.telemetry.addData("leftColorNorm: ", leftColor);
-        opMode.telemetry.addData("leftColor: ", "red: %d, green: %d, blue: %d", redLeft, greenLeft, blueLeft);
-        opMode.telemetry.addData("rightColor: ", "red: %d, green: %d, blue: %d", redRight, greenRight, blueRight);
+        //opMode.telemetry.addData("leftColor: ", "red: %d, green: %d, blue: %d", redLeft, greenLeft, blueLeft);
+        //opMode.telemetry.addData("rightColor: ", "red: %d, green: %d, blue: %d", redRight, greenRight, blueRight);
         //opMode.telemetry.addData("rightColor: ", rightColor);
         //opMode.telemetry.addData("leftColorNorm(red): ", leftColorSensor.getNormalizedColors().red);
         //opMode.telemetry.addData("leftColorNorm(green): ", leftColorSensor.getNormalizedColors().green);
@@ -1048,6 +1055,11 @@ public class Geronimo {
 
         opMode.telemetry.addData("Green Intake BOX ROTATOR Pos: ", intakeBoxRotatorPosition);
         //opMode.telemetry.addData(">", "green intake box rotator - use dpad L/R for control" );
+        // color sensor data PLEASE do not delete!
+        opMode.telemetry.addData("colorDetected: " , ColorRevV3Sensor().toString());
+        opMode.telemetry.addData("Hue: " , hsvValues[0]);
+        opMode.telemetry.addData("Sat: " , hsvValues[1]);
+        opMode.telemetry.addData("Val: " , hsvValues[2]);
 
         showColorSensorTelemetry();
         opMode.telemetry.update();

@@ -161,6 +161,7 @@ public class SensorColor extends LinearOpMode {
         gain -= 0.005;
       }
 
+
       // Show the gain value via telemetry
       telemetry.addData("Gain", gain);
 
