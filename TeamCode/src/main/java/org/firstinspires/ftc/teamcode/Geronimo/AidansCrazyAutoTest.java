@@ -116,7 +116,8 @@ public class AidansCrazyAutoTest extends LinearOpMode {
 
        */
          ParkinDeck = drive.actionBuilder(new Pose2d(50,-54,Math.toRadians(270)))
-                .strafeToLinearHeading(new Vector2d(49,-54),Math.toRadians(90),slowDownVelocityConstraint)
+                .splineTo(new Vector2d(48,-54),Math.toRadians(90),slowDownVelocityConstraint)
+                 .turnTo(Math.toRadians(90))
                         .build();
 /*
 
@@ -137,13 +138,16 @@ public class AidansCrazyAutoTest extends LinearOpMode {
                         DriveToSamplesandDeliver1,
                         DriveToSamplesandDeliver2,
                         DriveToSamplesandDeliver3,
-                        new ParallelAction(ParkinDeck,stowPosition())
+                        ParkinDeck,
+                        stowPosition(),
+                        new SleepAction(5))
 
 
 
 
 
-        ));
+
+        );
 
 
         drive.updatePoseEstimate();
