@@ -957,9 +957,9 @@ public class Geronimo {
     public void SetSlideRotatorToPowerMode(double power)
     {
         slideArmRotatorPower = power;
-        //820 to 830 for limit
-        if (slideArmRotatorPower > 0 || leftSlideArmRotatorMotor.getCurrentPosition() >= 900) {
-            SetSlideRotatorArmToPosition(900);
+        //820 to 920 for limit
+        if (slideArmRotatorPower > 0 || leftSlideArmRotatorMotor.getCurrentPosition() >= 920) {
+            SetSlideRotatorArmToPosition(920);
         }
         else {
             slideArmRotatorRunningToPosition = false;

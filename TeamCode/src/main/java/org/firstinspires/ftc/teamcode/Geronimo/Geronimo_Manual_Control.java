@@ -64,11 +64,14 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             if ((gamepad2.left_stick_y > 0.1) || (gamepad2.left_stick_y <= -0.1)) {
                 slidePowerApplied = true;
                 // if slide limit pressed and commanding down
-                if (theRobot.GetSlidesLimitSwitchPressed() && (gamepad2.left_stick_y > 0.1))
+
+                if (gamepad2.left_stick_y > 0.1 && gamepad1.circle){
+                    theRobot.SetSlidesToPowerMode(-gamepad2.left_stick_y);
+                }
+                else if (theRobot.GetSlidesLimitSwitchPressed() && (gamepad2.left_stick_y > 0.1))
                 {
                     theRobot.ResetSlidesToZero();
-                }
-                else {
+                } else {
                     theRobot.SetSlidesToPowerMode(-gamepad2.left_stick_y);
                 }
             }
