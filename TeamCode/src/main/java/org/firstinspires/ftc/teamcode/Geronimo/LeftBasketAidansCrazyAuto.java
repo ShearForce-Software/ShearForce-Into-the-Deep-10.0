@@ -122,6 +122,7 @@ public class LeftBasketAidansCrazyAuto extends LinearOpMode {
                         releaseSpecimen(),
                         new SleepAction(.3),
                         DriveToSamplesandDeliver1,
+                        DriveToSamplesandDeliver2,
                         DriveToSamplesandDeliver3,
                         DriveToSubmersible1,
                         new SleepAction(1.5)
