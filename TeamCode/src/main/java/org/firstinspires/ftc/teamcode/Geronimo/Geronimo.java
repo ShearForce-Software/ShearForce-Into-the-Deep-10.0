@@ -853,6 +853,21 @@ public class Geronimo {
         }
     }
 
+    public void Slides_Rotator_MAX_Limit(){
+        // if the rotator arms are in a horizontal orientation
+        // AND the slides are starting to go past the max horizontal position
+        if ((GetRotatorRightArmCurrentPosition() >= 820 || GetRotatorLeftArmCurrentPosition() >= 820)) {
+            SetSlideRotatorArmToPosition(820);
+
+        }
+            else if ( slideArmRotatorTargetPosition > 820 ){
+                SetSlideRotatorArmToPosition(820);
+
+            }
+
+
+    }
+
     public void SetSlidesToPowerMode(double power)
     {
         // if rotator arms are in horizontal position, AND slides are at the limit already, AND commanding to get longer
@@ -942,11 +957,16 @@ public class Geronimo {
     public void SetSlideRotatorToPowerMode(double power)
     {
         slideArmRotatorPower = power;
-        slideArmRotatorRunningToPosition = false;
-        leftSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightSlideArmRotatorMotor.setPower(slideArmRotatorPower);
-        leftSlideArmRotatorMotor.setPower(slideArmRotatorPower);
+        if (slideArmRotatorPower > 0 || leftSlideArmRotatorMotor.getCurrentPosition() >= 820) {
+            SetSlideRotatorArmToPosition(820);
+        }
+        else {
+            slideArmRotatorRunningToPosition = false;
+            leftSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            rightSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            rightSlideArmRotatorMotor.setPower(slideArmRotatorPower);
+            leftSlideArmRotatorMotor.setPower(slideArmRotatorPower);
+        }
 
     }
     public void SetSlideRotatorArmToPosition(int position)
