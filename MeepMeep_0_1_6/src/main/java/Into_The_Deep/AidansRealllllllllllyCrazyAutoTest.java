@@ -61,7 +61,8 @@ public class AidansRealllllllllllyCrazyAutoTest {
                 .strafeToLinearHeading(new Vector2d(50,-54),Math.toRadians(270))
                 .build();
         Action ParkinDeck = myBot.getDrive().actionBuilder(new Pose2d(50,-54,Math.toRadians(270)))
-                .splineTo(new Vector2d(49,-54),Math.toRadians(90))
+                .splineTo(new Vector2d(49,-45),Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(49,-54), Math.toRadians(90))
                 .turnTo(Math.toRadians(90))
                 .build();
         /*Action DriveToSubmersible1 = myBot.getDrive().actionBuilder(new Pose2d(62,-54,Math.toRadians(270)))

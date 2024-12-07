@@ -18,7 +18,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 
-@Autonomous(name="Aidan'sCrazyAutoTest")
+@Autonomous(name="Aidan'sCrazyAutoTest", preselectTeleOp =
+        "Geronimo_Manual_Control")
 // @Disabled
 public class AidansCrazyAutoTest extends LinearOpMode {
     Geronimo control = new Geronimo(true, false,this);
@@ -116,7 +117,8 @@ public class AidansCrazyAutoTest extends LinearOpMode {
 
        */
          ParkinDeck = drive.actionBuilder(new Pose2d(50,-54,Math.toRadians(270)))
-                .splineTo(new Vector2d(48,-54),Math.toRadians(90),slowDownVelocityConstraint)
+                 .splineTo(new Vector2d(49,-45),Math.toRadians(90))
+                 .strafeToLinearHeading(new Vector2d(49,-54), Math.toRadians(90))
                  .turnTo(Math.toRadians(90))
                         .build();
 /*
