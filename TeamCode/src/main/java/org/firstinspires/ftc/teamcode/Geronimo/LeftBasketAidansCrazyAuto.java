@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.AccelConstraint;
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.ProfileAccelConstraint;
 import com.acmerobotics.roadrunner.SequentialAction;
@@ -116,10 +117,11 @@ public class LeftBasketAidansCrazyAuto extends LinearOpMode {
         /* Drive to the Board */
         Actions.runBlocking(
                 new SequentialAction(
-                        DeliverStartingSpecimen,
-                        new SleepAction(1),
+                        new ParallelAction(DeliverStartingSpecimen,
+                                deliverLowSpecimen()),
+                        releaseSpecimen(),
+                        new SleepAction(.3),
                         DriveToSamplesandDeliver1,
-                        DriveToSamplesandDeliver2,
                         DriveToSamplesandDeliver3,
                         DriveToSubmersible1,
                         new SleepAction(1.5)
@@ -168,6 +170,36 @@ public class LeftBasketAidansCrazyAuto extends LinearOpMode {
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!initialized) {
                 control.limelightHasTarget();
+                control.SpecimenPickupFromWall();
+                initialized = true;
+            }
+            packet.put("lock purple pixel", 0);
+            return false;  // returning true means not done, and will be called again.  False means action is completely done
+        }
+    }
+
+    public Action deliverLowSpecimen (){return new LeftBasketAidansCrazyAuto.DeliverLowSpecimen();}
+    public class DeliverLowSpecimen implements Action {
+        private boolean initialized = false;
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            if (!initialized) {
+                control.SpecimenDeliverLow();
+                initialized = true;
+            }
+            packet.put("lock purple pixel", 0);
+            return false;  // returning true means not done, and will be called again.  False means action is completely done
+        }
+    }
+    public Action releaseSpecimen (){return new LeftBasketAidansCrazyAuto.ReleaseSpecimen();}
+    public class ReleaseSpecimen implements Action {
+        private boolean initialized = false;
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            if (!initialized) {
+                control.SetClawPosition((Geronimo.CLAW_MIN_POS));
                 control.SpecimenPickupFromWall();
                 initialized = true;
             }
