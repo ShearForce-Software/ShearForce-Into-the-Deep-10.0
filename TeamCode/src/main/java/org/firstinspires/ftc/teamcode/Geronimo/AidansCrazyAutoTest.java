@@ -35,15 +35,15 @@ public class AidansCrazyAutoTest extends LinearOpMode {
     Action DriveToSubmersible3;
     Action grabSpecimenfromwall;
     Action ParkinDeck;
-
+    float currentXPosition;
+    float currentYPosition;
+    double currentHeading;
 
     VelConstraint speedUpVelocityConstraint;
     AccelConstraint speedUpAccelerationConstraint;
     VelConstraint slowDownVelocityConstraint;
     AccelConstraint slowDownAccelerationConstraint;
-    double stackY = 36;
-    double stackX = -59;
-    double wallDriveY = 58.5;
+
 
     double autoPosition = 3;
 
@@ -62,6 +62,7 @@ public class AidansCrazyAutoTest extends LinearOpMode {
         drive = new MecanumDrive_Geronimo(hardwareMap, startPose);
         control.Init(hardwareMap);
         control.AutoStartPosition();
+        //telemetry.addData("Current X position", );
 
         //control.WebcamInit(hardwareMap);
         telemetry.update();
