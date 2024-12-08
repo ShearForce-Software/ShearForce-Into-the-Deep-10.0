@@ -60,7 +60,8 @@ public class Geronimo {
     double slideArmRotatorPower = 0.0;
     boolean slideArmRotatorRunningToPosition = false;
     public static final int SLIDE_ARM_ROTATOR_MIN_POS = 0;
-    public static final int SLIDE_ARM_ROTATOR_MAX_POS = 1000;
+    public static final int SLIDE_ARM_ROTATOR_MAX_POS = 920;
+    public static final int SLIDE_ARM_ROTATOR_POS_TO_LIMIT_SLIDES = 820;
     public static final double SLIDE_ARM_ROTATOR_POWER = 0.75;
 
     //slides
@@ -853,21 +854,6 @@ public class Geronimo {
         }
     }
 
-    public void Slides_Rotator_MAX_Limit(){
-        // if the rotator arms are in a horizontal orientation
-        // AND the slides are starting to go past the max horizontal position
-        if ((GetRotatorRightArmCurrentPosition() >= 820 || GetRotatorLeftArmCurrentPosition() >= 820)) {
-            SetSlideRotatorArmToPosition(820);
-
-        }
-            else if ( slideArmRotatorTargetPosition > 820 ){
-                SetSlideRotatorArmToPosition(820);
-
-            }
-
-
-    }
-
     public void SetSlidesToPowerMode(double power)
     {
         // if rotator arms are in horizontal position, AND slides are at the limit already, AND commanding to get longer
@@ -957,9 +943,9 @@ public class Geronimo {
     public void SetSlideRotatorToPowerMode(double power)
     {
         slideArmRotatorPower = power;
-        //820 to 920 for limit
-        if (slideArmRotatorPower > 0 || leftSlideArmRotatorMotor.getCurrentPosition() >= 920) {
-            SetSlideRotatorArmToPosition(920);
+        //820 to 920 for limit -- SLIDE_ARM_ROTATOR_MAX_POS
+        if (slideArmRotatorPower > 0 && leftSlideArmRotatorMotor.getCurrentPosition() >= SLIDE_ARM_ROTATOR_MAX_POS) {
+            SetSlideRotatorArmToPosition(SLIDE_ARM_ROTATOR_MAX_POS);
         }
         else {
             slideArmRotatorRunningToPosition = false;
@@ -970,6 +956,19 @@ public class Geronimo {
         }
 
     }
+    public void Slides_Rotator_MAX_Limit(){
+        // if the rotator arms are in a horizontal orientation
+        // AND the slides are starting to go past the max horizontal position
+        // TODO this logic is bad need to fix before using
+        if ((GetRotatorRightArmCurrentPosition() >= SLIDE_ARM_ROTATOR_POS_TO_LIMIT_SLIDES || GetRotatorLeftArmCurrentPosition() >= SLIDE_ARM_ROTATOR_POS_TO_LIMIT_SLIDES)) {
+            SetSlideRotatorArmToPosition(SLIDE_ARM_ROTATOR_POS_TO_LIMIT_SLIDES);
+
+        }
+        else if ( slideArmRotatorTargetPosition > SLIDE_ARM_ROTATOR_POS_TO_LIMIT_SLIDES ){
+            SetSlideRotatorArmToPosition(SLIDE_ARM_ROTATOR_POS_TO_LIMIT_SLIDES);
+        }
+    }
+
     public void SetSlideRotatorArmToPosition(int position)
     {
         if (slideArmRotatorTargetPosition > position){
