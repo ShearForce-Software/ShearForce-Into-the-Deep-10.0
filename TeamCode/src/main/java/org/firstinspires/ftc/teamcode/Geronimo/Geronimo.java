@@ -61,7 +61,7 @@ public class Geronimo {
     boolean slideArmRotatorRunningToPosition = false;
     public static final int SLIDE_ARM_ROTATOR_MIN_POS = 0;
     public static final int SLIDE_ARM_ROTATOR_MAX_POS = 920;
-    public static final int SLIDE_ARM_ROTATOR_POS_TO_LIMIT_SLIDES = 820;
+    public static final int SLIDE_ARM_ROTATOR_POS_TO_LIMIT_SLIDES = 300; // TODO need to find the lowest rotator position we can allow the slides to go out
     public static final double SLIDE_ARM_ROTATOR_POWER = 0.75;
 
     //slides
@@ -850,17 +850,17 @@ public class Geronimo {
     public void Slides_Horizontal_MAX_Limit(){
         // if the rotator arms are in a horizontal orientation
         // AND the slides are starting to go past the max horizontal position
-        if ((GetRotatorRightArmCurrentPosition() == 0 || GetRotatorLeftArmCurrentPosition() == 0) &&
+        if ((GetRotatorRightArmCurrentPosition() <= SLIDE_ARM_ROTATOR_POS_TO_LIMIT_SLIDES || GetRotatorLeftArmCurrentPosition() <= SLIDE_ARM_ROTATOR_POS_TO_LIMIT_SLIDES) &&
                 (slideLeft.getCurrentPosition() >= SLIDE_ARM_MAX_HORIZONTAL_POS || slideRight.getCurrentPosition() >= SLIDE_ARM_MAX_HORIZONTAL_POS)){
             // if slides are in power mode
             if (!slidesRunningToPosition) {
                 // if user is not commanding slides to go in
-                if (slidePower > 0) {
+                if (slidePower >= 0) {
                     // override the command to limit the slides to a max horizontal position
                     SetSlideToPosition(SLIDE_ARM_MAX_HORIZONTAL_POS);
                 }
             }
-            // else if slides have somehow been commanded past the limit, bring the slides back in
+            // else slides are being commanded to a position, but if slides have been commanded past the limit, bring the slides back in
             else if (slidesTargetPosition > SLIDE_ARM_MAX_HORIZONTAL_POS)
             {
                 SetSlideToPosition(SLIDE_ARM_MAX_HORIZONTAL_POS);
@@ -969,18 +969,6 @@ public class Geronimo {
             leftSlideArmRotatorMotor.setPower(slideArmRotatorPower);
         }
 
-    }
-    public void Slides_Rotator_MAX_Limit(){
-        // if the rotator arms are in a horizontal orientation
-        // AND the slides are starting to go past the max horizontal position
-        // TODO this logic is bad need to fix before using
-        if ((GetRotatorRightArmCurrentPosition() >= SLIDE_ARM_ROTATOR_POS_TO_LIMIT_SLIDES || GetRotatorLeftArmCurrentPosition() >= SLIDE_ARM_ROTATOR_POS_TO_LIMIT_SLIDES)) {
-            SetSlideRotatorArmToPosition(SLIDE_ARM_ROTATOR_POS_TO_LIMIT_SLIDES);
-
-        }
-        else if ( slideArmRotatorTargetPosition > SLIDE_ARM_ROTATOR_POS_TO_LIMIT_SLIDES ){
-            SetSlideRotatorArmToPosition(SLIDE_ARM_ROTATOR_POS_TO_LIMIT_SLIDES);
-        }
     }
 
     public void SetSlideRotatorArmToPosition(int position)

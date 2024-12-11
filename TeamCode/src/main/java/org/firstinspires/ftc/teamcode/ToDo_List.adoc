@@ -3,14 +3,19 @@
 == TODO List
 
 - [ ] Improve slide limit logic and rotator slide arm logic to ensure always pass inspection
-- [ ] Experiment with high specimen delivery using backwards arm position
-- [ ] Find servo and arm positions to put specimen into so can just drive forward to snap onto high bar
-- [ ] Experiment with different box orientations for intake from the floor
+- [ ] Get the Urchin to work
+- [ ] Improve Auto Right to deliver at least 2 specimens to the high bar and park
+- [ ] Reassess and test all servo/arm position numbers with the Urchin installed
+- [ ] Improve Auto Left to score level-1 hang again
+- [ ] Improve Auto Left to put at least 1 sample into the high basket
+- [ ] Experiment with different box/urchin orientations for intake from the floor
 - [ ] Create routine in Geronimo that uses the Limelight to report Red, Blue, or Yellow --- AKSHAY
 - [ ] Create routine in Geronimo that uses the Limelight to report left or right inches from specimen
 - [ ] Fully Re-Calibrate Geronimo
-- [ ] Fix the bad laptop
+- [ ] Fix the bad laptop to build again (probably uninstall/reinstall android studio)
 - [ ] Create routine in Geronimo that uses color sensor to report red, blue, or yellow --- MATTHEW
+- [x] Find servo and arm positions to put specimen into so can just drive forward to snap onto high bar
+- [x] Experiment with high specimen delivery using backwards arm position
 - [x] Test slide limit logic
 - [x] Test and fix issues with intake star not being reliable
 - [x] Create updated auto routines that puts specimen on bar, and then moves the 3 floor samples to corner, then parks --- AIDAN

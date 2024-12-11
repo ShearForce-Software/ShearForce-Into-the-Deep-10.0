@@ -17,7 +17,7 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-
+// TODO -- quit naming programs after yourself and make it have an intuitive name
 @Autonomous(name="Aidan'sCrazyAutoTest", preselectTeleOp =
         "Geronimo_Manual_Control")
 // @Disabled
@@ -25,20 +25,17 @@ public class AidansCrazyAutoTest extends LinearOpMode {
     Geronimo control = new Geronimo(true, false,this);
     MecanumDrive_Geronimo drive;
     Pose2d startPose;
-    Vector2d VectorTwo;
+
+    // Trajectories
     Action DeliverStartingSpecimen;
     Action DriveToSamplesandDeliver1;
     Action DriveToSamplesandDeliver2;
     Action DriveToSamplesandDeliver3;
-    Action IntakeDrive;
+    Action IntakeDrive1;
     Action DriveToSubmersible1;
     Action DriveToSubmersible2;
     Action DriveToSubmersible3;
-    Action grabSpecimenfromwall;
     Action ParkinDeck;
-    float currentXPosition;
-    float currentYPosition;
-    double currentHeading;
 
     VelConstraint speedUpVelocityConstraint;
     AccelConstraint speedUpAccelerationConstraint;
@@ -46,12 +43,8 @@ public class AidansCrazyAutoTest extends LinearOpMode {
     AccelConstraint slowDownAccelerationConstraint;
     VelConstraint intakeVelocityConstraint;
 
-    double autoPosition = 3;
-
     public void runOpMode(){
         startPose = new Pose2d(12,-64, Math.toRadians(90));
-        VectorTwo = new Vector2d(5, -30);
-        // stackPose = new Pose2d(stackX, stackY, Math.toRadians(180)); //-54.5,-11.5
 
         // Define some custom constraints to use when wanting to go faster than defaults
         speedUpVelocityConstraint = new TranslationalVelConstraint(60.0);
@@ -59,13 +52,11 @@ public class AidansCrazyAutoTest extends LinearOpMode {
         slowDownVelocityConstraint = new TranslationalVelConstraint(30);
         slowDownAccelerationConstraint = new ProfileAccelConstraint(-20, 50);
         intakeVelocityConstraint = new TranslationalVelConstraint(15);
+
         /* Initialize the Robot */
         drive = new MecanumDrive_Geronimo(hardwareMap, startPose);
         control.Init(hardwareMap);
         control.AutoStartPosition();
-        //telemetry.addData("Current X position", );
-
-        //control.WebcamInit(hardwareMap);
         telemetry.update();
         control.imuOffsetInDegrees = 270; // Math.toDegrees(startPose.heading.toDouble());
 
@@ -73,16 +64,18 @@ public class AidansCrazyAutoTest extends LinearOpMode {
             telemetry.update();
         }
         resetRuntime();
-        control.autoTimeLeft = 0.0;
+        Geronimo.autoTimeLeft = 0.0;
         control.SetClawPosition(Geronimo.CLAW_MAX_POS);
 
         // ***************************************************
-        // ****  START DRIVING    ****************************
+        // ****  Define Trajectories    **********************
         // ***************************************************
 
         DeliverStartingSpecimen = drive.actionBuilder(startPose)
                 .strafeToLinearHeading(new Vector2d(8,-35), Math.toRadians(90))
                 .build();
+
+        // TODO -- test this trajectory with no slow down constraint
         DriveToSamplesandDeliver1 = drive.actionBuilder(new Pose2d(12, -35, Math.toRadians(90)))
                 .strafeToLinearHeading(new Vector2d(25,-48), Math.toRadians(270))
                 .strafeToLinearHeading(new Vector2d(36,-48), Math.toRadians(270))
@@ -92,12 +85,16 @@ public class AidansCrazyAutoTest extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(44,-54), Math.toRadians(270),slowDownVelocityConstraint)
                 //.strafeToLinearHeading(new Vector2d(47,-60), Math.toRadians(270))
                 .build();
+
+        // TODO -- test this trajectory with no slow down constraint in the 3rd move (first one might be more important)
         DriveToSamplesandDeliver2 = drive.actionBuilder(new Pose2d(44,-54, Math.toRadians(270)))
                 .strafeToLinearHeading(new Vector2d(44, -17), Math.toRadians(270), slowDownVelocityConstraint)
                 .splineToConstantHeading(new Vector2d(54,-17), Math.toRadians(270))
                 .lineToYConstantHeading(-54,slowDownVelocityConstraint)
                // .strafeToLinearHeading(new Vector2d(44, -54), Math.toRadians(270))
                 .build();
+
+        // TODO -- test this trajectory with no slow down constraint in the 3rd move (first one might be more important)
         DriveToSamplesandDeliver3 = drive.actionBuilder(new Pose2d(54,-54,Math.toRadians(270)))
                 .strafeToLinearHeading(new Vector2d(54, -12), Math.toRadians(270), slowDownVelocityConstraint)
                 .strafeToLinearHeading(new Vector2d(60.75,-12), Math.toRadians(270))
@@ -105,9 +102,11 @@ public class AidansCrazyAutoTest extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(48,-54),Math.toRadians(270))
                 .strafeToLinearHeading(new Vector2d(44,-46),Math.toRadians(270))
                 .build();
-        IntakeDrive = drive.actionBuilder(new Pose2d(44,-46,Math.toRadians(270)))
+
+        IntakeDrive1 = drive.actionBuilder(new Pose2d(44,-46,Math.toRadians(270)))
                 .strafeToLinearHeading(new Vector2d(44, -63),Math.toRadians(270), intakeVelocityConstraint)
                 .build();
+
         DriveToSubmersible1 = drive.actionBuilder(new Pose2d(44,-63, Math.toRadians(270)))
                 .strafeToLinearHeading(new Vector2d(48, -54), Math.toRadians(270))
                 .strafeToLinearHeading(new Vector2d(0, -54), Math.toRadians(270))
@@ -130,76 +129,59 @@ public class AidansCrazyAutoTest extends LinearOpMode {
                  .strafeToLinearHeading(new Vector2d(49,-58), Math.toRadians(90))
                 // .turnTo(Math.toRadians(90))
                         .build();
-/*
 
-        BoxTraj = drive.actionBuilder(new Pose2d(-12,-30,Math.toRadians(90)))
-                .strafeToLinearHeading(new Vector2d(-12, -36), Math.toRadians(225))
-                .strafeToLinearHeading(new Vector2d(-48, -48), Math.toRadians(225))
-                .build();
-
- */
-
-        /* Drive to the Board */
+        // ***************************************************
+        // ****  START DRIVING    ****************************
+        // ***************************************************
         Actions.runBlocking(
                 new SequentialAction(
+                        // TODO test changing to a high specimen delivery
+                        // deliver pre-loaded specimen
                         new ParallelAction(DeliverStartingSpecimen,
                                 deliverLowSpecimen()),
                         releaseSpecimen(),
                         new SleepAction(.3),
+
+                        // TODO probably need a parallel action on deliver 1 to set the servos (and slide arms) correctly for wall intake
+                        // Gather the 3 floor samples into the observation area
                         DriveToSamplesandDeliver1,
                         DriveToSamplesandDeliver2,
                         DriveToSamplesandDeliver3,
+
+                        // TODO probably don't need this sleep -- test without it
                         new SleepAction(.5),
-                        IntakeDrive,
+
+                        // TODO -- can probably drive and set servos to grab position in parallel, so can eliminate the sleep action
+                        // Drive to the wall and prepare to grab a specimen
+                        IntakeDrive1,
                         grabSpecimenfromwall(),
                         new SleepAction(.5),
+
+                        // TODO -- need to test how small we can make these sleep actions, these servos are pretty fast this year
+                        // grab the specimen off of the wall
                         grabSpecimen(),
                         new SleepAction(.3),
                         liftSpecimenoffWall(),
                         new SleepAction(.5),
+
+                        // TODO -- probably need a tiny sleep after you release the specimen before driving again
+                        // Deliver the specimen to the High bar
                         new ParallelAction(DriveToSubmersible1, deliverSpecimenHigh()),
                         finishdeliverSpecimenHigh(),
                         new SleepAction(.5),
                         releaseSpecimen(),
+
+                        // TODO -- should be able to stow the servos and drive to parking in parallel to eliminate the sleep at the end
+                        // Drive to the parking position
                         ParkinDeck,
                         stowPosition(),
                         new SleepAction(5))
 
-
-
-
-
-
         );
-
-
         drive.updatePoseEstimate();
 
-        // Build up the Stack to Submerssible Trajectory
-
-
-
-        // drive.updatePoseEstimate();
-        // Build up the Stack to Wall Trajectory
-
-
-
-
-        /*
-        Park = drive.actionBuilder(drive.pose)
-                .lineToX(45, slowDownVelocityConstraint)
-                .strafeToLinearHeading(new Vector2d(48, 56), Math.toRadians(270))
-                .build();
-        Actions.runBlocking(
-                new ParallelAction(
-                        Park
-                )
-        );
-
-         */
-
-        control.autoTimeLeft = 30-getRuntime();
-        telemetry.addData("Time left", control.autoTimeLeft);
+        Geronimo.autoTimeLeft = 30-getRuntime();
+        telemetry.addData("Time left", Geronimo.autoTimeLeft);
         telemetry.update();
 
     }
