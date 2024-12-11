@@ -142,6 +142,14 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             } else if (gamepad2.dpad_up) {
                 theRobot.BasketHigh();
             }
+            //step one of autonomous
+            else if (gamepad2.dpad_down){
+                theRobot.SpecimenDeliverHighChamberAlternate();
+            }
+            else if(gamepad1.dpad_down){
+                theRobot.SpecimenDeliverHighChamberFinishingMove();
+            }
+
 
             // Claw Control
             if (gamepad2.right_bumper) {
@@ -165,10 +173,8 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             }
 
             // Intake Stars Control -- Intake --> OFF --> Outtake --> OFF --> Intake
-            if (gamepad2.dpad_down) {
-                theRobot.CycleIntakeStarMode();
-            }
-            else if (gamepad1.right_trigger > 0.2) {
+
+            if (gamepad1.right_trigger > 0.2) {
                 theRobot.SetIntakeStarPower(gamepad1.right_trigger);
                 intakeStarPowerApplied = true;
             }
