@@ -60,18 +60,18 @@ public class AidansRealllllllllllyCrazyAutoTest {
                 .strafeToLinearHeading(new Vector2d(62,-54), Math.toRadians(270))
                 .strafeToLinearHeading(new Vector2d(50,-54),Math.toRadians(270))
                 .build();
-        Action ParkinDeck = myBot.getDrive().actionBuilder(new Pose2d(50,-54,Math.toRadians(270)))
+        Action ParkinDeck = myBot.getDrive().actionBuilder(new Pose2d(7,-35,Math.toRadians(90)))
                 .splineTo(new Vector2d(49,-45),Math.toRadians(90))
                 .strafeToLinearHeading(new Vector2d(49,-54), Math.toRadians(90))
                 .turnTo(Math.toRadians(90))
                 .build();
-        /*Action DriveToSubmersible1 = myBot.getDrive().actionBuilder(new Pose2d(62,-54,Math.toRadians(270)))
+        Action DriveToSubmersible1 = myBot.getDrive().actionBuilder(new Pose2d(50,-54,Math.toRadians(270)))
                 //.strafeToLinearHeading(new Vector2d(48, -48), Math.toRadians(270))
                 .strafeToLinearHeading(new Vector2d(48, -54), Math.toRadians(270))
                // .strafeToConstantHeading(new Vector2d(48, -60))
                 .strafeToLinearHeading(new Vector2d(7,-35), Math.toRadians(90))
                 .build();
-
+/*
         Action DriveToSubmersible2 = myBot.getDrive().actionBuilder(new Pose2d(7,-35,Math.toRadians(90)))
                 .strafeToLinearHeading(new Vector2d(48,-54), Math.toRadians(270))
                 .strafeToLinearHeading(new Vector2d(7,-35), Math.toRadians(90)) //May change to 270 heading once delivery is clarified
@@ -103,6 +103,7 @@ public class AidansRealllllllllllyCrazyAutoTest {
                 DriveToSamplesandDeliver1,
                 DriveToSamplesandDeliver2,
                 DriveToSamplesandDeliver3,
+                DriveToSubmersible1,
                 ParkinDeck));
 
                 //new SleepAction(1)

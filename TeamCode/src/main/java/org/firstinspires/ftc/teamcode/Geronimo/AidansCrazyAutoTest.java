@@ -30,6 +30,7 @@ public class AidansCrazyAutoTest extends LinearOpMode {
     Action DriveToSamplesandDeliver1;
     Action DriveToSamplesandDeliver2;
     Action DriveToSamplesandDeliver3;
+    Action IntakeDrive;
     Action DriveToSubmersible1;
     Action DriveToSubmersible2;
     Action DriveToSubmersible3;
@@ -43,7 +44,7 @@ public class AidansCrazyAutoTest extends LinearOpMode {
     AccelConstraint speedUpAccelerationConstraint;
     VelConstraint slowDownVelocityConstraint;
     AccelConstraint slowDownAccelerationConstraint;
-
+    VelConstraint intakeVelocityConstraint;
 
     double autoPosition = 3;
 
@@ -57,7 +58,7 @@ public class AidansCrazyAutoTest extends LinearOpMode {
         speedUpAccelerationConstraint = new ProfileAccelConstraint(-40.0, 60.0);
         slowDownVelocityConstraint = new TranslationalVelConstraint(30);
         slowDownAccelerationConstraint = new ProfileAccelConstraint(-20, 50);
-
+        intakeVelocityConstraint = new TranslationalVelConstraint(15);
         /* Initialize the Robot */
         drive = new MecanumDrive_Geronimo(hardwareMap, startPose);
         control.Init(hardwareMap);
@@ -99,14 +100,20 @@ public class AidansCrazyAutoTest extends LinearOpMode {
                 .build();
         DriveToSamplesandDeliver3 = drive.actionBuilder(new Pose2d(54,-54,Math.toRadians(270)))
                 .strafeToLinearHeading(new Vector2d(54, -12), Math.toRadians(270), slowDownVelocityConstraint)
-                .strafeToLinearHeading(new Vector2d(62,-12), Math.toRadians(270))
-                .strafeToLinearHeading(new Vector2d(62,-54), Math.toRadians(270), slowDownVelocityConstraint)
-                .strafeToLinearHeading(new Vector2d(50,-54),Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(60.75,-12), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(60.75,-54), Math.toRadians(270), slowDownVelocityConstraint)
+                .strafeToLinearHeading(new Vector2d(48,-54),Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(44,-46),Math.toRadians(270))
                 .build();
-      /*  DriveToSubmersible1 = drive.actionBuilder(new Pose2d(62,-54, Math.toRadians(270)))
+        IntakeDrive = drive.actionBuilder(new Pose2d(44,-46,Math.toRadians(270)))
+                .strafeToLinearHeading(new Vector2d(44, -63),Math.toRadians(270), intakeVelocityConstraint)
+                .build();
+        DriveToSubmersible1 = drive.actionBuilder(new Pose2d(44,-63, Math.toRadians(270)))
                 .strafeToLinearHeading(new Vector2d(48, -54), Math.toRadians(270))
-                .strafeToLinearHeading(new Vector2d(7,-35), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(0, -54), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(0,-30), Math.toRadians(270))
                 .build();
+        /*
         DriveToSubmersible2 = drive.actionBuilder(new Pose2d(7,-35,Math.toRadians(90)))
                 .strafeToLinearHeading(new Vector2d(48,-54), Math.toRadians(270))
                 .strafeToLinearHeading(new Vector2d(7,-35), Math.toRadians(90)) //May change to 270 heading once delivery is clarified
@@ -117,10 +124,11 @@ public class AidansCrazyAutoTest extends LinearOpMode {
                 .build();
 
        */
-         ParkinDeck = drive.actionBuilder(new Pose2d(50,-54,Math.toRadians(270)))
+         ParkinDeck = drive.actionBuilder(new Pose2d(0,-30,Math.toRadians(270)))
+                 //Pose 2D 50,-54, 270
                  .splineTo(new Vector2d(49,-45),Math.toRadians(90))
                  .strafeToLinearHeading(new Vector2d(49,-58), Math.toRadians(90))
-                 .turnTo(Math.toRadians(90))
+                // .turnTo(Math.toRadians(90))
                         .build();
 /*
 
@@ -141,6 +149,18 @@ public class AidansCrazyAutoTest extends LinearOpMode {
                         DriveToSamplesandDeliver1,
                         DriveToSamplesandDeliver2,
                         DriveToSamplesandDeliver3,
+                        new SleepAction(.5),
+                        IntakeDrive,
+                        grabSpecimenfromwall(),
+                        new SleepAction(.5),
+                        grabSpecimen(),
+                        new SleepAction(.3),
+                        liftSpecimenoffWall(),
+                        new SleepAction(.5),
+                        new ParallelAction(DriveToSubmersible1, deliverSpecimenHigh()),
+                        finishdeliverSpecimenHigh(),
+                        new SleepAction(.5),
+                        releaseSpecimen(),
                         ParkinDeck,
                         stowPosition(),
                         new SleepAction(5))
@@ -190,7 +210,7 @@ public class AidansCrazyAutoTest extends LinearOpMode {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!initialized) {
-                control.limelightHasTarget();
+               // control.limelightHasTarget();
                 control.SpecimenPickupFromWall();
                 initialized = true;
             }
@@ -235,6 +255,62 @@ public class AidansCrazyAutoTest extends LinearOpMode {
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!initialized) {
                 control.RemoveFromWall();
+                initialized = true;
+            }
+            packet.put("lock purple pixel", 0);
+            return false;  // returning true means not done, and will be called again.  False means action is completely done
+        }
+    }
+    public Action grabSpecimen (){return new GrabSpecimen();}
+    public class GrabSpecimen implements Action {
+        private boolean initialized = false;
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            if (!initialized) {
+                control.SetClawPosition(Geronimo.CLAW_MAX_POS);
+                initialized = true;
+            }
+            packet.put("lock purple pixel", 0);
+            return false;  // returning true means not done, and will be called again.  False means action is completely done
+        }
+    }
+    public Action liftSpecimenoffWall (){return new LiftSpecimenOffWall();}
+    public class LiftSpecimenOffWall implements Action {
+        private boolean initialized = false;
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            if (!initialized) {
+                control.RemoveFromWall();
+                initialized = true;
+            }
+            packet.put("lock purple pixel", 0);
+            return false;  // returning true means not done, and will be called again.  False means action is completely done
+        }
+    }
+    public Action deliverSpecimenHigh (){return new DeliverSpecimenHigh();}
+    public class DeliverSpecimenHigh implements Action {
+        private boolean initialized = false;
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            if (!initialized) {
+                control.SpecimenDeliverHighChamberAlternate();
+                initialized = true;
+            }
+            packet.put("lock purple pixel", 0);
+            return false;  // returning true means not done, and will be called again.  False means action is completely done
+        }
+    }
+    public Action finishdeliverSpecimenHigh (){return new FinishDeliverSpecimenHigh();}
+    public class FinishDeliverSpecimenHigh implements Action {
+        private boolean initialized = false;
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            if (!initialized) {
+                control.SpecimenDeliverHighChamberFinishingMove();
                 initialized = true;
             }
             packet.put("lock purple pixel", 0);
