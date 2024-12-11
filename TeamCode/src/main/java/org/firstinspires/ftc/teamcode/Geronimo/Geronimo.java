@@ -201,7 +201,7 @@ public class Geronimo {
         slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        // ********** Servos ********************
+        // ********** Servos   ********************
         clawServo = hardwareMap.get(Servo.class, "clawServo");
         intakeBoxRotaterServo = hardwareMap.get(Servo.class, "intakeRotater");
         smallArmHangerLeftServo = hardwareMap.get(Servo.class, "intakeHangerLeft");
@@ -669,6 +669,20 @@ public class Geronimo {
         SetSmallArmHangerPosition(0.4);
         SetSlideToPosition(1680); //600
         SetSlideRotatorArmToPosition(323); //subject to change
+    }
+
+    public void SpecimenDeliverHighChamberAlternate(){
+        SetIntakeBoxRotatorPosition(0.82);
+        SetSmallArmHangerPosition(0);
+        SetSlideToPosition(983); //2600
+        SetSlideRotatorArmToPosition(642);
+    }
+
+    public void SpecimenDeliverHighChamberFinishingMove(){
+        SetIntakeBoxRotatorPosition(0.82);
+        SetSmallArmHangerPosition(0);
+        SetSlideToPosition(2600); //2600
+        SetSlideRotatorArmToPosition(642);
     }
 
     public void SpecimenPickupFromWall(){
