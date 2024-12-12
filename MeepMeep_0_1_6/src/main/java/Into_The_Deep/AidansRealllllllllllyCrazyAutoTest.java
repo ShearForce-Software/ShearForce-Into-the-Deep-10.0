@@ -1,9 +1,12 @@
 package Into_The_Deep;
 
+import com.acmerobotics.roadrunner.AccelConstraint;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.ProfileAccelConstraint;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
+import com.acmerobotics.roadrunner.TranslationalVelConstraint;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.VelConstraint;
 import com.noahbres.meepmeep.MeepMeep;
@@ -12,7 +15,24 @@ import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
 import org.jetbrains.annotations.Nullable;
 
+
 public class AidansRealllllllllllyCrazyAutoTest {
+    static Action DeliverStartingSpecimen;
+    static Action DriveToSamplesandDeliver1;
+    static Action DriveToSamplesandDeliver2;
+    static Action DriveToSamplesandDeliver3;
+    static Action IntakeDrive1;
+    static Action DriveToSubmersible1;
+    static Action DriveToSubmersible2;
+    static Action DriveToSubmersible3;
+    static Action ParkinDeck;
+
+    static VelConstraint speedUpVelocityConstraint;
+    static AccelConstraint speedUpAccelerationConstraint;
+    static VelConstraint slowDownVelocityConstraint;
+    static AccelConstraint slowDownAccelerationConstraint;
+    static VelConstraint intakeVelocityConstraint;
+
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(600);
 
@@ -27,69 +47,87 @@ public class AidansRealllllllllllyCrazyAutoTest {
 
 
 
-        Pose2d StartPose = new Pose2d(12, -64, Math.toRadians(90));
-        Vector2d VectorTwo = new Vector2d(48, -35);
+        Pose2d StartPose = new Pose2d(12, -64, Math.toRadians(270));
+
+        // Define some custom constraints to use when wanting to go faster than defaults
+        speedUpVelocityConstraint = new TranslationalVelConstraint(60.0);
+        speedUpAccelerationConstraint = new ProfileAccelConstraint(-40.0, 60.0);
+        slowDownVelocityConstraint = new TranslationalVelConstraint(30);
+        slowDownAccelerationConstraint = new ProfileAccelConstraint(-20, 50);
+        intakeVelocityConstraint = new TranslationalVelConstraint(15);
+
         //myBot.runAction(myBot.getDrive().actionBuilder(StartPose)
                            //  .splineToLinearHeading(new Pose2d(36,48,36.6), Math.toRadians(270))
-        Action DeliverStartingSpecimen = myBot.getDrive().actionBuilder(StartPose)
-                .strafeToLinearHeading(new Vector2d(10,-35), Math.toRadians(90))
+        DeliverStartingSpecimen = myBot.getDrive().actionBuilder(StartPose)
+                //.splineToConstantHeading(new Vector2d(4,-39), Math.toRadians(-45))
+                //.strafeToLinearHeading(new Vector2d(0,-39), Math.toRadians(270))
+                .setReversed(true)
+                .splineToConstantHeading(new Vector2d(0,-39), Math.toRadians(180))
+                .strafeToLinearHeading(new Vector2d(0,-30), Math.toRadians(270))
                 .build();
-        Action DriveToSamplesandDeliver1 = myBot.getDrive().actionBuilder(new Pose2d(12, -35, Math.toRadians(90)))
-                .strafeToLinearHeading(new Vector2d(25,-48), Math.toRadians(270))
-                //.splineToConstantHeading(new Vector2d(18,-48), Math.toRadians(270))
+
+        DriveToSamplesandDeliver1 = myBot.getDrive().actionBuilder(new Pose2d(0, -30, Math.toRadians(270)))
+                .strafeToLinearHeading(new Vector2d(23,-48), Math.toRadians(270))
                 .strafeToLinearHeading(new Vector2d(36,-48), Math.toRadians(270))
-                .strafeToLinearHeading(new Vector2d(36,-24), Math.toRadians(270))
-               // .splineTo(new Vector2d(42,-12), Math.toRadians(0))
-                //.splineTo(new Vector2d(48,-24), Math.toRadians(0))
-               // .strafeToLinearHeading(new Vector2d(48,-9), Math.toRadians(270))
+                //.splineToConstantHeading(new Vector2d(36,-12), Math.toRadians(270))
                 .strafeToLinearHeading(new Vector2d(36,-12), Math.toRadians(270))
-                .strafeToLinearHeading(new Vector2d(44,-12),Math.toRadians(270))
-                .strafeToLinearHeading(new Vector2d(44,-54), Math.toRadians(270))
-               // .strafeToLinearHeading(new Vector2d(47,-60), Math.toRadians(270))
+                //.strafeToLinearHeading(new Vector2d(44,-54),Math.toRadians(270))
+                .splineToConstantHeading(new Vector2d(44,-17), Math.toRadians(270))
+                .lineToYConstantHeading(-54)
                 .build();
-        Action DriveToSamplesandDeliver2 = myBot.getDrive().actionBuilder(new Pose2d(44,-60, Math.toRadians(270)))
-                .strafeToLinearHeading(new Vector2d(44, -17), Math.toRadians(270))
+
+        DriveToSamplesandDeliver2 = myBot.getDrive().actionBuilder(new Pose2d(44,-54, Math.toRadians(270)))
+                .strafeToLinearHeading(new Vector2d(44, -17), Math.toRadians(270), slowDownVelocityConstraint)
                 .splineToConstantHeading(new Vector2d(54,-17), Math.toRadians(270))
                 .lineToYConstantHeading(-54)
-                //.strafeToLinearHeading(new Vector2d(44, -54), Math.toRadians(270))
-                //.strafeToLinearHeading(new Vector2d(48,-60), Math.toRadians(270))
                 .build();
-        Action DriveToSamplesandDeliver3 = myBot.getDrive().actionBuilder(new Pose2d(54,-54,Math.toRadians(270)))
-                .strafeToLinearHeading(new Vector2d(54, -12), Math.toRadians(270))
-                .strafeToLinearHeading(new Vector2d(62,-12), Math.toRadians(270))
-                .strafeToLinearHeading(new Vector2d(62,-54), Math.toRadians(270))
-                .strafeToLinearHeading(new Vector2d(50,-54),Math.toRadians(270))
+
+        DriveToSamplesandDeliver3 = myBot.getDrive().actionBuilder(new Pose2d(54,-54,Math.toRadians(270)))
+                .strafeToLinearHeading(new Vector2d(54, -12), Math.toRadians(270), slowDownVelocityConstraint)
+                //.strafeToLinearHeading(new Vector2d(60.75,-12), Math.toRadians(270))
+                .splineToConstantHeading(new Vector2d(60.75,-17), Math.toRadians(270))
+                //.strafeToLinearHeading(new Vector2d(60.75,-54), Math.toRadians(270))
+                .lineToYConstantHeading(-54)
+                //.strafeToLinearHeading(new Vector2d(48,-54),Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(44,-46),Math.toRadians(270))
                 .build();
-        Action ParkinDeck = myBot.getDrive().actionBuilder(new Pose2d(7,-35,Math.toRadians(90)))
+
+        IntakeDrive1 = myBot.getDrive().actionBuilder(new Pose2d(44,-46,Math.toRadians(270)))
+                .strafeToLinearHeading(new Vector2d(44, -63),Math.toRadians(270), intakeVelocityConstraint)
+                .build();
+
+        DriveToSubmersible1 = myBot.getDrive().actionBuilder(new Pose2d(44,-63,Math.toRadians(270)))
+                //.strafeToLinearHeading(new Vector2d(48, -54), Math.toRadians(270))
+                //.strafeToLinearHeading(new Vector2d(2, -54), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(2, -39), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(2,-30), Math.toRadians(270))
+                .build();
+
+        ParkinDeck = myBot.getDrive().actionBuilder(new Pose2d(2,-30,Math.toRadians(270)))
+                //Pose 2D 50,-54, 270
                 .splineTo(new Vector2d(49,-45),Math.toRadians(90))
-                .strafeToLinearHeading(new Vector2d(49,-54), Math.toRadians(90))
-                .turnTo(Math.toRadians(90))
-                .build();
-        Action DriveToSubmersible1 = myBot.getDrive().actionBuilder(new Pose2d(50,-54,Math.toRadians(270)))
-                //.strafeToLinearHeading(new Vector2d(48, -48), Math.toRadians(270))
-                .strafeToLinearHeading(new Vector2d(48, -54), Math.toRadians(270))
-               // .strafeToConstantHeading(new Vector2d(48, -60))
-                .strafeToLinearHeading(new Vector2d(7,-35), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(49,-58), Math.toRadians(90))
+                // .turnTo(Math.toRadians(90))
                 .build();
 /*
-        Action DriveToSubmersible2 = myBot.getDrive().actionBuilder(new Pose2d(7,-35,Math.toRadians(90)))
+        DriveToSubmersible2 = myBot.getDrive().actionBuilder(new Pose2d(7,-35,Math.toRadians(90)))
                 .strafeToLinearHeading(new Vector2d(48,-54), Math.toRadians(270))
                 .strafeToLinearHeading(new Vector2d(7,-35), Math.toRadians(90)) //May change to 270 heading once delivery is clarified
                 .build();
 
-        Action DriveToSubmersible3 = myBot.getDrive().actionBuilder(new Pose2d(7,-35,Math.toRadians(90)))
+        DriveToSubmersible3 = myBot.getDrive().actionBuilder(new Pose2d(7,-35,Math.toRadians(90)))
                 .strafeToLinearHeading(new Vector2d(48,-54), Math.toRadians(270))
                 .strafeToLinearHeading(new Vector2d(7,-35), Math.toRadians(90))
                 .build();
-        Action DropOff2 = myBot.getDrive().actionBuilder(new Pose2d(5,-30,Math.toRadians(90)))
+        DropOff2 = myBot.getDrive().actionBuilder(new Pose2d(5,-30,Math.toRadians(90)))
                 .strafeToLinearHeading(new Vector2d(60, -58), Math.toRadians(270))
                 .build();
 
-        Action PickSpeicmen = myBot.getDrive().actionBuilder(new Pose2d(60,-58,Math.toRadians(270)))
+        PickSpeicmen = myBot.getDrive().actionBuilder(new Pose2d(60,-58,Math.toRadians(270)))
                 .splineToLinearHeading(new Pose2d(40, -58,Math.toRadians(90)),Math.toRadians(90))
                 .build();
 
-        Action SpecimenDrop = myBot.getDrive().actionBuilder(new Pose2d(40,-58,Math.toRadians(90)))
+        SpecimenDrop = myBot.getDrive().actionBuilder(new Pose2d(40,-58,Math.toRadians(90)))
                .strafeToLinearHeading(VectorTwo, Math.toRadians(90))
                 .build();
 
@@ -103,7 +141,10 @@ public class AidansRealllllllllllyCrazyAutoTest {
                 DriveToSamplesandDeliver1,
                 DriveToSamplesandDeliver2,
                 DriveToSamplesandDeliver3,
+                IntakeDrive1,
+                new SleepAction(1),
                 DriveToSubmersible1,
+                new SleepAction(1),
                 ParkinDeck));
 
                 //new SleepAction(1)

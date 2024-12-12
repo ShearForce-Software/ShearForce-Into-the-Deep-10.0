@@ -42,11 +42,11 @@ package MotorNames #LightGreen {
 }
 
 package ServoNames #Orange {
-  () "leftBlinkin" --> [Servo-0] : 0
-  () "rightBlinkin" --> [Servo-1] : 1
+  () "intakeHangerLeft" --> [Servo-0] : 0
+  () "intakeHangerRight" --> [Servo-1] : 1
   () "clawServo" --> [Servo-2] : wire 6
   () "intakeRotater" --> [Servo-3] : wire 4
-  () "intakeStar" --> [Servo-4] : wire 1
+  () "intakeStar/urchinServo" --> [Servo-4] : wire 1
 }
 
 package DigitalNames #Pink {

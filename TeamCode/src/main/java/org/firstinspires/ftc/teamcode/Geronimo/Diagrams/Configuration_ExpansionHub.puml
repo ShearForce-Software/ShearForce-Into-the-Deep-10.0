@@ -35,8 +35,8 @@ package ExpansionHub #Tan {
 }
 
 package ServoNames #Orange {
-  () "intakeHangerLeft" --> [Servo-0] : 0
-  () "intakeHangerRight" --> [Servo-1] : 1
+  () "leftBlinkin" --> [Servo-0] : 0
+  () "rightBlinkin" --> [Servo-1] : 1
 }
 package MotorNames #LightGreen {
   () "leftRotater" --> [Motor0] : 0

@@ -56,6 +56,7 @@ public class AidansCrazyAutoTest extends LinearOpMode {
         /* Initialize the Robot */
         drive = new MecanumDrive_Geronimo(hardwareMap, startPose);
         control.Init(hardwareMap);
+        // TODO -- need to adjust this starting position to keep the specimen out of the wall
         control.AutoStartPosition();
         telemetry.update();
         control.imuOffsetInDegrees = 270; // Math.toDegrees(startPose.heading.toDouble());
@@ -72,39 +73,36 @@ public class AidansCrazyAutoTest extends LinearOpMode {
         // ***************************************************
 
         DeliverStartingSpecimen = drive.actionBuilder(startPose)
-                .splineToConstantHeading(new Vector2d(4,-39), Math.toRadians(270))
-                .splineToConstantHeading(new Vector2d(0,-39), Math.toRadians(270))
+                //.splineToConstantHeading(new Vector2d(4,-39), Math.toRadians(-45))
+                //.strafeToLinearHeading(new Vector2d(0,-39), Math.toRadians(270))
+                .setReversed(true)
+                .splineToConstantHeading(new Vector2d(0,-39), Math.toRadians(180))
                 .strafeToLinearHeading(new Vector2d(0,-30), Math.toRadians(270))
                 .build();
 
-        // TODO -- test this trajectory with no slow down constraint Check
         DriveToSamplesandDeliver1 = drive.actionBuilder(new Pose2d(0, -30, Math.toRadians(270)))
                 .strafeToLinearHeading(new Vector2d(23,-48), Math.toRadians(270))
                 .strafeToLinearHeading(new Vector2d(36,-48), Math.toRadians(270))
-                //.lineToYConstantHeading(-12)
-                //.strafeToLinearHeading(new Vector2d(36,-24), Math.toRadians(270))
-               .splineToConstantHeading(new Vector2d(36,-12), Math.toRadians(270))
-                //.strafeToLinearHeading(new Vector2d(44,-12),Math.toRadians(270))
-                .strafeToLinearHeading(new Vector2d(44,-54),Math.toRadians(270))
-                //.lineToYConstantHeading(-54) BAD GUY
-                //.strafeToLinearHeading(new Vector2d(47,-60), Math.toRadians(270))
+                //.splineToConstantHeading(new Vector2d(36,-12), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(36,-12), Math.toRadians(270))
+                //.strafeToLinearHeading(new Vector2d(44,-54),Math.toRadians(270))
+                .splineToConstantHeading(new Vector2d(44,-17), Math.toRadians(270))
+                .lineToYConstantHeading(-54)
                 .build();
 
-        // TODO -- test this trajectory with no slow down constraint in the 3rd move (first one might be more important) Check
         DriveToSamplesandDeliver2 = drive.actionBuilder(new Pose2d(44,-54, Math.toRadians(270)))
                 .strafeToLinearHeading(new Vector2d(44, -17), Math.toRadians(270), slowDownVelocityConstraint)
                 .splineToConstantHeading(new Vector2d(54,-17), Math.toRadians(270))
                 .lineToYConstantHeading(-54)
-               // .strafeToLinearHeading(new Vector2d(44, -54), Math.toRadians(270))
                 .build();
 
-        // TODO -- test this trajectory with no slow down constraint in the 3rd move (first one might be more important) Check
         DriveToSamplesandDeliver3 = drive.actionBuilder(new Pose2d(54,-54,Math.toRadians(270)))
                 .strafeToLinearHeading(new Vector2d(54, -12), Math.toRadians(270), slowDownVelocityConstraint)
-                .strafeToLinearHeading(new Vector2d(60.75,-12), Math.toRadians(270))
-                //.lineToYConstantHeading(-54)
-                .strafeToLinearHeading(new Vector2d(60.75,-54), Math.toRadians(270))
-                .strafeToLinearHeading(new Vector2d(48,-54),Math.toRadians(270))
+                //.strafeToLinearHeading(new Vector2d(60.75,-12), Math.toRadians(270))
+                .splineToConstantHeading(new Vector2d(60.75,-17), Math.toRadians(270))
+                //.strafeToLinearHeading(new Vector2d(60.75,-54), Math.toRadians(270))
+                .lineToYConstantHeading(-54)
+                //.strafeToLinearHeading(new Vector2d(48,-54),Math.toRadians(270))
                 .strafeToLinearHeading(new Vector2d(44,-46),Math.toRadians(270))
                 .build();
 
@@ -113,10 +111,9 @@ public class AidansCrazyAutoTest extends LinearOpMode {
                 .build();
 
         DriveToSubmersible1 = drive.actionBuilder(new Pose2d(44,-63, Math.toRadians(270)))
-                .strafeToLinearHeading(new Vector2d(48, -54), Math.toRadians(270))
-                .strafeToLinearHeading(new Vector2d(2, -54), Math.toRadians(270))
-                //.lineToXConstantHeading(2)
-                //.lineToYConstantHeading(-30)
+                //.strafeToLinearHeading(new Vector2d(48, -54), Math.toRadians(270))
+                //.strafeToLinearHeading(new Vector2d(2, -54), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(2, -39), Math.toRadians(270))
                 .strafeToLinearHeading(new Vector2d(2,-30), Math.toRadians(270))
                 .build();
         /*
@@ -130,7 +127,7 @@ public class AidansCrazyAutoTest extends LinearOpMode {
                 .build();
 
        */
-         ParkinDeck = drive.actionBuilder(new Pose2d(0,-30,Math.toRadians(270)))
+         ParkinDeck = drive.actionBuilder(new Pose2d(2,-30,Math.toRadians(270)))
                  //Pose 2D 50,-54, 270
                  .splineTo(new Vector2d(49,-45),Math.toRadians(90))
                  .strafeToLinearHeading(new Vector2d(49,-58), Math.toRadians(90))
@@ -142,7 +139,6 @@ public class AidansCrazyAutoTest extends LinearOpMode {
         // ***************************************************
         Actions.runBlocking(
                 new SequentialAction(
-                        // TODO test changing to a high specimen delivery Check
                         // deliver pre-loaded specimen
                         new ParallelAction(DeliverStartingSpecimen,
                                 deliverSpecimenHigh()),
@@ -151,16 +147,17 @@ public class AidansCrazyAutoTest extends LinearOpMode {
                         releaseSpecimen(),
                         new SleepAction(.3),
 
-                        // TODO probably need a parallel action on deliver 1 to set the servos (and slide arms) correctly for wall intake Check
+                        /* TODO
+                        Need to replace grabSpecimenfromWall in this parallel action with an embedded sequential action within the parallel action
+                            - New Action -- Set Slides to zero -- don't return "false" in the action until GetSlidesLimitSwitchPressed()
+                            - New Action -- Set Rotator Arm to zero -- don't return false in the action until GetSlideRotatorArmLimitSwitchPressed
+                            - Change the grabSpecimenfromWall() action to call SpecimenPickupFromWallServoPosition() instead of SpecimenPickupFromWall()
+                         */
                         // Gather the 3 floor samples into the observation area
                         new ParallelAction(DriveToSamplesandDeliver1, grabSpecimenfromwall()),
                         DriveToSamplesandDeliver2,
                         DriveToSamplesandDeliver3,
 
-                        // TODO probably don't need this sleep -- test without it Check
-                        //new SleepAction(.5),
-
-                        // TODO -- can probably drive and set servos to grab position in parallel, so can eliminate the sleep action Check
                         // Drive to the wall and prepare to grab a specimen
                         new ParallelAction(IntakeDrive1,
                                 grabSpecimenfromwall()),
@@ -172,7 +169,6 @@ public class AidansCrazyAutoTest extends LinearOpMode {
                         liftSpecimenoffWall(),
                         new SleepAction(.5),
 
-                        // TODO -- probably need a tiny sleep after you release the specimen before driving again Check
                         // Deliver the specimen to the High bar
                         new ParallelAction(DriveToSubmersible1, deliverSpecimenHigh()),
                         finishdeliverSpecimenHigh(),
@@ -180,7 +176,7 @@ public class AidansCrazyAutoTest extends LinearOpMode {
                         releaseSpecimen(),
                         new SleepAction(.3),
 
-                        // TODO -- should be able to stow the servos and drive to parking in parallel to eliminate the sleep at the end Check
+                        // TODO -- need to convert stowPosition into an embedded sequential action within the parallel action like was done above
                         // Drive to the parking position
                         new ParallelAction(ParkinDeck,
                                 stowPosition())

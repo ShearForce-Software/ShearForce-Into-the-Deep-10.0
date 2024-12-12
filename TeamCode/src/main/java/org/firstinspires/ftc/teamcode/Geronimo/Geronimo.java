@@ -71,7 +71,7 @@ public class Geronimo {
     boolean slidesRunningToPosition = false;
     public static final double SLIDES_POS_POWER = 1.0;
     public static final int SLIDE_ARM_MIN_POS = 0;
-    public static final int SLIDE_ARM_MAX_VERTICAL_POS = 2360;
+    public static final int SLIDE_ARM_MAX_VERTICAL_POS = 5618;
     public static final int SLIDE_ARM_MAX_HORIZONTAL_POS = 3690; //1550
     private double slidePower = 0.0;
     TouchSensor touchSensorSlideLeft;
@@ -232,7 +232,7 @@ public class Geronimo {
         touchSensorSlideRight = hardwareMap.get(TouchSensor.class, "sensor_touchRight");
 
         // limelightbox = hardwareMap.get(Limelight3A.class, "limelight");
-        InitBlinkin(hardwareMap);
+        //InitBlinkin(hardwareMap);
 
         imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
@@ -670,10 +670,19 @@ public class Geronimo {
     }
 
     public void RemoveFromWall(){
+        RemoveFromWallServoPosition();
+
+        double timeout = opMode.getRuntime() + 0.5;
+        SetSlideToPosition(0);
+        while (!GetSlidesLimitSwitchPressed() && opMode.getRuntime() < timeout) {
+            SpecialSleep(50);
+        }
+        SetSlideRotatorArmToPosition(0);
+    }
+
+    public void RemoveFromWallServoPosition() {
         SetIntakeBoxRotatorPosition(0.96); //0.875
         SetSmallArmHangerPosition(.25); //0
-        SetSlideToPosition(0);
-        SetSlideRotatorArmToPosition(0);
     }
 
     public void SpecimenDeliverHigh(){
@@ -697,17 +706,27 @@ public class Geronimo {
         SetSlideRotatorArmToPosition(642);
     }
 
-    public void SpecimenPickupFromWall(){
-        SetIntakeBoxRotatorPosition(0.96); //0.875
-        SetSmallArmHangerPosition(0.4); //.15
+    public void SpecimenPickupFromWall() {
+        SpecimenPickupFromWallServoPosition();
+
+        double timeout = opMode.getRuntime() + 0.5;
         SetSlideToPosition(0);
+        while (!GetSlidesLimitSwitchPressed() && opMode.getRuntime() < timeout) {
+            SpecialSleep(50);
+        }
         SetSlideRotatorArmToPosition(0);
     }
 
+    public void SpecimenPickupFromWallServoPosition(){
+        SetIntakeBoxRotatorPosition(0.96); //0.875
+        SetSmallArmHangerPosition(0.4); //.15
+    }
+
     public void SampleUrchinFloorPickup(){
+        SetSlideToPosition(1945);
+        SpecialSleep(300);
         SetIntakeBoxRotatorPosition(0.485);
         SetSmallArmHangerPosition(0.80); //.15
-        SetSlideToPosition(1945);
         SetSlideRotatorArmToPosition(0);
     }
 
@@ -926,6 +945,8 @@ public class Geronimo {
         slidesRunningToPosition = false;
         slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        slideLeft.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
+        slideRight.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
         slideLeft.setPower(slidePower);
         slideRight.setPower(slidePower);
     }
@@ -940,12 +961,15 @@ public class Geronimo {
         slideRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        slideLeft.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
+        slideRight.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     public void SetSlideToPosition (int position)
     {
         // verify not needing to limit because of horizontal limits
-        if ((slideArmRotatorTargetPosition == 0) &&
+        if (((slideArmRotatorTargetPosition <= SLIDE_ARM_ROTATOR_POS_TO_LIMIT_SLIDES) ||
+                (!slideArmRotatorRunningToPosition && leftSlideArmRotatorMotor.getCurrentPosition() <= SLIDE_ARM_ROTATOR_POS_TO_LIMIT_SLIDES) ) &&
                 (position >= SLIDE_ARM_MAX_HORIZONTAL_POS)) {
             slidesTargetPosition = SLIDE_ARM_MAX_HORIZONTAL_POS;
         }
@@ -965,6 +989,8 @@ public class Geronimo {
         slideRight.setTargetPosition(slidesTargetPosition);
         slideLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideLeft.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
+        slideRight.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
         slidePower = SLIDES_POS_POWER;
         slideLeft.setPower(slidePower);
         slideRight.setPower(slidePower);
@@ -985,6 +1011,8 @@ public class Geronimo {
             slideRight.setTargetPosition(slideRight.getCurrentPosition());
             slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            slideLeft.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
+            slideRight.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
         }
         slidesRunningToPosition = false;
     }
@@ -1008,6 +1036,9 @@ public class Geronimo {
             slideArmRotatorRunningToPosition = false;
             leftSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             rightSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            leftSlideArmRotatorMotor.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
+            rightSlideArmRotatorMotor.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
+
             rightSlideArmRotatorMotor.setPower(slideArmRotatorPower);
             leftSlideArmRotatorMotor.setPower(slideArmRotatorPower);
         }
@@ -1016,12 +1047,14 @@ public class Geronimo {
 
     public void SetSlideRotatorArmToPosition(int position)
     {
-        if (slideArmRotatorTargetPosition > position){
-            slideArmRotatorPower = SLIDE_ARM_ROTATOR_POWER /2.0;
+        // if slide arm rotators are going down then reduce the max power
+        if (leftSlideArmRotatorMotor.getCurrentPosition() > position) {
+            slideArmRotatorPower = SLIDE_ARM_ROTATOR_POWER / 3.0;
         }
         else{
             slideArmRotatorPower = SLIDE_ARM_ROTATOR_POWER;
         }
+
         if (position > SLIDE_ARM_ROTATOR_MAX_POS)
         {
             slideArmRotatorTargetPosition = SLIDE_ARM_ROTATOR_MAX_POS;
@@ -1038,6 +1071,9 @@ public class Geronimo {
         leftSlideArmRotatorMotor.setTargetPosition(slideArmRotatorTargetPosition);
         leftSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftSlideArmRotatorMotor.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
+        rightSlideArmRotatorMotor.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
+
         leftSlideArmRotatorMotor.setPower(slideArmRotatorPower);
         rightSlideArmRotatorMotor.setPower(slideArmRotatorPower);
     }
@@ -1050,6 +1086,9 @@ public class Geronimo {
         rightSlideArmRotatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftSlideArmRotatorMotor.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
+        rightSlideArmRotatorMotor.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
+
     }
     public boolean GetSlideRotatorArmLimitSwitchPressed(){
         boolean returnValue = false;
