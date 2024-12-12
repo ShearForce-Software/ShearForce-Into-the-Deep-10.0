@@ -3,9 +3,10 @@
 == TODO List
 
 - [ ] Improve slide limit logic and rotator slide arm logic to ensure always pass inspection
-- [ ] Get the Urchin to work
+- [x] Get the Urchin to work
+- [ ] Improve the auto so the urchin moves after slides and arm rotator all down
 - [ ] Improve Auto Right to deliver at least 2 specimens to the high bar and park
-- [ ] Reassess and test all servo/arm position numbers with the Urchin installed
+- [x] Reassess and test all servo/arm position numbers with the Urchin installed
 - [ ] Improve Auto Left to score level-1 hang again
 - [ ] Improve Auto Left to put at least 1 sample into the high basket
 - [ ] Experiment with different box/urchin orientations for intake from the floor
