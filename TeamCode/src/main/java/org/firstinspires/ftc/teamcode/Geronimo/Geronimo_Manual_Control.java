@@ -129,7 +129,8 @@ public class Geronimo_Manual_Control extends LinearOpMode {
 
             // Combo Moves
             if (gamepad2.cross && !gamepad2.options) {
-                theRobot.IntakeFromFloor();
+               // theRobot.IntakeFromFloor();
+                theRobot.SampleUrchinFloorPickup();
             } else if (gamepad2.share) {
                 theRobot.RemoveFromWall();
             } else if (gamepad2.circle && !gamepad2.options) {
@@ -172,7 +173,7 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             }
 
             // Intake Stars Control -- Intake --> OFF --> Outtake --> OFF --> Intake
-
+/*
             if (gamepad1.right_trigger > 0.2) {
                 theRobot.SetIntakeStarPower(gamepad1.right_trigger);
                 intakeStarPowerApplied = true;
@@ -185,6 +186,15 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 intakeStarPowerApplied = false;
                 theRobot.SetIntakeStarPower(0.0);
             }
+
+ */
+            if (gamepad1.right_trigger > 0.2) {
+                theRobot.SetUrchinServoPosition(1);
+            }
+            else if (gamepad1.left_trigger > 0.2) {
+                theRobot.SetUrchinServoPosition(0);
+            }
+
 
             theRobot.ShowTelemetry();
             telemetry.update();
