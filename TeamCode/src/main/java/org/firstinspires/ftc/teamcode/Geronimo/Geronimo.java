@@ -96,9 +96,14 @@ public class Geronimo {
     double smallArmHangerRightPosition = 0.5;
     static final double SMALL_ARM_HANGER_INCREMENT = 0.05;
 
-    public CRServo intakeStarServo;
+  /*  public CRServo intakeStarServo;
     double intakeStarPower = 0.0;
     boolean intakeStarLastForward = false;
+
+   */
+
+    public Servo urchinServo;
+    double urchinServo_position =0;
 
     RevBlinkinLedDriver.BlinkinPattern Blinken_left_pattern;
     RevBlinkinLedDriver.BlinkinPattern Blinken_right_pattern;
@@ -206,7 +211,8 @@ public class Geronimo {
         intakeBoxRotaterServo = hardwareMap.get(Servo.class, "intakeRotater");
         smallArmHangerLeftServo = hardwareMap.get(Servo.class, "intakeHangerLeft");
         smallArmHangerRightServo = hardwareMap.get(Servo.class, "intakeHangerRight");
-        intakeStarServo = hardwareMap.get(CRServo.class, "intakeStar");
+      //  intakeStarServo = hardwareMap.get(CRServo.class, "intakeStar");
+        urchinServo = hardwareMap.get(Servo.class, "urchinServo");
 
         // ********** Color Sensors ********************
 
@@ -750,7 +756,7 @@ public class Geronimo {
     // *********************************************************
 
     public void SetIntakeStarPower(double power)
-    {
+    {/*
         intakeStarPower = power;
         intakeStarServo.setPower(intakeStarPower);
         if (power > 0.0)
@@ -761,9 +767,11 @@ public class Geronimo {
         {
             intakeStarLastForward = false;
         }
+        */
     }
 
     public void CycleIntakeStarMode() {
+        /*
         if (intakeStarPower != 0.0) {
             SetIntakeStarPower(0);
         } else if(intakeStarLastForward) {
@@ -773,6 +781,8 @@ public class Geronimo {
             SetIntakeStarPower(1.0);
 
         }
+
+         */
     }
 
     // *********************************************************
@@ -1058,7 +1068,8 @@ public class Geronimo {
         opMode.telemetry.addData("Arm Hanger Positions ", "R: %.2f, L: %.2f", smallArmHangerRightPosition, smallArmHangerLeftPosition);
         //opMode.telemetry.addData(">", "Arm Hangers - rightStick X-Axis for control" );
 
-        opMode.telemetry.addData("Intake Star Power: ", "%.2f, %.2f", intakeStarPower, intakeStarServo.getPower());
+       // opMode.telemetry.addData("Intake Star Power: ", "%.2f, %.2f", intakeStarPower, intakeStarServo.getPower());
+        opMode.telemetry.addData("Urchin Position: ", urchinServo_position);
         //opMode.telemetry.addData(">", "Intake Star - use dpad down for control" );
 
         opMode.telemetry.addData("slides Position ", "L: %d, R: %d", slideLeft.getCurrentPosition(), slideRight.getCurrentPosition());
