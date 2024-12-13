@@ -17,11 +17,11 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-// TODO -- quit naming programs after yourself and make it have an intuitive name
-@Autonomous(name="Aidan'sCrazyAutoTest", preselectTeleOp =
+// TODO -- quit naming programs after yourself and make it have an intuitive name Check
+@Autonomous(name="High Specimens Auto Route", preselectTeleOp =
         "Geronimo_Manual_Control")
 // @Disabled
-public class AidansCrazyAutoTest extends LinearOpMode {
+public class HighSpecimensAutoRoute extends LinearOpMode {
     Geronimo control = new Geronimo(true, false,this);
     MecanumDrive_Geronimo drive;
     Pose2d startPose;
@@ -56,7 +56,7 @@ public class AidansCrazyAutoTest extends LinearOpMode {
         /* Initialize the Robot */
         drive = new MecanumDrive_Geronimo(hardwareMap, startPose);
         control.Init(hardwareMap);
-        // TODO -- need to adjust this starting position to keep the specimen out of the wall
+        // TODO -- need to adjust this starting position to keep the specimen out of the wall Check
         control.AutoStartPosition();
         telemetry.update();
         control.imuOffsetInDegrees = 270; // Math.toDegrees(startPose.heading.toDouble());
@@ -73,11 +73,11 @@ public class AidansCrazyAutoTest extends LinearOpMode {
         // ***************************************************
 
         DeliverStartingSpecimen = drive.actionBuilder(startPose)
-                //.splineToConstantHeading(new Vector2d(4,-39), Math.toRadians(-45))
-                //.strafeToLinearHeading(new Vector2d(0,-39), Math.toRadians(270))
-                .setReversed(true)
-                .splineToConstantHeading(new Vector2d(0,-39), Math.toRadians(180))
-                .strafeToLinearHeading(new Vector2d(0,-30), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(4,-30), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(0,-30), Math.toRadians(270), slowDownVelocityConstraint)
+                //.setReversed(true)
+                //.splineToConstantHeading(new Vector2d(0,-39), Math.toRadians(180), slowDownVelocityConstraint)
+                //.strafeToLinearHeading(new Vector2d(0,-30), Math.toRadians(270), slowDownVelocityConstraint)
                 .build();
 
         DriveToSamplesandDeliver1 = drive.actionBuilder(new Pose2d(0, -30, Math.toRadians(270)))
@@ -98,10 +98,10 @@ public class AidansCrazyAutoTest extends LinearOpMode {
 
         DriveToSamplesandDeliver3 = drive.actionBuilder(new Pose2d(54,-54,Math.toRadians(270)))
                 .strafeToLinearHeading(new Vector2d(54, -12), Math.toRadians(270), slowDownVelocityConstraint)
-                //.strafeToLinearHeading(new Vector2d(60.75,-12), Math.toRadians(270))
-                .splineToConstantHeading(new Vector2d(60.75,-17), Math.toRadians(270))
-                //.strafeToLinearHeading(new Vector2d(60.75,-54), Math.toRadians(270))
-                .lineToYConstantHeading(-54)
+                .strafeToLinearHeading(new Vector2d(60.75,-12), Math.toRadians(270))
+                //.splineToConstantHeading(new Vector2d(63,-17), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(60.75,-54), Math.toRadians(270))
+                //.lineToYConstantHeading(-54)
                 //.strafeToLinearHeading(new Vector2d(48,-54),Math.toRadians(270))
                 .strafeToLinearHeading(new Vector2d(44,-46),Math.toRadians(270))
                 .build();
@@ -143,9 +143,9 @@ public class AidansCrazyAutoTest extends LinearOpMode {
                         new ParallelAction(DeliverStartingSpecimen,
                                 deliverSpecimenHigh()),
                         finishdeliverSpecimenHigh(),
-                        new SleepAction(.5),
+                        new SleepAction(.7),
                         releaseSpecimen(),
-                        new SleepAction(.3),
+                        new SleepAction(.5),
 
                         /* TODO
                         Need to replace grabSpecimenfromWall in this parallel action with an embedded sequential action within the parallel action
@@ -154,7 +154,7 @@ public class AidansCrazyAutoTest extends LinearOpMode {
                             - Change the grabSpecimenfromWall() action to call SpecimenPickupFromWallServoPosition() instead of SpecimenPickupFromWall()
                          */
                         // Gather the 3 floor samples into the observation area
-                        new ParallelAction(DriveToSamplesandDeliver1, grabSpecimenfromwall()),
+                        new ParallelAction(DriveToSamplesandDeliver1, new SequentialAction(slidestozero(), rotatorarmstozero(), grabSpecimenfromwall())),
                         DriveToSamplesandDeliver2,
                         DriveToSamplesandDeliver3,
 
@@ -241,11 +241,53 @@ public class AidansCrazyAutoTest extends LinearOpMode {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!initialized) {
-                control.RemoveFromWall();
+                control.RemoveFromWallServoPosition();
                 initialized = true;
             }
             packet.put("lock purple pixel", 0);
             return false;  // returning true means not done, and will be called again.  False means action is completely done
+        }
+    }
+    public Action slidestozero (){return new SlidesToZero();}
+    public class SlidesToZero implements Action {
+        private boolean initialized = false;
+        double timeout = 0;
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            if (!initialized) {
+                control.SetSlideToPosition(0);
+                initialized = true;
+                timeout = control.opMode.getRuntime() + 0.5;
+            }
+            boolean returnValue = true;
+            if (control.opMode.getRuntime()>=timeout || control.GetSlidesLimitSwitchPressed())
+            {
+                returnValue = false;
+            }
+            packet.put("lock purple pixel", 0);
+            return returnValue ;  // returning true means not done, and will be called again.  False means action is completely done
+        }
+    }
+    public Action rotatorarmstozero (){return new RotatorArmsToZero();}
+    public class RotatorArmsToZero implements Action {
+        private boolean initialized = false;
+        double timeout = 0;
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            if (!initialized) {
+                control.SetSlideRotatorArmToPosition(0);
+                initialized = true;
+                timeout = control.opMode.getRuntime() + 0.5;
+            }
+            boolean returnValue = true;
+            if (control.opMode.getRuntime()>=timeout || control.GetSlideRotatorArmLimitSwitchPressed())
+            {
+                returnValue = false;
+            }
+            packet.put("lock purple pixel", 0);
+            return returnValue ;
+
+              // returning true means not done, and will be called again.  False means action is completely done
         }
     }
     public Action grabSpecimen (){return new GrabSpecimen();}

@@ -85,7 +85,7 @@ public class AidansRealllllllllllyCrazyAutoTest {
         DriveToSamplesandDeliver3 = myBot.getDrive().actionBuilder(new Pose2d(54,-54,Math.toRadians(270)))
                 .strafeToLinearHeading(new Vector2d(54, -12), Math.toRadians(270), slowDownVelocityConstraint)
                 //.strafeToLinearHeading(new Vector2d(60.75,-12), Math.toRadians(270))
-                .splineToConstantHeading(new Vector2d(60.75,-17), Math.toRadians(270))
+                .splineToConstantHeading(new Vector2d(64,-17), Math.toRadians(270))
                 //.strafeToLinearHeading(new Vector2d(60.75,-54), Math.toRadians(270))
                 .lineToYConstantHeading(-54)
                 //.strafeToLinearHeading(new Vector2d(48,-54),Math.toRadians(270))
