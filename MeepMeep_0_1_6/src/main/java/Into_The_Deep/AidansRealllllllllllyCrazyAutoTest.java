@@ -59,20 +59,20 @@ public class AidansRealllllllllllyCrazyAutoTest {
         //myBot.runAction(myBot.getDrive().actionBuilder(StartPose)
                            //  .splineToLinearHeading(new Pose2d(36,48,36.6), Math.toRadians(270))
         DeliverStartingSpecimen = myBot.getDrive().actionBuilder(StartPose)
-                //.splineToConstantHeading(new Vector2d(4,-39), Math.toRadians(-45))
-                //.strafeToLinearHeading(new Vector2d(0,-39), Math.toRadians(270))
+                //.strafeToLinearHeading(new Vector2d(4,-30), Math.toRadians(270))
+                //.strafeToLinearHeading(new Vector2d(0,-30), Math.toRadians(270), slowDownVelocityConstraint)
                 .setReversed(true)
-                .splineToConstantHeading(new Vector2d(0,-39), Math.toRadians(180))
-                .strafeToLinearHeading(new Vector2d(0,-30), Math.toRadians(270))
+                .splineToConstantHeading(new Vector2d(0,-39), Math.toRadians(180), slowDownVelocityConstraint)
+                .strafeToLinearHeading(new Vector2d(0,-30), Math.toRadians(270), intakeVelocityConstraint)
                 .build();
 
         DriveToSamplesandDeliver1 = myBot.getDrive().actionBuilder(new Pose2d(0, -30, Math.toRadians(270)))
                 .strafeToLinearHeading(new Vector2d(23,-48), Math.toRadians(270))
                 .strafeToLinearHeading(new Vector2d(36,-48), Math.toRadians(270))
                 //.splineToConstantHeading(new Vector2d(36,-12), Math.toRadians(270))
-                .strafeToLinearHeading(new Vector2d(36,-12), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(36,-16), Math.toRadians(270), slowDownVelocityConstraint)
                 //.strafeToLinearHeading(new Vector2d(44,-54),Math.toRadians(270))
-                .splineToConstantHeading(new Vector2d(44,-17), Math.toRadians(270))
+                .splineToConstantHeading(new Vector2d(44,-16), Math.toRadians(270))
                 .lineToYConstantHeading(-54)
                 .build();
 
@@ -84,10 +84,10 @@ public class AidansRealllllllllllyCrazyAutoTest {
 
         DriveToSamplesandDeliver3 = myBot.getDrive().actionBuilder(new Pose2d(54,-54,Math.toRadians(270)))
                 .strafeToLinearHeading(new Vector2d(54, -12), Math.toRadians(270), slowDownVelocityConstraint)
-                //.strafeToLinearHeading(new Vector2d(60.75,-12), Math.toRadians(270))
-                .splineToConstantHeading(new Vector2d(64,-17), Math.toRadians(270))
-                //.strafeToLinearHeading(new Vector2d(60.75,-54), Math.toRadians(270))
-                .lineToYConstantHeading(-54)
+                .strafeToLinearHeading(new Vector2d(60.75,-12), Math.toRadians(270))
+                //.splineToConstantHeading(new Vector2d(63,-17), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(60.75,-54), Math.toRadians(270))
+                //.lineToYConstantHeading(-54)
                 //.strafeToLinearHeading(new Vector2d(48,-54),Math.toRadians(270))
                 .strafeToLinearHeading(new Vector2d(44,-46),Math.toRadians(270))
                 .build();
@@ -137,7 +137,7 @@ public class AidansRealllllllllllyCrazyAutoTest {
         myBot.runAction(new SequentialAction(
                 //Drive to submersible and pick up sample
                 DeliverStartingSpecimen,
-                new SleepAction(1),
+                new SleepAction(1.5),
                 DriveToSamplesandDeliver1,
                 DriveToSamplesandDeliver2,
                 DriveToSamplesandDeliver3,

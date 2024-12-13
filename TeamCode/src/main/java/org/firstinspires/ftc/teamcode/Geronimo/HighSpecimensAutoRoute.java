@@ -19,7 +19,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 // TODO -- quit naming programs after yourself and make it have an intuitive name Check
 @Autonomous(name="High Specimens Auto Route", preselectTeleOp =
-        "Geronimo_Manual_Control")
+        "Geronimo 1 Manual Control")
 // @Disabled
 public class HighSpecimensAutoRoute extends LinearOpMode {
     Geronimo control = new Geronimo(true, false,this);
@@ -73,20 +73,20 @@ public class HighSpecimensAutoRoute extends LinearOpMode {
         // ***************************************************
 
         DeliverStartingSpecimen = drive.actionBuilder(startPose)
-                .strafeToLinearHeading(new Vector2d(4,-30), Math.toRadians(270))
-                .strafeToLinearHeading(new Vector2d(0,-30), Math.toRadians(270), slowDownVelocityConstraint)
-                //.setReversed(true)
-                //.splineToConstantHeading(new Vector2d(0,-39), Math.toRadians(180), slowDownVelocityConstraint)
+                //.strafeToLinearHeading(new Vector2d(4,-30), Math.toRadians(270))
                 //.strafeToLinearHeading(new Vector2d(0,-30), Math.toRadians(270), slowDownVelocityConstraint)
+                .setReversed(true)
+                .splineToConstantHeading(new Vector2d(0,-39), Math.toRadians(180), slowDownVelocityConstraint)
+                .strafeToLinearHeading(new Vector2d(0,-30), Math.toRadians(270), intakeVelocityConstraint)
                 .build();
 
         DriveToSamplesandDeliver1 = drive.actionBuilder(new Pose2d(0, -30, Math.toRadians(270)))
                 .strafeToLinearHeading(new Vector2d(23,-48), Math.toRadians(270))
                 .strafeToLinearHeading(new Vector2d(36,-48), Math.toRadians(270))
                 //.splineToConstantHeading(new Vector2d(36,-12), Math.toRadians(270))
-                .strafeToLinearHeading(new Vector2d(36,-12), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(36,-16), Math.toRadians(270), slowDownVelocityConstraint)
                 //.strafeToLinearHeading(new Vector2d(44,-54),Math.toRadians(270))
-                .splineToConstantHeading(new Vector2d(44,-17), Math.toRadians(270))
+                .splineToConstantHeading(new Vector2d(44,-16), Math.toRadians(270))
                 .lineToYConstantHeading(-54)
                 .build();
 
@@ -142,6 +142,7 @@ public class HighSpecimensAutoRoute extends LinearOpMode {
                         // deliver pre-loaded specimen
                         new ParallelAction(DeliverStartingSpecimen,
                                 deliverSpecimenHigh()),
+                        new SleepAction(.3),
                         finishdeliverSpecimenHigh(),
                         new SleepAction(.7),
                         releaseSpecimen(),
@@ -154,7 +155,9 @@ public class HighSpecimensAutoRoute extends LinearOpMode {
                             - Change the grabSpecimenfromWall() action to call SpecimenPickupFromWallServoPosition() instead of SpecimenPickupFromWall()
                          */
                         // Gather the 3 floor samples into the observation area
-                        new ParallelAction(DriveToSamplesandDeliver1, new SequentialAction(slidestozero(), rotatorarmstozero(), grabSpecimenfromwall())),
+                        new ParallelAction(DriveToSamplesandDeliver1
+                                , new SequentialAction(
+                                        slidestozero(), rotatorarmstozero(), grabSpecimenfromwall())),
                         DriveToSamplesandDeliver2,
                         DriveToSamplesandDeliver3,
 
@@ -170,7 +173,9 @@ public class HighSpecimensAutoRoute extends LinearOpMode {
                         new SleepAction(.5),
 
                         // Deliver the specimen to the High bar
-                        new ParallelAction(DriveToSubmersible1, deliverSpecimenHigh()),
+                        new ParallelAction(DriveToSubmersible1
+                                , deliverSpecimenHigh()),
+                        new SleepAction(.3),
                         finishdeliverSpecimenHigh(),
                         new SleepAction(.5),
                         releaseSpecimen(),
@@ -178,8 +183,9 @@ public class HighSpecimensAutoRoute extends LinearOpMode {
 
                         // TODO -- need to convert stowPosition into an embedded sequential action within the parallel action like was done above
                         // Drive to the parking position
-                        new ParallelAction(ParkinDeck,
-                                stowPosition())
+                        new ParallelAction(ParkinDeck
+                                , new SequentialAction(
+                                slidestozero(), rotatorarmstozero(), stowPosition()))
                         //new SleepAction(5))
 
         ));
@@ -198,7 +204,7 @@ public class HighSpecimensAutoRoute extends LinearOpMode {
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!initialized) {
                // control.limelightHasTarget();
-                control.SpecimenPickupFromWall();
+                control.SpecimenPickupFromWallServoPosition();
                 initialized = true;
             }
             packet.put("lock purple pixel", 0);
@@ -227,7 +233,7 @@ public class HighSpecimensAutoRoute extends LinearOpMode {
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!initialized) {
                 control.SetClawPosition((Geronimo.CLAW_MIN_POS));
-                control.SpecimenPickupFromWall();
+                //control.SpecimenPickupFromWallServoPosition();
                 initialized = true;
             }
             packet.put("lock purple pixel", 0);
@@ -311,7 +317,7 @@ public class HighSpecimensAutoRoute extends LinearOpMode {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!initialized) {
-                control.RemoveFromWall();
+                control.RemoveFromWallServoPosition();
                 initialized = true;
             }
             packet.put("lock purple pixel", 0);
