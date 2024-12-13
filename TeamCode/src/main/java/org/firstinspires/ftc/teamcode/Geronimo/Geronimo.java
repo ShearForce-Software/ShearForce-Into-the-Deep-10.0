@@ -60,7 +60,7 @@ public class Geronimo {
     double slideArmRotatorPower = 0.0;
     boolean slideArmRotatorRunningToPosition = false;
     public static final int SLIDE_ARM_ROTATOR_MIN_POS = 0;
-    public static final int SLIDE_ARM_ROTATOR_MAX_POS = 920;
+    public static final int SLIDE_ARM_ROTATOR_MAX_POS = 870;  //920
     public static final int SLIDE_ARM_ROTATOR_POS_TO_LIMIT_SLIDES = 300; // TODO need to find the lowest rotator position we can allow the slides to go out
     public static final double SLIDE_ARM_ROTATOR_POWER = 0.75;
 
@@ -72,7 +72,7 @@ public class Geronimo {
     public static final double SLIDES_POS_POWER = 1.0;
     public static final int SLIDE_ARM_MIN_POS = 0;
     public static final int SLIDE_ARM_MAX_VERTICAL_POS = 5618;
-    public static final int SLIDE_ARM_MAX_HORIZONTAL_POS = 3690; //1550
+    public static final int SLIDE_ARM_MAX_HORIZONTAL_POS = 2900; //1550 //1400  //3690 //3310
     private double slidePower = 0.0;
     TouchSensor touchSensorSlideLeft;
     TouchSensor touchSensorSlideRight;
@@ -645,7 +645,7 @@ public class Geronimo {
     public void AutoStartPosition()
     {
         SetIntakeBoxRotatorPosition(0.96); //0.875
-        SetSmallArmHangerPosition(0.25); //0
+        SetSmallArmHangerPosition(0.2); //0 //.25
         SetSlideToPosition(0);
         SetSlideRotatorArmToPosition(0);
         SetClawPosition(Geronimo.CLAW_MIN_POS);
@@ -666,7 +666,7 @@ public class Geronimo {
 
     public void SpecimenDeliverLow(){
         SetIntakeBoxRotatorPosition(0.525); //0.44
-        SetSmallArmHangerPosition(0.65); //0.4
+        SetSmallArmHangerPosition(0.6); //0.4 //0.65
     }
 
     public void RemoveFromWall(){
@@ -682,26 +682,26 @@ public class Geronimo {
 
     public void RemoveFromWallServoPosition() {
         SetIntakeBoxRotatorPosition(0.96); //0.875
-        SetSmallArmHangerPosition(.25); //0
+        SetSmallArmHangerPosition(.2); //0 //0.25
     }
 
     public void SpecimenDeliverHigh(){
         SetIntakeBoxRotatorPosition(0.58); //0.495)
-        SetSmallArmHangerPosition(0.65); //.4
+        SetSmallArmHangerPosition(0.6); //.4 //0.6
         SetSlideToPosition(1680); //600
         SetSlideRotatorArmToPosition(323); //subject to change
     }
 
     public void SpecimenDeliverHighChamberAlternate(){
         SetIntakeBoxRotatorPosition(0.945); //0.82  //0.905
-        SetSmallArmHangerPosition(.25); //0
+        SetSmallArmHangerPosition(.20); //0 //0.25
         SetSlideToPosition(762); //2600 //983
         SetSlideRotatorArmToPosition(642);
     }
 
     public void SpecimenDeliverHighChamberFinishingMove(){
         SetIntakeBoxRotatorPosition(0.945); //0.82
-        SetSmallArmHangerPosition(.25); //0
+        SetSmallArmHangerPosition(.20); //0 //0.25
         SetSlideToPosition(2600); //2600
         SetSlideRotatorArmToPosition(642);
     }
@@ -719,20 +719,28 @@ public class Geronimo {
 
     public void SpecimenPickupFromWallServoPosition(){
         SetIntakeBoxRotatorPosition(0.96); //0.875
-        SetSmallArmHangerPosition(0.4); //.15
+        SetSmallArmHangerPosition(0.35); //.15 //0.4
     }
 
     public void SampleUrchinFloorPickup(){
         SetSlideToPosition(1945);
         SpecialSleep(300);
         SetIntakeBoxRotatorPosition(0.485);
-        SetSmallArmHangerPosition(0.80); //.15
+        SetSmallArmHangerPosition(0.75); //.15 //0.80
+        SetSlideRotatorArmToPosition(0);
+    }
+
+    public void SampleUrchinFloorPickupFinishingMove(){
+        SetSlideToPosition(1945);
+        SpecialSleep(300);
+        SetIntakeBoxRotatorPosition(0.485);
+        SetSmallArmHangerPosition(0.75); //.15 //0.80
         SetSlideRotatorArmToPosition(0);
     }
 
     public void BasketHigh(){
         SetIntakeBoxRotatorPosition(0.935); //0.85
-        SetSmallArmHangerPosition(1.05); //.8
+        SetSmallArmHangerPosition(1.); //.8 //1.05
         SetSlideRotatorArmToPosition(800); //8008, 450
         // wait for the rotators to move to vertical before raising slides
         SpecialSleep(2000);
@@ -746,7 +754,7 @@ public class Geronimo {
 
     public void BasketLow(){
         SetIntakeBoxRotatorPosition(1.085); //1
-        SetSmallArmHangerPosition(0.85); //0.6
+        SetSmallArmHangerPosition(0.8); //0.6 //0.85
         SetSlideToPosition(1300);
         SetSlideRotatorArmToPosition(450);
     }
