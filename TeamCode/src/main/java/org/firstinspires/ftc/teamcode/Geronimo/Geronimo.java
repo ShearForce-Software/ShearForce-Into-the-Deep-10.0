@@ -644,8 +644,8 @@ public class Geronimo {
 
     public void AutoStartPosition()
     {
-        SetIntakeBoxRotatorPosition(0.96); //0.875
-        SetSmallArmHangerPosition(0.2); //0 //.25
+        SetIntakeBoxRotatorPosition(0.875); //0.875
+        SetSmallArmHangerPosition(0.1); //0 //.25
         SetSlideToPosition(0);
         SetSlideRotatorArmToPosition(0);
         SetClawPosition(Geronimo.CLAW_MIN_POS);
@@ -695,14 +695,14 @@ public class Geronimo {
     public void SpecimenDeliverHighChamberAlternate(){
         SetIntakeBoxRotatorPosition(0.945); //0.82  //0.905
         SetSmallArmHangerPosition(.20); //0 //0.25
-        SetSlideToPosition(762); //2600 //983
-        SetSlideRotatorArmToPosition(642);
+        SetSlideToPosition(1240);
+        SetSlideRotatorArmToPosition(710);
     }
 
     public void SpecimenDeliverHighChamberFinishingMove(){
         SetIntakeBoxRotatorPosition(0.945); //0.82
         SetSmallArmHangerPosition(.20); //0 //0.25
-        SetSlideToPosition(2600); //2600
+        SetSlideToPosition(2350);///00
         SetSlideRotatorArmToPosition(642);
     }
 

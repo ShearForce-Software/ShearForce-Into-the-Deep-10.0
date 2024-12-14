@@ -76,27 +76,27 @@ public class HighSpecimensAutoRoute extends LinearOpMode {
                 //.strafeToLinearHeading(new Vector2d(4,-30), Math.toRadians(270))
                 //.strafeToLinearHeading(new Vector2d(0,-30), Math.toRadians(270), slowDownVelocityConstraint)
                 .setReversed(true)
-                .splineToConstantHeading(new Vector2d(0,-39), Math.toRadians(180), slowDownVelocityConstraint)
+                .splineToConstantHeading(new Vector2d(0,-39), Math.toRadians(180), intakeVelocityConstraint)
                 .strafeToLinearHeading(new Vector2d(0,-30), Math.toRadians(270), intakeVelocityConstraint)
                 .build();
 
         DriveToSamplesandDeliver1 = drive.actionBuilder(new Pose2d(0, -30, Math.toRadians(270)))
-                .strafeToLinearHeading(new Vector2d(23,-48), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(0,-48), Math.toRadians(270))
                 .strafeToLinearHeading(new Vector2d(36,-48), Math.toRadians(270))
                 //.splineToConstantHeading(new Vector2d(36,-12), Math.toRadians(270))
                 .strafeToLinearHeading(new Vector2d(36,-16), Math.toRadians(270), slowDownVelocityConstraint)
                 //.strafeToLinearHeading(new Vector2d(44,-54),Math.toRadians(270))
-                .splineToConstantHeading(new Vector2d(44,-16), Math.toRadians(270))
+                .splineToConstantHeading(new Vector2d(46,-16), Math.toRadians(270))
                 .lineToYConstantHeading(-54)
                 .build();
 
-        DriveToSamplesandDeliver2 = drive.actionBuilder(new Pose2d(44,-54, Math.toRadians(270)))
+        DriveToSamplesandDeliver2 = drive.actionBuilder(new Pose2d(46,-54, Math.toRadians(270)))
                 .strafeToLinearHeading(new Vector2d(44, -17), Math.toRadians(270), slowDownVelocityConstraint)
-                .splineToConstantHeading(new Vector2d(54,-17), Math.toRadians(270))
+                .splineToConstantHeading(new Vector2d(56,-17), Math.toRadians(270))
                 .lineToYConstantHeading(-54)
                 .build();
 
-        DriveToSamplesandDeliver3 = drive.actionBuilder(new Pose2d(54,-54,Math.toRadians(270)))
+        DriveToSamplesandDeliver3 = drive.actionBuilder(new Pose2d(56,-54,Math.toRadians(270)))
                 .strafeToLinearHeading(new Vector2d(54, -12), Math.toRadians(270), slowDownVelocityConstraint)
                 .strafeToLinearHeading(new Vector2d(60.75,-12), Math.toRadians(270))
                 //.splineToConstantHeading(new Vector2d(63,-17), Math.toRadians(270))
@@ -129,7 +129,8 @@ public class HighSpecimensAutoRoute extends LinearOpMode {
        */
          ParkinDeck = drive.actionBuilder(new Pose2d(2,-30,Math.toRadians(270)))
                  //Pose 2D 50,-54, 270
-                 .splineTo(new Vector2d(49,-45),Math.toRadians(90))
+                 //.splineTo(new Vector2d(49,-45),Math.toRadians(90))
+                 .strafeToLinearHeading(new Vector2d(2,-50), Math.toRadians(270))
                  .strafeToLinearHeading(new Vector2d(49,-58), Math.toRadians(90))
                 // .turnTo(Math.toRadians(90))
                         .build();
@@ -140,13 +141,14 @@ public class HighSpecimensAutoRoute extends LinearOpMode {
         Actions.runBlocking(
                 new SequentialAction(
                         // deliver pre-loaded specimen
-                        new ParallelAction(DeliverStartingSpecimen,
-                                deliverSpecimenHigh()),
-                        new SleepAction(.3),
+                        new ParallelAction(DeliverStartingSpecimen
+                                , new SequentialAction(
+                                        new SleepAction(0.3),
+                                deliverSpecimenHigh())),
                         finishdeliverSpecimenHigh(),
-                        new SleepAction(.7),
-                        releaseSpecimen(),
                         new SleepAction(.5),
+                        releaseSpecimen(),
+                        new SleepAction(.3),
 
                         /* TODO
                         Need to replace grabSpecimenfromWall in this parallel action with an embedded sequential action within the parallel action
@@ -175,7 +177,6 @@ public class HighSpecimensAutoRoute extends LinearOpMode {
                         // Deliver the specimen to the High bar
                         new ParallelAction(DriveToSubmersible1
                                 , deliverSpecimenHigh()),
-                        new SleepAction(.3),
                         finishdeliverSpecimenHigh(),
                         new SleepAction(.5),
                         releaseSpecimen(),
