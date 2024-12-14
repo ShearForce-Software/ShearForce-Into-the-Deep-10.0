@@ -700,10 +700,10 @@ public class Geronimo {
     }
 
     public void SpecimenDeliverHighChamberFinishingMove(){
-        SetIntakeBoxRotatorPosition(0.945); //0.82
+        SetIntakeBoxRotatorPosition(0.82); //0.945
         SetSmallArmHangerPosition(.20); //0 //0.25
         SetSlideToPosition(2350);///00
-        SetSlideRotatorArmToPosition(642);
+        SetSlideRotatorArmToPosition(710); //642
     }
 
     public void SpecimenPickupFromWall() {
@@ -733,8 +733,8 @@ public class Geronimo {
     public void SampleUrchinFloorPickupFinishingMove(){
         SetSlideToPosition(1945);
         SpecialSleep(300);
-        SetIntakeBoxRotatorPosition(0.485);
-        SetSmallArmHangerPosition(0.75); //.15 //0.80
+        SetIntakeBoxRotatorPosition(0.485);   //0.485
+        SetSmallArmHangerPosition(0.8); //.15 //0.80
         SetSlideRotatorArmToPosition(0);
     }
 

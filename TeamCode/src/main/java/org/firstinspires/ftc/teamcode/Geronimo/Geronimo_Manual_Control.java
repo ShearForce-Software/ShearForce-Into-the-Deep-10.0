@@ -142,6 +142,11 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             } else if (gamepad2.dpad_up) {
                 theRobot.BasketHigh();
             }
+            else if (gamepad1.dpad_up){
+                theRobot.SampleUrchinFloorPickupFinishingMove();
+                theRobot.SetUrchinServoPosition(1);
+
+            }
             //step one of autonomous
             else if (gamepad2.dpad_down){
                 theRobot.SpecimenDeliverHighChamberAlternate();
@@ -189,10 +194,12 @@ public class Geronimo_Manual_Control extends LinearOpMode {
 
  */
             if (gamepad1.right_trigger > 0.2) {
-                theRobot.SetUrchinServoPosition(1);
+                theRobot.SetUrchinServoPosition(0);
+
             }
             else if (gamepad1.left_trigger > 0.2) {
-                theRobot.SetUrchinServoPosition(0);
+                theRobot.SetUrchinServoPosition(1);
+
             }
 
 

@@ -131,10 +131,10 @@ public class HighSpecimensAutoRoute extends LinearOpMode {
                  //Pose 2D 50,-54, 270
                  //.splineTo(new Vector2d(49,-45),Math.toRadians(90))
                  .strafeToLinearHeading(new Vector2d(2,-50), Math.toRadians(270))
-                 .strafeToLinearHeading(new Vector2d(49,-58), Math.toRadians(90))
+                 .strafeToLinearHeading(new Vector2d(49,-58), Math.toRadians(90), speedUpVelocityConstraint)
                 // .turnTo(Math.toRadians(90))
                         .build();
-
+        //before:
         // ***************************************************
         // ****  START DRIVING    ****************************
         // ***************************************************
