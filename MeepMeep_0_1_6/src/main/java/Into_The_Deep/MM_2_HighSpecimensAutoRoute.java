@@ -13,10 +13,8 @@ import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
-import org.jetbrains.annotations.Nullable;
 
-
-public class AidansRealllllllllllyCrazyAutoTest {
+public class MM_2_HighSpecimensAutoRoute {
     static Action DeliverStartingSpecimen;
     static Action DriveToSamplesandDeliver1;
     static Action DriveToSamplesandDeliver2;
@@ -62,27 +60,27 @@ public class AidansRealllllllllllyCrazyAutoTest {
                 //.strafeToLinearHeading(new Vector2d(4,-30), Math.toRadians(270))
                 //.strafeToLinearHeading(new Vector2d(0,-30), Math.toRadians(270), slowDownVelocityConstraint)
                 .setReversed(true)
-                .splineToConstantHeading(new Vector2d(0,-39), Math.toRadians(180), slowDownVelocityConstraint)
+                .splineToConstantHeading(new Vector2d(0,-39), Math.toRadians(180), intakeVelocityConstraint)
                 .strafeToLinearHeading(new Vector2d(0,-30), Math.toRadians(270), intakeVelocityConstraint)
                 .build();
 
         DriveToSamplesandDeliver1 = myBot.getDrive().actionBuilder(new Pose2d(0, -30, Math.toRadians(270)))
-                .strafeToLinearHeading(new Vector2d(23,-48), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(0,-48), Math.toRadians(270))
                 .strafeToLinearHeading(new Vector2d(36,-48), Math.toRadians(270))
                 //.splineToConstantHeading(new Vector2d(36,-12), Math.toRadians(270))
                 .strafeToLinearHeading(new Vector2d(36,-16), Math.toRadians(270), slowDownVelocityConstraint)
                 //.strafeToLinearHeading(new Vector2d(44,-54),Math.toRadians(270))
-                .splineToConstantHeading(new Vector2d(44,-16), Math.toRadians(270))
+                .splineToConstantHeading(new Vector2d(46,-16), Math.toRadians(270))
                 .lineToYConstantHeading(-54)
                 .build();
 
         DriveToSamplesandDeliver2 = myBot.getDrive().actionBuilder(new Pose2d(44,-54, Math.toRadians(270)))
                 .strafeToLinearHeading(new Vector2d(44, -17), Math.toRadians(270), slowDownVelocityConstraint)
-                .splineToConstantHeading(new Vector2d(54,-17), Math.toRadians(270))
+                .splineToConstantHeading(new Vector2d(56,-17), Math.toRadians(270))
                 .lineToYConstantHeading(-54)
                 .build();
 
-        DriveToSamplesandDeliver3 = myBot.getDrive().actionBuilder(new Pose2d(54,-54,Math.toRadians(270)))
+        DriveToSamplesandDeliver3 = myBot.getDrive().actionBuilder(new Pose2d(56,-54,Math.toRadians(270)))
                 .strafeToLinearHeading(new Vector2d(54, -12), Math.toRadians(270), slowDownVelocityConstraint)
                 .strafeToLinearHeading(new Vector2d(60.75,-12), Math.toRadians(270))
                 //.splineToConstantHeading(new Vector2d(63,-17), Math.toRadians(270))
@@ -105,8 +103,9 @@ public class AidansRealllllllllllyCrazyAutoTest {
 
         ParkinDeck = myBot.getDrive().actionBuilder(new Pose2d(2,-30,Math.toRadians(270)))
                 //Pose 2D 50,-54, 270
-                .splineTo(new Vector2d(49,-45),Math.toRadians(90))
-                .strafeToLinearHeading(new Vector2d(49,-58), Math.toRadians(90))
+                //.splineTo(new Vector2d(49,-45),Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(2,-50), Math.toRadians(270))
+                .strafeToLinearHeading(new Vector2d(49,-58), Math.toRadians(90), speedUpVelocityConstraint)
                 // .turnTo(Math.toRadians(90))
                 .build();
 /*

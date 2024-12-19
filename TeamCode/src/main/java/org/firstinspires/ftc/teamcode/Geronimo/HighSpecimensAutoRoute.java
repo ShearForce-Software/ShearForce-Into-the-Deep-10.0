@@ -150,12 +150,6 @@ public class HighSpecimensAutoRoute extends LinearOpMode {
                         releaseSpecimen(),
                         new SleepAction(.3),
 
-                        /* TODO
-                        Need to replace grabSpecimenfromWall in this parallel action with an embedded sequential action within the parallel action
-                            - New Action -- Set Slides to zero -- don't return "false" in the action until GetSlidesLimitSwitchPressed()
-                            - New Action -- Set Rotator Arm to zero -- don't return false in the action until GetSlideRotatorArmLimitSwitchPressed
-                            - Change the grabSpecimenfromWall() action to call SpecimenPickupFromWallServoPosition() instead of SpecimenPickupFromWall()
-                         */
                         // Gather the 3 floor samples into the observation area
                         new ParallelAction(DriveToSamplesandDeliver1
                                 , new SequentialAction(
@@ -182,7 +176,6 @@ public class HighSpecimensAutoRoute extends LinearOpMode {
                         releaseSpecimen(),
                         new SleepAction(.3),
 
-                        // TODO -- need to convert stowPosition into an embedded sequential action within the parallel action like was done above
                         // Drive to the parking position
                         new ParallelAction(ParkinDeck
                                 , new SequentialAction(

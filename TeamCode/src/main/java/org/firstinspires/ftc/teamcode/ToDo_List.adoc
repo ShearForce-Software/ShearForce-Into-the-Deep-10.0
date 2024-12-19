@@ -2,16 +2,35 @@
 
 == TODO List
 
-- [ ] Improve slide limit logic and rotator slide arm logic to ensure always pass inspection
-- [ ] Improve the auto so the urchin moves after slides and arm rotator all down
-- [ ] Improve Auto Right to deliver at least 2 specimens to the high bar and park
-- [ ] Improve Auto Left to score level-1 hang again
-- [ ] Improve Auto Left to put at least 1 sample into the high basket
-- [ ] Create routine in Geronimo that uses the Limelight to report Red, Blue, or Yellow --- AKSHAY
-- [ ] Create routine in Geronimo that uses the Limelight to report left or right inches from specimen
+- [ ] Matt or Gianna: Configure Blinkin (expansion port 5) and Swiper (expansion port 4) servos
+- [ ] Matt: Turn on Blinkin logic again (note: only have 1 blinkin not 2)
+- [ ] Matt: Connect Blinkin to ColorRevV3Sensor() so that color shown is Red, Blue, yellow, or Green if nothing detected
+- [ ] Gianna: Create driver control for swiper on Gamepad 1 and test it
+- [ ] Gianna or Shrey: Improve Driver Controls to be more preset oriented, move box rotation and hanger arm controls to multi-button (share + dpad left) to discourage their use and free up those buttons for other modes
+- [ ] Claire: Make sure all combo movements that move slides and rotator arms down, do slides first then arms, make sure all smooth
+- [ ] Claire: Update Basket delivery to be 2 push-buttons (step 1 raise arm rotators and set urchin position, step 2 raise slides to finish)
+- [ ] Matt: Figure out if can reuse the wall or specimen high positions to start the climb (probably basket)
+- [ ] Aidan: Auto Right - Fix wall grab position to line up exactly on the seam
+- [ ] Gianna: Auto Right - Add swiper move as a parallel action after each grab / release action
+- [ ] Aidan and Shrey: Make a NEW Auto Right that does at least 4 specimens (deliver, push 2 samples not 3, deliver, deliver, deliver)
+
+---
+
+- [ ] Gianna: Improve Auto Left to score level-1 hang again
+- [ ] Akshay: Make a NEW Auto Left to put at least 1 sample into the high basket
+- [ ] Make a NEW auto left to put at least 4 samples into the high basket
+- [ ] Akshay: Create routine in Geronimo that uses the Limelight to report Red, Blue, or Yellow -- Prove on SummerChassis
+- [ ] Akshay: Create routine in Geronimo that uses the Limelight to report left or right inches from specimen -- Prove on SummerChassis
 - [ ] Fully Re-Calibrate Geronimo
+- [ ] Experiment with PID control for rotator arms?
+
+---
+
+- [x] Create routine in Geronimo that uses color sensor to report red, blue, or yellow - AND sets the blinkin to right color --- MATTHEW
+- [x] Improve slide limit logic and rotator slide arm logic to ensure always pass inspection
+- [x] Improve the auto so the urchin moves after slides and arm rotator all down
+- [x] Improve Auto Right to deliver at least 2 specimens to the high bar and park
 - [x] Fix the bad laptop to build again (probably uninstall/reinstall android studio)
-- [ ] Create routine in Geronimo that uses color sensor to report red, blue, or yellow --- MATTHEW
 - [x] Experiment with different box/urchin orientations for intake from the floor
 - [x] Get the Urchin to work
 - [x] Reassess and test all servo/arm position numbers with the Urchin installed
