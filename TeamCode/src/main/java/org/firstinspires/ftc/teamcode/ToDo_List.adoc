@@ -19,6 +19,7 @@
 - [ ] Gianna: Improve Auto Left to score level-1 hang again
 - [ ] Akshay: Make a NEW Auto Left to put at least 1 sample into the high basket
 - [ ] Make a NEW auto left to put at least 4 samples into the high basket
+- [ ] Create TeleOp Auto drive routines using roadrunner to get to basket and wall spot
 - [ ] Akshay: Create routine in Geronimo that uses the Limelight to report Red, Blue, or Yellow -- Prove on SummerChassis
 - [ ] Akshay: Create routine in Geronimo that uses the Limelight to report left or right inches from specimen -- Prove on SummerChassis
 - [ ] Fully Re-Calibrate Geronimo
