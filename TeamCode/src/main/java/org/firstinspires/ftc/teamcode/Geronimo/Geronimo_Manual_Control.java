@@ -140,7 +140,8 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             } else if (gamepad2.square && !gamepad2.options) {
                 theRobot.SpecimenPickupFromWall();
             } else if (gamepad2.dpad_up) {
-                theRobot.BasketHigh();
+              //  theRobot.BasketHigh();
+                theRobot.BasketHighFinishingMove();
             }
             else if (gamepad1.dpad_up){
                 theRobot.SampleUrchinFloorPickupFinishingMove();
@@ -167,7 +168,8 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             if (gamepad2.dpad_left) {
                 theRobot.SetIntakeBoxRotatorDecrementDown();
             } else if (gamepad2.dpad_right) {
-                theRobot.SetIntakeBoxRotatorIncrementUp();
+               // theRobot.SetIntakeBoxRotatorIncrementUp();
+                theRobot.BasketHighStepOne();
             }
 
             // Small Arms (Hangers)

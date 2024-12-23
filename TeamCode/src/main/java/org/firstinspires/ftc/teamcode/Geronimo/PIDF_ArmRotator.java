@@ -21,7 +21,7 @@ public class PIDF_ArmRotator extends OpMode {
     public static int target = 0;
 
     //TODO
-    private final double ticks_in_degree = 537.6/360.0; //I'm not sure if this is the correct number for our motors
+    private final double ticks_in_degree = 18/1; //18 ticks per 1 degree OR (50:1 motors)
 
     private DcMotor leftSlideArmRotatorMotor;
     private DcMotor rightSlideArmRotatorMotor;
