@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Geronimo;
 
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -153,7 +154,6 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             else if (gamepad1.dpad_up){
                 theRobot.SampleUrchinFloorPickupFinishingMove();
                 theRobot.SetUrchinServoPosition(1);
-
             }
             //step one of autonomous
             else if (gamepad2.dpad_down){
@@ -162,6 +162,7 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             else if(gamepad1.dpad_down){
                 theRobot.SpecimenDeliverHighChamberFinishingMove();
             }
+
 
 
             // Claw Control

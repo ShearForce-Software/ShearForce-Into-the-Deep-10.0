@@ -2,9 +2,7 @@
 
 == TODO List
 
-- [ ] Matt or Gianna: Configure Blinkin (expansion port 5) and Swiper (expansion port 4) servos
-- [ ] Matt: Turn on Blinkin logic again (note: only have 1 blinkin not 2)
-- [ ] Matt: Connect Blinkin to ColorRevV3Sensor() so that color shown is Red, Blue, yellow, or Green if nothing detected
+
 - [ ] Gianna: Create driver control for swiper on Gamepad 1 and test it
 - [ ] Gianna or Shrey: Improve Driver Controls to be more preset oriented, move box rotation and hanger arm controls to multi-button (share + dpad left) to discourage their use and free up those buttons for other modes
 - [ ] Claire: Make sure all combo movements that move slides and rotator arms down, do slides first then arms, make sure all smooth
@@ -16,7 +14,9 @@
 - [ ] Jared: teach Claire about using git branches
 
 ---
-
+- [ ] Matt: Connect Blinkin to ColorRevV3Sensor() so that color shown is Red, Blue, yellow, or Green if nothing detected
+- [ ] Matt or Gianna: Configure Blinkin (expansion port 5) and Swiper (expansion port 4) servos
+- [ ] Matt: Turn on Blinkin logic again (note: only have 1 blinkin not 2)
 - [ ] Gianna: Improve Auto Left to score level-1 hang again
 - [ ] Akshay: Make a NEW Auto Left to put at least 1 sample into the high basket
 - [ ] Make a NEW auto left to put at least 4 samples into the high basket

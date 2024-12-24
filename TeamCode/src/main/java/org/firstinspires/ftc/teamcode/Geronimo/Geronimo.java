@@ -113,10 +113,8 @@ public class Geronimo {
     public static final double URCHIN_SERVO_MIN_POS = 0.0;
 
 
-    RevBlinkinLedDriver.BlinkinPattern Blinken_left_pattern;
-    RevBlinkinLedDriver.BlinkinPattern Blinken_right_pattern;
-    RevBlinkinLedDriver blinkinLedDriverLeft;
-    RevBlinkinLedDriver blinkinLedDriverRight;
+    RevBlinkinLedDriver.BlinkinPattern Blinken_pattern;
+    RevBlinkinLedDriver blinkinLedDriver;
 
     RevColorSensorV3 leftColorSensor;
     RevColorSensorV3 rightColorSensor;
@@ -126,6 +124,8 @@ public class Geronimo {
     int redRight = 0;
     int greenRight = 0;
     int blueRight = 0;
+
+
     // REV v3 color sensor variables
     public enum colorEnum {
         noColor,
@@ -238,7 +238,7 @@ public class Geronimo {
         touchSensorSlideRight = hardwareMap.get(TouchSensor.class, "sensor_touchRight");
 
         // limelightbox = hardwareMap.get(Limelight3A.class, "limelight");
-        //InitBlinkin(hardwareMap);
+        InitBlinkin(hardwareMap);
 
         imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
@@ -477,8 +477,7 @@ public class Geronimo {
         // changed
         double hMinRed = 18.800;
         double hMaxRed = 128.000;
-        double sMinRed = 0.397;
-        // changed
+        double sMinRed = 0.3;
         double sMaxRed = 0.7235;
         double vMinRed = 0.263;
         double vMaxRed = 0.722;
@@ -487,7 +486,6 @@ public class Geronimo {
         double hMinYellow = 59.000;
         double hMaxYellow = 113.043;
         double sMinYellow = 0.501;
-        // changed
         double sMaxYellow = 0.772;
         double vMinYellow = 0.565;
         double vMaxYellow = 1.000;
@@ -502,18 +500,36 @@ public class Geronimo {
 
         // determine if color is blue, red or yellow and show telemetry
         if (hsvValues[0] >= hMinBlue && hsvValues[1] >= sMinBlue)
+        {
             colorDetected = colorEnum.blue;
+            Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;
+            blinkinLedDriver.setPattern(Blinken_pattern);
+        }
+
 
         else if (hsvValues[1] <= sMaxYellow && hsvValues[1] >= sMinYellow && hsvValues[0] <= hMaxYellow && hsvValues[0] >= hMinYellow)
+        {
             colorDetected = colorEnum.yellow;
+            Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.YELLOW;
+            blinkinLedDriver.setPattern(Blinken_pattern);
+        }
 
         else if (hsvValues[1] <= sMaxRed && hsvValues[1] >= sMinRed && hsvValues[0] <= hMaxRed && hsvValues[0] >= hMinRed)
+        {
             colorDetected = colorEnum.red;
+            Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.RED;
+            blinkinLedDriver.setPattern(Blinken_pattern);
+        }
 
         else
+        {
             colorDetected = colorEnum.noColor;
+            Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.GREEN;
+            blinkinLedDriver.setPattern(Blinken_pattern);
+        }
 
         return colorDetected;
+
     }
     public void showColorSensorTelemetry(){
         //int leftColor = leftColorSensor.getNormalizedColors().toColor();
@@ -559,89 +575,27 @@ public class Geronimo {
     // *********************************************************
 
     public void InitBlinkin(HardwareMap hardwareMap) {
-        blinkinLedDriverLeft = hardwareMap.get(RevBlinkinLedDriver.class,"leftBlinkin");
-        blinkinLedDriverRight = hardwareMap.get(RevBlinkinLedDriver.class,"rightBlinkin");
+        blinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class,"RevBLinkinLedDriver");
+        /*
+        if(allianceColorIsBlue)
+        {
+            Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;
+            blinkinLedDriver.setPattern(Blinken_pattern);
+        }
+        else
+        {
+            Blinken_pattern  = RevBlinkinLedDriver.BlinkinPattern.RED;
+            blinkinLedDriver.setPattern(Blinken_pattern);
+        }
+        */
 
-        if(allianceColorIsBlue){
-            Blinken_left_pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;
-            Blinken_right_pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;
-            blinkinLedDriverRight.setPattern(Blinken_right_pattern);
-            blinkinLedDriverLeft.setPattern(Blinken_left_pattern);
-        }else {
-            Blinken_left_pattern  = RevBlinkinLedDriver.BlinkinPattern.RED;
-            Blinken_right_pattern = RevBlinkinLedDriver.BlinkinPattern.RED;
-            blinkinLedDriverRight.setPattern(Blinken_right_pattern);
-            blinkinLedDriverLeft.setPattern(Blinken_left_pattern);
-        }
-    }
-
-    public void SetBlinkinToPixelColor() {
-        redLeft = leftColorSensor.red();
-        greenLeft = leftColorSensor.green();
-        blueLeft = leftColorSensor.blue();
-        redRight = rightColorSensor.red();
-        greenRight = rightColorSensor.green();
-        blueRight = rightColorSensor.blue();
-
-        // Left sensor left blinkin
-        if(redLeft > (blueLeft / 2) && greenLeft > redLeft && blueLeft > redLeft) {
-            Blinken_left_pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
-            blinkinLedDriverLeft.setPattern(Blinken_left_pattern);
-        }
-        else if(greenLeft > redLeft && redLeft > blueLeft) {
-            Blinken_left_pattern = RevBlinkinLedDriver.BlinkinPattern.GOLD;
-            blinkinLedDriverLeft.setPattern(Blinken_left_pattern);
-        }
-        else if(greenLeft > (redLeft * 2) && greenLeft > (blueLeft * 2)) {
-            Blinken_left_pattern = RevBlinkinLedDriver.BlinkinPattern.GREEN;
-            blinkinLedDriverLeft.setPattern(Blinken_left_pattern);
-        }
-        else if(blueLeft > greenLeft && greenLeft > redLeft) {
-            Blinken_left_pattern = RevBlinkinLedDriver.BlinkinPattern.HOT_PINK;
-            blinkinLedDriverLeft.setPattern(Blinken_left_pattern);
-        }
-        else if(allianceColorIsBlue){
-            Blinken_left_pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;
-            blinkinLedDriverLeft.setPattern(Blinken_left_pattern);
-        }else {
-            Blinken_left_pattern = RevBlinkinLedDriver.BlinkinPattern.RED;
-            blinkinLedDriverLeft.setPattern(Blinken_left_pattern);
-        }
-
-        //Right sensor right blinkin
-        if(redRight > (blueRight / 2) && greenRight > redRight && blueRight > redRight) {
-            Blinken_right_pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
-            blinkinLedDriverRight.setPattern(Blinken_right_pattern);
-        }
-        else if(greenRight > redRight && redRight > blueRight) {
-            Blinken_right_pattern = RevBlinkinLedDriver.BlinkinPattern.GOLD;
-            blinkinLedDriverRight.setPattern(Blinken_right_pattern);
-        }
-        else if(greenRight > (redRight * 2) && greenRight > (blueRight * 2)) {
-            Blinken_right_pattern = RevBlinkinLedDriver.BlinkinPattern.GREEN;
-            blinkinLedDriverRight.setPattern(Blinken_right_pattern);
-        }
-        else if(blueRight > greenRight && greenRight > redRight) {
-            Blinken_right_pattern = RevBlinkinLedDriver.BlinkinPattern.HOT_PINK;
-            blinkinLedDriverRight.setPattern(Blinken_right_pattern);
-        }
-        else if(allianceColorIsBlue){
-            Blinken_right_pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;
-            blinkinLedDriverRight.setPattern(Blinken_right_pattern);
-        }else {
-            Blinken_right_pattern = RevBlinkinLedDriver.BlinkinPattern.RED;
-            blinkinLedDriverRight.setPattern(Blinken_right_pattern);
-        }
-    }
-    public void ShowBlinkinTelemetry() {
-        opMode.telemetry.addData("Blinkin Left: ", Blinken_left_pattern.toString());
-        opMode.telemetry.addData("Blinkin Right: ", Blinken_right_pattern.toString());
+        Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.GREEN;
+        blinkinLedDriver.setPattern(Blinken_pattern);
     }
 
     public void setBlinken_to5Volt()
     {
-        blinkinLedDriverLeft.setPattern(RevBlinkinLedDriver.BlinkinPattern.fromNumber(1625));
-        blinkinLedDriverRight.setPattern(RevBlinkinLedDriver.BlinkinPattern.fromNumber(1625));
+        blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.fromNumber(1625));
     }
 
     // *********************************************************
@@ -740,7 +694,7 @@ public class Geronimo {
     public void SampleUrchinFloorPickupFinishingMove(){
         SetSlideToPosition(1945);
         SpecialSleep(300);
-        SetIntakeBoxRotatorPosition(0.485);   //0.485
+        SetIntakeBoxRotatorPosition(0.525);   //0.485
         SetSmallArmHangerPosition(0.8); //.15 //0.80
         SetSlideRotatorArmToPosition(0);
     }
@@ -1194,6 +1148,7 @@ public class Geronimo {
         //opMode.telemetry.addData(">", "green intake box rotator - use dpad L/R for control" );
         // color sensor data PLEASE do not delete!
         opMode.telemetry.addData("colorDetected: " , ColorRevV3Sensor().toString());
+        opMode.telemetry.addData("Blinkin Left: ", Blinken_pattern.toString());
         opMode.telemetry.addData("Hue: " , hsvValues[0]);
         opMode.telemetry.addData("Sat: " , hsvValues[1]);
         opMode.telemetry.addData("Val: " , hsvValues[2]);
