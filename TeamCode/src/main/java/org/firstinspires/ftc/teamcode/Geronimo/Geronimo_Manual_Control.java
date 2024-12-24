@@ -70,7 +70,7 @@ public class Geronimo_Manual_Control extends LinearOpMode {
              *************************************************
              */
             // SLIDE MOTOR CONTROL through the LEFT STICK Y (up is negative)
-            if ((gamepad2.left_stick_y > 0.1) || (gamepad2.left_stick_y <= -0.1)) {
+            if (!gamepad2.options && ((gamepad2.left_stick_y > 0.1) || (gamepad2.left_stick_y <= -0.1))) {
                 slidePowerApplied = true;
                 // if slide limit pressed and commanding down
 
