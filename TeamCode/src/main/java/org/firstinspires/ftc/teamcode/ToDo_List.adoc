@@ -11,7 +11,7 @@
 - [ ] Aidan: Auto Right - Fix wall grab position to line up exactly on the seam
 - [ ] Gianna: Auto Right - Add swiper move as a parallel action after each grab / release action
 - [ ] Aidan and Shrey: Make a NEW Auto Right that does at least 4 specimens (deliver, push 2 samples not 3, deliver, deliver, deliver)
-- [ ] Jared: teach Claire about using git branches
+- [x] Jared: teach Claire about using git branches
 
 ---
 - [ ] Matt: Connect Blinkin to ColorRevV3Sensor() so that color shown is Red, Blue, yellow, or Green if nothing detected
