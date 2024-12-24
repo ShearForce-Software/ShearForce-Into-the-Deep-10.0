@@ -14,7 +14,7 @@ import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
 
-public class FourHighSpecimensRoute {
+public class MM_FourHighSpecimensRoute {
     static Action DeliverStartingSpecimen;
     static Action DriveToSamplesandDeliver1;
     static Action DriveToSamplesandDeliver2;
