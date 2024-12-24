@@ -70,20 +70,27 @@ public class Geronimo_Manual_Control extends LinearOpMode {
              *************************************************
              */
             // SLIDE MOTOR CONTROL through the LEFT STICK Y (up is negative)
-            if ((gamepad2.left_stick_y > 0.1) || (gamepad2.left_stick_y <= -0.1)) {
+            if ((gamepad2.left_stick_y > 0.1 && !gamepad2.options) || (gamepad2.left_stick_y <= -0.1 && !gamepad2.options)) {
                 slidePowerApplied = true;
                 // if slide limit pressed and commanding down
 
-                if (gamepad2.left_stick_y > 0.1 && gamepad1.circle){
+                if (gamepad2.left_stick_y > 0.1 && gamepad1.circle && !gamepad2.options){
                     theRobot.SetSlidesToPowerMode(-gamepad2.left_stick_y);
-                }
-                else if (theRobot.GetSlidesLimitSwitchPressed() && (gamepad2.left_stick_y > 0.1))
-                {
+                } else if (theRobot.GetSlidesLimitSwitchPressed() && (gamepad2.left_stick_y > 0.1)) {
                     theRobot.ResetSlidesToZero();
                 } else {
                     theRobot.SetSlidesToPowerMode(-gamepad2.left_stick_y);
                 }
             }
+            // small urchin arms
+            if (gamepad2.left_stick_x > 0.1 && gamepad2.options) {
+                theRobot.SetSmallArmHangerIncrementUp();
+            } else if (gamepad2.left_stick_x  < -0.1 && gamepad2.options) {
+                theRobot.SetSmallArmHangerDecrementDown();
+            }
+
+
+
             // else if was moving the slides through the LEFT STICK Y and stopped -- tell the slides to hold the current position
             else if (slidePowerApplied) {
                 slidePowerApplied = false;
@@ -139,31 +146,29 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             // Combo Moves
             if (gamepad2.cross && !gamepad2.options) {
                // theRobot.IntakeFromFloor();
-                theRobot.SampleUrchinFloorPickup();
+                theRobot.RemoveFromWall();
             } else if (gamepad2.share) {
                 theRobot.RemoveFromWall();
             } else if (gamepad2.circle && !gamepad2.options) {
-                theRobot.SpecimenDeliverLow();
+                theRobot.SpecimenDeliverHighChamberAlternate();
             } else if (gamepad2.triangle && !gamepad2.options) {
-                theRobot.SpecimenDeliverHigh();
+                theRobot.SpecimenDeliverHighChamberFinishingMove();
             } else if (gamepad2.square && !gamepad2.options) {
                 theRobot.SpecimenPickupFromWall();
             } else if (gamepad2.dpad_up) {
-                theRobot.BasketHigh();
+                // claire made smthn for high basket 1st step
+            } else if (gamepad2.dpad_down){
+                theRobot.SampleUrchinFloorPickupFinishingMove();
+
+            } else if (gamepad2.dpad_right) {
+                //claire made smthn for high basket final step
+            } else if (gamepad2.dpad_left) {
+                theRobot.SampleUrchinFloorPickup();
             }
             else if (gamepad1.dpad_up){
                 theRobot.SampleUrchinFloorPickupFinishingMove();
                 theRobot.SetUrchinServoPosition(1);
             }
-            //step one of autonomous
-            else if (gamepad2.dpad_down){
-                theRobot.SpecimenDeliverHighChamberAlternate();
-            }
-            else if(gamepad1.dpad_down){
-                theRobot.SpecimenDeliverHighChamberFinishingMove();
-            }
-
-
 
             // Claw Control
             if (gamepad2.right_bumper) {
@@ -179,12 +184,7 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 theRobot.SetIntakeBoxRotatorIncrementUp();
             }
 
-            // Small Arms (Hangers)
-            if (gamepad2.right_stick_x > 0.2) {
-                theRobot.SetSmallArmHangerIncrementUp();
-            } else if (gamepad2.right_stick_x < -0.2) {
-                theRobot.SetSmallArmHangerDecrementDown();
-            }
+
 
             // Intake Stars Control -- Intake --> OFF --> Outtake --> OFF --> Intake
 /*
