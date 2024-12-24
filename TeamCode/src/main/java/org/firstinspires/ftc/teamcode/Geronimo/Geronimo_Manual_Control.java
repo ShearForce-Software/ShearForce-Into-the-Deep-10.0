@@ -210,6 +210,12 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 theRobot.SetUrchinServoPosition(1);
 
             }
+            else if(gamepad1.dpad_down){ // Driver will press prehandrobot when he feels he is set
+                theRobot.PreHangRobot();
+            }
+            else if(gamepad1.dpad_up){ //Driver will eventually hang the robot himself.
+                theRobot.ReadyHangRobot();
+            }
 
 
             theRobot.ShowTelemetry();

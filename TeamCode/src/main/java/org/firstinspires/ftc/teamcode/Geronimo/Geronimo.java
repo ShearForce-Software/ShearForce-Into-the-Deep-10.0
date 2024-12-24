@@ -653,6 +653,31 @@ public class Geronimo {
         SetSlideRotatorArmToPosition(323); //subject to change
     }
 
+    public void PreHangRobot(){
+
+
+        SetSlideRotatorArmToPosition(323);
+        SpecialSleep(2000);
+        SetIntakeBoxRotatorPosition(INTAKE_STAR_BOX_ROTATOR_MAX_POS);
+        SetSmallArmHangerPosition(1);
+        SpecialSleep(2000);
+        SetSlideRotatorArmToPosition(SLIDE_ARM_ROTATOR_MAX_POS);
+        SpecialSleep(2000);
+        SetSlideToPosition(3049);
+        //sleep
+
+
+    }
+    public void ReadyHangRobot(){
+        SetSlideToPosition(1547);
+        SpecialSleep(2000);
+        SetSlideRotatorArmToPosition(323);
+        SpecialSleep(2000);
+        SetSlideToPosition(1365);
+        SpecialSleep(2000);
+        SetSlideRotatorArmToPosition(180);
+    }
+
     public void SpecimenDeliverHighChamberAlternate(){
         SetIntakeBoxRotatorPosition(0.945); //0.82  //0.905
         SetSmallArmHangerPosition(.20); //0 //0.25
