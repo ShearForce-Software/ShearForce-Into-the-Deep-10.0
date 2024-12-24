@@ -700,6 +700,7 @@ public class Geronimo {
     }
 
     public void BasketHigh(){
+        //STEP ONE
         SetIntakeBoxRotatorPosition(0.935); //0.85
         SetSmallArmHangerPosition(1.); //.8 //1.05
         SetSlideRotatorArmToPosition(800); //8008, 450
@@ -707,6 +708,17 @@ public class Geronimo {
         SpecialSleep(2000);
         SetSlideToPosition(6496); //2320
     }
+
+    public void BasketHighFinishingMove(){
+        //TODO needs values
+        SetIntakeBoxRotatorPosition(0.935);
+        SetSmallArmHangerPosition(1.);
+        SetSlideRotatorArmToPosition(800);
+        // wait for the rotators to move to vertical before raising slides
+        SpecialSleep(2000);
+        SetSlideToPosition(6496);
+    }
+
     // hanger position 0.8
     // .15 right
     //slides - -2320
