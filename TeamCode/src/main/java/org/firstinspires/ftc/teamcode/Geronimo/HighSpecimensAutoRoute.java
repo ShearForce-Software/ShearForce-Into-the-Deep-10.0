@@ -153,7 +153,7 @@ public class HighSpecimensAutoRoute extends LinearOpMode {
                         // Gather the 3 floor samples into the observation area
                         new ParallelAction(DriveToSamplesandDeliver1
                                 , new SequentialAction(
-                                        slidestozero(), rotatorarmstozero(), grabSpecimenfromwall())),
+                                        slidestozero(), rotatorarmstozero(), grabSpecimenfromwall(), swiperPositionMin(), new SleepAction(0.2), swiperPositionMax())),
                         DriveToSamplesandDeliver2,
                         DriveToSamplesandDeliver3,
 
@@ -179,7 +179,7 @@ public class HighSpecimensAutoRoute extends LinearOpMode {
                         // Drive to the parking position
                         new ParallelAction(ParkinDeck
                                 , new SequentialAction(
-                                slidestozero(), rotatorarmstozero(), stowPosition()))
+                                slidestozero(), rotatorarmstozero(), stowPosition(),  swiperPositionMin(), new SleepAction(0.2), swiperPositionMax()))
                         //new SleepAction(5))
 
         ));
@@ -248,6 +248,37 @@ public class HighSpecimensAutoRoute extends LinearOpMode {
             return false;  // returning true means not done, and will be called again.  False means action is completely done
         }
     }
+
+    public Action swiperPositionMax (){return new SwiperPositionMax();}
+    public class SwiperPositionMax implements Action{
+        private boolean initialized = false;
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            if (!initialized) {
+                control.SetSwiperPosition(1);
+                initialized = true;
+            }
+            packet.put("lock purple pixel", 0);
+            return false;  // returning true means not done, and will be called again.  False means action is completely done
+        }
+    }
+
+    public Action swiperPositionMin(){return new SwiperPositionMin();}
+    public class SwiperPositionMin implements Action{
+        private boolean initialized = false;
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            if (!initialized) {
+                control.SetSwiperPosition(1);
+                initialized = true;
+            }
+            packet.put("lock purple pixel", 0);
+            return false;  // returning true means not done, and will be called again.  False means action is completely done
+        }
+    }
+
     public Action slidestozero (){return new SlidesToZero();}
     public class SlidesToZero implements Action {
         private boolean initialized = false;

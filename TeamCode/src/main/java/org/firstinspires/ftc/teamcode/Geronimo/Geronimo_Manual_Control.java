@@ -53,6 +53,14 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 theRobot.SetFieldCentricMode(false);
             }
 
+            if (gamepad1.dpad_left) {
+                theRobot.SetSwiperPosition(Geronimo.SWIPER_MAX_POS);
+            }
+            else if (gamepad1.dpad_right) {
+                theRobot.SetSwiperPosition(Geronimo.SWIPER_MIN_POS);
+
+            }
+
             /* *************************************************
              *************************************************
              * Arm Controls (gamepad2)
