@@ -7,7 +7,6 @@
 - [ ] Gianna or Shrey: Improve Driver Controls to be more preset oriented, move box rotation and hanger arm controls to multi-button (share + dpad left) to discourage their use and free up those buttons for other modes
 - [ ] Claire: Make sure all combo movements that move slides and rotator arms down, do slides first then arms, make sure all smooth
 - [ ] Claire: Update Basket delivery to be 2 push-buttons (step 1 raise arm rotators and set urchin position, step 2 raise slides to finish)
-- [ ] Matt: Figure out if can reuse the wall or specimen high positions to start the climb (probably basket)
 - [ ] Aidan: Auto Right - Fix wall grab position to line up exactly on the seam
 - [ ] Gianna: Auto Right - Add swiper move as a parallel action after each grab / release action
 - [ ] Aidan and Shrey: Make a NEW Auto Right that does at least 4 specimens (deliver, push 2 samples not 3, deliver, deliver, deliver)
@@ -27,7 +26,7 @@
 - [ ] Experiment with PID control for rotator arms?
 
 ---
-
+- [x] Figure out if can reuse the wall or specimen high positions to start the climb (probably basket)
 - [x] Create routine in Geronimo that uses color sensor to report red, blue, or yellow - AND sets the blinkin to right color --- MATTHEW
 - [x] Improve slide limit logic and rotator slide arm logic to ensure always pass inspection
 - [x] Improve the auto so the urchin moves after slides and arm rotator all down

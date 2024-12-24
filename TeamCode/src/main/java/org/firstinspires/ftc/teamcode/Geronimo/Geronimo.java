@@ -117,7 +117,7 @@ public class Geronimo {
     RevBlinkinLedDriver blinkinLedDriver;
 
     RevColorSensorV3 leftColorSensor;
-    RevColorSensorV3 rightColorSensor;
+    //RevColorSensorV3 rightColorSensor;
     int redLeft = 0;
     int greenLeft = 0;
     int blueLeft = 0;
