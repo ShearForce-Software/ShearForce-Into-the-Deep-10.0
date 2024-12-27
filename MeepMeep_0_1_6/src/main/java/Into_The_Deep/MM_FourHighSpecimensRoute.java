@@ -14,7 +14,7 @@ import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
 
-public class FourHighSpecimensRoute {
+public class MM_FourHighSpecimensRoute {
     static Action DeliverStartingSpecimen;
     static Action DriveToSamplesandDeliver1;
     static Action DriveToSamplesandDeliver2;
@@ -29,6 +29,8 @@ public class FourHighSpecimensRoute {
 
     static VelConstraint speedUpVelocityConstraint;
     static AccelConstraint speedUpAccelerationConstraint;
+    static VelConstraint normalVelocityConstraint;
+    static AccelConstraint normalAccelerationConstraint;
     static VelConstraint slowDownVelocityConstraint;
     static AccelConstraint slowDownAccelerationConstraint;
     static VelConstraint intakeVelocityConstraint;
@@ -42,7 +44,7 @@ public class FourHighSpecimensRoute {
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
-                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
+                .setConstraints(60, 50, Math.PI*.6, Math.PI*.8, 15)
                 .build();
 
 
@@ -52,6 +54,8 @@ public class FourHighSpecimensRoute {
         // Define some custom constraints to use when wanting to go faster than defaults
         speedUpVelocityConstraint = new TranslationalVelConstraint(60.0);
         speedUpAccelerationConstraint = new ProfileAccelConstraint(-40.0, 60.0);
+        normalVelocityConstraint = new TranslationalVelConstraint(50.0);
+        normalAccelerationConstraint = new ProfileAccelConstraint(-35.0, 50.0);
         slowDownVelocityConstraint = new TranslationalVelConstraint(30);
         slowDownAccelerationConstraint = new ProfileAccelConstraint(-20, 50);
         intakeVelocityConstraint = new TranslationalVelConstraint(15);
@@ -62,23 +66,25 @@ public class FourHighSpecimensRoute {
                 //.strafeToLinearHeading(new Vector2d(4,-30), Math.toRadians(270))
                 //.strafeToLinearHeading(new Vector2d(0,-30), Math.toRadians(270), slowDownVelocityConstraint)
                 .setReversed(true)
-                .splineToConstantHeading(new Vector2d(0,-39), Math.toRadians(90))
+                .splineToConstantHeading(new Vector2d(0,-39), Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
                 .strafeToLinearHeading(new Vector2d(0,-30), Math.toRadians(270), intakeVelocityConstraint)
                 .build();
 
         DriveToSamplesandDeliver1 = myBot.getDrive().actionBuilder(new Pose2d(0, -30, Math.toRadians(270)))
-                .strafeToLinearHeading(new Vector2d(0,-48), Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(36,-48,Math.toRadians(270)), Math.toRadians(90))
-                //.splineToConstantHeading(new Vector2d(36,-12), Math.toRadians(270))
+                //.strafeToLinearHeading(new Vector2d(0,-48), Math.toRadians(270))
+                //.splineToLinearHeading(new Pose2d(36,-48,Math.toRadians(270)), Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
+                //.splineToConstantHeading(new Vector2d(36,-48), Math.toRadians(90))
+                //.splineToLinearHeading(new Pose2d(36,-48,Math.toRadians(270)),Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
+                .splineToConstantHeading(new Vector2d(36, -40),Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
                 .strafeToLinearHeading(new Vector2d(36,-16), Math.toRadians(270), slowDownVelocityConstraint)
                 //.strafeToLinearHeading(new Vector2d(44,-54),Math.toRadians(270))
-                .splineToConstantHeading(new Vector2d(46,-16), Math.toRadians(270))
+                .splineToConstantHeading(new Vector2d(46,-16), Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
                 .lineToYConstantHeading(-54)
                 .build();
 
         DriveToSamplesandDeliver2 = myBot.getDrive().actionBuilder(new Pose2d(46,-54, Math.toRadians(270)))
                 .strafeToLinearHeading(new Vector2d(46, -17), Math.toRadians(270), slowDownVelocityConstraint)
-                .splineToConstantHeading(new Vector2d(56,-17), Math.toRadians(270))
+                .splineToConstantHeading(new Vector2d(56,-17), Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
                 .lineToYConstantHeading(-54)
                 .build();
 
@@ -93,56 +99,54 @@ public class FourHighSpecimensRoute {
                 .build();
 */
         DrivetoDeck1 = myBot.getDrive().actionBuilder(new Pose2d(56,-54,Math.toRadians(270)))
-                .splineToLinearHeading(new Pose2d(36,-54,Math.toRadians(270)),Math.toRadians(270))
+                .splineToLinearHeading(new Pose2d(36,-54,Math.toRadians(270)),Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
                 .strafeToLinearHeading(new Vector2d(36, -63),Math.toRadians(270), intakeVelocityConstraint)
                 .build();
 
         DriveToSubmersible1 = myBot.getDrive().actionBuilder(new Pose2d(36,-63,Math.toRadians(270)))
+                .setReversed(true)
                 //.strafeToLinearHeading(new Vector2d(48, -54), Math.toRadians(270))
                 //.strafeToLinearHeading(new Vector2d(2, -54), Math.toRadians(270))
-                .strafeToLinearHeading(new Vector2d(16,-56), Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(2,-30,Math.toRadians(270)), Math.toRadians(270))
-
+                //.strafeToLinearHeading(new Vector2d(16,-56), Math.toRadians(270))
+                .splineToConstantHeading(new Vector2d(2,-39),Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
+                .strafeToLinearHeading(new Vector2d(2,-30), Math.toRadians(270), intakeVelocityConstraint)
                 .build();
-
-       /* ParkinDeck = myBot.getDrive().actionBuilder(new Pose2d(2,-30,Math.toRadians(270)))
-                //Pose 2D 50,-54, 270
-                //.splineTo(new Vector2d(49,-45),Math.toRadians(90))
-                .strafeToLinearHeading(new Vector2d(2,-50), Math.toRadians(270))
-                .strafeToLinearHeading(new Vector2d(49,-58), Math.toRadians(90), speedUpVelocityConstraint)
-                // .turnTo(Math.toRadians(90))
-                .build();
-                */
-
 
         DrivetoDeck2 = myBot.getDrive().actionBuilder(new Pose2d(2,-30,Math.toRadians(270)))
-                .splineToLinearHeading(new Pose2d(36,-54,Math.toRadians(270)),Math.toRadians(270))
-                .strafeToLinearHeading(new Vector2d(36,-63), Math.toRadians(270)) //May change to 270 heading once delivery is clarified
+                .splineToLinearHeading(new Pose2d(36,-54,Math.toRadians(270)),Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
+                .strafeToLinearHeading(new Vector2d(36,-63), Math.toRadians(270), intakeVelocityConstraint) //May change to 270 heading once delivery is clarified
                 .build();
         DriveToSubmersible2 = myBot.getDrive().actionBuilder(new Pose2d(36,-63,Math.toRadians(270)))
-                .strafeToLinearHeading(new Vector2d(16,-56), Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(2,-30,Math.toRadians(270)), Math.toRadians(270))
+                .setReversed(true)
+                //.strafeToLinearHeading(new Vector2d(16,-56), Math.toRadians(270))
+                //.splineToLinearHeading(new Pose2d(4,-39,Math.toRadians(270)), Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
+                .splineToConstantHeading(new Vector2d(3,-39),Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
+                .strafeToLinearHeading(new Vector2d(3,-30), Math.toRadians(270), intakeVelocityConstraint)
                 .build();
-        DrivetoDeck3 = myBot.getDrive().actionBuilder(new Pose2d(2,-30,Math.toRadians(270)))
-                .splineToLinearHeading(new Pose2d(36,-54,Math.toRadians(270)),Math.toRadians(270))
-                .strafeToLinearHeading(new Vector2d(36,-63), Math.toRadians(270)) //May change to 270 heading once delivery is clarified
+        DrivetoDeck3 = myBot.getDrive().actionBuilder(new Pose2d(3,-30,Math.toRadians(270)))
+                .splineToLinearHeading(new Pose2d(36,-54,Math.toRadians(270)),Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
+                .strafeToLinearHeading(new Vector2d(36,-63), Math.toRadians(270), intakeVelocityConstraint) //May change to 270 heading once delivery is clarified
                 .build();
         DriveToSubmersible3 = myBot.getDrive().actionBuilder(new Pose2d(36,-63,Math.toRadians(270)))
-                .strafeToLinearHeading(new Vector2d(16,-56), Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(2,-30,Math.toRadians(270)), Math.toRadians(270))
-                .build();
-      /*  DropOff2 = myBot.getDrive().actionBuilder(new Pose2d(5,-30,Math.toRadians(90)))
-                .strafeToLinearHeading(new Vector2d(60, -58), Math.toRadians(270))
-                .build();
-
-        PickSpeicmen = myBot.getDrive().actionBuilder(new Pose2d(60,-58,Math.toRadians(270)))
-                .splineToLinearHeading(new Pose2d(40, -58,Math.toRadians(90)),Math.toRadians(90))
+                .setReversed(true)
+                //.strafeToLinearHeading(new Vector2d(16,-56), Math.toRadians(270))
+                //.splineToLinearHeading(new Pose2d(3,-39,Math.toRadians(270)), Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
+                .splineToConstantHeading(new Vector2d(4,-39),Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
+                .strafeToLinearHeading(new Vector2d(4,-30), Math.toRadians(270), intakeVelocityConstraint)
                 .build();
 
-        SpecimenDrop = myBot.getDrive().actionBuilder(new Pose2d(40,-58,Math.toRadians(90)))
-               .strafeToLinearHeading(VectorTwo, Math.toRadians(90))
+        ParkinDeck = myBot.getDrive().actionBuilder(new Pose2d(4,-30,Math.toRadians(270)))
+                //Pose 2D 50,-54, 270
+                //.splineTo(new Vector2d(49,-45),Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(4,-35), Math.toRadians(270), intakeVelocityConstraint)
+                //.strafeToLinearHeading(new Vector2d(36,-58), Math.toRadians(90), intakeVelocityConstraint)
+                //.splineToLinearHeading(new Pose2d(30,-48,Math.toRadians(90)),Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
+                .splineToLinearHeading(new Pose2d(36,-58,Math.toRadians(90)),Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
+                //.strafeToLinearHeading(new Vector2d(2,-50), Math.toRadians(270))
+                //.strafeToLinearHeading(new Vector2d(49,-58), Math.toRadians(90), speedUpVelocityConstraint)
+                // .turnTo(Math.toRadians(90))
                 .build();
-*/
+
 
 
 
@@ -162,7 +166,8 @@ public class FourHighSpecimensRoute {
                 new SleepAction(1),
                 DrivetoDeck3,
                 new SleepAction(.5),
-                DriveToSubmersible3));
+                DriveToSubmersible3,
+                ParkinDeck));
 
                 //new SleepAction(1)
                 //Drop submersible
