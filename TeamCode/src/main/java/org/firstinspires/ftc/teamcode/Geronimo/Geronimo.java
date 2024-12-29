@@ -265,10 +265,11 @@ public class Geronimo {
     }
 
 
-    public List<Double>  AlignToTargetImage(String targetImageName) {
+    //This method basically finds the amount of tx and ty angle from crosshair to target.
+    //It then returns an ArrayList giving back both tx and ty values.
+    public List<Double>  FindAlignAngleToTargetImage(String targetImageName) {
         List<Double> offset = new ArrayList<>();
 
-        //Aligns the Robot to the Target Image horiontally and return True if success else False
         LLResult result = limelightbox.getLatestResult();
 
         if (result.isValid()) {
@@ -297,7 +298,7 @@ public class Geronimo {
 
     public double GetStrafeOffsetInInches(String targetImageName) {
 
-        List<Double> scaledOffsets = AlignToTargetImage(targetImageName);
+        List<Double> scaledOffsets = FindAlignAngleToTargetImage(targetImageName);
 
         // Check if target was found
         if (scaledOffsets.get(0) == -1.0 && scaledOffsets.get(1) == -1.0) {
@@ -326,7 +327,7 @@ public class Geronimo {
         strafeOffsetsInInches.add(strafeX);
         strafeOffsetsInInches.add(strafeY);
 
-        return strafeOffsetsInInches.get(0);
+        return strafeOffsetsInInches.get(0); // for now, it only returns the x inches in strafing movements
     }
 
     public boolean limelightHasTarget() {

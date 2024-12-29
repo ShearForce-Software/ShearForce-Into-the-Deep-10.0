@@ -69,7 +69,7 @@ public class AkshayLLAutoAim extends LinearOpMode{
         waitForStart();
 
         while(opModeIsActive()){
-            ArrayList<Double> currentOffset = new ArrayList<>(control.AlignToTargetImage("bottle"));
+            ArrayList<Double> currentOffset = new ArrayList<>(control.FindAlignAngleToTargetImage("bottle"));
 
             if(!currentOffset.isEmpty()){
                 double offsetX = currentOffset.get(0);

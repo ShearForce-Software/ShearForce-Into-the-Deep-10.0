@@ -4,6 +4,9 @@ import static org.firstinspires.ftc.teamcode.summerChassis.MecanumDrive_summerCh
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.dfrobot.HuskyLens;
+import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.LLResultTypes;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -26,6 +29,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 //import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -56,6 +60,9 @@ public class    SummerChassis {
     public double newTarget;
     public double motorpower = 0.0;
 
+    Limelight3A limelight3A;
+
+
     public SummerChassis(boolean isDriverControl, boolean isFieldCentric, LinearOpMode opMode) {
         this.IsDriverControl = isDriverControl;
         this.IsFieldCentric = isFieldCentric;
@@ -68,8 +75,8 @@ public class    SummerChassis {
         rightRear = hardwareMap.get(DcMotor.class, "rightRear_rightOdometry");
         //  slidesMotor = hardwareMap.get(DcMotor.class, "slidesMotor");
 
-        rightFront.setDirection(DcMotor.Direction.REVERSE);
-        rightRear.setDirection(DcMotor.Direction.REVERSE);
+        leftFront.setDirection(DcMotor.Direction.REVERSE);
+        leftRear.setDirection(DcMotor.Direction.REVERSE);
 
         imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
@@ -77,6 +84,79 @@ public class    SummerChassis {
         imu.initialize(parameters);
         imu.resetYaw();
     }
+
+    public void InitLimelight(HardwareMap hardwareMap){
+        limelight3A = hardwareMap.get(Limelight3A.class, "limelight");
+        limelight3A.pipelineSwitch(0);
+        limelight3A.start();
+    }
+
+    //This method basically finds the amount of tx and ty angle from crosshair to target.
+    //It then returns an ArrayList giving back both tx and ty values.
+    public List<Double>  FindAlignAngleToTargetImage(String targetImageName) {
+        List<Double> offset = new ArrayList<>();
+
+        LLResult result = limelight3A.getLatestResult();
+
+        if (result.isValid()) {
+            // Access detector results
+            List<LLResultTypes.DetectorResult> detectorResults = result.getDetectorResults();
+            for (LLResultTypes.DetectorResult dr : detectorResults) {
+                String BoxType = dr.getClassName();
+
+                // Confirm once that Target Image is Found, before attempting alignment
+                if (BoxType.equals(targetImageName)) {
+                    double currentOffsetX = result.getTx() ;
+                    double currentOffsetY = result.getTy() ;
+
+                    //Return both offsets as a list
+                    offset.add(currentOffsetX);
+                    offset.add(currentOffsetY);
+                    return offset;
+                }
+            }
+        }
+        //If the target is not found, add -1.0 to both offsets
+        offset.add(-1.0);
+        offset.add(-1.0);
+        return offset;
+    }
+
+    public double GetStrafeOffsetInInches(String targetImageName) {
+
+        List<Double> scaledOffsets = FindAlignAngleToTargetImage(targetImageName);
+
+        // Check if target was found
+        if (scaledOffsets.get(0) == -1.0 && scaledOffsets.get(1) == -1.0) {
+            // Target not found; propagate the -1.0 flags
+            return 0;
+        }
+
+        // Convert scaled offsets back to raw angles
+        double rawTx = scaledOffsets.get(0);;
+        double rawTy = scaledOffsets.get(1);;
+
+        // Fixed distance from the target in inches guaranteed by roadrunner
+        final double D = 11.0;
+
+        // Convert angles from degrees to radians for trigonometric functions
+        double txRadians = Math.toRadians(rawTx);
+        double tyRadians = Math.toRadians(rawTy);
+
+        // H1 -- height of camera, H2,.. height of object.
+        // Calculate strafing distances
+        double strafeX = D * Math.tan(txRadians); // Left/Right adjustment
+        double strafeY = D * Math.tan(tyRadians); // Forward/Backward adjustment
+
+        // Create a new list to hold the strafing distances
+        List<Double> strafeOffsetsInInches = new ArrayList<>();
+        strafeOffsetsInInches.add(strafeX);
+        strafeOffsetsInInches.add(strafeY);
+
+        return strafeOffsetsInInches.get(0); // for now, it only returns the x inches in strafing movements
+    }
+
+
 
     public void moveRobot(double x, double y, double yaw) {
        // opMode.telemetry.addData("Claw Distance: ", clawDistanceSensor.getDistance(DistanceUnit.MM));
@@ -116,8 +196,8 @@ public class    SummerChassis {
     }
 
     public void driveControlsRobotCentric() {
-        double y = -opMode.gamepad1.left_stick_y;
-        double x = opMode.gamepad1.left_stick_x * 1.1;
+        double y = opMode.gamepad1.left_stick_y;
+        double x = -opMode.gamepad1.left_stick_x * 1.1;
         double rx = opMode.gamepad1.right_stick_x;
 
         double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
