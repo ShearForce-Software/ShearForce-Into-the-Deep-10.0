@@ -130,10 +130,10 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             }
 
             // Slide Rotator Controls
-            if (gamepad2.right_stick_y > 0.25) {
+            if (gamepad2.right_stick_y < -0.25) {
                 rotatorPowerApplied = true;
                 theRobot.SetSlideRotatorToPowerMode(0.4);
-            } else if (gamepad2.right_stick_y < -0.25) {
+            } else if (gamepad2.right_stick_y > 0.25) {
                 rotatorPowerApplied = true;
                 theRobot.SetSlideRotatorToPowerMode(-0.4);
             }
