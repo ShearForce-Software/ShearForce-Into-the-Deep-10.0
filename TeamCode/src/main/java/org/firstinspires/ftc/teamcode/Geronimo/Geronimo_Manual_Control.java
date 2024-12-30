@@ -59,7 +59,12 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             }
             else if (gamepad1.dpad_right) {
                 theRobot.SetSwiperPosition(Geronimo.SWIPER_MIN_POS);
-
+            }
+            else if(gamepad1.dpad_down){ // Driver will press prehandrobot when he feels he is set
+                theRobot.PreHangRobot();
+            }
+            else if(gamepad1.dpad_up){ //Driver will eventually hang the robot himself.
+                theRobot.ReadyHangRobot();
             }
 
             /* *************************************************
@@ -72,25 +77,17 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             // SLIDE MOTOR CONTROL through the LEFT STICK Y (up is negative)
             if ((gamepad2.left_stick_y > 0.1 && !gamepad2.options) || (gamepad2.left_stick_y <= -0.1 && !gamepad2.options)) {
                 slidePowerApplied = true;
-                // if slide limit pressed and commanding down
-
-                if (gamepad2.left_stick_y > 0.1 && gamepad1.circle && !gamepad2.options){
+                // If commanding an override to go down
+                if (gamepad2.left_stick_y > 0.1 && gamepad1.circle && !gamepad1.options){
                     theRobot.SetSlidesToPowerMode(-gamepad2.left_stick_y);
-                } else if (theRobot.GetSlidesLimitSwitchPressed() && (gamepad2.left_stick_y > 0.1)) {
+                }
+                // else if slide limit pressed and still commanding down
+                else if (theRobot.GetSlidesLimitSwitchPressed() && (gamepad2.left_stick_y > 0.1)) {
                     theRobot.ResetSlidesToZero();
                 } else {
                     theRobot.SetSlidesToPowerMode(-gamepad2.left_stick_y);
                 }
             }
-            // small urchin arms
-            if (gamepad2.left_stick_x > 0.1 && gamepad2.options) {
-                theRobot.SetSmallArmHangerIncrementUp();
-            } else if (gamepad2.left_stick_x  < -0.1 && gamepad2.options) {
-                theRobot.SetSmallArmHangerDecrementDown();
-            }
-
-
-
             // else if was moving the slides through the LEFT STICK Y and stopped -- tell the slides to hold the current position
             else if (slidePowerApplied) {
                 slidePowerApplied = false;
@@ -118,15 +115,29 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             // Make sure the slides aren't ever trying to go past their horizontal limits
             theRobot.Slides_Horizontal_MAX_Limit();
 
+            // small hanger arms holding the urchin / green box
+            if (gamepad2.right_stick_x > 0.1 && gamepad2.options) {
+                theRobot.SetSmallArmHangerIncrementUp();
+            } else if (gamepad2.right_stick_x  < -0.1 && gamepad2.options) {
+                theRobot.SetSmallArmHangerDecrementDown();
+            }
+
+            // Green Box Control / Urchin angle
+            if (gamepad2.left_stick_x > 0.1 && gamepad2.options) {
+                theRobot.SetIntakeBoxRotatorDecrementDown();
+            } else if (gamepad2.left_stick_x < -0.1 && gamepad2.options) {
+                theRobot.SetIntakeBoxRotatorIncrementUp();
+            }
+
             // Slide Rotator Controls
-            if (gamepad2.right_trigger > 0.25) {
+            if (gamepad2.right_stick_y > 0.25) {
                 rotatorPowerApplied = true;
                 theRobot.SetSlideRotatorToPowerMode(0.4);
-            } else if (gamepad2.left_trigger > 0.25) {
+            } else if (gamepad2.right_stick_y < -0.25) {
                 rotatorPowerApplied = true;
                 theRobot.SetSlideRotatorToPowerMode(-0.4);
             }
-            // if was using triggers and now let go, tell the arms to hold at this position
+            // if was manually powering rotator and now let go, tell the arms to hold at this position
             else if (rotatorPowerApplied && !theRobot.GetRotatorArmRunningToPosition() && !theRobot.GetSlideRotatorArmLimitSwitchPressed()) {
                 rotatorPowerApplied = false;
                 theRobot.SetSlideRotatorArmToPosition(theRobot.GetRotatorLeftArmCurrentPosition());
@@ -143,31 +154,36 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 }
             }
 
-            // Combo Moves
-            if (gamepad2.cross && !gamepad2.options) {
-               // theRobot.IntakeFromFloor();
-                theRobot.RemoveFromWall();
-            } else if (gamepad2.share) {
+            if (gamepad2.right_trigger > 0.2) {
+                theRobot.SetUrchinServoPosition(0);
+            }
+            else if (gamepad2.left_trigger > 0.2) {
+                theRobot.SetUrchinServoPosition(1);
+            }
+
+            // Combo Moves for specimen deliveries
+            if (gamepad2.square && !gamepad2.options) {
+                theRobot.SpecimenPickupFromWall();
+            } else if (gamepad2.cross && !gamepad2.options) {
                 theRobot.RemoveFromWall();
             } else if (gamepad2.circle && !gamepad2.options) {
                 theRobot.SpecimenDeliverHighChamberAlternate();
             } else if (gamepad2.triangle && !gamepad2.options) {
                 theRobot.SpecimenDeliverHighChamberFinishingMove();
-            } else if (gamepad2.square && !gamepad2.options) {
-                theRobot.SpecimenPickupFromWall();
-            } else if (gamepad2.dpad_up) {
-                // claire made smthn for high basket 1st step
+            }
+
+            // Combo moves for basket deliveries
+            else if (gamepad2.dpad_left) {
+                theRobot.SampleUrchinFloorPickup();
             } else if (gamepad2.dpad_down){
                 theRobot.SampleUrchinFloorPickupFinishingMove();
-
+            } else if (gamepad2.share) {
+                //TODO - this should probably be a special position for basket intakes
+                theRobot.RemoveFromWall();
             } else if (gamepad2.dpad_right) {
-                //claire made smthn for high basket final step
-            } else if (gamepad2.dpad_left) {
-                theRobot.SampleUrchinFloorPickup();
-            }
-            else if (gamepad1.dpad_up){
-                theRobot.SampleUrchinFloorPickupFinishingMove();
-                theRobot.SetUrchinServoPosition(1);
+                theRobot.BasketHigh();
+            } else if (gamepad2.dpad_up) {
+                theRobot.BasketHighFinishingMove();
             }
 
             // Claw Control
@@ -176,47 +192,6 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             } else if (gamepad2.left_bumper) {
                 theRobot.SetClawPosition(Geronimo.CLAW_MIN_POS);
             }
-
-            // Green Box Control
-            if (gamepad2.dpad_left) {
-                theRobot.SetIntakeBoxRotatorDecrementDown();
-            } else if (gamepad2.dpad_right) {
-                theRobot.SetIntakeBoxRotatorIncrementUp();
-            }
-
-
-
-            // Intake Stars Control -- Intake --> OFF --> Outtake --> OFF --> Intake
-/*
-            if (gamepad1.right_trigger > 0.2) {
-                theRobot.SetIntakeStarPower(gamepad1.right_trigger);
-                intakeStarPowerApplied = true;
-            }
-            else if (gamepad1.left_trigger > 0.2) {
-                theRobot.SetIntakeStarPower(-gamepad1.left_trigger);
-                intakeStarPowerApplied = true;
-            }
-            else if (intakeStarPowerApplied) {
-                intakeStarPowerApplied = false;
-                theRobot.SetIntakeStarPower(0.0);
-            }
-
- */
-            if (gamepad1.right_trigger > 0.2) {
-                theRobot.SetUrchinServoPosition(0);
-
-            }
-            else if (gamepad1.left_trigger > 0.2) {
-                theRobot.SetUrchinServoPosition(1);
-
-            }
-            else if(gamepad1.dpad_down){ // Driver will press prehandrobot when he feels he is set
-                theRobot.PreHangRobot();
-            }
-            else if(gamepad1.dpad_up){ //Driver will eventually hang the robot himself.
-                theRobot.ReadyHangRobot();
-            }
-
 
             theRobot.ShowTelemetry();
             telemetry.update();
