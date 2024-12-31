@@ -305,10 +305,6 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
             return false;  // returning true means not done, and will be called again.  False means action is completely done
         }
     }
-
-
-
-
     public Action slidestozero (){return new SlidesToZero();}
     public class SlidesToZero implements Action {
         private boolean initialized = false;
