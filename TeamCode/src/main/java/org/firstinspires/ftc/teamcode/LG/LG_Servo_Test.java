@@ -1,3 +1,4 @@
+
 /* This code was used during the Freight Frenzy season to test LG's arm servo positions.
 It uses a SCALE factor to incrementally move the servo to allow for precise positioning.
 Code was developed by Jacob Lemanski and previously list in the menu as "Jacob Servo Test"
