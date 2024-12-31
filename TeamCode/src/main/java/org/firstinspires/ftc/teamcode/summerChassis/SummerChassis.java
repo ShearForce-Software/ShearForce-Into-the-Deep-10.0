@@ -137,7 +137,7 @@ public class    SummerChassis {
         double rawTy = scaledOffsets.get(1);;
 
         // Fixed distance from the target in inches guaranteed by roadrunner
-        final double D = 11.0;
+        final double D = 10.3;
 
         // Convert angles from degrees to radians for trigonometric functions
         double txRadians = Math.toRadians(rawTx);

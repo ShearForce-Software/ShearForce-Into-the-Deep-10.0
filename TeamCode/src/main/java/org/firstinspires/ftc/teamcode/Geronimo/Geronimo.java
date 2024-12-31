@@ -613,50 +613,15 @@ public class Geronimo {
         SetSwiperPosition(Geronimo.SWIPER_MAX_POS);
     }
 
-    public void IntakeFromFloor()
-    {
-        /*
-        SetSlideToPosition(1946); //695
-        SpecialSleep(500); //reduce in future
-        SetSlideRotatorArmToPosition(0);
-        SpecialSleep(250);
-        SetSmallArmHangerPosition(0.95); //0.7
-        SetIntakeBoxRotatorPosition(1.085); //1
-
-         */
-    }
-
     public void SpecimenDeliverLow(){
         SetIntakeBoxRotatorPosition(0.525); //0.44
         SetSmallArmHangerPosition(0.6); //0.4 //0.65
     }
 
-    public void RemoveFromWall(){
-        RemoveFromWallServoPosition();
-
-        double timeout = opMode.getRuntime() + 0.5;
-        SetSlideToPosition(0);
-        while (!GetSlidesLimitSwitchPressed() && opMode.getRuntime() < timeout) {
-            SpecialSleep(50);
-        }
-        SetSlideRotatorArmToPosition(0);
-    }
-
-    public void RemoveFromWallServoPosition() {
-        SetIntakeBoxRotatorPosition(0.96); //0.875
-        SetSmallArmHangerPosition(.2); //0 //0.25
-    }
-
-    public void SpecimenDeliverHigh(){
-        SetIntakeBoxRotatorPosition(0.58); //0.495)
-        SetSmallArmHangerPosition(0.6); //.4 //0.6
-        SetSlideToPosition(1680); //600
-        SetSlideRotatorArmToPosition(323); //subject to change
-    }
-
+    // ************************************
+    // Hanging Combo Moves
+    // ************************************
     public void PreHangRobot(){
-
-
         SetSlideRotatorArmToPosition(323);
         SpecialSleep(2000);
         SetIntakeBoxRotatorPosition(INTAKE_STAR_BOX_ROTATOR_MAX_POS);
@@ -665,9 +630,6 @@ public class Geronimo {
         SetSlideRotatorArmToPosition(SLIDE_ARM_ROTATOR_MAX_POS);
         SpecialSleep(2000);
         SetSlideToPosition(3049);
-        //sleep
-
-
     }
     public void ReadyHangRobot(){
         SetSlideToPosition(1547);
@@ -679,20 +641,9 @@ public class Geronimo {
         SetSlideRotatorArmToPosition(180);
     }
 
-    public void SpecimenDeliverHighChamberAlternate(){
-        SetIntakeBoxRotatorPosition(0.945); //0.82  //0.905
-        SetSmallArmHangerPosition(.20); //0 //0.25
-        SetSlideToPosition(1240);
-        SetSlideRotatorArmToPosition(710);
-    }
-
-    public void SpecimenDeliverHighChamberFinishingMove(){
-        SetIntakeBoxRotatorPosition(0.82); //0.945
-        SetSmallArmHangerPosition(.20); //0 //0.25
-        SetSlideToPosition(2350);///00
-        SetSlideRotatorArmToPosition(710); //642
-    }
-
+    // ************************************
+    // High Specimen Delivery Combo Moves
+    // ************************************
     public void SpecimenPickupFromWall() {
         SpecimenPickupFromWallServoPosition();
 
@@ -703,12 +654,40 @@ public class Geronimo {
         }
         SetSlideRotatorArmToPosition(0);
     }
-
     public void SpecimenPickupFromWallServoPosition(){
         SetIntakeBoxRotatorPosition(0.96); //0.875
         SetSmallArmHangerPosition(0.35); //.15 //0.4
     }
+    public void RemoveFromWall(){
+        RemoveFromWallServoPosition();
 
+        double timeout = opMode.getRuntime() + 0.5;
+        SetSlideToPosition(0);
+        while (!GetSlidesLimitSwitchPressed() && opMode.getRuntime() < timeout) {
+            SpecialSleep(50);
+        }
+        SetSlideRotatorArmToPosition(0);
+    }
+    public void RemoveFromWallServoPosition() {
+        SetIntakeBoxRotatorPosition(0.96); //0.875
+        SetSmallArmHangerPosition(.2); //0 //0.25
+    }
+    public void SpecimenDeliverHighChamberAlternate(){
+        SetIntakeBoxRotatorPosition(0.945); //0.82  //0.905
+        SetSmallArmHangerPosition(.20); //0 //0.25
+        SetSlideToPosition(1240);
+        SetSlideRotatorArmToPosition(710);
+    }
+    public void SpecimenDeliverHighChamberFinishingMove(){
+        SetIntakeBoxRotatorPosition(0.82); //0.945
+        SetSmallArmHangerPosition(.20); //0 //0.25
+        SetSlideToPosition(2350);///00
+        SetSlideRotatorArmToPosition(710); //642
+    }
+
+    // ************************************
+    // High Basket Delivery Combo Moves
+    // ************************************
     public void SampleUrchinFloorPickup(){
         SetSlideToPosition(1945);
         SpecialSleep(300);
@@ -716,32 +695,29 @@ public class Geronimo {
         SetSmallArmHangerPosition(0.75); //.15 //0.80
         SetSlideRotatorArmToPosition(0);
     }
-
     public void SampleUrchinFloorPickupFinishingMove(){
-        SetSlideToPosition(1945);
-        SpecialSleep(300);
+        //SetSlideToPosition(1945);
+        //SpecialSleep(300);
         SetIntakeBoxRotatorPosition(0.525);   //0.485
         SetSmallArmHangerPosition(0.8); //.15 //0.80
         SetSlideRotatorArmToPosition(0);
     }
-
     public void BasketHigh(){
         //STEP ONE
         SetIntakeBoxRotatorPosition(0.935); //0.85
-        SetSmallArmHangerPosition(1.); //.8 //1.05
+        SetSmallArmHangerPosition(1.0); //.8 //1.05
         SetSlideRotatorArmToPosition(800); //8008, 450
         // wait for the rotators to move to vertical before raising slides
-        SpecialSleep(2000);
-        SetSlideToPosition(6496); //2320
+        //SpecialSleep(2000);
+        //SetSlideToPosition(6496); //2320
     }
-
     public void BasketHighFinishingMove(){
         //TODO needs values
         SetIntakeBoxRotatorPosition(0.935);
-        SetSmallArmHangerPosition(1.);
+        SetSmallArmHangerPosition(1.0);
         SetSlideRotatorArmToPosition(800);
         // wait for the rotators to move to vertical before raising slides
-        SpecialSleep(2000);
+        //SpecialSleep(2000);
         SetSlideToPosition(6496);
     }
 
@@ -750,13 +726,6 @@ public class Geronimo {
     //slides - -2320
     //rotator 8008
     //0.85 IntakeStarRotator, hanger position (0.15/0.8)
-
-    public void BasketLow(){
-        SetIntakeBoxRotatorPosition(1.085); //1
-        SetSmallArmHangerPosition(0.8); //0.6 //0.85
-        SetSlideToPosition(1300);
-        SetSlideRotatorArmToPosition(450);
-    }
 
     // *********************************************************
     // ****       Green Intake Box Controls                 ****
