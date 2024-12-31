@@ -670,7 +670,7 @@ public class Geronimo {
     }
     public void Stow(){
         //RemoveFromWallServoPosition();
-        SetIntakeBoxRotatorPosition(0.2); //0.875 //0.96
+        SetIntakeBoxRotatorPosition(0.375); //0.875 //0.96  //0.2
         SetSmallArmHangerPosition(0.2); //0 //0.25
         double timeout = opMode.getRuntime() + 0.5;
         SetSlideToPosition(0);
@@ -710,8 +710,8 @@ public class Geronimo {
     public void SampleUrchinFloorPickupFinishingMove(){
         //SetSlideToPosition(1945);
         //SpecialSleep(300);
-        SetIntakeBoxRotatorPosition(0);   //0.485 //0.525
-        SetSmallArmHangerPosition(0.8); //.15 //0.80
+        SetIntakeBoxRotatorPosition(0.555);   //0.485 //0.525 //0
+        SetSmallArmHangerPosition(0.85); //.15 //0.80 //0.8
         SetSlideRotatorArmToPosition(0);
         SetUrchinServoPosition(1);
         SpecialSleep(300);
