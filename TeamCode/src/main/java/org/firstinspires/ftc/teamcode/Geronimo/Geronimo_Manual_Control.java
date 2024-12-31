@@ -26,7 +26,7 @@ public class Geronimo_Manual_Control extends LinearOpMode {
 
         waitForStart();
         resetRuntime();
-        theRobot.AutoStartPosition();
+       // theRobot.AutoStartPosition();
 
         while (opModeIsActive()) {
             theRobot.EndgameBuzzer();
