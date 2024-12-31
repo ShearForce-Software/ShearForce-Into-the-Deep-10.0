@@ -185,8 +185,7 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             } else if (gamepad2.dpad_down){
                 theRobot.SampleUrchinFloorPickupFinishingMove();
             } else if (gamepad2.share) {
-                //TODO - this should probably be a special position for basket intakes
-                theRobot.RemoveFromWall();
+                theRobot.Stow();
             } else if (gamepad2.dpad_right) {
                 theRobot.BasketHigh();
             } else if (gamepad2.dpad_up) {
@@ -194,9 +193,9 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             }
 
             // Claw Control
-            if (gamepad2.right_bumper) {
+            if (gamepad2.left_bumper) {
                 theRobot.SetClawPosition(Geronimo.CLAW_MAX_POS);
-            } else if (gamepad2.left_bumper) {
+            } else if (gamepad2.right_bumper) {
                 theRobot.SetClawPosition(Geronimo.CLAW_MIN_POS);
             }
 

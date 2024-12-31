@@ -78,7 +78,7 @@ public class Geronimo {
     TouchSensor touchSensorSlideRight;
 
     Servo clawServo;
-    public static final double CLAW_MAX_POS = 0.45;
+    public static final double CLAW_MAX_POS = 0.4; //0.45
     public static final double CLAW_MIN_POS = 0.0;
     double claw_position = 0.5;
 
@@ -646,7 +646,7 @@ public class Geronimo {
     // ************************************
     public void SpecimenPickupFromWall() {
         SpecimenPickupFromWallServoPosition();
-
+        SetClawPosition(CLAW_MIN_POS);
         double timeout = opMode.getRuntime() + 0.5;
         SetSlideToPosition(0);
         while (!GetSlidesLimitSwitchPressed() && opMode.getRuntime() < timeout) {
@@ -668,6 +668,17 @@ public class Geronimo {
         }
         SetSlideRotatorArmToPosition(0);
     }
+    public void Stow(){
+        //RemoveFromWallServoPosition();
+        SetIntakeBoxRotatorPosition(0.2); //0.875 //0.96
+        SetSmallArmHangerPosition(0.2); //0 //0.25
+        double timeout = opMode.getRuntime() + 0.5;
+        SetSlideToPosition(0);
+        while (!GetSlidesLimitSwitchPressed() && opMode.getRuntime() < timeout) {
+            SpecialSleep(50);
+        }
+        SetSlideRotatorArmToPosition(0);
+    }
     public void RemoveFromWallServoPosition() {
         SetIntakeBoxRotatorPosition(0.96); //0.875
         SetSmallArmHangerPosition(.2); //0 //0.25
@@ -675,13 +686,13 @@ public class Geronimo {
     public void SpecimenDeliverHighChamberAlternate(){
         SetIntakeBoxRotatorPosition(0.945); //0.82  //0.905
         SetSmallArmHangerPosition(.20); //0 //0.25
-        SetSlideToPosition(1240);
+        SetSlideToPosition(1240);  //1240  //740
         SetSlideRotatorArmToPosition(710);
     }
     public void SpecimenDeliverHighChamberFinishingMove(){
         SetIntakeBoxRotatorPosition(0.82); //0.945
         SetSmallArmHangerPosition(.20); //0 //0.25
-        SetSlideToPosition(2350);///00
+        SetSlideToPosition(2150); //00  //2350  //1750
         SetSlideRotatorArmToPosition(710); //642
     }
 
@@ -691,6 +702,7 @@ public class Geronimo {
     public void SampleUrchinFloorPickup(){
         SetSlideToPosition(1945);
         SpecialSleep(300);
+        SetUrchinServoPosition(0);
         SetIntakeBoxRotatorPosition(0.485);
         SetSmallArmHangerPosition(0.75); //.15 //0.80
         SetSlideRotatorArmToPosition(0);
@@ -698,8 +710,13 @@ public class Geronimo {
     public void SampleUrchinFloorPickupFinishingMove(){
         //SetSlideToPosition(1945);
         //SpecialSleep(300);
-        SetIntakeBoxRotatorPosition(0.525);   //0.485
+        SetIntakeBoxRotatorPosition(0);   //0.485 //0.525
         SetSmallArmHangerPosition(0.8); //.15 //0.80
+        SetSlideRotatorArmToPosition(0);
+        SetUrchinServoPosition(1);
+        SpecialSleep(300);
+        SetIntakeBoxRotatorPosition(0.485);
+        SetSmallArmHangerPosition(0.75); //.15 //0.80
         SetSlideRotatorArmToPosition(0);
     }
     public void BasketHigh(){
@@ -713,12 +730,20 @@ public class Geronimo {
     }
     public void BasketHighFinishingMove(){
         //TODO needs values
-        SetIntakeBoxRotatorPosition(0.935);
-        SetSmallArmHangerPosition(1.0);
-        SetSlideRotatorArmToPosition(800);
-        // wait for the rotators to move to vertical before raising slides
-        //SpecialSleep(2000);
         SetSlideToPosition(6496);
+        SpecialSleep(4000); //2000
+        SetIntakeBoxRotatorPosition(0.935);
+        SetSmallArmHangerPosition(0.5);  //1.0
+        SetSlideRotatorArmToPosition(800);
+        SpecialSleep(200);
+        SetUrchinServoPosition(0);
+        SpecialSleep(400);
+        SetSmallArmHangerPosition(1.0);
+        SpecialSleep(400);
+        SetSlideRotatorArmToPosition(700);
+        SetSlideToPosition(0);
+        // wait for the rotators to move to vertical before raising slides
+
     }
 
     // hanger position 0.8
