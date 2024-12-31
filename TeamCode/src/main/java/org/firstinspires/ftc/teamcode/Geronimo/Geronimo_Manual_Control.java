@@ -56,10 +56,17 @@ public class Geronimo_Manual_Control extends LinearOpMode {
 
             if (gamepad1.dpad_left) {
                 theRobot.SetSwiperPosition(Geronimo.SWIPER_MAX_POS);
+                theRobot.SpecialSleep(500);
+                theRobot.SetSwiperPosition(Geronimo.SWIPER_MIN_POS);
+                theRobot.SpecialSleep(500);
+                theRobot.SetSwiperPosition(Geronimo.SWIPER_MAX_POS);
             }
+            /*
             else if (gamepad1.dpad_right) {
                 theRobot.SetSwiperPosition(Geronimo.SWIPER_MIN_POS);
             }
+
+             */
             else if(gamepad1.dpad_down){ // Driver will press prehandrobot when he feels he is set
                 theRobot.PreHangRobot();
             }
