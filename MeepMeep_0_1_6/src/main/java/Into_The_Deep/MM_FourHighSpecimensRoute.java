@@ -75,8 +75,8 @@ public class MM_FourHighSpecimensRoute {
                 //.splineToLinearHeading(new Pose2d(36,-48,Math.toRadians(270)), Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
                 //.splineToConstantHeading(new Vector2d(36,-48), Math.toRadians(90))
                 //.splineToLinearHeading(new Pose2d(36,-48,Math.toRadians(270)),Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
-                .splineToConstantHeading(new Vector2d(36, -40),Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
-                .strafeToLinearHeading(new Vector2d(36,-16), Math.toRadians(270), slowDownVelocityConstraint)
+                .splineToConstantHeading(new Vector2d(38, -40),Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
+                .strafeToLinearHeading(new Vector2d(38,-16), Math.toRadians(270), slowDownVelocityConstraint)
                 //.strafeToLinearHeading(new Vector2d(44,-54),Math.toRadians(270))
                 .splineToConstantHeading(new Vector2d(46,-16), Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
                 .lineToYConstantHeading(-54)
@@ -166,8 +166,7 @@ public class MM_FourHighSpecimensRoute {
                 new SleepAction(1),
                 DrivetoDeck3,
                 new SleepAction(.5),
-                DriveToSubmersible3,
-                ParkinDeck));
+                DriveToSubmersible3, ParkinDeck));
 
                 //new SleepAction(1)
                 //Drop submersible

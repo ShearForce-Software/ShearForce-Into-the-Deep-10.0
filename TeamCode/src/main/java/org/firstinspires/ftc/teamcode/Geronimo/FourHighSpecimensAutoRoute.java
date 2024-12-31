@@ -46,6 +46,7 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
     VelConstraint slowDownVelocityConstraint;
     AccelConstraint slowDownAccelerationConstraint;
     VelConstraint intakeVelocityConstraint;
+    VelConstraint humanPlayerVelocityConstraint;
 
     public void runOpMode(){
         startPose = new Pose2d(12,-64, Math.toRadians(270));
@@ -58,11 +59,13 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
         slowDownVelocityConstraint = new TranslationalVelConstraint(30);
         slowDownAccelerationConstraint = new ProfileAccelConstraint(-20, 50);
         intakeVelocityConstraint = new TranslationalVelConstraint(15);
+        humanPlayerVelocityConstraint = new TranslationalVelConstraint(7);
+
 
         /* Initialize the Robot */
         drive = new MecanumDrive_Geronimo(hardwareMap, startPose);
         control.Init(hardwareMap);
-        // TODO -- need to adjust this starting position to keep the specimen out of the wall Check
+        //  -- need to adjust this starting position to keep the specimen out of the wall Check
         control.AutoStartPosition();
         telemetry.update();
         control.imuOffsetInDegrees = 270; // Math.toDegrees(startPose.heading.toDouble());
@@ -91,9 +94,9 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
                 //.splineToLinearHeading(new Pose2d(36,-48,Math.toRadians(270)), Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
                 //.splineToConstantHeading(new Vector2d(36,-48), Math.toRadians(90))
                 //.splineToLinearHeading(new Pose2d(36,-48,Math.toRadians(270)),Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
-                .splineToConstantHeading(new Vector2d(36, -40),Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
-                .strafeToLinearHeading(new Vector2d(36,-16), Math.toRadians(270), slowDownVelocityConstraint)
-                //.strafeToLinearHeading(new Vector2d(44,-54),Math.toRadians(270))
+                .splineToConstantHeading(new Vector2d(38, -40),Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
+                .strafeToLinearHeading(new Vector2d(38,-16), Math.toRadians(270), slowDownVelocityConstraint)
+                //.strafeToLin earHeading(new Vector2d(44,-54),Math.toRadians(270))
                 .splineToConstantHeading(new Vector2d(46,-16), Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
                 .lineToYConstantHeading(-54)
                 .build();
@@ -116,7 +119,7 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
 */
         DrivetoDeck1 = drive.actionBuilder(new Pose2d(56,-54,Math.toRadians(270)))
                 .splineToLinearHeading(new Pose2d(36,-54,Math.toRadians(270)),Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
-                .strafeToLinearHeading(new Vector2d(36, -63),Math.toRadians(270), intakeVelocityConstraint)
+                .strafeToLinearHeading(new Vector2d(36, -63),Math.toRadians(270), humanPlayerVelocityConstraint)
                 .build();
 
         DriveToSubmersible1 = drive.actionBuilder(new Pose2d(36,-63, Math.toRadians(270)))
@@ -129,7 +132,7 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
                 .build();
         DrivetoDeck2 = drive.actionBuilder(new Pose2d(2,-30,Math.toRadians(270)))
                 .splineToLinearHeading(new Pose2d(36,-54,Math.toRadians(270)),Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
-                .strafeToLinearHeading(new Vector2d(36,-63), Math.toRadians(270), intakeVelocityConstraint) //May change to 270 heading once delivery is clarified
+                .strafeToLinearHeading(new Vector2d(36,-63), Math.toRadians(270), humanPlayerVelocityConstraint) //May change to 270 heading once delivery is clarified
                 .build();
         DriveToSubmersible2 = drive.actionBuilder(new Pose2d(36,-63,Math.toRadians(270)))
                 .setReversed(true)
@@ -140,9 +143,9 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
                 .build();
         DrivetoDeck3 = drive.actionBuilder(new Pose2d(3,-30,Math.toRadians(270)))
                 .splineToLinearHeading(new Pose2d(36,-54,Math.toRadians(270)),Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
-                .strafeToLinearHeading(new Vector2d(36,-63), Math.toRadians(270), intakeVelocityConstraint) //May change to 270 heading once delivery is clarified
+                .strafeToLinearHeading(new Vector2d(36,-63), Math.toRadians(270), humanPlayerVelocityConstraint) //May change to 270 heading once delivery is clarified
                 .build();
-        DriveToSubmersible3 = drive.actionBuilder(new Pose2d(36,-63,Math.toRadians(90)))
+        DriveToSubmersible3 = drive.actionBuilder(new Pose2d(36,-63,Math.toRadians(270)))
                 .setReversed(true)
                 //.strafeToLinearHeading(new Vector2d(16,-56), Math.toRadians(270))
                 //.splineToLinearHeading(new Pose2d(3,-39,Math.toRadians(270)), Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
@@ -181,9 +184,10 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
                         // Gather the 3 floor samples into the observation area
                         new ParallelAction(DriveToSamplesandDeliver1
                                 , new SequentialAction(new SleepAction(.3),
+                                        //don't call stow; call wall position
                                         slidestozero(), rotatorarmstozero(), grabSpecimenfromwall())),
                         DriveToSamplesandDeliver2,
-
+                        // 1st Initial Delivery
                         // Drive to the wall and prepare to grab a specimen
                         new ParallelAction(DrivetoDeck1,
                                 grabSpecimenfromwall()),
@@ -204,8 +208,8 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
                         new SleepAction(.3),
                         //2nd delivery
                         new ParallelAction(DrivetoDeck2,
-                                new SequentialAction(
-                                slidestozero(), rotatorarmstozero(), stowPosition())),grabSpecimenfromwall(),
+                                new SequentialAction(//don't call stow; call wall position
+                                slidestozero(), rotatorarmstozero(), grabSpecimenfromwall())),
                         grabSpecimen(),
                         new SleepAction(.3),
                         liftSpecimenoffWall(),
@@ -218,10 +222,9 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
                         new SleepAction(.3),
                         //3rd delivery
                         new ParallelAction(DrivetoDeck3,
-                                new SequentialAction(
-                                        slidestozero(), rotatorarmstozero(), stowPosition()))
-                        ,grabSpecimenfromwall(),
-                        grabSpecimen(),
+                                new SequentialAction(//don't call stow; call wall position
+                                        slidestozero(), rotatorarmstozero(), grabSpecimenfromwall()))
+                        ,grabSpecimen(),
                         new SleepAction(.3),
                         liftSpecimenoffWall(),
                         new SleepAction(.5),
@@ -231,12 +234,12 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
                         new SleepAction(.5),
                         releaseSpecimen(),
                         new SleepAction(.3),
-                        new ParallelAction(ParkinDeck,
+                        new ParallelAction(ParkinDeck, //don't call stow; call wall position
                                 new SequentialAction(
-                                slidestozero(), rotatorarmstozero(), stowPosition()))
+                                slidestozero(), rotatorarmstozero()))
                         //new SleepAction(5))
 
-        ));
+        )   );
         drive.updatePoseEstimate();
 
         Geronimo.autoTimeLeft = 30-getRuntime();
