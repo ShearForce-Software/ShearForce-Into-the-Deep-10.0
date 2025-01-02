@@ -52,21 +52,24 @@ public class FiveHighBasketsAutoRoute extends LinearOpMode {
         intakeVelocityConstraint = new TranslationalVelConstraint(15);
         humanPlayerVelocityConstraint = new TranslationalVelConstraint(7);
 
-
         /* Initialize the Robot */
         drive = new MecanumDrive_Geronimo(hardwareMap, startPose);
         control.Init(hardwareMap);
         //  -- need to adjust this starting position to keep the specimen out of the wall Check
         control.Stow();
         telemetry.update();
-        control.imuOffsetInDegrees = 270; // Math.toDegrees(startPose.heading.toDouble());
+        control.imuOffsetInDegrees = 90; // Math.toDegrees(startPose.heading.toDouble());
 
+        // Wait for start to be pressed
         while(!isStarted()){
             telemetry.update();
         }
+
+        // Started
         resetRuntime();
         Geronimo.autoTimeLeft = 0.0;
-        control.SetClawPosition(Geronimo.CLAW_MAX_POS);
+        control.SetUrchinServoPosition(1);
+        sleep(100);
 
         // ***************************************************
         // ****  Define Trajectories    **********************
@@ -82,15 +85,13 @@ public class FiveHighBasketsAutoRoute extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(-36,-36), Math.toRadians(90))
                 .build();
 
-
-
         // ***************************************************
         // ****  START DRIVING    ****************************
         // ***************************************************
         Actions.runBlocking(
                 new SequentialAction(
                         //Drive to submersible and pick up sample
-                        new ParallelAction(closeUrchin(),DeliverStartingSample, basketHigh()),
+                        new ParallelAction(DeliverStartingSample, basketHigh()),
                         // Raise slides to high basket height
                         finishBasketHigh_SlidesPosition(),
                         new SleepAction(4.0),
@@ -123,7 +124,6 @@ public class FiveHighBasketsAutoRoute extends LinearOpMode {
                         sampleUrchinFloorPickup_UrchinReadyPosition()
                         */
                 ));
-
 
         drive.updatePoseEstimate();
 
