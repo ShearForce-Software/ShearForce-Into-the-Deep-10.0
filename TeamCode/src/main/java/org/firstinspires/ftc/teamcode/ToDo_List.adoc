@@ -2,25 +2,24 @@
 
 == TODO List
 
+---
 
-- [ ] Shrey: Improve Driver Controls to be more preset oriented, move box rotation and hanger arm controls to multi-button (share + dpad left) to discourage their use and free up those buttons for other modes
-- [ ] Claire: Make sure all combo movements that move slides and rotator arms down, do slides first then arms, make sure all smooth
-- [ ] Claire: Update Basket delivery to be 2 push-buttons (step 1 raise arm rotators and set urchin position, step 2 raise slides to finish)
-- [ ] Aidan: Auto Right - Fix wall grab position to line up exactly on the seam
+- [ ] Aidan: Test and get Auto basket delivery delivering at least 3 samples to high basket
+- [ ] Make a NEW auto left to put at least 4 samples into the high basket
+- [ ] Create TeleOp Auto drive routines using roadrunner to get to basket and wall spot
+- [ ] Akshay: Test Limelight on Geronimo for aligning on wall specimens
+- [ ] Akshay: Create routine in Geronimo that uses the Limelight to report Red, Blue, or Yellow -- Prove on SummerChassis
+- [ ] Fully Re-Calibrate Geronimo
+- [ ] Claire: Experiment with PID control for rotator arms
 - [ ] Aidan: Make a NEW Auto Right that does at least 4 specimens (deliver, push 2 samples not 3, deliver, deliver, deliver)
 
 ---
-
-- [ ] Gianna: Improve Auto Left to score level-1 hang again
-- [ ] Akshay: Make a NEW Auto Left to put at least 1 sample into the high basket
-- [ ] Make a NEW auto left to put at least 4 samples into the high basket
-- [ ] Create TeleOp Auto drive routines using roadrunner to get to basket and wall spot
-- [ ] Akshay: Create routine in Geronimo that uses the Limelight to report Red, Blue, or Yellow -- Prove on SummerChassis
-- [ ] Akshay: Create routine in Geronimo that uses the Limelight to report left or right inches from specimen -- Prove on SummerChassis
-- [ ] Fully Re-Calibrate Geronimo
-- [ ] Claire: Experiment with PID control for rotator arms?
-
----
+- [x] Akshay: Create routine in Geronimo that uses the Limelight to report left or right inches from specimen -- Prove on SummerChassis
+- [x] Aidan: Make a NEW Auto Left to put at least 1 sample into the high basket
+- [x] Shrey: Improve Driver Controls to be more preset oriented, move box rotation and hanger arm controls to multi-button (share + dpad left) to discourage their use and free up those buttons for other modes
+- [x] Make sure all combo movements that move slides and rotator arms down, do slides first then arms, make sure all smooth
+- [x] Update Basket delivery to be 2 push-buttons (step 1 raise arm rotators and set urchin position, step 2 raise slides to finish)
+- [x] Aidan: Auto Right - Fix wall grab position to line up exactly on the seam
 - [x] Gianna: Create driver control for swiper on Gamepad 1 and test it
 - [x] Jared: teach Claire about using git branches
 - [x] Gianna: Auto Right - Add swiper move as a parallel action after each grab / release action
