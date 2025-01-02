@@ -17,7 +17,7 @@ public class TestingLLTelemetry extends LinearOpMode{
         telemetry.update();
 
         while(opModeIsActive()){
-            double strafeOffSet = control.GetStrafeOffsetInInches("block");
+            double strafeOffSet = control.GetStrafeOffsetInInches("block", 10.3);
             telemetry.addData("Limelight Strafe Offset (inches)", strafeOffSet);
 
             if(strafeOffSet > 0){

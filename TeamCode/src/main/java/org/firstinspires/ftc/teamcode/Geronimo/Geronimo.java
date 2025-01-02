@@ -253,7 +253,7 @@ public class Geronimo {
     // *********************************************************
     public void InitLimelight(HardwareMap hardwareMap){
         limelightbox = hardwareMap.get(Limelight3A.class, "limelight");
-        limelightbox.pipelineSwitch(0);
+        limelightbox.pipelineSwitch(1);
         limelightbox.start();
         //limelightbox.getLatestResult().getTx();
        // limelightbox.getLatestResult().getTy();
@@ -296,7 +296,7 @@ public class Geronimo {
         return offset;
     }
 
-    public double GetStrafeOffsetInInches(String targetImageName) {
+    public double GetStrafeOffsetInInches(String targetImageName, double distanceFromTarget) {
 
         List<Double> scaledOffsets = FindAlignAngleToTargetImage(targetImageName);
 
@@ -310,17 +310,14 @@ public class Geronimo {
         double rawTx = scaledOffsets.get(0);;
         double rawTy = scaledOffsets.get(1);;
 
-        // Fixed distance from the target in inches guaranteed by roadrunner
-        final double D = 6.0;
-
         // Convert angles from degrees to radians for trigonometric functions
         double txRadians = Math.toRadians(rawTx);
         double tyRadians = Math.toRadians(rawTy);
 
         // H1 -- height of camera, H2,.. height of object.
         // Calculate strafing distances
-        double strafeX = D * Math.tan(txRadians); // Left/Right adjustment
-        double strafeY = D * Math.tan(tyRadians); // Forward/Backward adjustment
+        double strafeX = distanceFromTarget * Math.tan(txRadians); // Left/Right adjustment
+        double strafeY = distanceFromTarget * Math.tan(tyRadians); // Forward/Backward adjustment
 
         // Create a new list to hold the strafing distances
         List<Double> strafeOffsetsInInches = new ArrayList<>();
