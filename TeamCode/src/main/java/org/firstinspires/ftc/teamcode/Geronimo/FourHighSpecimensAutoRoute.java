@@ -226,7 +226,7 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
                                         slidestozero(), rotatorarmstozero(), grabSpecimenfromwall()))
                         ,grabSpecimen(),
                         new SleepAction(.3),
-                        liftSpecimenoffWall(),
+                        liftSpecimenoffWall() /*,
                         new SleepAction(.5),
                         new ParallelAction(DriveToSubmersible3
                                 , deliverSpecimenHigh()),
@@ -238,7 +238,7 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
                                 new SequentialAction(
                                 slidestozero(), rotatorarmstozero()))
                         //new SleepAction(5))
-
+*/
         )   );
         drive.updatePoseEstimate();
 
