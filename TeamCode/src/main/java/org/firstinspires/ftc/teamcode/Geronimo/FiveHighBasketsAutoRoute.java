@@ -106,8 +106,22 @@ public class FiveHighBasketsAutoRoute extends LinearOpMode {
                         // Rotate arms a little away from basket and lower slides to zero
                         finishBasketHigh_ArmSafeToLowerPosition(),
                         slidesToZero(),
-                        rotatorarmstozero(),
-                        DriveToSample1
+                        rotatorArmsToZero(),
+
+                        // Drive to Sample 1
+                        new ParallelAction(DriveToSample1, sampleUrchinFloorPickup_SlidePosition(), openUrchin()),
+                        // position the urchin to be ready to intake
+                        sampleUrchinFloorPickup_UrchinReadyPosition() /*,
+                        new SleepAction(0.2),
+                        // Lower the urchin to be closer to the floor
+                        sampleUrchinFloorPickupFinishingMove_UrchinGrabPosition(),
+                        new SleepAction(0.1),
+                        // Close the urchin to grab the specimen
+                        closeUrchin(),
+                        new SleepAction(0.3),
+                        // Raise the Urchin back up to ready position to assess if succeeded
+                        sampleUrchinFloorPickup_UrchinReadyPosition()
+                        */
                 ));
 
 
@@ -129,7 +143,7 @@ public class FiveHighBasketsAutoRoute extends LinearOpMode {
                 control.BasketHigh();
                 initialized = true;
             }
-            packet.put("lock purple pixel", 0);
+            packet.put("basketHigh", 0);
             return false;  // returning true means not done, and will be called again.  False means action is completely done
         }
     }
@@ -144,7 +158,7 @@ public class FiveHighBasketsAutoRoute extends LinearOpMode {
                 control.BasketHighFinishingMove_SlidesPosition();
                 initialized = true;
             }
-            packet.put("lock purple pixel", 0);
+            packet.put("finishBasketHigh_SlidesPosition", 0);
             return false;  // returning true means not done, and will be called again.  False means action is completely done
         }
     }
@@ -158,7 +172,7 @@ public class FiveHighBasketsAutoRoute extends LinearOpMode {
                 control.BasketHighFinishingMove_UrchinDeliverPosition();
                 initialized = true;
             }
-            packet.put("lock purple pixel", 0);
+            packet.put("finishBasketHigh_UrchinDeliverPosition", 0);
             return false;  // returning true means not done, and will be called again.  False means action is completely done
         }
     }
@@ -172,7 +186,7 @@ public class FiveHighBasketsAutoRoute extends LinearOpMode {
                 control.BasketHighFinishingMove_UrchinSafeToLowerPosition();
                 initialized = true;
             }
-            packet.put("lock purple pixel", 0);
+            packet.put("finishBasketHigh_UrchinSafeToLowerPosition", 0);
             return false;  // returning true means not done, and will be called again.  False means action is completely done
         }
     }
@@ -186,7 +200,7 @@ public class FiveHighBasketsAutoRoute extends LinearOpMode {
                 control.BasketHighFinishingMove_ArmSafeToLowerPosition();
                 initialized = true;
             }
-            packet.put("lock purple pixel", 0);
+            packet.put("finishBasketHigh_ArmSafeToLowerPosition", 0);
             return false;  // returning true means not done, and will be called again.  False means action is completely done
         }
     }
@@ -201,7 +215,7 @@ public class FiveHighBasketsAutoRoute extends LinearOpMode {
                 //control.SpecimenPickupFromWallServoPosition();
                 initialized = true;
             }
-            packet.put("lock purple pixel", 0);
+            packet.put("openUrchin", 0);
             return false;  // returning true means not done, and will be called again.  False means action is completely done
         }
     }
@@ -216,7 +230,7 @@ public class FiveHighBasketsAutoRoute extends LinearOpMode {
                 //control.SpecimenPickupFromWallServoPosition();
                 initialized = true;
             }
-            packet.put("lock purple pixel", 0);
+            packet.put("closeUrchin", 0);
             return false;  // returning true means not done, and will be called again.  False means action is completely done
         }
     }
@@ -236,11 +250,11 @@ public class FiveHighBasketsAutoRoute extends LinearOpMode {
             {
                 returnValue = false;
             }
-            packet.put("lock purple pixel", 0);
+            packet.put("slidesToZero", 0);
             return returnValue ;  // returning true means not done, and will be called again.  False means action is completely done
         }
     }
-    public Action rotatorarmstozero (){return new RotatorArmsToZero();}
+    public Action rotatorArmsToZero(){return new RotatorArmsToZero();}
     public class RotatorArmsToZero implements Action {
         private boolean initialized = false;
         double timeout = 0;
@@ -256,11 +270,54 @@ public class FiveHighBasketsAutoRoute extends LinearOpMode {
             {
                 returnValue = false;
             }
-            packet.put("lock purple pixel", 0);
+            packet.put("rotatorArmsToZero", 0);
             return returnValue ;
 
               // returning true means not done, and will be called again.  False means action is completely done
         }
     }
+    public Action sampleUrchinFloorPickup_SlidePosition (){return new SampleUrchinFloorPickup_SlidePosition();}
+    public class SampleUrchinFloorPickup_SlidePosition implements Action {
+        private boolean initialized = false;
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            if (!initialized) {
+                control.SampleUrchinFloorPickup_SlidePosition();
+                initialized = true;
+            }
+            packet.put("SampleUrchinFloorPickup_SlidePosition", 0);
+            return false;  // returning true means not done, and will be called again.  False means action is completely done
+        }
+    }
+    public Action sampleUrchinFloorPickup_UrchinReadyPosition (){return new SampleUrchinFloorPickup_UrchinReadyPosition();}
+    public class SampleUrchinFloorPickup_UrchinReadyPosition implements Action {
+        private boolean initialized = false;
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            if (!initialized) {
+                control.SampleUrchinFloorPickup_UrchinReadyPosition();
+                initialized = true;
+            }
+            packet.put("SampleUrchinFloorPickup_UrchinReadyPosition", 0);
+            return false;  // returning true means not done, and will be called again.  False means action is completely done
+        }
+    }
+    public Action sampleUrchinFloorPickupFinishingMove_UrchinGrabPosition (){return new SampleUrchinFloorPickupFinishingMove_UrchinGrabPosition();}
+    public class SampleUrchinFloorPickupFinishingMove_UrchinGrabPosition implements Action {
+        private boolean initialized = false;
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            if (!initialized) {
+                control.SampleUrchinFloorPickup_UrchinReadyPosition();
+                initialized = true;
+            }
+            packet.put("SampleUrchinFloorPickupFinishingMove_UrchinGrabPosition", 0);
+            return false;  // returning true means not done, and will be called again.  False means action is completely done
+        }
+    }
+
 }
 

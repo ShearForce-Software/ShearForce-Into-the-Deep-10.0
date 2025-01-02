@@ -700,23 +700,41 @@ public class Geronimo {
     // High Basket Delivery Combo Moves
     // ************************************
     public void SampleUrchinFloorPickup(){
-        SetSlideToPosition(1945);
+        // Move slides a little in front of robot
+        SampleUrchinFloorPickup_SlidePosition();
         SpecialSleep(300);
+
+        // Open the urchin and position to be ready to intake
         SetUrchinServoPosition(0);
+        SampleUrchinFloorPickup_UrchinReadyPosition();
+    }
+    public void SampleUrchinFloorPickup_SlidePosition() {
+        // Move slides a little in front of robot
+        SetSlideRotatorArmToPosition(0);
+        SetSlideToPosition(1945);
+    }
+    public void SampleUrchinFloorPickup_UrchinReadyPosition() {
+        // position the urchin to be ready to intake
         SetIntakeBoxRotatorPosition(0.485);
         SetSmallArmHangerPosition(0.75); //.15 //0.80
         SetSlideRotatorArmToPosition(0);
     }
     public void SampleUrchinFloorPickupFinishingMove(){
-        //SetSlideToPosition(1945);
-        //SpecialSleep(300);
-        SetIntakeBoxRotatorPosition(0.555);   //0.485 //0.525 //0
-        SetSmallArmHangerPosition(0.85); //.15 //0.80 //0.8
-        SetSlideRotatorArmToPosition(0);
+        // Lower the urchin to be closer to the floor
+        SampleUrchinFloorPickupFinishingMove_UrchinGrabPosition();
+        SpecialSleep(100);
+
+        // Close the urchin to grab the specimen
         SetUrchinServoPosition(1);
         SpecialSleep(300);
-        SetIntakeBoxRotatorPosition(0.485);
-        SetSmallArmHangerPosition(0.75); //.15 //0.80
+
+        // Raise the Urchin back up to ready position to assess if succeeded
+        SampleUrchinFloorPickup_UrchinReadyPosition();
+    }
+    public void SampleUrchinFloorPickupFinishingMove_UrchinGrabPosition() {
+        // Lower the urchin to be closer to the floor
+        SetIntakeBoxRotatorPosition(0.555);   //0.485 //0.525 //0
+        SetSmallArmHangerPosition(0.85); //.15 //0.80 //0.8
         SetSlideRotatorArmToPosition(0);
     }
     public void BasketHigh(){
