@@ -28,18 +28,7 @@ public class FiveHighBasketsAutoRoute extends LinearOpMode {
 
     // Trajectories
     Action DeliverStartingSample;
-    Action DrivetoSubmersible;
-    Action DriveToSamples1;
-    Action DeliverSample1;
-    Action DriveToSamplesandDeliver2;
-    Action DriveToSamplesandDeliver3;
-    Action DrivetoDeck1;
-    Action DriveToSubmersible1;
-    Action DrivetoDeck2;
-    Action DriveToSubmersible2;
-    Action DrivetoDeck3;
-    Action DriveToSubmersible3;
-    Action ParkinDeck;
+    Action DriveToSample1;
 
     VelConstraint speedUpVelocityConstraint;
     AccelConstraint speedUpAccelerationConstraint;
@@ -84,105 +73,41 @@ public class FiveHighBasketsAutoRoute extends LinearOpMode {
         // ***************************************************
 
         DeliverStartingSample = drive.actionBuilder(startPose)
-                //.strafeToLinearHeading(new Vector2d(4,-30), Math.toRadians(270))
-                //.strafeToLinearHeading(new Vector2d(0,-30), Math.toRadians(270), slowDownVelocityConstraint)
                 .splineToConstantHeading(new Vector2d(-36, -36),Math.toRadians(90))
                 .setReversed(true)
                 .strafeToLinearHeading(new Vector2d(-57,-57), Math.toRadians(45))
                 .build();
-        DrivetoSubmersible = drive.actionBuilder(new Pose2d(-57,-57,Math.toRadians(45)))
+        DriveToSample1 = drive.actionBuilder(new Pose2d(-57,-57,Math.toRadians(45)))
                 .setReversed(true)
                 .strafeToLinearHeading(new Vector2d(-36,-36), Math.toRadians(90))
                 .build();
 
 
-        /*DriveToSample1 = drive.actionBuilder(new Pose2d(0, -30, Math.toRadians(270)))
-                //.strafeToLinearHeading(new Vector2d(0,-48), Math.toRadians(270))
-                //.splineToLinearHeading(new Pose2d(36,-48,Math.toRadians(270)), Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
-                //.splineToConstantHeading(new Vector2d(36,-48), Math.toRadians(90))
-                //.splineToLinearHeading(new Pose2d(36,-48,Math.toRadians(270)),Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
-                .splineToConstantHeading(new Vector2d(38, -40),Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
-                .strafeToLinearHeading(new Vector2d(38,-16), Math.toRadians(270), slowDownVelocityConstraint)
-                //.strafeToLin earHeading(new Vector2d(44,-54),Math.toRadians(270))
-                .splineToConstantHeading(new Vector2d(46,-16), Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
-                .lineToYConstantHeading(-54)
-                .build();
 
-        DriveToSamplesandDeliver2 = drive.actionBuilder(new Pose2d(46,-54, Math.toRadians(270)))
-                .strafeToLinearHeading(new Vector2d(46, -17), Math.toRadians(270), slowDownVelocityConstraint)
-                .splineToConstantHeading(new Vector2d(56,-17), Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
-                .lineToYConstantHeading(-54)
-                .build();
-
-        /*DriveToSamplesandDeliver3 = drive.actionBuilder(new Pose2d(56,-54,Math.toRadians(270)))
-                .strafeToLinearHeading(new Vector2d(54, -12), Math.toRadians(270), slowDownVelocityConstraint)
-                .strafeToLinearHeading(new Vector2d(60.75,-12), Math.toRadians(270))
-                //.splineToConstantHeading(new Vector2d(63,-17), Math.toRadians(270))
-                .strafeToLinearHeading(new Vector2d(60.75,-54), Math.toRadians(270))
-                //.lineToYConstantHeading(-54)
-                //.strafeToLinearHeading(new Vector2d(48,-54),Math.toRadians(270))
-                .strafeToLinearHeading(new Vector2d(44,-46),Math.toRadians(270))
-                .build();
-
-        DrivetoDeck1 = drive.actionBuilder(new Pose2d(56,-54,Math.toRadians(270)))
-                .splineToLinearHeading(new Pose2d(36,-54,Math.toRadians(270)),Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
-                .strafeToLinearHeading(new Vector2d(36, -63),Math.toRadians(270), humanPlayerVelocityConstraint)
-                .build();
-
-        DriveToSubmersible1 = drive.actionBuilder(new Pose2d(36,-63, Math.toRadians(270)))
-                .setReversed(true)
-                //.strafeToLinearHeading(new Vector2d(48, -54), Math.toRadians(270))
-                //.strafeToLinearHeading(new Vector2d(2, -54), Math.toRadians(270))
-                //.strafeToLinearHeading(new Vector2d(16,-56), Math.toRadians(270))
-                .splineToConstantHeading(new Vector2d(2,-39),Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
-                .strafeToLinearHeading(new Vector2d(2,-30), Math.toRadians(270), intakeVelocityConstraint)
-                .build();
-        DrivetoDeck2 = drive.actionBuilder(new Pose2d(2,-30,Math.toRadians(270)))
-                .splineToLinearHeading(new Pose2d(36,-54,Math.toRadians(270)),Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
-                .strafeToLinearHeading(new Vector2d(36,-63), Math.toRadians(270), humanPlayerVelocityConstraint) //May change to 270 heading once delivery is clarified
-                .build();
-        DriveToSubmersible2 = drive.actionBuilder(new Pose2d(36,-63,Math.toRadians(270)))
-                .setReversed(true)
-                //.strafeToLinearHeading(new Vector2d(16,-56), Math.toRadians(270))
-                //.splineToLinearHeading(new Pose2d(4,-39,Math.toRadians(270)), Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
-                .splineToConstantHeading(new Vector2d(3,-39),Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
-                .strafeToLinearHeading(new Vector2d(3,-30), Math.toRadians(270), intakeVelocityConstraint)
-                .build();
-        DrivetoDeck3 = drive.actionBuilder(new Pose2d(3,-30,Math.toRadians(270)))
-                .splineToLinearHeading(new Pose2d(36,-54,Math.toRadians(270)),Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
-                .strafeToLinearHeading(new Vector2d(36,-63), Math.toRadians(270), humanPlayerVelocityConstraint) //May change to 270 heading once delivery is clarified
-                .build();
-        DriveToSubmersible3 = drive.actionBuilder(new Pose2d(36,-63,Math.toRadians(270)))
-                .setReversed(true)
-                //.strafeToLinearHeading(new Vector2d(16,-56), Math.toRadians(270))
-                //.splineToLinearHeading(new Pose2d(3,-39,Math.toRadians(270)), Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
-                .splineToConstantHeading(new Vector2d(4,-39),Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
-                .strafeToLinearHeading(new Vector2d(4,-30), Math.toRadians(270), intakeVelocityConstraint)
-                .build();
-
-
-         ParkinDeck = drive.actionBuilder(new Pose2d(4,-30,Math.toRadians(270)))
-                 //Pose 2D 50,-54, 270
-                 //.splineTo(new Vector2d(49,-45),Math.toRadians(90))
-                 .strafeToLinearHeading(new Vector2d(4,-35), Math.toRadians(270), intakeVelocityConstraint)
-                 //.strafeToLinearHeading(new Vector2d(36,-58), Math.toRadians(90), intakeVelocityConstraint)
-                 //.splineToLinearHeading(new Pose2d(30,-48,Math.toRadians(90)),Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
-                 .splineToLinearHeading(new Pose2d(36,-58,Math.toRadians(90)),Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
-                 //.strafeToLinearHeading(new Vector2d(2,-50), Math.toRadians(270))
-                 //.strafeToLinearHeading(new Vector2d(49,-58), Math.toRadians(90), speedUpVelocityConstraint)
-                 // .turnTo(Math.toRadians(90))
-                 .build();
-                 */
-
-        //before:
         // ***************************************************
         // ****  START DRIVING    ****************************
         // ***************************************************
         Actions.runBlocking(
                 new SequentialAction(
                         //Drive to submersible and pick up sample
-                        new ParallelAction(closeUrchin(),DeliverStartingSample, basketHigh()), finishBasketHigh(),
-                        new SleepAction(1.5), slidestozero(), rotatorarmstozero(),DrivetoSubmersible
+                        new ParallelAction(closeUrchin(),DeliverStartingSample, basketHigh()),
+                        // Raise slides to high basket height
+                        finishBasketHigh_SlidesPosition(),
+                        new SleepAction(4.0),
+                        // Rotate urchin to align above basket
+                        finishBasketHigh_UrchinDeliverPosition(),
+                        new SleepAction(0.4),
+                        // Release the sample from the urchin
+                        openUrchin(),
+                        new SleepAction(0.4),
+                        // Rotate urchin back away from the basket
+                        finishBasketHigh_UrchinSafeToLowerPosition(),
+                        new SleepAction(0.4),
+                        // Rotate arms a little away from basket and lower slides to zero
+                        finishBasketHigh_ArmSafeToLowerPosition(),
+                        slidesToZero(),
+                        rotatorarmstozero(),
+                        DriveToSample1
                 ));
 
 
@@ -208,14 +133,72 @@ public class FiveHighBasketsAutoRoute extends LinearOpMode {
             return false;  // returning true means not done, and will be called again.  False means action is completely done
         }
     }
-    public Action finishBasketHigh (){return new FinishBasketHigh();}
-    public class FinishBasketHigh implements Action {
+
+    public Action finishBasketHigh_SlidesPosition (){return new FinishBasketHigh_SlidesPosition();}
+    public class FinishBasketHigh_SlidesPosition implements Action {
         private boolean initialized = false;
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!initialized) {
-                control.BasketHighFinishingMove();
+                control.BasketHighFinishingMove_SlidesPosition();
+                initialized = true;
+            }
+            packet.put("lock purple pixel", 0);
+            return false;  // returning true means not done, and will be called again.  False means action is completely done
+        }
+    }
+    public Action finishBasketHigh_UrchinDeliverPosition (){return new FinishBasketHigh_UrchinDeliverPosition();}
+    public class FinishBasketHigh_UrchinDeliverPosition implements Action {
+        private boolean initialized = false;
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            if (!initialized) {
+                control.BasketHighFinishingMove_UrchinDeliverPosition();
+                initialized = true;
+            }
+            packet.put("lock purple pixel", 0);
+            return false;  // returning true means not done, and will be called again.  False means action is completely done
+        }
+    }
+    public Action finishBasketHigh_UrchinSafeToLowerPosition (){return new FinishBasketHigh_UrchinSafeToLowerPosition();}
+    public class FinishBasketHigh_UrchinSafeToLowerPosition implements Action {
+        private boolean initialized = false;
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            if (!initialized) {
+                control.BasketHighFinishingMove_UrchinSafeToLowerPosition();
+                initialized = true;
+            }
+            packet.put("lock purple pixel", 0);
+            return false;  // returning true means not done, and will be called again.  False means action is completely done
+        }
+    }
+    public Action finishBasketHigh_ArmSafeToLowerPosition (){return new FinishBasketHigh_ArmSafeToLowerPosition();}
+    public class FinishBasketHigh_ArmSafeToLowerPosition implements Action {
+        private boolean initialized = false;
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            if (!initialized) {
+                control.BasketHighFinishingMove_ArmSafeToLowerPosition();
+                initialized = true;
+            }
+            packet.put("lock purple pixel", 0);
+            return false;  // returning true means not done, and will be called again.  False means action is completely done
+        }
+    }
+    public Action openUrchin (){return new OpenUrchin();}
+    public class OpenUrchin implements Action {
+        private boolean initialized = false;
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            if (!initialized) {
+                control.SetUrchinServoPosition(0);
+                //control.SpecimenPickupFromWallServoPosition();
                 initialized = true;
             }
             packet.put("lock purple pixel", 0);
@@ -237,21 +220,7 @@ public class FiveHighBasketsAutoRoute extends LinearOpMode {
             return false;  // returning true means not done, and will be called again.  False means action is completely done
         }
     }
-    public Action stowPosition (){return new StowPosition();}
-    public class StowPosition implements Action {
-        private boolean initialized = false;
-
-        @Override
-        public boolean run(@NonNull TelemetryPacket packet) {
-            if (!initialized) {
-                control.RemoveFromWallServoPosition();
-                initialized = true;
-            }
-            packet.put("lock purple pixel", 0);
-            return false;  // returning true means not done, and will be called again.  False means action is completely done
-        }
-    }
-    public Action slidestozero (){return new SlidesToZero();}
+    public Action slidesToZero(){return new SlidesToZero();}
     public class SlidesToZero implements Action {
         private boolean initialized = false;
         double timeout = 0;
@@ -291,62 +260,6 @@ public class FiveHighBasketsAutoRoute extends LinearOpMode {
             return returnValue ;
 
               // returning true means not done, and will be called again.  False means action is completely done
-        }
-    }
-    public Action grabSpecimen (){return new GrabSpecimen();}
-    public class GrabSpecimen implements Action {
-        private boolean initialized = false;
-
-        @Override
-        public boolean run(@NonNull TelemetryPacket packet) {
-            if (!initialized) {
-                control.SetClawPosition(Geronimo.CLAW_MAX_POS);
-                initialized = true;
-            }
-            packet.put("lock purple pixel", 0);
-            return false;  // returning true means not done, and will be called again.  False means action is completely done
-        }
-    }
-    public Action liftSpecimenoffWall (){return new LiftSpecimenOffWall();}
-    public class LiftSpecimenOffWall implements Action {
-        private boolean initialized = false;
-
-        @Override
-        public boolean run(@NonNull TelemetryPacket packet) {
-            if (!initialized) {
-                control.RemoveFromWallServoPosition();
-                initialized = true;
-            }
-            packet.put("lock purple pixel", 0);
-            return false;  // returning true means not done, and will be called again.  False means action is completely done
-        }
-    }
-    public Action deliverSpecimenHigh (){return new DeliverSpecimenHigh();}
-    public class DeliverSpecimenHigh implements Action {
-        private boolean initialized = false;
-
-        @Override
-        public boolean run(@NonNull TelemetryPacket packet) {
-            if (!initialized) {
-                control.SpecimenDeliverHighChamberAlternate();
-                initialized = true;
-            }
-            packet.put("lock purple pixel", 0);
-            return false;  // returning true means not done, and will be called again.  False means action is completely done
-        }
-    }
-    public Action finishdeliverSpecimenHigh (){return new FinishDeliverSpecimenHigh();}
-    public class FinishDeliverSpecimenHigh implements Action {
-        private boolean initialized = false;
-
-        @Override
-        public boolean run(@NonNull TelemetryPacket packet) {
-            if (!initialized) {
-                control.SpecimenDeliverHighChamberFinishingMove();
-                initialized = true;
-            }
-            packet.put("lock purple pixel", 0);
-            return false;  // returning true means not done, and will be called again.  False means action is completely done
         }
     }
 }

@@ -729,21 +729,35 @@ public class Geronimo {
         //SetSlideToPosition(6496); //2320
     }
     public void BasketHighFinishingMove(){
-        //TODO needs values
-        SetSlideToPosition(6496);
+        // Raise slides to high basket height
+        BasketHighFinishingMove_SlidesPosition();
         SpecialSleep(4000); //2000
+        // Rotate urchin to align above basket
+        BasketHighFinishingMove_UrchinDeliverPosition();
+        SpecialSleep(200);
+        // Release the sample from the urchin
+        SetUrchinServoPosition(0);
+        SpecialSleep(400);
+        // Rotate urchin back away from the basket
+        BasketHighFinishingMove_UrchinSafeToLowerPosition();
+        SpecialSleep(400);
+        // Rotate arms a little away from basket and lower slides to zero
+        BasketHighFinishingMove_ArmSafeToLowerPosition();
+    }
+    public void BasketHighFinishingMove_SlidesPosition(){
+        SetSlideToPosition(6496);
+    }
+    public void BasketHighFinishingMove_UrchinDeliverPosition() {
         SetIntakeBoxRotatorPosition(0.935);
         SetSmallArmHangerPosition(0.5);  //1.0
         SetSlideRotatorArmToPosition(800);
-        SpecialSleep(200);
-        SetUrchinServoPosition(0);
-        SpecialSleep(400);
+    }
+    public void BasketHighFinishingMove_UrchinSafeToLowerPosition(){
         SetSmallArmHangerPosition(1.0);
-        SpecialSleep(400);
+    }
+    public void BasketHighFinishingMove_ArmSafeToLowerPosition(){
         SetSlideRotatorArmToPosition(700);
         SetSlideToPosition(0);
-        // wait for the rotators to move to vertical before raising slides
-
     }
 
     // hanger position 0.8
