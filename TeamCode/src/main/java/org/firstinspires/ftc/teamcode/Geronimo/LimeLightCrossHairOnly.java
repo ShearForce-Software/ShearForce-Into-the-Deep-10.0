@@ -36,7 +36,7 @@ public class LimeLightCrossHairOnly extends LinearOpMode {
             String TargetImageName = "block";
 
             //Use the AlignToTargetImage to get tx and ty values
-            List<Double> offsets = control.AlignToTargetImage(TargetImageName);
+            List<Double> offsets = control.FindAlignAngleToTargetImage(TargetImageName);
             double distanceAdjust = offsets.get(0);
             double strafeAdjust = offsets.get(1);
 

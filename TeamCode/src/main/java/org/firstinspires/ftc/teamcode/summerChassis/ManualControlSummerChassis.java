@@ -20,9 +20,7 @@ public class ManualControlSummerChassis extends LinearOpMode {
 
         SummerChassis theRobot;
         theRobot = new SummerChassis(true, true, this);
-        TouchSensor touchSensor;
         theRobot.Init(this.hardwareMap);
-        touchSensor = hardwareMap.get(TouchSensor.class, "sensor_touch");
 
 
 
@@ -34,48 +32,11 @@ public class ManualControlSummerChassis extends LinearOpMode {
 
         try {
             while (opModeIsActive()) {
-
-                theRobot.EndgameBuzzer();
-
-                /* *************************************************
-                 *************************************************
-                 * Driver Controls (gamepad1)
-                 *************************************************
-                 *************************************************
-                 */
-                // Drive Controls uses left_stick_y, left_stick_x, and right_stick_x
-                theRobot.driveControlsFieldCentric();
+                theRobot.driveControlsFieldCentric(); // do the field centric driving
 
                 if (gamepad1.triangle) {
                     theRobot.imu.resetYaw();
                 }
-               /* if (gamepad1.square) {
-                    theRobot.setslidePower(1);
-                }
-                else if (gamepad1.circle) {
-                    theRobot.setslidePower(-1);
-                }
-                else if (gamepad2.circle) {
-                    //slidesMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                    theRobot.slidesMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                    theRobot.motorpower = 0.1;
-                    telemetry.addData("Touch Sensor", "starting motor");
-
-
-                }
-                else if (touchSensor.isPressed()) {
-                    telemetry.addData("Touch Sensor", "Is Pressed");
-                    theRobot.motorpower = 0.0;
-                } else {
-                    telemetry.addData("Touch Sensor", "Is Not Pressed");
-                    theRobot.setslidePower(0);
-                }
-
-
-               // theRobot.slidesMotor.setPower(theRobot.motorpower);
-                telemetry.addData("Motor Ticks: ", theRobot.slidesMotor.getCurrentPosition());
-
-                */
 
                 telemetry.update();
             } // end while (opModeIsActive())

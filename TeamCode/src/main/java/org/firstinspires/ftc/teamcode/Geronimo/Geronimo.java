@@ -78,9 +78,14 @@ public class Geronimo {
     TouchSensor touchSensorSlideRight;
 
     Servo clawServo;
-    public static final double CLAW_MAX_POS = 0.45;
+    public static final double CLAW_MAX_POS = 0.4; //0.45
     public static final double CLAW_MIN_POS = 0.0;
     double claw_position = 0.5;
+
+    Servo swiperServo;
+    public static final double SWIPER_MAX_POS = 0.8;
+    public static final double SWIPER_MIN_POS = 0.25;
+    private double swiper_position = 0.5;
 
     Servo intakeBoxRotaterServo;
     public static final double INTAKE_STAR_BOX_ROTATOR_MAX_POS = 1.0;
@@ -108,19 +113,19 @@ public class Geronimo {
     public static final double URCHIN_SERVO_MIN_POS = 0.0;
 
 
-    RevBlinkinLedDriver.BlinkinPattern Blinken_left_pattern;
-    RevBlinkinLedDriver.BlinkinPattern Blinken_right_pattern;
-    RevBlinkinLedDriver blinkinLedDriverLeft;
-    RevBlinkinLedDriver blinkinLedDriverRight;
+    RevBlinkinLedDriver.BlinkinPattern Blinken_pattern;
+    RevBlinkinLedDriver blinkinLedDriver;
 
     RevColorSensorV3 leftColorSensor;
-    RevColorSensorV3 rightColorSensor;
+    //RevColorSensorV3 rightColorSensor;
     int redLeft = 0;
     int greenLeft = 0;
     int blueLeft = 0;
     int redRight = 0;
     int greenRight = 0;
     int blueRight = 0;
+
+
     // REV v3 color sensor variables
     public enum colorEnum {
         noColor,
@@ -216,6 +221,7 @@ public class Geronimo {
         smallArmHangerRightServo = hardwareMap.get(Servo.class, "intakeHangerRight");
       //  intakeStarServo = hardwareMap.get(CRServo.class, "intakeStar");
         urchinServo = hardwareMap.get(Servo.class, "urchinServo");
+        swiperServo = hardwareMap.get(Servo.class, "swiper");
 
         // ********** Color Sensors ********************
 
@@ -232,7 +238,7 @@ public class Geronimo {
         touchSensorSlideRight = hardwareMap.get(TouchSensor.class, "sensor_touchRight");
 
         // limelightbox = hardwareMap.get(Limelight3A.class, "limelight");
-        //InitBlinkin(hardwareMap);
+        InitBlinkin(hardwareMap);
 
         imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
@@ -259,10 +265,11 @@ public class Geronimo {
     }
 
 
-    public List<Double>  AlignToTargetImage(String targetImageName) {
+    //This method basically finds the amount of tx and ty angle from crosshair to target.
+    //It then returns an ArrayList giving back both tx and ty values.
+    public List<Double>  FindAlignAngleToTargetImage(String targetImageName) {
         List<Double> offset = new ArrayList<>();
 
-        //Aligns the Robot to the Target Image horiontally and return True if success else False
         LLResult result = limelightbox.getLatestResult();
 
         if (result.isValid()) {
@@ -291,7 +298,7 @@ public class Geronimo {
 
     public double GetStrafeOffsetInInches(String targetImageName) {
 
-        List<Double> scaledOffsets = AlignToTargetImage(targetImageName);
+        List<Double> scaledOffsets = FindAlignAngleToTargetImage(targetImageName);
 
         // Check if target was found
         if (scaledOffsets.get(0) == -1.0 && scaledOffsets.get(1) == -1.0) {
@@ -320,7 +327,7 @@ public class Geronimo {
         strafeOffsetsInInches.add(strafeX);
         strafeOffsetsInInches.add(strafeY);
 
-        return strafeOffsetsInInches.get(0);
+        return strafeOffsetsInInches.get(0); // for now, it only returns the x inches in strafing movements
     }
 
     public boolean limelightHasTarget() {
@@ -471,8 +478,7 @@ public class Geronimo {
         // changed
         double hMinRed = 18.800;
         double hMaxRed = 128.000;
-        double sMinRed = 0.397;
-        // changed
+        double sMinRed = 0.3;
         double sMaxRed = 0.7235;
         double vMinRed = 0.263;
         double vMaxRed = 0.722;
@@ -481,7 +487,6 @@ public class Geronimo {
         double hMinYellow = 59.000;
         double hMaxYellow = 113.043;
         double sMinYellow = 0.501;
-        // changed
         double sMaxYellow = 0.772;
         double vMinYellow = 0.565;
         double vMaxYellow = 1.000;
@@ -496,18 +501,36 @@ public class Geronimo {
 
         // determine if color is blue, red or yellow and show telemetry
         if (hsvValues[0] >= hMinBlue && hsvValues[1] >= sMinBlue)
+        {
             colorDetected = colorEnum.blue;
+            Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;
+            blinkinLedDriver.setPattern(Blinken_pattern);
+        }
+
 
         else if (hsvValues[1] <= sMaxYellow && hsvValues[1] >= sMinYellow && hsvValues[0] <= hMaxYellow && hsvValues[0] >= hMinYellow)
+        {
             colorDetected = colorEnum.yellow;
+            Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.YELLOW;
+            blinkinLedDriver.setPattern(Blinken_pattern);
+        }
 
         else if (hsvValues[1] <= sMaxRed && hsvValues[1] >= sMinRed && hsvValues[0] <= hMaxRed && hsvValues[0] >= hMinRed)
+        {
             colorDetected = colorEnum.red;
+            Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.RED;
+            blinkinLedDriver.setPattern(Blinken_pattern);
+        }
 
         else
+        {
             colorDetected = colorEnum.noColor;
+            Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.GREEN;
+            blinkinLedDriver.setPattern(Blinken_pattern);
+        }
 
         return colorDetected;
+
     }
     public void showColorSensorTelemetry(){
         //int leftColor = leftColorSensor.getNormalizedColors().toColor();
@@ -553,89 +576,27 @@ public class Geronimo {
     // *********************************************************
 
     public void InitBlinkin(HardwareMap hardwareMap) {
-        blinkinLedDriverLeft = hardwareMap.get(RevBlinkinLedDriver.class,"leftBlinkin");
-        blinkinLedDriverRight = hardwareMap.get(RevBlinkinLedDriver.class,"rightBlinkin");
+        blinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class,"RevBLinkinLedDriver");
+        /*
+        if(allianceColorIsBlue)
+        {
+            Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;
+            blinkinLedDriver.setPattern(Blinken_pattern);
+        }
+        else
+        {
+            Blinken_pattern  = RevBlinkinLedDriver.BlinkinPattern.RED;
+            blinkinLedDriver.setPattern(Blinken_pattern);
+        }
+        */
 
-        if(allianceColorIsBlue){
-            Blinken_left_pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;
-            Blinken_right_pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;
-            blinkinLedDriverRight.setPattern(Blinken_right_pattern);
-            blinkinLedDriverLeft.setPattern(Blinken_left_pattern);
-        }else {
-            Blinken_left_pattern  = RevBlinkinLedDriver.BlinkinPattern.RED;
-            Blinken_right_pattern = RevBlinkinLedDriver.BlinkinPattern.RED;
-            blinkinLedDriverRight.setPattern(Blinken_right_pattern);
-            blinkinLedDriverLeft.setPattern(Blinken_left_pattern);
-        }
-    }
-
-    public void SetBlinkinToPixelColor() {
-        redLeft = leftColorSensor.red();
-        greenLeft = leftColorSensor.green();
-        blueLeft = leftColorSensor.blue();
-        redRight = rightColorSensor.red();
-        greenRight = rightColorSensor.green();
-        blueRight = rightColorSensor.blue();
-
-        // Left sensor left blinkin
-        if(redLeft > (blueLeft / 2) && greenLeft > redLeft && blueLeft > redLeft) {
-            Blinken_left_pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
-            blinkinLedDriverLeft.setPattern(Blinken_left_pattern);
-        }
-        else if(greenLeft > redLeft && redLeft > blueLeft) {
-            Blinken_left_pattern = RevBlinkinLedDriver.BlinkinPattern.GOLD;
-            blinkinLedDriverLeft.setPattern(Blinken_left_pattern);
-        }
-        else if(greenLeft > (redLeft * 2) && greenLeft > (blueLeft * 2)) {
-            Blinken_left_pattern = RevBlinkinLedDriver.BlinkinPattern.GREEN;
-            blinkinLedDriverLeft.setPattern(Blinken_left_pattern);
-        }
-        else if(blueLeft > greenLeft && greenLeft > redLeft) {
-            Blinken_left_pattern = RevBlinkinLedDriver.BlinkinPattern.HOT_PINK;
-            blinkinLedDriverLeft.setPattern(Blinken_left_pattern);
-        }
-        else if(allianceColorIsBlue){
-            Blinken_left_pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;
-            blinkinLedDriverLeft.setPattern(Blinken_left_pattern);
-        }else {
-            Blinken_left_pattern = RevBlinkinLedDriver.BlinkinPattern.RED;
-            blinkinLedDriverLeft.setPattern(Blinken_left_pattern);
-        }
-
-        //Right sensor right blinkin
-        if(redRight > (blueRight / 2) && greenRight > redRight && blueRight > redRight) {
-            Blinken_right_pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
-            blinkinLedDriverRight.setPattern(Blinken_right_pattern);
-        }
-        else if(greenRight > redRight && redRight > blueRight) {
-            Blinken_right_pattern = RevBlinkinLedDriver.BlinkinPattern.GOLD;
-            blinkinLedDriverRight.setPattern(Blinken_right_pattern);
-        }
-        else if(greenRight > (redRight * 2) && greenRight > (blueRight * 2)) {
-            Blinken_right_pattern = RevBlinkinLedDriver.BlinkinPattern.GREEN;
-            blinkinLedDriverRight.setPattern(Blinken_right_pattern);
-        }
-        else if(blueRight > greenRight && greenRight > redRight) {
-            Blinken_right_pattern = RevBlinkinLedDriver.BlinkinPattern.HOT_PINK;
-            blinkinLedDriverRight.setPattern(Blinken_right_pattern);
-        }
-        else if(allianceColorIsBlue){
-            Blinken_right_pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;
-            blinkinLedDriverRight.setPattern(Blinken_right_pattern);
-        }else {
-            Blinken_right_pattern = RevBlinkinLedDriver.BlinkinPattern.RED;
-            blinkinLedDriverRight.setPattern(Blinken_right_pattern);
-        }
-    }
-    public void ShowBlinkinTelemetry() {
-        opMode.telemetry.addData("Blinkin Left: ", Blinken_left_pattern.toString());
-        opMode.telemetry.addData("Blinkin Right: ", Blinken_right_pattern.toString());
+        Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.GREEN;
+        blinkinLedDriver.setPattern(Blinken_pattern);
     }
 
     public void setBlinken_to5Volt()
     {
-        blinkinLedDriverLeft.setPattern(RevBlinkinLedDriver.BlinkinPattern.fromNumber(1625));
-        blinkinLedDriverRight.setPattern(RevBlinkinLedDriver.BlinkinPattern.fromNumber(1625));
+        blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.fromNumber(1625));
     }
 
     // *********************************************************
@@ -649,19 +610,7 @@ public class Geronimo {
         SetSlideToPosition(0);
         SetSlideRotatorArmToPosition(0);
         SetClawPosition(Geronimo.CLAW_MIN_POS);
-    }
-
-    public void IntakeFromFloor()
-    {
-        /*
-        SetSlideToPosition(1946); //695
-        SpecialSleep(500); //reduce in future
-        SetSlideRotatorArmToPosition(0);
-        SpecialSleep(250);
-        SetSmallArmHangerPosition(0.95); //0.7
-        SetIntakeBoxRotatorPosition(1.085); //1
-
-         */
+        SetSwiperPosition(Geronimo.SWIPER_MAX_POS);
     }
 
     public void SpecimenDeliverLow(){
@@ -669,6 +618,46 @@ public class Geronimo {
         SetSmallArmHangerPosition(0.6); //0.4 //0.65
     }
 
+    // ************************************
+    // Hanging Combo Moves
+    // ************************************
+    public void PreHangRobot(){
+        SetSlideRotatorArmToPosition(323);
+        SpecialSleep(2000);
+        SetIntakeBoxRotatorPosition(INTAKE_STAR_BOX_ROTATOR_MAX_POS);
+        SetSmallArmHangerPosition(1);
+        SpecialSleep(2000);
+        SetSlideRotatorArmToPosition(SLIDE_ARM_ROTATOR_MAX_POS);
+        SpecialSleep(2000);
+        SetSlideToPosition(3049);
+    }
+    public void ReadyHangRobot(){
+        SetSlideToPosition(1547);
+        SpecialSleep(2000);
+        SetSlideRotatorArmToPosition(323);
+        SpecialSleep(2000);
+        SetSlideToPosition(1365);
+        SpecialSleep(2000);
+        SetSlideRotatorArmToPosition(180);
+    }
+
+    // ************************************
+    // High Specimen Delivery Combo Moves
+    // ************************************
+    public void SpecimenPickupFromWall() {
+        SpecimenPickupFromWallServoPosition();
+        SetClawPosition(CLAW_MIN_POS);
+        double timeout = opMode.getRuntime() + 0.5;
+        SetSlideToPosition(0);
+        while (!GetSlidesLimitSwitchPressed() && opMode.getRuntime() < timeout) {
+            SpecialSleep(50);
+        }
+        SetSlideRotatorArmToPosition(0);
+    }
+    public void SpecimenPickupFromWallServoPosition(){
+        SetIntakeBoxRotatorPosition(0.96); //0.875
+        SetSmallArmHangerPosition(0.35); //.15 //0.4
+    }
     public void RemoveFromWall(){
         RemoveFromWallServoPosition();
 
@@ -679,36 +668,10 @@ public class Geronimo {
         }
         SetSlideRotatorArmToPosition(0);
     }
-
-    public void RemoveFromWallServoPosition() {
-        SetIntakeBoxRotatorPosition(0.96); //0.875
-        SetSmallArmHangerPosition(.2); //0 //0.25
-    }
-
-    public void SpecimenDeliverHigh(){
-        SetIntakeBoxRotatorPosition(0.58); //0.495)
-        SetSmallArmHangerPosition(0.6); //.4 //0.6
-        SetSlideToPosition(1680); //600
-        SetSlideRotatorArmToPosition(323); //subject to change
-    }
-
-    public void SpecimenDeliverHighChamberAlternate(){
-        SetIntakeBoxRotatorPosition(0.945); //0.82  //0.905
-        SetSmallArmHangerPosition(.20); //0 //0.25
-        SetSlideToPosition(1240);
-        SetSlideRotatorArmToPosition(710);
-    }
-
-    public void SpecimenDeliverHighChamberFinishingMove(){
-        SetIntakeBoxRotatorPosition(0.82); //0.945
-        SetSmallArmHangerPosition(.20); //0 //0.25
-        SetSlideToPosition(2350);///00
-        SetSlideRotatorArmToPosition(710); //642
-    }
-
-    public void SpecimenPickupFromWall() {
-        SpecimenPickupFromWallServoPosition();
-
+    public void Stow(){
+        //RemoveFromWallServoPosition();
+        SetIntakeBoxRotatorPosition(0.375); //0.875 //0.96  //0.2
+        SetSmallArmHangerPosition(0.2); //0 //0.25
         double timeout = opMode.getRuntime() + 0.5;
         SetSlideToPosition(0);
         while (!GetSlidesLimitSwitchPressed() && opMode.getRuntime() < timeout) {
@@ -716,59 +679,78 @@ public class Geronimo {
         }
         SetSlideRotatorArmToPosition(0);
     }
-
-    public void SpecimenPickupFromWallServoPosition(){
+    public void RemoveFromWallServoPosition() {
         SetIntakeBoxRotatorPosition(0.96); //0.875
-        SetSmallArmHangerPosition(0.35); //.15 //0.4
+        SetSmallArmHangerPosition(.2); //0 //0.25
+    }
+    public void SpecimenDeliverHighChamberAlternate(){
+        SetIntakeBoxRotatorPosition(0.945); //0.82  //0.905
+        SetSmallArmHangerPosition(.20); //0 //0.25
+        SetSlideToPosition(1240);  //1240  //740
+        SetSlideRotatorArmToPosition(710);
+    }
+    public void SpecimenDeliverHighChamberFinishingMove(){
+        SetIntakeBoxRotatorPosition(0.82); //0.945
+        SetSmallArmHangerPosition(.20); //0 //0.25
+        SetSlideToPosition(2150); //00  //2350  //1750
+        SetSlideRotatorArmToPosition(710); //642
     }
 
+    // ************************************
+    // High Basket Delivery Combo Moves
+    // ************************************
     public void SampleUrchinFloorPickup(){
         SetSlideToPosition(1945);
+        SpecialSleep(300);
+        SetUrchinServoPosition(0);
+        SetIntakeBoxRotatorPosition(0.485);
+        SetSmallArmHangerPosition(0.75); //.15 //0.80
+        SetSlideRotatorArmToPosition(0);
+    }
+    public void SampleUrchinFloorPickupFinishingMove(){
+        //SetSlideToPosition(1945);
+        //SpecialSleep(300);
+        SetIntakeBoxRotatorPosition(0.555);   //0.485 //0.525 //0
+        SetSmallArmHangerPosition(0.85); //.15 //0.80 //0.8
+        SetSlideRotatorArmToPosition(0);
+        SetUrchinServoPosition(1);
         SpecialSleep(300);
         SetIntakeBoxRotatorPosition(0.485);
         SetSmallArmHangerPosition(0.75); //.15 //0.80
         SetSlideRotatorArmToPosition(0);
     }
-
-    public void SampleUrchinFloorPickupFinishingMove(){
-        SetSlideToPosition(1945);
-        SpecialSleep(300);
-        SetIntakeBoxRotatorPosition(0.485);   //0.485
-        SetSmallArmHangerPosition(0.8); //.15 //0.80
-        SetSlideRotatorArmToPosition(0);
-    }
-
     public void BasketHigh(){
         //STEP ONE
         SetIntakeBoxRotatorPosition(0.935); //0.85
-        SetSmallArmHangerPosition(1.); //.8 //1.05
+        SetSmallArmHangerPosition(1.0); //.8 //1.05
         SetSlideRotatorArmToPosition(800); //8008, 450
         // wait for the rotators to move to vertical before raising slides
-        SpecialSleep(2000);
-        SetSlideToPosition(6496); //2320
+        //SpecialSleep(2000);
+        //SetSlideToPosition(6496); //2320
     }
     public void BasketHighFinishingMove(){
-        SetIntakeBoxRotatorPosition(0.935);
-        SetSmallArmHangerPosition(1.);
-        SetSlideRotatorArmToPosition(800);
-        // wait for the rotators to move to vertical before raising slides
-        SpecialSleep(2000);
+        //TODO needs values
         SetSlideToPosition(6496);
+        SpecialSleep(4000); //2000
+        SetIntakeBoxRotatorPosition(0.935);
+        SetSmallArmHangerPosition(0.5);  //1.0
+        SetSlideRotatorArmToPosition(800);
+        SpecialSleep(200);
+        SetUrchinServoPosition(0);
+        SpecialSleep(400);
+        SetSmallArmHangerPosition(1.0);
+        SpecialSleep(400);
+        SetSlideRotatorArmToPosition(700);
+        SetSlideToPosition(0);
+        // wait for the rotators to move to vertical before raising slides
+
     }
+
     // hanger position 0.8
     // .15 right
     //slides - -2320
     //rotator 8008
     //0.85 IntakeStarRotator, hanger position (0.15/0.8)
-
-
-
-    public void BasketLow(){
-        SetIntakeBoxRotatorPosition(1.085); //1
-        SetSmallArmHangerPosition(0.8); //0.6 //0.85
-        SetSlideToPosition(1300);
-        SetSlideRotatorArmToPosition(450);
-    }
 
     // *********************************************************
     // ****       Green Intake Box Controls                 ****
@@ -875,6 +857,23 @@ public class Geronimo {
             claw_position = position;
         }
         clawServo.setPosition(claw_position);
+    }
+
+    public void SetSwiperPosition(double position)
+    {
+        if (position > SWIPER_MAX_POS)
+        {
+            swiper_position = SWIPER_MAX_POS;
+        }
+        else if (position < SWIPER_MIN_POS)
+        {
+           swiper_position = SWIPER_MIN_POS;
+        }
+        else
+        {
+            swiper_position = position;
+        }
+        swiperServo.setPosition(swiper_position);
     }
 
     // *********************************************************
@@ -1181,10 +1180,11 @@ public class Geronimo {
         //opMode.telemetry.addData(">", "green intake box rotator - use dpad L/R for control" );
         // color sensor data PLEASE do not delete!
         opMode.telemetry.addData("colorDetected: " , ColorRevV3Sensor().toString());
+        opMode.telemetry.addData("Blinkin Left: ", Blinken_pattern.toString());
         opMode.telemetry.addData("Hue: " , hsvValues[0]);
         opMode.telemetry.addData("Sat: " , hsvValues[1]);
         opMode.telemetry.addData("Val: " , hsvValues[2]);
-
+        opMode.telemetry.addData("Swiper Position:", swiper_position);
         showColorSensorTelemetry();
         opMode.telemetry.update();
     }
