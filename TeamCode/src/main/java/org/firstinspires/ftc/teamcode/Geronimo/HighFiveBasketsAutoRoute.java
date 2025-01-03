@@ -18,10 +18,10 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 
-@Autonomous(name="Five High Baskets Auto Route", preselectTeleOp =
+@Autonomous(name="High Five Baskets Auto Route", preselectTeleOp =
         "Geronimo 1 Manual Control")
 // @Disabled
-public class FiveHighBasketsAutoRoute extends LinearOpMode {
+public class HighFiveBasketsAutoRoute extends LinearOpMode {
     Geronimo control = new Geronimo(true, false,this);
     MecanumDrive_Geronimo drive;
     Pose2d startPose;
@@ -29,6 +29,14 @@ public class FiveHighBasketsAutoRoute extends LinearOpMode {
     // Trajectories
     Action DeliverStartingSample;
     Action DriveToSample1;
+    Action DeliverSample1;
+    Action DriveToSample2;
+    Action DeliverSample2;
+    Action DriveToSubmersible1;
+    Action DeliverSubmersible1;
+    Action DriveToSubmersible2;
+    Action DeliverToSubmersible2;
+    Action AdjustForDrivers;
 
     VelConstraint speedUpVelocityConstraint;
     AccelConstraint speedUpAccelerationConstraint;
@@ -78,13 +86,29 @@ public class FiveHighBasketsAutoRoute extends LinearOpMode {
         DeliverStartingSample = drive.actionBuilder(startPose)
                 .splineToConstantHeading(new Vector2d(-36, -36),Math.toRadians(90))
                 .setReversed(true)
-                .strafeToLinearHeading(new Vector2d(-57,-57), Math.toRadians(45))
+                .strafeToLinearHeading(new Vector2d(-59,-59 ), Math.toRadians(45))
                 .build();
-        DriveToSample1 = drive.actionBuilder(new Pose2d(-57,-57,Math.toRadians(45)))
+        DriveToSample1 = drive.actionBuilder(new Pose2d(-59,-59,Math.toRadians(45)))
+                .setReversed(false)
+                .strafeToLinearHeading(new Vector2d(-48,-47), Math.toRadians(90))
+                .build();
+        DeliverSample1 = drive.actionBuilder(new Pose2d(-48,-47,Math.toRadians(90)))
                 .setReversed(true)
-                .strafeToLinearHeading(new Vector2d(-36,-36), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(-59,-59), Math.toRadians(45))
+                .build();
+        DriveToSample2 = drive.actionBuilder(new Pose2d(-59,-59,Math.toRadians(45)))
+                .setReversed(false)
+                .strafeToLinearHeading(new Vector2d(-57,-47), Math.toRadians(45))
+                .build();
+        DeliverSample2 = drive.actionBuilder(new Pose2d(-57,-47,Math.toRadians(90)))
+                .setReversed(true)
+                .strafeToLinearHeading(new Vector2d(-59,-59), Math.toRadians(45))
                 .build();
 
+        AdjustForDrivers = drive.actionBuilder(new Pose2d(-59,-59,Math.toRadians(45)))
+                .setReversed(false)
+                .strafeToLinearHeading(new Vector2d(-42,-24), Math.toRadians(90))
+                .build();
         // ***************************************************
         // ****  START DRIVING    ****************************
         // ***************************************************
@@ -94,7 +118,7 @@ public class FiveHighBasketsAutoRoute extends LinearOpMode {
                         new ParallelAction(DeliverStartingSample, basketHigh()),
                         // Raise slides to high basket height
                         finishBasketHigh_SlidesPosition(),
-                        new SleepAction(4.0),
+                        new SleepAction(3.0),
                         // Rotate urchin to align above basket
                         finishBasketHigh_UrchinDeliverPosition(),
                         new SleepAction(0.4),
@@ -106,13 +130,58 @@ public class FiveHighBasketsAutoRoute extends LinearOpMode {
                         new SleepAction(0.4),
                         // Rotate arms a little away from basket and lower slides to zero
                         finishBasketHigh_ArmSafeToLowerPosition(),
-                        slidesToZero(),
+                        slidesToZero(), new SleepAction(1),
+                        stowPosition(),
                         rotatorArmsToZero(),
 
                         // Drive to Sample 1
-                        new ParallelAction(DriveToSample1, sampleUrchinFloorPickup_SlidePosition(), openUrchin()),
+                        new ParallelAction(DriveToSample1, sampleUrchinFloorPickup_SlidePosition(), openUrchin()) ,
+                        sampleUrchinFloorPickup_UrchinReadyPosition(), sampleUrchinFloorPickupFinishingMove_UrchinGrabPosition(),
+                        closeUrchin(), sampleUrchinFloorPickup_UrchinReadyPosition(), stowPosition(),
+                        //Deliver Sample 1
+                        new ParallelAction(DeliverSample1, basketHigh()),
+                        finishBasketHigh_SlidesPosition(),
+                        new SleepAction(3.0),
+                        // Rotate urchin to align above basket
+                        finishBasketHigh_UrchinDeliverPosition(),
+                        new SleepAction(0.4),
+                        // Release the sample from the urchin
+                        openUrchin(),
+                        new SleepAction(0.4),
+                        // Rotate urchin back away from the basket
+                        finishBasketHigh_UrchinSafeToLowerPosition(),
+                        new SleepAction(0.4),
+                        // Rotate arms a little away from basket and lower slides to zero
+                        finishBasketHigh_ArmSafeToLowerPosition(),
+                        slidesToZero(), new SleepAction(1),
+                        stowPosition(),
+                        rotatorArmsToZero(),
+                        // Drive to Sample 2
+                        new ParallelAction(DriveToSample2, sampleUrchinFloorPickup_SlidePosition(), openUrchin()) ,
+                        sampleUrchinFloorPickup_UrchinReadyPosition(), sampleUrchinFloorPickupFinishingMove_UrchinGrabPosition(),
+                        closeUrchin(),  sampleUrchinFloorPickup_UrchinReadyPosition(), stowPosition(),
+                        //Deliver Sample 2
+                        new ParallelAction(DeliverSample2, basketHigh()),
+                        finishBasketHigh_SlidesPosition(),
+                        new SleepAction(3.0),
+                        // Rotate urchin to align above basket
+                        finishBasketHigh_UrchinDeliverPosition(),
+                        new SleepAction(0.4),
+                        // Release the sample from the urchin
+                        openUrchin(),
+                        new SleepAction(0.4),
+                        // Rotate urchin back away from the basket
+                        finishBasketHigh_UrchinSafeToLowerPosition(),
+                        new SleepAction(0.4),
+                        // Rotate arms a little away from basket and lower slides to zero
+                        finishBasketHigh_ArmSafeToLowerPosition(),
+                        slidesToZero(), new SleepAction(1),
+                        stowPosition(),
+                        rotatorArmsToZero(),
+                        // Adjust for Drivers
+                        new ParallelAction(AdjustForDrivers, sampleUrchinFloorPickup_SlidePosition(), openUrchin())
                         // position the urchin to be ready to intake
-                        sampleUrchinFloorPickup_UrchinReadyPosition() /*,
+                         /*,
                         new SleepAction(0.2),
                         // Lower the urchin to be closer to the floor
                         sampleUrchinFloorPickupFinishingMove_UrchinGrabPosition(),
@@ -201,6 +270,20 @@ public class FiveHighBasketsAutoRoute extends LinearOpMode {
                 initialized = true;
             }
             packet.put("finishBasketHigh_ArmSafeToLowerPosition", 0);
+            return false;  // returning true means not done, and will be called again.  False means action is completely done
+        }
+    }
+    public Action stowPosition (){return new StowPosition();}
+    public class StowPosition implements Action {
+        private boolean initialized = false;
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            if (!initialized) {
+                control.RemoveFromWallServoPosition();
+                initialized = true;
+            }
+            packet.put("lock purple pixel", 0);
             return false;  // returning true means not done, and will be called again.  False means action is completely done
         }
     }
