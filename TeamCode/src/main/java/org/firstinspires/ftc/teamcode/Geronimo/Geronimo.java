@@ -705,8 +705,14 @@ public class Geronimo {
         SpecialSleep(300);
 
         // Open the urchin and position to be ready to intake
+        SampleUrchinFloorPickup_UrchinReadyPosition();
+        SpecialSleep(400);
+        SetUrchinServoPosition(0);
+        /*
         SetUrchinServoPosition(0);
         SampleUrchinFloorPickup_UrchinReadyPosition();
+
+         */
     }
     public void SampleUrchinFloorPickup_SlidePosition() {
         // Move slides a little in front of robot
@@ -726,7 +732,7 @@ public class Geronimo {
 
         // Close the urchin to grab the specimen
         SetUrchinServoPosition(1);
-        SpecialSleep(400); //300
+        SpecialSleep( 400); //300
 
         // Raise the Urchin back up to ready position to assess if succeeded
         SampleUrchinFloorPickup_UrchinReadyPosition();
