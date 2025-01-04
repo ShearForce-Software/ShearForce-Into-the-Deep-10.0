@@ -726,7 +726,7 @@ public class Geronimo {
 
         // Close the urchin to grab the specimen
         SetUrchinServoPosition(1);
-        SpecialSleep(300);
+        SpecialSleep(400); //300
 
         // Raise the Urchin back up to ready position to assess if succeeded
         SampleUrchinFloorPickup_UrchinReadyPosition();

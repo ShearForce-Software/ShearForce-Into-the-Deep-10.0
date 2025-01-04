@@ -14,7 +14,7 @@ import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
 
-public class MM_FiveHighBasketsRoute {
+public class MM_HighFiveBasketsRoute {
     static Action DeliverStartingSample;
     static Action DriveToSample1;
     static Action DeliverSample1;
@@ -64,15 +64,15 @@ public class MM_FiveHighBasketsRoute {
 
         DriveToSample1 = myBot.getDrive().actionBuilder(new Pose2d(-57, -57, Math.toRadians(45)))
                 .setReversed(false)
-                .strafeToLinearHeading(new Vector2d(-48.5,-43), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(-48,-47), Math.toRadians(90))
                 .build();
 
-        DeliverSample1 = myBot.getDrive().actionBuilder(new Pose2d(-48.5,-43, Math.toRadians(90)))
+        DeliverSample1 = myBot.getDrive().actionBuilder(new Pose2d(-48,-47, Math.toRadians(90)))
                 .setReversed(true)
-                .strafeToLinearHeading(new Vector2d(-57,-57), Math.toRadians(45))
+                .strafeToLinearHeading(new Vector2d(-59,-59), Math.toRadians(45))
                 .build();
 
-        DriveToSample2 = myBot.getDrive().actionBuilder(new Pose2d(-57, -57, Math.toRadians(45)))
+        DriveToSample2 = myBot.getDrive().actionBuilder(new Pose2d(-59, -59, Math.toRadians(45)))
                 .setReversed(false)
                 .strafeToLinearHeading(new Vector2d(-57,-43), Math.toRadians(90))
                 .build();
@@ -98,7 +98,7 @@ public class MM_FiveHighBasketsRoute {
                         //Drive to submersible and pick up sample
                         DeliverStartingSample,
                         // Put sample in the basket and safely Lower the slides and arms before moving
-                        new SleepAction(6.0),
+                        new SleepAction(1.0),
 
                         DriveToSample1,
                         // Pick up Sample from floor
@@ -106,7 +106,7 @@ public class MM_FiveHighBasketsRoute {
                         // Deliver Sample to High Backet
                         DeliverSample1,
                         // Put sample in the basket and safely Lower the slides and arms before moving
-                        new SleepAction(6.0),
+                        new SleepAction(1.0),
 
                         DriveToSample2,
                         // Pick up Sample from floor

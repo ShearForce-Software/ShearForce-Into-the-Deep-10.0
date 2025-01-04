@@ -97,7 +97,7 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
                 .splineToConstantHeading(new Vector2d(38, -40),Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
                 .strafeToLinearHeading(new Vector2d(38,-16), Math.toRadians(270), slowDownVelocityConstraint)
                 //.strafeToLin earHeading(new Vector2d(44,-54),Math.toRadians(270))
-                .splineToConstantHeading(new Vector2d(46,-16), Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
+                .splineToConstantHeading(new Vector2d(48,-16), Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
                 .lineToYConstantHeading(-54)
                 .build();
 
@@ -185,7 +185,8 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
                         new ParallelAction(DriveToSamplesandDeliver1
                                 , new SequentialAction(new SleepAction(.3),
                                         //don't call stow; call wall position
-                                        slidestozero(), rotatorarmstozero(), grabSpecimenfromwall())),
+                                        slidestozero(), rotatorarmstozero(), stowPosition()
+                        )),
                         DriveToSamplesandDeliver2,
                         // 1st Initial Delivery
                         // Drive to the wall and prepare to grab a specimen
@@ -209,7 +210,7 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
                         //2nd delivery
                         new ParallelAction(DrivetoDeck2,
                                 new SequentialAction(//don't call stow; call wall position
-                                slidestozero(), rotatorarmstozero(), grabSpecimenfromwall())),
+                                slidestozero(), rotatorarmstozero(), stowPosition(), grabSpecimenfromwall())),
                         grabSpecimen(),
                         new SleepAction(.3),
                         liftSpecimenoffWall(),
@@ -223,7 +224,7 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
                         //3rd delivery
                         new ParallelAction(DrivetoDeck3,
                                 new SequentialAction(//don't call stow; call wall position
-                                        slidestozero(), rotatorarmstozero(), grabSpecimenfromwall()))
+                                        slidestozero(), rotatorarmstozero(), stowPosition(), grabSpecimenfromwall()))
                         ,grabSpecimen(),
                         new SleepAction(.3),
                         liftSpecimenoffWall() /*,
