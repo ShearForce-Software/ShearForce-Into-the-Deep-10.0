@@ -32,10 +32,6 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
     Action DeliverSample1;
     Action DriveToSample2;
     Action DeliverSample2;
-    Action DriveToSubmersible1;
-    Action DeliverSubmersible1;
-    Action DriveToSubmersible2;
-    Action DeliverToSubmersible2;
     Action AdjustForDrivers;
 
     VelConstraint speedUpVelocityConstraint;
@@ -114,7 +110,7 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
         // ***************************************************
         Actions.runBlocking(
                 new SequentialAction(
-                        //Drive to submersible and pick up sample
+                        // Drive to basket and deliver preloaded sample
                         new ParallelAction(DeliverStartingSample, basketHigh()),
                         // Raise slides to high basket height
                         finishBasketHigh_SlidesPosition(),
@@ -135,10 +131,18 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                         rotatorArmsToZero(),
 
                         // Drive to Sample 1
-                        new ParallelAction(DriveToSample1, sampleUrchinFloorPickup_SlidePosition(), openUrchin()) ,
-                        sampleUrchinFloorPickup_UrchinReadyPosition(), sampleUrchinFloorPickupFinishingMove_UrchinGrabPosition(),
-                        closeUrchin(), sampleUrchinFloorPickup_UrchinReadyPosition(), stowPosition(),
-                        //Deliver Sample 1
+                        new ParallelAction(DriveToSample1, sampleUrchinFloorPickup_SlidePosition(), openUrchin()),
+                        sampleUrchinFloorPickup_UrchinReadyPosition(),
+                        new SleepAction(0.4),
+                        sampleUrchinFloorPickupFinishingMove_UrchinGrabPosition(),
+                        new SleepAction(0.1),
+                        closeUrchin(),
+                        new SleepAction(0.4),
+                        sampleUrchinFloorPickup_UrchinReadyPosition(),
+                        new SleepAction(0.1),
+                        stowPosition(),
+                        new SleepAction(0.2),
+                        // *** Deliver Sample 1 ***
                         new ParallelAction(DeliverSample1, basketHigh()),
                         finishBasketHigh_SlidesPosition(),
                         new SleepAction(3.0),
@@ -156,11 +160,20 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                         slidesToZero(), new SleepAction(1),
                         stowPosition(),
                         rotatorArmsToZero(),
+
                         // Drive to Sample 2
-                        new ParallelAction(DriveToSample2, sampleUrchinFloorPickup_SlidePosition(), openUrchin()) ,
-                        sampleUrchinFloorPickup_UrchinReadyPosition(), sampleUrchinFloorPickupFinishingMove_UrchinGrabPosition(),
-                        closeUrchin(),  sampleUrchinFloorPickup_UrchinReadyPosition(), stowPosition(),
-                        //Deliver Sample 2
+                        new ParallelAction(DriveToSample2, sampleUrchinFloorPickup_SlidePosition(), openUrchin()),
+                        sampleUrchinFloorPickup_UrchinReadyPosition(),
+                        new SleepAction(0.4),
+                        sampleUrchinFloorPickupFinishingMove_UrchinGrabPosition(),
+                        new SleepAction(0.1),
+                        closeUrchin(),
+                        new SleepAction(0.4),
+                        sampleUrchinFloorPickup_UrchinReadyPosition(),
+                        new SleepAction(0.1),
+                        stowPosition(),
+                        new SleepAction(0.2),
+                        // *** Deliver Sample 2 ***
                         new ParallelAction(DeliverSample2, basketHigh()),
                         finishBasketHigh_SlidesPosition(),
                         new SleepAction(3.0),
@@ -178,7 +191,8 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                         slidesToZero(), new SleepAction(1),
                         stowPosition(),
                         rotatorArmsToZero(),
-                        // Adjust for Drivers
+
+                        // Park for Drivers
                         new ParallelAction(AdjustForDrivers, sampleUrchinFloorPickup_SlidePosition(), openUrchin())
                         // position the urchin to be ready to intake
                          /*,
