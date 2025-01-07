@@ -181,7 +181,12 @@ public class FourSpecimensAutoAkshay extends LinearOpMode {
                         DriveToSamplesandDeliver2,
 
                         // 3) Drive to the wall, prepare to grab
-                        new ParallelAction(DrivetoDeck1a, grabSpecimenfromwall()) /* ,
+                        new ParallelAction(DrivetoDeck1a, grabSpecimenfromwall()), /* ,
+                        //This is where the limelight should be called:
+                        */ LimelightAutoAlign("block", 10)
+
+                        /*
+
                         grabSpecimen(),
                         new SleepAction(.3),
                         liftSpecimenoffWall(),
@@ -284,6 +289,52 @@ public class FourSpecimensAutoAkshay extends LinearOpMode {
             return false;
         }
     }
+
+    public Action LimelightAutoAlign(String pipelineName, double distance) {
+        // pipelineName: e.g. "block"
+        // deckY: the Y position along the wall or “deck” you want to align to
+        return new Action() {
+            private boolean started = false;
+            private boolean done = false;
+            private Action autoCenterAction;
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                if (!started) {
+                    started = true;
+
+                    // 1) Query how many inches to strafe
+                    //    If your camera’s pipeline name is "block", pass that in:
+                    double offsetInches = control.GetStrafeOffsetInInches(pipelineName, 10);
+
+                    telemetry.addData("AutoAlign offset: ", offsetInches);
+                    telemetry.update();
+
+                    // 2) Build a short strafe action from the current robot pose
+                    Pose2d currentPose = drive.pose;
+
+                    autoCenterAction = drive.actionBuilder(currentPose)
+                            .strafeToLinearHeading(
+                                    new Vector2d(offsetInches + offsetInches, distance),
+                                    Math.toRadians(270),         // keep the heading
+                                    humanPlayerVelocityConstraint // or slowDownVelocityConstraint, etc.
+                            )
+                            .build();
+
+                    // 3) Run that strafe action to completion
+                    Actions.runBlocking(autoCenterAction);
+
+                    done = true;
+                }
+
+                // The run(...) method must keep returning true until it’s “finished.”
+                // Once we’re done, returning false basically signals to the RoadRunner scheduler
+                // that this action is complete.
+                return !done;
+            }
+        };
+    }
+
 
     public Action deliverLowSpecimen (){return new DeliverLowSpecimen();}
     public class DeliverLowSpecimen implements Action {
