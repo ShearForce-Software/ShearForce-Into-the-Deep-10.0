@@ -189,8 +189,10 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             }
 
             // Combo moves for basket deliveries
-            else if (gamepad2.dpad_left) {
+            else if (gamepad2.dpad_left && !gamepad2.options) {
                 theRobot.SampleUrchinFloorPickup();
+            } else if (gamepad2.dpad_left && gamepad2.options) {
+                theRobot.SampleUrchinFloorJam();
             } else if (gamepad2.dpad_down){
                 theRobot.SampleUrchinFloorPickupFinishingMove();
             } else if (gamepad2.share) {
