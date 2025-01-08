@@ -7,11 +7,11 @@
 - [ ] Portfolio: write paragraph about Arm Control Iterations going from single servo/motor control to complicated combination controls.  Why did we need to do this, what has it achieved, etc...?
 - [ ] Portfolio: write paragraph about Autonomous Iterations -- discuss strategic reasons we focused on high specimen delivery over basket delivery first, and why we switched from forward delivery to reverse delivery, and why we flipped the specimen upside down
 - [ ] Portfolio: Aidan: write paragraph about how we use Roadrunner and MeepMeep Visualization for autonomous
-- [ ] Portfolio: Matt: write short paragraph about how we use color sensors, what iterations and lessons learned did we go through on getting them to work?
+- [x] Portfolio: Matt: write short paragraph about how we use color sensors, what iterations and lessons learned did we go through on getting them to work?
 - [ ] Portfolio: Akshay: write paragraph about what we have learned about the Limelight, be sure to cover different experiments and lessons learned about it
-- [ ] Portfolio: Claire: write short paragraph about currently learning about PID control for more precise arm motor control
+- [x] Portfolio: Claire: write short paragraph about currently learning about PID control for more precise arm motor control
 - [ ] Portfolio: write short paragraph about learning about PlantUML diagramming and how we used it to plan out our initial programming tasks
-- [ ] Portfolio: Sensors List: write a couple of sentences about how we use each of our sensors: IMU, Color Sensor, Touch Sensors, Odometry Pods
+- [ ] Portfolio: Matt: Sensors List: write a couple of sentences about how we use each of our sensors: IMU, Color Sensor, Touch Sensors, Odometry Pods
 - [ ] Speed up Hang routines
 - [ ] Speed up basket delivery routines
 - [ ] Change Auto routines to have better start positions (left start in box 2, right - start on a line instead of middle)
