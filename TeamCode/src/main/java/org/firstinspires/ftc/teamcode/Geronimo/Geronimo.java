@@ -964,6 +964,13 @@ public class Geronimo {
         return returnValue;
     }
 
+    public void SlidesOutInspection(){
+        SetSlideToPosition(SLIDE_ARM_MAX_HORIZONTAL_POS);
+        SetIntakeBoxRotatorPosition(0.96); //0.875
+       // SetSmallArmHangerPosition(0.35);
+        SetClawPosition(CLAW_MIN_POS);
+    }
+
     // TODO -- need to determine other rotator arm positions to limit than just zero
     public void Slides_Horizontal_MAX_Limit(){
         // if the rotator arms are in a horizontal orientation
@@ -1259,11 +1266,12 @@ public class Geronimo {
     }
 
     public void EndgameBuzzer(){
-        if(opMode.getRuntime() < 109.5 && opMode.getRuntime() > 109.0){
+        if(opMode.getRuntime() < 84.5 && opMode.getRuntime() > 84.0){
             opMode.gamepad1.rumble(1000);
             opMode.gamepad2.rumble(1000);
         }
     }
+    //opMode.getRuntime() < 109.5 && opMode.getRuntime() > 109.0       10 SECONDS
 
     public void driveControlsRobotCentric() {
         double y = -opMode.gamepad1.left_stick_y;

@@ -54,6 +54,15 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 theRobot.SetFieldCentricMode(false);
             }
 
+            //Inspection button //TODO
+            if (gamepad1.triangle && gamepad1.options) {
+                 theRobot.SlidesOutInspection();
+                 theRobot.SpecialSleep(3000);
+                //theRobot.method for rotator back max position
+
+            }
+
+
             if (gamepad1.dpad_left) {
                 theRobot.SetSwiperPosition(Geronimo.SWIPER_MAX_POS);
                 theRobot.SpecialSleep(500);
