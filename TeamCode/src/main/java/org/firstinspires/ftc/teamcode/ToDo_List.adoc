@@ -6,16 +6,16 @@
 
 - [x] Portfolio: Claire: write paragraph about Arm Control Iterations going from single servo/motor control to complicated combination controls.  Why did we need to do this, what has it achieved, etc...?
 - [x] Portfolio: Aidan: write paragraph about Autonomous Iterations -- discuss strategic reasons we focused on high specimen delivery over basket delivery first, and why we switched from forward delivery to reverse delivery, and why we flipped the specimen upside down
-- [ ] Portfolio: Aidan: write paragraph about how we use Roadrunner and MeepMeep Visualization for autonomous
+- [x] Portfolio: Aidan: write paragraph about how we use Roadrunner and MeepMeep Visualization for autonomous
 - [x] Portfolio: Matt: write short paragraph about how we use color sensors, what iterations and lessons learned did we go through on getting them to work?
 - [x] Portfolio: Akshay: write paragraph about what we have learned about the Limelight, be sure to cover different experiments and lessons learned about it
 - [x] Portfolio: Claire: write short paragraph about currently learning about PID control for more precise arm motor control
 - [x] Portfolio: Claire: write short paragraph about learning about PlantUML diagramming and how we used it to plan out our initial programming tasks
 - [x] Portfolio: Matt: Sensors List: write a couple of sentences about how we use each of our sensors: IMU, Color Sensor, Touch Sensors, Odometry Pods
 - [ ] Speed up Hang routines
-- [ ] Change end-game buzzer to be like 35 seconds
-- [ ] Create a special button (or two) to use for inspections
-- [ ] experiment with using urchin to push blocks away from the target urchin
+- [x] Change end-game buzzer to be like 35 seconds
+- [ ] Claire: Create a special button (or two) to use for inspections
+- [x] experiment with using urchin to push blocks away from the target urchin
 - [ ] experiment with other positions to see if can get urchin more reliable for intake
 - [ ] Speed up basket delivery routines
 - [ ] Change Auto routines to have better start positions (left start in box 2, right - start on a line instead of middle)
@@ -36,7 +36,7 @@
 - [x] Update Basket delivery to be 2 push-buttons (step 1 raise arm rotators and set urchin position, step 2 raise slides to finish)
 - [x] Aidan: Auto Right - Fix wall grab position to line up exactly on the seam
 - [x] Gianna: Create driver control for swiper on Gamepad 1 and test it
-- [x] Jared: teach Claire about using git branches
+- [x ] Jared: teach Claire about using git branches
 - [x] Gianna: Auto Right - Add swiper move as a parallel action after each grab / release action
 - [x] Matt: Connect Blinkin to ColorRevV3Sensor() so that color shown is Red, Blue, yellow, or Green if nothing detected
 - [x] Matt or Gianna: Configure Blinkin (expansion port 5) and Swiper (expansion port 4) servos
