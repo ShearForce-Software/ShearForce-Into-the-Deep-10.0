@@ -40,7 +40,7 @@ public class MM_HighFiveBasketsRoute {
                 .setConstraints(60, 50, Math.PI*.6, Math.PI*.8, 15)
                 .build();
 
-        Pose2d StartPose = new Pose2d(-12, -64, Math.toRadians(90));
+        Pose2d StartPose = new Pose2d(-39, -64, Math.toRadians(0));
 
         // Define some custom constraints to use when wanting to go faster than defaults
         speedUpVelocityConstraint = new TranslationalVelConstraint(60.0);
@@ -57,7 +57,7 @@ public class MM_HighFiveBasketsRoute {
         // ***************************************************
 
         DeliverStartingSample = myBot.getDrive().actionBuilder(StartPose)
-                .splineToConstantHeading(new Vector2d(-36, -36),Math.toRadians(90))
+                //.splineToConstantHeading(new Vector2d(-36, -36),Math.toRadians(90))
                 .setReversed(true)
                 .strafeToLinearHeading(new Vector2d(-57,-57), Math.toRadians(45))
                 .build();
@@ -78,18 +78,18 @@ public class MM_HighFiveBasketsRoute {
                 .build();
         DeliverSample2 = myBot.getDrive().actionBuilder(new Pose2d(-57,-43, Math.toRadians(90)))
                 .setReversed(true)
-                .strafeToLinearHeading(new Vector2d(-57,-57), Math.toRadians(45))
+                .strafeToLinearHeading(new Vector2d(-59,-59), Math.toRadians(45))
                 .build();
-
-        DriveToSample3 = myBot.getDrive().actionBuilder(new Pose2d(-57, -57, Math.toRadians(45)))
+    /*
+        DriveToSample3 = myBot.getDrive().actionBuilder(new Pose2d(-59, -59, Math.toRadians(45)))
                 .setReversed(false)
                 .strafeToLinearHeading(new Vector2d(-55,-40), Math.toRadians(135))
                 .build();
         DeliverSample3 = myBot.getDrive().actionBuilder(new Pose2d(-55,-40, Math.toRadians(135)))
                 .setReversed(true)
-                .strafeToLinearHeading(new Vector2d(-57,-57), Math.toRadians(45))
+                .strafeToLinearHeading(new Vector2d(-59,-59), Math.toRadians(45))
                 .build();
-
+    */
         // ***************************************************
         // ****  START DRIVING    ****************************
         // ***************************************************
@@ -103,7 +103,7 @@ public class MM_HighFiveBasketsRoute {
                         DriveToSample1,
                         // Pick up Sample from floor
                         new SleepAction(1.5),
-                        // Deliver Sample to High Backet
+                        // Deliver Sample to High Basket
                         DeliverSample1,
                         // Put sample in the basket and safely Lower the slides and arms before moving
                         new SleepAction(1.0),
@@ -111,18 +111,18 @@ public class MM_HighFiveBasketsRoute {
                         DriveToSample2,
                         // Pick up Sample from floor
                         new SleepAction(1.5),
-                        // Deliver Sample to High Backet
-                        DeliverSample2,
+                        // Deliver Sample to High Basket
+                        DeliverSample2
                         // Put sample in the basket and safely Lower the slides and arms before moving
-                        new SleepAction(6.0),
+                     //   new SleepAction(6.0),
 
-                        DriveToSample3,
+                        //DriveToSample3,
                         // Pick up Sample from floor
-                        new SleepAction(1.5),
-                        // Deliver Sample to High Backet
-                        DeliverSample3,
+                       // new SleepAction(1.5),
+                        // Deliver Sample to High Basket
+                        //DeliverSample3,
                         // Put sample in the basket and safely Lower the slides and arms before moving
-                        new SleepAction(6.0)
+                      //  new SleepAction(6.0)
 
                         ));
 
