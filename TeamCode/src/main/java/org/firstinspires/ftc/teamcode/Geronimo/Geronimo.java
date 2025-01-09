@@ -699,6 +699,8 @@ public class Geronimo {
     // ************************************
     // High Basket Delivery Combo Moves
     // ************************************
+    /*
+    // Existing method
     public void SampleUrchinFloorPickup(){
         // Move slides a little in front of robot
         SampleUrchinFloorPickup_SlidePosition();
@@ -708,10 +710,29 @@ public class Geronimo {
         SampleUrchinFloorPickup_UrchinReadyPosition();
         SpecialSleep(400);
         SetUrchinServoPosition(0);
+
+        //These two lines were already commented out
+        SetUrchinServoPosition(0);
+        SampleUrchinFloorPickup_UrchinReadyPosition();
+    }
+     */
+    // New method
+    public void SampleUrchinFloorPickup(){
+        if (!(GetRotatorLeftArmCurrentPosition() == 0 && GetSlideLeftCurrentPosition() == 1945)) {
+            // Move slides a little in front of robot
+            SampleUrchinFloorPickup_SlidePosition();
+            SpecialSleep(300);
+        }
+         if (!(GetIntakeBoxRotatorPosition() == 0.425 && GetSmallArmHangerPosition() == 0.7 && GetSlideRotatorArmToPosition() == 0)) {
+            // Open the urchin and position to be ready to intake
+            SampleUrchinFloorPickup_UrchinReadyPosition();
+            SpecialSleep(400);
+        }
+        SetUrchinServoPosition(0);
+
         /*
         SetUrchinServoPosition(0);
         SampleUrchinFloorPickup_UrchinReadyPosition();
-
          */
     }
     public void SampleUrchinFloorJam(){
