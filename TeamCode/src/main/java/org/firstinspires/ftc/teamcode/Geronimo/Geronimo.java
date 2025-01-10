@@ -718,12 +718,12 @@ public class Geronimo {
      */
     // New method
     public void SampleUrchinFloorPickup(){
-        if (!(GetRotatorLeftArmCurrentPosition() == 0 && GetSlideLeftCurrentPosition() == 1945)) {
+        if (!(GetRotatorLeftArmCurrentPosition() == 0 && GetSlideLeftCurrentPosition() >= 1925 && GetSlideLeftCurrentPosition() <= 1965)) {
             // Move slides a little in front of robot
             SampleUrchinFloorPickup_SlidePosition();
             SpecialSleep(300);
         }
-         if (!(GetIntakeBoxRotatorPosition() == 0.425 && GetSmallArmHangerPosition() == 0.7 && GetSlideRotatorArmToPosition() == 0)) {
+         if (!(intakeBoxRotatorPosition == 0.425 && smallArmHangerLeftPosition == 0.7 && slideArmRotatorTargetPosition <= 20)) {
             // Open the urchin and position to be ready to intake
             SampleUrchinFloorPickup_UrchinReadyPosition();
             SpecialSleep(400);
