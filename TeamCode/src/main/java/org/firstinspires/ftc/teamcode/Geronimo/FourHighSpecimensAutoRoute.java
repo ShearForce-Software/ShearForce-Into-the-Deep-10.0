@@ -100,7 +100,7 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
                 .splineToConstantHeading(new Vector2d(48,-15), Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
                 .lineToYConstantHeading(-54)
                 .build();
-
+// Fic
         DriveToSamplesandDeliver2 = drive.actionBuilder(new Pose2d(46,-54, Math.toRadians(270)))
                 .strafeToLinearHeading(new Vector2d(46, -16.5), Math.toRadians(270), slowDownVelocityConstraint)
                 .splineToConstantHeading(new Vector2d(56,-16.5), Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
