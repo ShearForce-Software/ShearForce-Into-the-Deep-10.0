@@ -4,31 +4,34 @@
 
 ---
 
+- [ ] Create Programming section of Judging presentation
+- [ ] Claire: Create a special button (or two) to use for inspections
+- [ ] Aidan: Test and get Auto Left delivering at least 3 samples to high basket
+- [ ] Speed up Hang routines
+- [ ] Speed up basket delivery routines in Teleop (and then Auto)
+- [ ] Change Auto routines to have better start positions (left start in box 2, right - start on a line instead of middle)
+- [ ] Determine if there are swiper actions needed in more places of our autonomous routines
+- [ ] Experiment again with using urchin to grab from specimen wall and hanging on high bar
+- [ ] Akshay: Test Limelight on Geronimo for aligning on wall specimens
+- [ ] Akshay: Create routine in Geronimo that uses the Limelight to report Red, Blue, or Yellow -- Prove on SummerChassis
+- [ ] Fully Re-Calibrate Geronimo
+- [ ] Claire: Experiment with PID control for rotator arms
+- [ ] Aidan: Make a NEW Auto Right that does at least 4 specimens (deliver, try grabbing samples with urchin to speed up, deliver, deliver, deliver)
+- [ ] Make a NEW auto left to put at least 4 samples into the high basket
+- [ ] Create TeleOp Auto drive routines using roadrunner to get to basket and wall spot
+
+---
+- [x] experiment with other positions to see if can get urchin more reliable for intake
+- [x] experiment with using urchin to push blocks away from the target urchin
+- [x] Change end-game buzzer to be like 35 seconds
 - [x] Portfolio: Claire: write paragraph about Arm Control Iterations going from single servo/motor control to complicated combination controls.  Why did we need to do this, what has it achieved, etc...?
 - [x] Portfolio: Aidan: write paragraph about Autonomous Iterations -- discuss strategic reasons we focused on high specimen delivery over basket delivery first, and why we switched from forward delivery to reverse delivery, and why we flipped the specimen upside down
-- [X] Portfolio: Aidan: write paragraph about how we use Roadrunner and MeepMeep Visualization for autonomous
+- [x] Portfolio: Aidan: write paragraph about how we use Roadrunner and MeepMeep Visualization for autonomous
 - [x] Portfolio: Matt: write short paragraph about how we use color sensors, what iterations and lessons learned did we go through on getting them to work?
 - [x] Portfolio: Akshay: write paragraph about what we have learned about the Limelight, be sure to cover different experiments and lessons learned about it
 - [x] Portfolio: Claire: write short paragraph about currently learning about PID control for more precise arm motor control
 - [x] Portfolio: Claire: write short paragraph about learning about PlantUML diagramming and how we used it to plan out our initial programming tasks
 - [x] Portfolio: Matt: Sensors List: write a couple of sentences about how we use each of our sensors: IMU, Color Sensor, Touch Sensors, Odometry Pods
-- [ ] Speed up Hang routines
-- [ ] Change end-game buzzer to be like 35 seconds
-- [ ] Create a special button (or two) to use for inspections
-- [ ] experiment with using urchin to push blocks away from the target urchin
-- [ ] experiment with other positions to see if can get urchin more reliable for intake
-- [ ] Speed up basket delivery routines
-- [ ] Change Auto routines to have better start positions (left start in box 2, right - start on a line instead of middle)
-- [ ] Aidan: Test and get Auto basket delivery delivering at least 3 samples to high basket
-- [ ] Make a NEW auto left to put at least 4 samples into the high basket
-- [ ] Create TeleOp Auto drive routines using roadrunner to get to basket and wall spot
-- [ ] Akshay: Test Limelight on Geronimo for aligning on wall specimens
-- [ ] Akshay: Create routine in Geronimo that uses the Limelight to report Red, Blue, or Yellow -- Prove on SummerChassis
-- [ ] Fully Re-Calibrate Geronimo
-- [ ] Claire: Experiment with PID control for rotator arms
-- [ ] Aidan: Make a NEW Auto Right that does at least 4 specimens (deliver, push 2 samples not 3, deliver, deliver, deliver)
-
----
 - [x] Akshay: Create routine in Geronimo that uses the Limelight to report left or right inches from specimen -- Prove on SummerChassis
 - [x] Aidan: Make a NEW Auto Left to put at least 1 sample into the high basket
 - [x] Shrey: Improve Driver Controls to be more preset oriented, move box rotation and hanger arm controls to multi-button (share + dpad left) to discourage their use and free up those buttons for other modes

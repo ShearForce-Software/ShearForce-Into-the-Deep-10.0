@@ -54,6 +54,15 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 theRobot.SetFieldCentricMode(false);
             }
 
+            //Inspection button //TODO
+            if (gamepad1.triangle && gamepad1.options) {
+                 theRobot.SlidesOutInspection();
+                 theRobot.SpecialSleep(3000);
+                //theRobot.method for rotator back max position
+
+            }
+
+
             if (gamepad1.dpad_left) {
                 theRobot.SetSwiperPosition(Geronimo.SWIPER_MAX_POS);
                 theRobot.SpecialSleep(500);
@@ -180,8 +189,10 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             }
 
             // Combo moves for basket deliveries
-            else if (gamepad2.dpad_left) {
+            else if (gamepad2.dpad_left && !gamepad2.options) {
                 theRobot.SampleUrchinFloorPickup();
+            } else if (gamepad2.dpad_left && gamepad2.options) {
+                theRobot.SampleUrchinFloorJam();
             } else if (gamepad2.dpad_down){
                 theRobot.SampleUrchinFloorPickupFinishingMove();
             } else if (gamepad2.share) {

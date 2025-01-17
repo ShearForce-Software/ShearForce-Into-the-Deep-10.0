@@ -44,7 +44,7 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
     VelConstraint humanPlayerVelocityConstraint;
 
     public void runOpMode(){
-        startPose = new Pose2d(- 12,-64, Math.toRadians(90));
+        startPose = new Pose2d(-39,-64, Math.toRadians(0));
 
         // Define some custom constraints to use when wanting to go faster than defaults
         speedUpVelocityConstraint = new TranslationalVelConstraint(60.0);
@@ -80,15 +80,15 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
         // ***************************************************
 
         DeliverStartingSample = drive.actionBuilder(startPose)
-                .splineToConstantHeading(new Vector2d(-36, -36),Math.toRadians(90))
+               // .splineToConstantHeading(new Vector2d(-36, -36),Math.toRadians(90))
                 .setReversed(true)
-                .strafeToLinearHeading(new Vector2d(-59,-59 ), Math.toRadians(45))
+                .strafeToLinearHeading(new Vector2d(-59,-59), Math.toRadians(45))
                 .build();
         DriveToSample1 = drive.actionBuilder(new Pose2d(-59,-59,Math.toRadians(45)))
                 .setReversed(false)
                 .strafeToLinearHeading(new Vector2d(-48,-47), Math.toRadians(90))
                 .build();
-        DeliverSample1 = drive.actionBuilder(new Pose2d(-48,-47,Math.toRadians(90)))
+       /* DeliverSample1 = drive.actionBuilder(new Pose2d(-48,-47,Math.toRadians(90)))
                 .setReversed(true)
                 .strafeToLinearHeading(new Vector2d(-59,-59), Math.toRadians(45))
                 .build();
@@ -105,6 +105,12 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                 .setReversed(false)
                 .strafeToLinearHeading(new Vector2d(-42,-24), Math.toRadians(90))
                 .build();
+
+        */
+        if (getRuntime()==29){
+            stowPosition();
+        }
+
         // ***************************************************
         // ****  START DRIVING    ****************************
         // ***************************************************
@@ -133,9 +139,9 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                         // Drive to Sample 1
                         new ParallelAction(DriveToSample1, sampleUrchinFloorPickup_SlidePosition(), openUrchin()),
                         sampleUrchinFloorPickup_UrchinReadyPosition(),
-                        new SleepAction(0.4),
+                        new SleepAction(1.4),
                         sampleUrchinFloorPickupFinishingMove_UrchinGrabPosition(),
-                        new SleepAction(0.1),
+                        //new SleepAction(0.1)
                         closeUrchin(),
                         new SleepAction(0.4),
                         sampleUrchinFloorPickup_UrchinReadyPosition(),
@@ -159,12 +165,12 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                         finishBasketHigh_ArmSafeToLowerPosition(),
                         slidesToZero(), new SleepAction(1),
                         stowPosition(),
-                        rotatorArmsToZero(),
-
+                        rotatorArmsToZero()
+/*
                         // Drive to Sample 2
                         new ParallelAction(DriveToSample2, sampleUrchinFloorPickup_SlidePosition(), openUrchin()),
                         sampleUrchinFloorPickup_UrchinReadyPosition(),
-                        new SleepAction(0.4),
+                        new SleepAction(1.4),
                         sampleUrchinFloorPickupFinishingMove_UrchinGrabPosition(),
                         new SleepAction(0.1),
                         closeUrchin(),
@@ -206,6 +212,7 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                         // Raise the Urchin back up to ready position to assess if succeeded
                         sampleUrchinFloorPickup_UrchinReadyPosition()
                         */
+
                 ));
 
         drive.updatePoseEstimate();

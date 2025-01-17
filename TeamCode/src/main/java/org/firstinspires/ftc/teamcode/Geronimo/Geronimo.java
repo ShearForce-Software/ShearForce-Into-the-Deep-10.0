@@ -99,7 +99,7 @@ public class Geronimo {
     public static final double SMALL_ARM_HANGER_MIN_POS = 0.0;
     double smallArmHangerLeftPosition = 0.5;
     double smallArmHangerRightPosition = 0.5;
-    static final double SMALL_ARM_HANGER_INCREMENT = 0.05;
+    static final double SMALL_ARM_HANGER_INCREMENT = 0.01;
 
   /*  public CRServo intakeStarServo;
     double intakeStarPower = 0.0;
@@ -714,6 +714,16 @@ public class Geronimo {
 
          */
     }
+    public void SampleUrchinFloorJam(){
+        // Move slides a little in front of robot
+        SampleUrchinFloorPickup_SlidePosition();
+        SpecialSleep(300);
+
+        // Open the urchin and position to be ready to intake
+        SetUrchinServoPosition(1);
+        SpecialSleep(400);
+        SampleUrchinFloorPickup_UrchinJamReadyPosition();
+    }
     public void SampleUrchinFloorPickup_SlidePosition() {
         // Move slides a little in front of robot
         SetSlideRotatorArmToPosition(0);
@@ -721,8 +731,14 @@ public class Geronimo {
     }
     public void SampleUrchinFloorPickup_UrchinReadyPosition() {
         // position the urchin to be ready to intake
-        SetIntakeBoxRotatorPosition(0.485);
-        SetSmallArmHangerPosition(0.75); //.15 //0.80
+        SetIntakeBoxRotatorPosition(0.425);
+        SetSmallArmHangerPosition(0.7); //.15 //0.80
+        SetSlideRotatorArmToPosition(0);
+    }
+    public void SampleUrchinFloorPickup_UrchinJamReadyPosition() {
+        // position the urchin to be ready to intake
+        SetIntakeBoxRotatorPosition(0.54);
+        SetSmallArmHangerPosition(0.81); //.15 //0.80
         SetSlideRotatorArmToPosition(0);
     }
     public void SampleUrchinFloorPickupFinishingMove(){
@@ -962,6 +978,13 @@ public class Geronimo {
         }
 
         return returnValue;
+    }
+
+    public void SlidesOutInspection(){
+        SetSlideToPosition(SLIDE_ARM_MAX_HORIZONTAL_POS);
+        SetIntakeBoxRotatorPosition(0.96); //0.875
+       // SetSmallArmHangerPosition(0.35);
+        SetClawPosition(CLAW_MIN_POS);
     }
 
     // TODO -- need to determine other rotator arm positions to limit than just zero
@@ -1259,11 +1282,12 @@ public class Geronimo {
     }
 
     public void EndgameBuzzer(){
-        if(opMode.getRuntime() < 109.5 && opMode.getRuntime() > 109.0){
+        if(opMode.getRuntime() < 84.5 && opMode.getRuntime() > 84.0){
             opMode.gamepad1.rumble(1000);
             opMode.gamepad2.rumble(1000);
         }
     }
+    //opMode.getRuntime() < 109.5 && opMode.getRuntime() > 109.0       10 SECONDS
 
     public void driveControlsRobotCentric() {
         double y = -opMode.gamepad1.left_stick_y;
