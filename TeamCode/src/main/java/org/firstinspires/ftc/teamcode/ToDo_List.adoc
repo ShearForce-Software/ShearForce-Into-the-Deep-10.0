@@ -6,7 +6,7 @@
 
 - [x] Portfolio: Claire: write paragraph about Arm Control Iterations going from single servo/motor control to complicated combination controls.  Why did we need to do this, what has it achieved, etc...?
 - [x] Portfolio: Aidan: write paragraph about Autonomous Iterations -- discuss strategic reasons we focused on high specimen delivery over basket delivery first, and why we switched from forward delivery to reverse delivery, and why we flipped the specimen upside down
-- [ ] Portfolio: Aidan: write paragraph about how we use Roadrunner and MeepMeep Visualization for autonomous
+- [X] Portfolio: Aidan: write paragraph about how we use Roadrunner and MeepMeep Visualization for autonomous
 - [x] Portfolio: Matt: write short paragraph about how we use color sensors, what iterations and lessons learned did we go through on getting them to work?
 - [x] Portfolio: Akshay: write paragraph about what we have learned about the Limelight, be sure to cover different experiments and lessons learned about it
 - [x] Portfolio: Claire: write short paragraph about currently learning about PID control for more precise arm motor control
