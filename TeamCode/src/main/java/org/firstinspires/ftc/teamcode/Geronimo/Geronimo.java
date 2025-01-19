@@ -645,7 +645,7 @@ public class Geronimo {
     }
 
     // ************************************
-    // High Specimen Delivery Combo Moves
+    // High Specimen Delivery Combo Movess
     // ************************************
     public void SpecimenPickupFromWall() {
         SpecimenPickupFromWallServoPosition();

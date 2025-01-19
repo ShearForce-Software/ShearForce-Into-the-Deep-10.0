@@ -103,7 +103,7 @@ public class MM_HighFiveBasketsRoute {
                         DriveToSample1,
                         // Pick up Sample from floor
                         new SleepAction(1.5),
-                        // Deliver Sample to High Basket
+                        // Deliver Sample to High Bassket
                         DeliverSample1,
                         // Put sample in the basket and safely Lower the slides and arms before moving
                         new SleepAction(1.0),

@@ -228,7 +228,7 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
                        /* ,grabSpecimen(),
                         new SleepAction(.3),
                         liftSpecimenoffWall() */
-                        /*,
+                        /*
                         new SleepAction(.5),
                         new ParallelAction(DriveToSubmersible3
                                 , deliverSpecimenHigh()),
