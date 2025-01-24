@@ -983,7 +983,7 @@ public class Geronimo {
         return returnValue;
     }
 
-    public void SlidesOutInspection(){
+    public void SlidesBackInspection(){
         SetSlideToPosition(SLIDE_ARM_MAX_HORIZONTAL_POS);
         SetIntakeBoxRotatorPosition(0.96); //0.875
        // SetSmallArmHangerPosition(0.35);
