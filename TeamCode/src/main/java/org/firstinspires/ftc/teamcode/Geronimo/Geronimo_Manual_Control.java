@@ -56,9 +56,9 @@ public class Geronimo_Manual_Control extends LinearOpMode {
 
             //Inspection button //TODO
             if (gamepad1.triangle && gamepad1.options) {
-                 theRobot.SlidesOutInspection();
-                 theRobot.SpecialSleep(3000);
-                //theRobot.method for rotator back max position
+                 theRobot.SlidesBackInspection();
+                // theRobot.SpecialSleep(3000);
+
 
             }
 

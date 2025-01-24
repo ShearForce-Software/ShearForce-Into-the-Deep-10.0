@@ -88,12 +88,12 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                 .setReversed(false)
                 .strafeToLinearHeading(new Vector2d(-48,-47), Math.toRadians(90))
                 .build();
-       /* DeliverSample1 = drive.actionBuilder(new Pose2d(-48,-47,Math.toRadians(90)))
+        DeliverSample1 = drive.actionBuilder(new Pose2d(-48,-47,Math.toRadians(90)))
                 .setReversed(true)
                 .strafeToLinearHeading(new Vector2d(-59,-59), Math.toRadians(45))
                 .build();
-        DriveToSample2 = drive.actionBuilder(new Pose2d(-59,-59,Math.toRadians(45)))
-                .setReversed(false)
+       /* DriveToSample2 = drive.actionBuilder(new Pose2d(-59,-59,Math.toRadians(45)))
+                .setReversed(false)k
                 .strafeToLinearHeading(new Vector2d(-57,-47), Math.toRadians(45))
                 .build();
         DeliverSample2 = drive.actionBuilder(new Pose2d(-57,-47,Math.toRadians(90)))

@@ -49,7 +49,7 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
     VelConstraint humanPlayerVelocityConstraint;
 
     public void runOpMode(){
-        startPose = new Pose2d(12,-64, Math.toRadians(270));
+        startPose = new Pose2d(11,-64, Math.toRadians(270));
 
         // Define some custom constraints to use when wanting to go faster than defaults
         speedUpVelocityConstraint = new TranslationalVelConstraint(60.0);
@@ -95,15 +95,15 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
                 //.splineToConstantHeading(new Vector2d(36,-48), Math.toRadians(90))
                 //.splineToLinearHeading(new Pose2d(36,-48,Math.toRadians(270)),Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
                 .splineToConstantHeading(new Vector2d(38, -40),Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
-                .strafeToLinearHeading(new Vector2d(38,-16), Math.toRadians(270), slowDownVelocityConstraint)
+                .strafeToLinearHeading(new Vector2d(38,-15), Math.toRadians(270), slowDownVelocityConstraint)
                 //.strafeToLin earHeading(new Vector2d(44,-54),Math.toRadians(270))
-                .splineToConstantHeading(new Vector2d(48,-16), Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
+                .splineToConstantHeading(new Vector2d(48,-15), Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
                 .lineToYConstantHeading(-54)
                 .build();
-
+// Fix
         DriveToSamplesandDeliver2 = drive.actionBuilder(new Pose2d(46,-54, Math.toRadians(270)))
-                .strafeToLinearHeading(new Vector2d(46, -17), Math.toRadians(270), slowDownVelocityConstraint)
-                .splineToConstantHeading(new Vector2d(56,-17), Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
+                .strafeToLinearHeading(new Vector2d(46, -16.5), Math.toRadians(270), slowDownVelocityConstraint)
+                .splineToConstantHeading(new Vector2d(56,-16.5), Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
                 .lineToYConstantHeading(-54)
                 .build();
 
@@ -118,11 +118,11 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
                 .build();
 */
         DrivetoDeck1 = drive.actionBuilder(new Pose2d(56,-54,Math.toRadians(270)))
-                .splineToLinearHeading(new Pose2d(36,-54,Math.toRadians(270)),Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
-                .strafeToLinearHeading(new Vector2d(36, -63),Math.toRadians(270), humanPlayerVelocityConstraint)
+                .splineToLinearHeading(new Pose2d(38,-54,Math.toRadians(270)),Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
+                .strafeToLinearHeading(new Vector2d(38, -63),Math.toRadians(270), humanPlayerVelocityConstraint)
                 .build();
 
-        DriveToSubmersible1 = drive.actionBuilder(new Pose2d(36,-63, Math.toRadians(270)))
+        DriveToSubmersible1 = drive.actionBuilder(new Pose2d(38,-63, Math.toRadians(270)))
                 .setReversed(true)
                 //.strafeToLinearHeading(new Vector2d(48, -54), Math.toRadians(270))
                 //.strafeToLinearHeading(new Vector2d(2, -54), Math.toRadians(270))
@@ -131,10 +131,10 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(2,-30), Math.toRadians(270), intakeVelocityConstraint)
                 .build();
         DrivetoDeck2 = drive.actionBuilder(new Pose2d(2,-30,Math.toRadians(270)))
-                .splineToLinearHeading(new Pose2d(36,-54,Math.toRadians(270)),Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
-                .strafeToLinearHeading(new Vector2d(36,-63), Math.toRadians(270), humanPlayerVelocityConstraint) //May change to 270 heading once delivery is clarified
+                .splineToLinearHeading(new Pose2d(38,-54,Math.toRadians(270)),Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
+                .strafeToLinearHeading(new Vector2d(38,-63), Math.toRadians(270), humanPlayerVelocityConstraint) //May change to 270 heading once delivery is clarified
                 .build();
-        DriveToSubmersible2 = drive.actionBuilder(new Pose2d(36,-63,Math.toRadians(270)))
+        DriveToSubmersible2 = drive.actionBuilder(new Pose2d(38,-63,Math.toRadians(270)))
                 .setReversed(true)
                 //.strafeToLinearHeading(new Vector2d(16,-56), Math.toRadians(270))
                 //.splineToLinearHeading(new Pose2d(4,-39,Math.toRadians(270)), Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
@@ -142,10 +142,10 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(3,-30), Math.toRadians(270), intakeVelocityConstraint)
                 .build();
         DrivetoDeck3 = drive.actionBuilder(new Pose2d(3,-30,Math.toRadians(270)))
-                .splineToLinearHeading(new Pose2d(36,-54,Math.toRadians(270)),Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
-                .strafeToLinearHeading(new Vector2d(36,-63), Math.toRadians(270), humanPlayerVelocityConstraint) //May change to 270 heading once delivery is clarified
+                .splineToLinearHeading(new Pose2d(38,-54,Math.toRadians(270)),Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
+                .strafeToLinearHeading(new Vector2d(38,-63), Math.toRadians(270), humanPlayerVelocityConstraint) //May change to 270 heading once delivery is clarified
                 .build();
-        DriveToSubmersible3 = drive.actionBuilder(new Pose2d(36,-63,Math.toRadians(270)))
+        DriveToSubmersible3 = drive.actionBuilder(new Pose2d(38,-63,Math.toRadians(270)))
                 .setReversed(true)
                 //.strafeToLinearHeading(new Vector2d(16,-56), Math.toRadians(270))
                 //.splineToLinearHeading(new Pose2d(3,-39,Math.toRadians(270)), Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
@@ -160,7 +160,7 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
                  .strafeToLinearHeading(new Vector2d(4,-35), Math.toRadians(270), intakeVelocityConstraint)
                  //.strafeToLinearHeading(new Vector2d(36,-58), Math.toRadians(90), intakeVelocityConstraint)
                  //.splineToLinearHeading(new Pose2d(30,-48,Math.toRadians(90)),Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
-                 .splineToLinearHeading(new Pose2d(36,-58,Math.toRadians(90)),Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
+                 .splineToLinearHeading(new Pose2d(38,-58,Math.toRadians(90)),Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
                  //.strafeToLinearHeading(new Vector2d(2,-50), Math.toRadians(270))
                  //.strafeToLinearHeading(new Vector2d(49,-58), Math.toRadians(90), speedUpVelocityConstraint)
                  // .turnTo(Math.toRadians(90))
@@ -225,9 +225,10 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
                         new ParallelAction(DrivetoDeck3,
                                 new SequentialAction(//don't call stow; call wall position
                                         slidestozero(), rotatorarmstozero(), stowPosition(), grabSpecimenfromwall()))
-                        ,grabSpecimen(),
+                       /* ,grabSpecimen(),
                         new SleepAction(.3),
-                        liftSpecimenoffWall() /*,
+                        liftSpecimenoffWall() */
+                        /*
                         new SleepAction(.5),
                         new ParallelAction(DriveToSubmersible3
                                 , deliverSpecimenHigh()),
