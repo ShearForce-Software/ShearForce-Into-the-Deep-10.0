@@ -56,9 +56,9 @@ public class Geronimo_Manual_Control extends LinearOpMode {
 
             //Inspection button //TODO
             if (gamepad1.triangle && gamepad1.options) {
-                 theRobot.SlidesOutInspection();
-                 theRobot.SpecialSleep(3000);
-                //theRobot.method for rotator back max position
+                 theRobot.SlidesBackInspection();
+                // theRobot.SpecialSleep(3000);
+
 
             }
 
@@ -208,6 +208,13 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 theRobot.SetClawPosition(Geronimo.CLAW_MAX_POS);
             } else if (gamepad2.right_bumper) {
                 theRobot.SetClawPosition(Geronimo.CLAW_MIN_POS);
+            }
+
+            // Emergency pause
+            if (gamepad1.share) {
+                theRobot.SetSlidesToHoldCurrentPosition();
+                theRobot.SetSlideRotatorArmToHoldCurrentPosition();
+                theRobot.SetSmallArmHangerPosition((theRobot.smallArmHangerLeftPosition + theRobot.smallArmHangerRightPosition)/2);
             }
 
             theRobot.ShowTelemetry();

@@ -4,7 +4,7 @@
 
 ---
 
-- [ ] Create Programming section of Judging presentation
+
 - [ ] Claire: Create a special button (or two) to use for inspections
 - [ ] Aidan: Test and get Auto Left delivering at least 3 samples to high basket
 - [ ] Speed up Hang routines
@@ -21,6 +21,7 @@
 - [ ] Create TeleOp Auto drive routines using roadrunner to get to basket and wall spot
 
 ---
+- [x] Create Programming section of Judging presentation
 - [x] experiment with other positions to see if can get urchin more reliable for intake
 - [x] experiment with using urchin to push blocks away from the target urchin
 - [x] Change end-game buzzer to be like 35 seconds
