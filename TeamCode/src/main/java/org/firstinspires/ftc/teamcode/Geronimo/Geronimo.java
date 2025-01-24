@@ -634,15 +634,18 @@ public class Geronimo {
     public void ReadyHangRobot(){
         SetSlideToPosition(1547);
         SpecialSleep(2000);
-        SetSlideRotatorArmToPosition(323);
+        SetSlideRotatorArmToPosition(480);  //323 <<original  503  //400 did not work
         SpecialSleep(2000);
-        SetSlideToPosition(1365);
+        SetSlideToPosition(1200);  //1365 <<original
+        /*
         SpecialSleep(2000);
         SetSlideRotatorArmToPosition(180);
+
+         */
     }
 
     // ************************************
-    // High Specimen Delivery Combo Moves
+    // High Specimen Delivery Combo Movess
     // ************************************
     public void SpecimenPickupFromWall() {
         SpecimenPickupFromWallServoPosition();
