@@ -22,6 +22,10 @@ public class MM_HighFiveBasketsRoute {
     static Action DeliverSample2;
     static Action DriveToSample3;
     static Action DeliverSample3;
+    static Action DriveToSubmersible4;
+    static Action DeliverSample4;
+    static Action DriveToSubmersible5;
+    static Action DeliverSample5;
 
     static VelConstraint speedUpVelocityConstraint;
     static AccelConstraint speedUpAccelerationConstraint;
@@ -74,13 +78,13 @@ public class MM_HighFiveBasketsRoute {
 
         DriveToSample2 = myBot.getDrive().actionBuilder(new Pose2d(-59, -59, Math.toRadians(45)))
                 .setReversed(false)
-                .strafeToLinearHeading(new Vector2d(-57,-43), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(-57,-47), Math.toRadians(90))
                 .build();
-        DeliverSample2 = myBot.getDrive().actionBuilder(new Pose2d(-57,-43, Math.toRadians(90)))
+        DeliverSample2 = myBot.getDrive().actionBuilder(new Pose2d(-57,-47, Math.toRadians(90)))
                 .setReversed(true)
                 .strafeToLinearHeading(new Vector2d(-59,-59), Math.toRadians(45))
                 .build();
-    /*
+
         DriveToSample3 = myBot.getDrive().actionBuilder(new Pose2d(-59, -59, Math.toRadians(45)))
                 .setReversed(false)
                 .strafeToLinearHeading(new Vector2d(-55,-40), Math.toRadians(135))
@@ -89,7 +93,11 @@ public class MM_HighFiveBasketsRoute {
                 .setReversed(true)
                 .strafeToLinearHeading(new Vector2d(-59,-59), Math.toRadians(45))
                 .build();
-    */
+        DriveToSubmersible4 = myBot.getDrive().actionBuilder(new Pose2d(-59, -59, Math.toRadians(45)))
+                .splineToConstantHeading(new Vector2d(-36,-12),Math.toRadians(0))
+                .lineToX(-24)
+               // .strafeToLinearHeading(new Vector2d(-24,-12), Math.toRadians(0))
+                .build();
         // ***************************************************
         // ****  START DRIVING    ****************************
         // ***************************************************
@@ -112,7 +120,12 @@ public class MM_HighFiveBasketsRoute {
                         // Pick up Sample from floor
                         new SleepAction(1.5),
                         // Deliver Sample to High Basket
-                        DeliverSample2
+                        DeliverSample2,
+                        new SleepAction(1.0),
+                        DriveToSample3,
+                        new SleepAction(1.5),
+                        DeliverSample3,
+                        DriveToSubmersible4
                         // Put sample in the basket and safely Lower the slides and arms before moving
                      //   new SleepAction(6.0),
 
