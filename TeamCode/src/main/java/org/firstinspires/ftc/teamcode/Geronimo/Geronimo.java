@@ -744,7 +744,7 @@ public class Geronimo {
         SpecialSleep(300);
 
         // Open the urchin and position to be ready to intake
-        SetUrchinServoPosition(1);
+        SetUrchinServoPosition(0);
         SpecialSleep(400);
         SampleUrchinFloorPickup_UrchinJamReadyPosition();
     }
@@ -762,7 +762,7 @@ public class Geronimo {
     public void SampleUrchinFloorPickup_UrchinJamReadyPosition() {
         // position the urchin to be ready to intake
         SetIntakeBoxRotatorPosition(0.54);
-        SetSmallArmHangerPosition(0.81); //.15 //0.80
+        SetSmallArmHangerPosition(0.87); //.15 //0.80 //0.81
         SetSlideRotatorArmToPosition(0);
     }
     public void SampleUrchinFloorPickupFinishingMove(){
