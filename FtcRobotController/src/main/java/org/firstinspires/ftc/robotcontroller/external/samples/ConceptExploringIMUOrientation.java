@@ -87,6 +87,15 @@ public class ConceptExploringIMUOrientation extends LinearOpMode {
     int logoFacingDirectionPosition;
     int usbFacingDirectionPosition;
     int targetPosition = 100;
+    double rotatorPosition = 0;
+    double imuPosition = 0;
+    int fieldPosition = 0;
+    int power = 50;
+
+    // NeveRest Classic 40 Gear Motor (Product Code: am-2964b)
+    int gearRatio = 40;
+    double ticksPerRevolution = 1120;
+
     DcMotorEx rotator;
     boolean orientationIsValid = true;
 
@@ -199,8 +208,27 @@ public class ConceptExploringIMUOrientation extends LinearOpMode {
 
     // rotates rotator to targetPosition
     public void rotate() {
-        rotator.setPower(50);
+        rotator.setPower(power);
         rotator.setTargetPosition(targetPosition);
+        //rotator.setTargetPosition(targetPosition());
         rotator.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+    }
+
+    // generates target position based on imu angle
+    public int targetPosition() {
+        // rotator
+        rotatorPosition = (rotator.getCurrentPosition() / ticksPerRevolution); // ticks to revolutions
+        rotatorPosition *= 360; // revolutions to degrees
+
+        // imu
+        YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
+        imuPosition = orientation.getYaw(AngleUnit.DEGREES); //assumed yaw to write code (correct later)
+
+        // calculate actual arm angle
+        if (imuPosition != 0) {
+            fieldPosition =  (int) imuPosition + (int) rotatorPosition;
+            targetPosition += fieldPosition; // not done
+        }
+        return targetPosition;
     }
 }
