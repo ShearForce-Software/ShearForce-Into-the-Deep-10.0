@@ -86,12 +86,17 @@ public class ConceptExploringIMUOrientation extends LinearOpMode {
     IMU imu;
     int logoFacingDirectionPosition;
     int usbFacingDirectionPosition;
+    int targetPosition = 100;
+    DcMotorEx rotator;
     boolean orientationIsValid = true;
 
     @Override public void runOpMode() throws InterruptedException {
         imu = hardwareMap.get(IMU.class, "imu");
         logoFacingDirectionPosition = 0; // Up
         usbFacingDirectionPosition = 2; // Forward
+        rotator = hardwareMap.get(DcMotorEx.class, "rotator_Odometry");
+        rotator = hardwareMap.get(DcMotorEx.class, "rotator");
+        double rotatorLimit = 10;
 
         updateOrientation();
 
@@ -152,9 +157,8 @@ public class ConceptExploringIMUOrientation extends LinearOpMode {
             }
 
             // move motor to position
-            MattInit();
-            if (gamepad1.triangle){
-                moveRotator();
+            if (gamepad1.triangle) {
+                rotate();
             }
 
             // Display User instructions and IMU data
@@ -171,6 +175,7 @@ public class ConceptExploringIMUOrientation extends LinearOpMode {
                 telemetry.addData("Yaw (Z) velocity", "%.2f Deg/Sec", angularVelocity.zRotationRate);
                 telemetry.addData("Pitch (X) velocity", "%.2f Deg/Sec", angularVelocity.xRotationRate);
                 telemetry.addData("Roll (Y) velocity", "%.2f Deg/Sec", angularVelocity.yRotationRate);
+                telemetry.addData("rotator position: ", rotator.getCurrentPosition());
             } else {
                 telemetry.addData("Error", "Selected orientation on robot is invalid");
             }
@@ -191,21 +196,11 @@ public class ConceptExploringIMUOrientation extends LinearOpMode {
             orientationIsValid = false;
         }
     }
-    // Matthew's code
-   DcMotorEx rotator;
 
-    public void MattInit (@NonNull HardwareMap hardwareMap) {
-        // ************* Drive MOTORS ****************
-        rotator = hardwareMap.get(DcMotorEx.class, "rotator_Odometry");
-        rotator = hardwareMap.get(DcMotorEx.class, "rotator");
-        double rotatorLimit = 10;
-    }
-
-    public void moveRotator (){
-        telemetry.addData("rotator position: ", rotator.getCurrentPosition()); // non-specific motor  units
-        telemetry.update();
+    // rotates rotator to targetPosition
+    public void rotate() {
         rotator.setPower(50);
-        rotator.setTargetPosition(100);
+        rotator.setTargetPosition(targetPosition);
         rotator.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
     }
 }
