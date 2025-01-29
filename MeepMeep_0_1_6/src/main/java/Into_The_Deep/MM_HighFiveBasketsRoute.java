@@ -26,6 +26,8 @@ public class MM_HighFiveBasketsRoute {
     static Action DeliverSample4;
     static Action DriveToSubmersible5;
     static Action DeliverSample5;
+    static Action DriveToSubmersible6;
+    static Action DeliverSample6;
 
     static VelConstraint speedUpVelocityConstraint;
     static AccelConstraint speedUpAccelerationConstraint;
@@ -94,9 +96,26 @@ public class MM_HighFiveBasketsRoute {
                 .strafeToLinearHeading(new Vector2d(-59,-59), Math.toRadians(45))
                 .build();
         DriveToSubmersible4 = myBot.getDrive().actionBuilder(new Pose2d(-59, -59, Math.toRadians(45)))
-                .splineToConstantHeading(new Vector2d(-36,-12),Math.toRadians(0))
-                .lineToX(-24)
-               // .strafeToLinearHeading(new Vector2d(-24,-12), Math.toRadians(0))
+                .splineTo(new Vector2d(-36,-12),Math.toRadians(0))
+                .strafeToLinearHeading(new Vector2d(-24, -12), Math.toRadians(0))
+                .build();
+        DeliverSample4 = myBot.getDrive().actionBuilder(new Pose2d(-24,-12, Math.toRadians(0)))
+                .setReversed(true)
+                .splineToConstantHeading(new Vector2d(-48,-48),Math.toRadians(45))
+                .strafeToLinearHeading(new Vector2d(-59,-59), Math.toRadians(45))
+                .build();
+        DriveToSubmersible5 = myBot.getDrive().actionBuilder(new Pose2d(-59, -59, Math.toRadians(45)))
+                .splineTo(new Vector2d(-36,-12),Math.toRadians(0))
+                .strafeToLinearHeading(new Vector2d(-24, -12), Math.toRadians(0))
+                .build();
+        DeliverSample5 = myBot.getDrive().actionBuilder(new Pose2d(-24,-12, Math.toRadians(0)))
+                .setReversed(true)
+                .splineToConstantHeading(new Vector2d(-48,-48),Math.toRadians(45))
+                .strafeToLinearHeading(new Vector2d(-59,-59), Math.toRadians(45))
+                .build();
+        DriveToSubmersible6 = myBot.getDrive().actionBuilder(new Pose2d(-59, -59, Math.toRadians(45)))
+                .splineTo(new Vector2d(-36,-12),Math.toRadians(0))
+                .strafeToLinearHeading(new Vector2d(-24, -12), Math.toRadians(0))
                 .build();
         // ***************************************************
         // ****  START DRIVING    ****************************
@@ -125,7 +144,11 @@ public class MM_HighFiveBasketsRoute {
                         DriveToSample3,
                         new SleepAction(1.5),
                         DeliverSample3,
-                        DriveToSubmersible4
+                        DriveToSubmersible4,
+                        DeliverSample4,
+                        DriveToSubmersible5,
+                        DeliverSample5,
+                        DriveToSubmersible6
                         // Put sample in the basket and safely Lower the slides and arms before moving
                      //   new SleepAction(6.0),
 

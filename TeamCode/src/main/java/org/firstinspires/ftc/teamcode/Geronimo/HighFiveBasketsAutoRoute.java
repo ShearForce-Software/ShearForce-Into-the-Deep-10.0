@@ -32,7 +32,10 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
     Action DeliverSample1;
     Action DriveToSample2;
     Action DeliverSample2;
-    Action AdjustForDrivers;
+    Action DriveToSample3;
+    Action DeliverSample3;
+    Action DriveToSubmersible4;
+    Action DeliverSample4;
 
     VelConstraint speedUpVelocityConstraint;
     AccelConstraint speedUpAccelerationConstraint;
@@ -63,6 +66,7 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
         control.Stow();
         telemetry.update();
         control.imuOffsetInDegrees = 90; // Math.toDegrees(startPose.heading.toDouble());
+        control.SetUrchinServoPosition(0);
 
         // Wait for start to be pressed
         while(!isStarted()){
@@ -83,31 +87,44 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                // .splineToConstantHeading(new Vector2d(-36, -36),Math.toRadians(90))
                 //check
                 .setReversed(true)
-                .strafeToLinearHeading(new Vector2d(-59,-59), Math.toRadians(45))
+                .strafeToLinearHeading(new Vector2d(-60,-60), Math.toRadians(45))
                 .build();
-        DriveToSample1 = drive.actionBuilder(new Pose2d(-59,-59,Math.toRadians(45)))
+        DriveToSample1 = drive.actionBuilder(new Pose2d(-60,-60,Math.toRadians(45)))
                 .setReversed(false)
                 .strafeToLinearHeading(new Vector2d(-48,-47), Math.toRadians(90))
                 .build();
         DeliverSample1 = drive.actionBuilder(new Pose2d(-48,-47,Math.toRadians(90)))
                 .setReversed(true)
-                .strafeToLinearHeading(new Vector2d(-59,-59), Math.toRadians(45))
+                .strafeToLinearHeading(new Vector2d(-60,-60), Math.toRadians(45))
                 .build();
-       /* DriveToSample2 = drive.actionBuilder(new Pose2d(-59,-59,Math.toRadians(45)))
+        DriveToSample2 = drive.actionBuilder(new Pose2d(-60, -60, Math.toRadians(45)))
                 .setReversed(false)
-                .strafeToLinearHeading(new Vector2d(-57,-47), Math.toRadians(45))
+                .strafeToLinearHeading(new Vector2d(-57,-47), Math.toRadians(90))
                 .build();
-        DeliverSample2 = drive.actionBuilder(new Pose2d(-57,-47,Math.toRadians(90)))
+        DeliverSample2 = drive.actionBuilder(new Pose2d(-57,-47, Math.toRadians(90)))
+                .setReversed(true)
+                .strafeToLinearHeading(new Vector2d(-60,-60), Math.toRadians(45))
+                .build();
+/*
+        DriveToSample3 = drive.actionBuilder(new Pose2d(-59, -59, Math.toRadians(45)))
+                .setReversed(false)
+                .strafeToLinearHeading(new Vector2d(-55,-40), Math.toRadians(135))
+                .build();
+        DeliverSample3 = drive.actionBuilder(new Pose2d(-55,-40, Math.toRadians(135)))
                 .setReversed(true)
                 .strafeToLinearHeading(new Vector2d(-59,-59), Math.toRadians(45))
                 .build();
-
-        AdjustForDrivers = drive.actionBuilder(new Pose2d(-59,-59,Math.toRadians(45)))
-                .setReversed(false)
-                .strafeToLinearHeading(new Vector2d(-42,-24), Math.toRadians(90))
+        DriveToSubmersible4 = drive.actionBuilder(new Pose2d(-59, -59, Math.toRadians(45)))
+                .splineTo(new Vector2d(-36,-12),Math.toRadians(0))
+                .strafeToLinearHeading(new Vector2d(-24, -12), Math.toRadians(0))
                 .build();
+        DeliverSample4 = drive.actionBuilder(new Pose2d(-24,-12, Math.toRadians(0)))
+                .setReversed(true)
+                .splineToConstantHeading(new Vector2d(-48,-48),Math.toRadians(45))
+                .strafeToLinearHeading(new Vector2d(-59,-59), Math.toRadians(45))
+                .build();
+                */
 
-        */
         if (getRuntime()==29){
             stowPosition();
         }
@@ -119,9 +136,10 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                 new SequentialAction(
                         // Drive to basket and deliver preloaded sample
                         new ParallelAction(DeliverStartingSample, basketHigh()),
+                        new SleepAction(.1),
                         // Raise slides to high basket height
                         finishBasketHigh_SlidesPosition(),
-                        new SleepAction(3.0),
+                        new SleepAction(2.5),
                         // Rotate urchin to align above basket
                         finishBasketHigh_UrchinDeliverPosition(),
                         new SleepAction(0.4),
@@ -142,9 +160,10 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                         sampleUrchinFloorPickup_UrchinReadyPosition(),
                         new SleepAction(1.4),
                         sampleUrchinFloorPickupFinishingMove_UrchinGrabPosition(),
-                        //new SleepAction(0.1)
+                        new SleepAction(0.1),
                         closeUrchin(),
-                        new SleepAction(0.4),
+                        new SleepAction(0.4
+                        ),
                         sampleUrchinFloorPickup_UrchinReadyPosition(),
                         new SleepAction(0.1),
                         stowPosition(),
@@ -152,7 +171,7 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                         // *** Deliver Sample 1 ***
                         new ParallelAction(DeliverSample1, basketHigh()),
                         finishBasketHigh_SlidesPosition(),
-                        new SleepAction(3.0),
+                        new SleepAction(2.5),
                         // Rotate urchin to align above basket
                         finishBasketHigh_UrchinDeliverPosition(),
                         new SleepAction(0.4),
@@ -166,7 +185,39 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                         finishBasketHigh_ArmSafeToLowerPosition(),
                         slidesToZero(), new SleepAction(1),
                         stowPosition(),
-                        rotatorArmsToZero()
+                        rotatorArmsToZero(),
+        //Drive to Sample 2
+        new ParallelAction(DriveToSample2, sampleUrchinFloorPickup_SlidePosition(), openUrchin()),
+                sampleUrchinFloorPickup_UrchinReadyPosition(),
+                new SleepAction(1.4),
+                sampleUrchinFloorPickupFinishingMove_UrchinGrabPosition(),
+                new SleepAction(0.1),
+                closeUrchin(),
+                new SleepAction(0.4
+                ),
+                sampleUrchinFloorPickup_UrchinReadyPosition(),
+                new SleepAction(0.1),
+                stowPosition(),
+                new SleepAction(0.2),
+                // *** Deliver Sample 1 ***
+                new ParallelAction(DeliverSample2, basketHigh()),
+                finishBasketHigh_SlidesPosition(),
+                new SleepAction(2.5),
+                // Rotate urchin to align above basket
+                finishBasketHigh_UrchinDeliverPosition(),
+                new SleepAction(0.4),
+                // Release the sample from the urchin
+                openUrchin(),
+                new SleepAction(0.4),
+                // Rotate urchin back away from the basket
+                finishBasketHigh_UrchinSafeToLowerPosition(),
+                new SleepAction(0.4),
+                // Rotate arms a little away from basket and lower slides to zero
+                finishBasketHigh_ArmSafeToLowerPosition(),
+                slidesToZero(), new SleepAction(1),
+                stowPosition(),
+                rotatorArmsToZero()
+                        // Drive to Sample 2
 /*
                         // Drive to Sample 2
                         new ParallelAction(DriveToSample2, sampleUrchinFloorPickup_SlidePosition(), openUrchin()),
@@ -416,7 +467,7 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!initialized) {
-                control.SampleUrchinFloorPickup_UrchinReadyPosition();
+                control.SampleUrchinFloorPickupFinishingMove_UrchinGrabPosition();
                 initialized = true;
             }
             packet.put("SampleUrchinFloorPickupFinishingMove_UrchinGrabPosition", 0);
