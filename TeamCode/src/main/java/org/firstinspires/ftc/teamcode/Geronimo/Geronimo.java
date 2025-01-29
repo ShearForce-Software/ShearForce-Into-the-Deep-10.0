@@ -645,7 +645,7 @@ public class Geronimo {
     }
 
     // ************************************
-    // High Specimen Delivery Combo Movess
+    // High Specimen Delivery Combo Moves
     // ************************************
     public void SpecimenPickupFromWall() {
         SpecimenPickupFromWallServoPosition();
@@ -795,7 +795,7 @@ public class Geronimo {
     public void BasketHighFinishingMove(){
         // Raise slides to high basket height
         BasketHighFinishingMove_SlidesPosition();
-        SpecialSleep(4000); //2000
+        SpecialSleep(2500); //2000 //4000
         // Rotate urchin to align above basket
         BasketHighFinishingMove_UrchinDeliverPosition();
         SpecialSleep(200);

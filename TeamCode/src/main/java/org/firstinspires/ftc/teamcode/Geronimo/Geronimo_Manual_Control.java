@@ -214,7 +214,6 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             if (gamepad1.share) {
                 theRobot.SetSlidesToHoldCurrentPosition();
                 theRobot.SetSlideRotatorArmToHoldCurrentPosition();
-                theRobot.SetSmallArmHangerPosition((theRobot.smallArmHangerLeftPosition + theRobot.smallArmHangerRightPosition)/2);
             }
 
             theRobot.ShowTelemetry();
