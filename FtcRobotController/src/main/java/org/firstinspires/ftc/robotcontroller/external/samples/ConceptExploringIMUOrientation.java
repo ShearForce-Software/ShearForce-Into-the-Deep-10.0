@@ -32,10 +32,15 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.robotcontroller.external.samples;
 
+import androidx.annotation.NonNull;
+
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity;
@@ -70,7 +75,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
  */
 
 @TeleOp(name="Concept: IMU Orientation", group="Concept")
-@Disabled
 public class ConceptExploringIMUOrientation extends LinearOpMode {
     static RevHubOrientationOnRobot.LogoFacingDirection[] logoFacingDirections
             = RevHubOrientationOnRobot.LogoFacingDirection.values();
@@ -98,7 +102,7 @@ public class ConceptExploringIMUOrientation extends LinearOpMode {
         while (!isStopRequested()) {
 
             // Check to see if Yaw reset is requested (Y button)
-            if (gamepad1.y) {
+            if (gamepad1.square) {
                 telemetry.addData("Yaw", "Resetting\n");
                 imu.resetYaw();
             } else {
@@ -147,6 +151,12 @@ public class ConceptExploringIMUOrientation extends LinearOpMode {
                 justChangedUsbDirection = false;
             }
 
+            // move motor to position
+            MattInit();
+            if (gamepad1.triangle){
+                moveRotator();
+            }
+
             // Display User instructions and IMU data
             telemetry.addData("logo Direction (set with bumpers)", logoFacingDirections[logoFacingDirectionPosition]);
             telemetry.addData("usb Direction (set with triggers)", usbFacingDirections[usbFacingDirectionPosition] + "\n");
@@ -180,5 +190,22 @@ public class ConceptExploringIMUOrientation extends LinearOpMode {
         } catch (IllegalArgumentException e) {
             orientationIsValid = false;
         }
+    }
+    // Matthew's code
+   DcMotorEx rotator;
+
+    public void MattInit (@NonNull HardwareMap hardwareMap) {
+        // ************* Drive MOTORS ****************
+        rotator = hardwareMap.get(DcMotorEx.class, "rotator_Odometry");
+        rotator = hardwareMap.get(DcMotorEx.class, "rotator");
+        double rotatorLimit = 10;
+    }
+
+    public void moveRotator (){
+        telemetry.addData("rotator position: ", rotator.getCurrentPosition()); // non-specific motor  units
+        telemetry.update();
+        rotator.setPower(50);
+        rotator.setTargetPosition(100);
+        rotator.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
     }
 }

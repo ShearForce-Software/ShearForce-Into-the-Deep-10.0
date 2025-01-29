@@ -1271,6 +1271,7 @@ public class Geronimo {
         opMode.telemetry.addData("Val: " , hsvValues[2]);
         opMode.telemetry.addData("Swiper Position:", swiper_position);
         showColorSensorTelemetry();
+        
         opMode.telemetry.update();
     }
 
@@ -1397,5 +1398,4 @@ public class Geronimo {
             }
         }
     }
-
 }
