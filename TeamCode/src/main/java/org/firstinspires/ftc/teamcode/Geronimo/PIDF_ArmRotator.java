@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.controller.PIDController;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -11,8 +12,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 @Config
-@TeleOp
-public class PIDF_ArmRotator extends OpMode {
+@TeleOp(name="PIDF_ArmRotator")
+@Disabled
+//originally just OpMode
+public class PIDF_ArmRotator extends LinearOpMode {
     private PIDController controller;
 
     public static double p = 0, i = 0, d = 0;
@@ -21,22 +24,22 @@ public class PIDF_ArmRotator extends OpMode {
     public static int target = 0;
 
     //TODO
-    private final double ticks_in_degree = 18/1; //18 ticks per 1 degree OR (50:1 motors)
+    private final double ticks_in_degree = 18 / 1; //18 ticks per 1 degree OR (50:1 motors)
 
     private DcMotor leftSlideArmRotatorMotor;
     private DcMotor rightSlideArmRotatorMotor;
-        @Override
-        public void init(){
-            controller = new PIDController(p, i, d);
-            telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-            leftSlideArmRotatorMotor = hardwareMap.get(DcMotorEx.class, "leftRotater");
-            rightSlideArmRotatorMotor = hardwareMap.get(DcMotorEx.class, "rightRotater");
+    @Override
+    public void runOpMode() {
+        controller = new PIDController(p, i, d);
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        }
+        leftSlideArmRotatorMotor = hardwareMap.get(DcMotorEx.class, "leftRotater");
+        rightSlideArmRotatorMotor = hardwareMap.get(DcMotorEx.class, "rightRotater");
 
-        @Override
-        public void loop(){
+
+        waitForStart();
+       while (opModeIsActive()) {
             controller.setPID(p, i, d);
 
             //Only basing it off the left rotator
@@ -56,6 +59,8 @@ public class PIDF_ArmRotator extends OpMode {
 
         }
 
+
+    }
 
 }
 
