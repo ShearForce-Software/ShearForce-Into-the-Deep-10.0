@@ -32,15 +32,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.robotcontroller.external.samples;
 
-import androidx.annotation.NonNull;
-
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity;
@@ -86,10 +81,9 @@ public class ConceptExploringIMUOrientation extends LinearOpMode {
     IMU imu;
     int logoFacingDirectionPosition;
     int usbFacingDirectionPosition;
-    int targetPosition = 100;
+    int targetPosition = 1000;
     double rotatorPosition = 0;
     double imuPosition = 0;
-    int fieldPosition = 0;
     int power = 50;
 
     // NeveRest Classic 40 Gear Motor (Product Code: am-2964b)
@@ -103,7 +97,6 @@ public class ConceptExploringIMUOrientation extends LinearOpMode {
         imu = hardwareMap.get(IMU.class, "imu");
         logoFacingDirectionPosition = 0; // Up
         usbFacingDirectionPosition = 2; // Forward
-        rotator = hardwareMap.get(DcMotorEx.class, "rotator_Odometry");
         rotator = hardwareMap.get(DcMotorEx.class, "rotator");
         double rotatorLimit = 10;
 
@@ -165,11 +158,6 @@ public class ConceptExploringIMUOrientation extends LinearOpMode {
                 justChangedUsbDirection = false;
             }
 
-            // move motor to position
-            if (gamepad1.triangle) {
-                rotate();
-            }
-
             // Display User instructions and IMU data
             telemetry.addData("logo Direction (set with bumpers)", logoFacingDirections[logoFacingDirectionPosition]);
             telemetry.addData("usb Direction (set with triggers)", usbFacingDirections[usbFacingDirectionPosition] + "\n");
@@ -190,6 +178,7 @@ public class ConceptExploringIMUOrientation extends LinearOpMode {
             }
 
             telemetry.update();
+            rotate();
         }
     }
 
@@ -209,8 +198,8 @@ public class ConceptExploringIMUOrientation extends LinearOpMode {
     // rotates rotator to targetPosition
     public void rotate() {
         rotator.setPower(power);
-        rotator.setTargetPosition(targetPosition);
-        //rotator.setTargetPosition(targetPosition());
+        //rotator.setTargetPosition(targetPosition);
+        rotator.setTargetPosition(targetPosition());
         rotator.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
     }
 
@@ -222,13 +211,9 @@ public class ConceptExploringIMUOrientation extends LinearOpMode {
 
         // imu
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
-        imuPosition = orientation.getYaw(AngleUnit.DEGREES); //assumed yaw to write code (correct later)
+        imuPosition = orientation.getRoll(AngleUnit.DEGREES); //assumed yaw to write code (correct later)
 
-        // calculate actual arm angle
-        if (imuPosition != 0) {
-            fieldPosition =  (int) imuPosition + (int) rotatorPosition;
-            targetPosition += fieldPosition; // not done
-        }
+        targetPosition = (int) imuPosition;
         return targetPosition;
     }
 }
