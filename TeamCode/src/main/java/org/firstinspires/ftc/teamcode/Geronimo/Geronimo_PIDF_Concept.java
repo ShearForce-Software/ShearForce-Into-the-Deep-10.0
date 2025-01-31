@@ -83,6 +83,10 @@ public class Geronimo_PIDF_Concept extends LinearOpMode {
 
             controller.setPID(p,i,d);
             rotator_arm_target = rotator_arm_angle * ticks_in_degrees;
+
+           //actual arm angle value?
+            double left_rotator_arm_actual_angle = leftSlideArmRotatorMotor.getCurrentPosition()/ticks_in_degrees;
+            double right_rotator_arm_actual_angle = rightSlideArmRotatorMotor.getCurrentPosition()/ticks_in_degrees;
 /*
             //change target value...
              if(gamepad2.dpad_left){
@@ -124,7 +128,7 @@ public class Geronimo_PIDF_Concept extends LinearOpMode {
             double leftPower = left_pid + left_ff;
             double rightPower = right_pid + right_ff;
 
-            // TODO: Driver input - use joystick controls to set rotator_arm_target value
+            // TODO: Driver input - use joystick controls to set rotator_arm_taarget value
             //  that is limited between Min and Max values
 
             // Send calculated power to motors
@@ -136,6 +140,7 @@ public class Geronimo_PIDF_Concept extends LinearOpMode {
             //telemetry for rotator_arm_angle
             telemetry.addData("Rotator arm angle", rotator_arm_angle);
             telemetry.addData("Rotator positions", "left (%d), right (%d)", left_armPos, right_armPos);
+            telemetry.addData("Rotator actual angle", "left (%.2f), right (%.2f)", left_rotator_arm_actual_angle, right_rotator_arm_actual_angle);
             telemetry.addData("Rotator motor power", "left (%.2f), right (%.2f)", leftPower, rightPower);
             telemetry.update();
         }
