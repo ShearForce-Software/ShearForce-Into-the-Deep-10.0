@@ -47,7 +47,7 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
     VelConstraint humanPlayerVelocityConstraint;
 
     public void runOpMode(){
-        startPose = new Pose2d(-39,-64, Math.toRadians(0));
+        startPose = new Pose2d(-47,-58, Math.toRadians(45));
 
         // Define some custom constraints to use when wanting to go faster than defaults
         speedUpVelocityConstraint = new TranslationalVelConstraint(60.0);
@@ -87,26 +87,26 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                // .splineToConstantHeading(new Vector2d(-36, -36),Math.toRadians(90))
                 //check
                 .setReversed(true)
-                .strafeToLinearHeading(new Vector2d(-60,-60), Math.toRadians(45))
+                .strafeToLinearHeading(new Vector2d(-56,-56), Math.toRadians(45))
                 .build();
-        DriveToSample1 = drive.actionBuilder(new Pose2d(-60,-60,Math.toRadians(45)))
+        DriveToSample1 = drive.actionBuilder(new Pose2d(-56,-56,Math.toRadians(45)))
                 .setReversed(false)
-                .strafeToLinearHeading(new Vector2d(-48,-47), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(-46,-46), Math.toRadians(90))
                 .build();
-        DeliverSample1 = drive.actionBuilder(new Pose2d(-48,-47,Math.toRadians(90)))
+        DeliverSample1 = drive.actionBuilder(new Pose2d(-46,-46,Math.toRadians(90)))
                 .setReversed(true)
                 .strafeToLinearHeading(new Vector2d(-60,-60), Math.toRadians(45))
                 .build();
         DriveToSample2 = drive.actionBuilder(new Pose2d(-60, -60, Math.toRadians(45)))
                 .setReversed(false)
-                .strafeToLinearHeading(new Vector2d(-57,-47), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(-57,-46), Math.toRadians(90))
                 .build();
-        DeliverSample2 = drive.actionBuilder(new Pose2d(-57,-47, Math.toRadians(90)))
+        DeliverSample2 = drive.actionBuilder(new Pose2d(-57,-46, Math.toRadians(90)))
                 .setReversed(true)
                 .strafeToLinearHeading(new Vector2d(-60,-60), Math.toRadians(45))
                 .build();
 
-        DriveToSample3 = drive.actionBuilder(new Pose2d(-59, -59, Math.toRadians(45)))
+        DriveToSample3 = drive.actionBuilder(new Pose2d(-60, -60, Math.toRadians(45)))
                 .setReversed(false)
                 .strafeToLinearHeading(new Vector2d(-55,-40), Math.toRadians(135))
                 .build();
