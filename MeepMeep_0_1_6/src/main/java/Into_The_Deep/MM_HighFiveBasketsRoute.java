@@ -46,7 +46,7 @@ public class MM_HighFiveBasketsRoute {
                 .setConstraints(60, 50, Math.PI*.6, Math.PI*.8, 15)
                 .build();
 
-        Pose2d StartPose = new Pose2d(-39, -64, Math.toRadians(0));
+        Pose2d StartPose = new Pose2d(-47, -58, Math.toRadians(45));
 
         // Define some custom constraints to use when wanting to go faster than defaults
         speedUpVelocityConstraint = new TranslationalVelConstraint(60.0);
@@ -65,10 +65,10 @@ public class MM_HighFiveBasketsRoute {
         DeliverStartingSample = myBot.getDrive().actionBuilder(StartPose)
                 //.splineToConstantHeading(new Vector2d(-36, -36),Math.toRadians(90))
                 .setReversed(true)
-                .strafeToLinearHeading(new Vector2d(-57,-57), Math.toRadians(45))
+                .strafeToConstantHeading(new Vector2d(-56,-56))
                 .build();
 
-        DriveToSample1 = myBot.getDrive().actionBuilder(new Pose2d(-57, -57, Math.toRadians(45)))
+        DriveToSample1 = myBot.getDrive().actionBuilder(new Pose2d(-56, -56, Math.toRadians(45)))
                 .setReversed(false)
                 .strafeToLinearHeading(new Vector2d(-48,-47), Math.toRadians(90))
                 .build();
