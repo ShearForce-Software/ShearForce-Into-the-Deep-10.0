@@ -36,6 +36,7 @@ public class Geronimo_Manual_Control extends LinearOpMode {
              *************************************************
              *************************************************
              */
+            /*
             // Drive Controls uses left_stick_y, left_stick_x, and right_stick_x
             theRobot.RunDriveControls();
 
@@ -76,6 +77,7 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             }
 
              */
+            /*
             else if(gamepad1.dpad_down){ // Driver will press prehandrobot when he feels he is set
                 theRobot.PreHangRobot();
             }
@@ -214,6 +216,12 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             if (gamepad1.share) {
                 theRobot.SetSlidesToHoldCurrentPosition();
                 theRobot.SetSlideRotatorArmToHoldCurrentPosition();
+            }
+
+            // IMUARMPositionTest
+            if (gamepad1.circle && gamepad1.x) {
+                rotatorPowerApplied = true;
+                theRobot.rotate();
             }
 
             theRobot.ShowTelemetry();

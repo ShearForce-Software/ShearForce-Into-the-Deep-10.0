@@ -36,11 +36,21 @@ import android.graphics.Color;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.SwitchableLight;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+
 
 @Config
 public class Geronimo {
     IMU imu;
     public double imuOffsetInDegrees = 0.0;
+    int logoFacingDirectionPosition = 0;
+    int usbFacingDirectionPosition = 2;
+    int targetPosition = 1000;
+    double rotatorPosition = 0;
+    double imuPosition = 0;
+    int power = 50;
+    double ticksPerDegree = 9.4; // YellowJacket Motor
     LinearOpMode opMode;
     public static boolean allianceColorIsBlue = false;
     public static double autoTimeLeft = 0.0;
@@ -1396,5 +1406,27 @@ public class Geronimo {
                 if (!IsFieldCentric) driveControlsRobotCentric();
             }
         }
+    }
+
+    int targetPositionIMUARM = 94;
+    int powerIMUARM = 50;
+    public void rotate() {
+
+        // rotator
+        rotatorPosition = (leftSlideArmRotatorMotor.getCurrentPosition() / ticksPerDegree); // ticks to degrees
+        rotatorPosition *= (double) 90/20; // degrees to degrees (with gear ratio
+
+        // imu
+        YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
+        imuPosition = orientation.getRoll(AngleUnit.DEGREES); //assumed yaw to write code (correct later)
+
+        targetPositionIMUARM = ((int) (imuPosition + (targetPositionIMUARM / ticksPerDegree)) * 90/20);
+
+        leftSlideArmRotatorMotor.setPower(powerIMUARM);
+        leftSlideArmRotatorMotor.setTargetPosition(targetPositionIMUARM);
+        leftSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftSlideArmRotatorMotor.setPower(powerIMUARM);
+        leftSlideArmRotatorMotor.setTargetPosition(targetPositionIMUARM);
+        leftSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 }
