@@ -35,7 +35,8 @@ package ExpansionHub #Tan {
 }
 
 package ServoNames #Orange {
-  () "RevBlinkinLedDriver" --> [Servo-5]
+  () "swiper"  --> [Servo-4]
+  () "RevBLinkinLedDriver" --> [Servo-5]
 }
 package MotorNames #LightGreen {
   () "leftRotater" --> [Motor0] : 0
