@@ -6,10 +6,8 @@ import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
-import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -31,12 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import android.graphics.Color;
-
-import com.qualcomm.robotcore.hardware.NormalizedRGBA;
-import com.qualcomm.robotcore.hardware.SwitchableLight;
-
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 
@@ -1299,6 +1291,11 @@ public class Geronimo {
 
         opMode.telemetry.addData("Slide Arm Rotator Positions: ", "L: %d, R: %d", leftSlideArmRotatorMotor.getCurrentPosition(), rightSlideArmRotatorMotor.getCurrentPosition());
         opMode.telemetry.addData("Slide Arm Rotator ", "Target: %d, Power: %.2f", slideArmRotatorTargetPosition, slideArmRotatorPower);
+        opMode.telemetry.addData("targetPositionIMUARM: " , targetPositionIMUARM);
+        YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
+        opMode.telemetry.addData("imu roll: ", (imu.getRobotYawPitchRollAngles().getRoll()));
+        opMode.telemetry.addData("imu pitch: ", (imu.getRobotYawPitchRollAngles().getPitch()));
+        opMode.telemetry.addData("imu yaw: ", (imu.getRobotYawPitchRollAngles().getYaw()));
         opMode.telemetry.addData("Slide Arm Rotator Left Touched: ", !touchSensorSlideArmRotatorLeft.isPressed());
         opMode.telemetry.addData("Slide Arm Rotator Rght Touched: ", !touchSensorSlideArmRotatorRight.isPressed());
         opMode.telemetry.addData("Slide Arm Rotator in RUN_TO_POSITION? ", slideArmRotatorRunningToPosition);
@@ -1444,25 +1441,23 @@ public class Geronimo {
         }
     }
 
-    int targetPositionIMUARM = 94;
-    int powerIMUARM = 50;
-    public void rotate() {
-
-        // rotator
-        rotatorPosition = (leftSlideArmRotatorMotor.getCurrentPosition() / ticksPerDegree); // ticks to degrees
-        rotatorPosition *= (double) 90/20; // degrees to degrees (with gear ratio
-
-        // imu
+    int targetPositionIMUARM = 500;
+    public void goToArmAngle(double targetIMU_Degrees) {
+        rotatorPosition = leftSlideArmRotatorMotor.getCurrentPosition();
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
-        imuPosition = orientation.getRoll(AngleUnit.DEGREES); //assumed yaw to write code (correct later)
+        imuPosition = (orientation.getRoll());
 
-        targetPositionIMUARM = ((int) (imuPosition + (targetPositionIMUARM / ticksPerDegree)) * 90/20);
+        targetPositionIMUARM = (int) ((targetIMU_Degrees - imuPosition) *  ticksPerDegree);
 
+        opMode.telemetry.addData("imu position: " , imuPosition);
+        SetSlideRotatorArmToPosition(targetPositionIMUARM);
+        /*
         leftSlideArmRotatorMotor.setPower(powerIMUARM);
         leftSlideArmRotatorMotor.setTargetPosition(targetPositionIMUARM);
         leftSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         leftSlideArmRotatorMotor.setPower(powerIMUARM);
         leftSlideArmRotatorMotor.setTargetPosition(targetPositionIMUARM);
         leftSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        */
     }
 }

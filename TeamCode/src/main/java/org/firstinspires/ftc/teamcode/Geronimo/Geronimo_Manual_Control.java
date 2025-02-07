@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.Geronimo;
 
-import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -226,9 +225,8 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             }
 
             // IMUARMPositionTest
-            if (gamepad1.circle && gamepad1.x) {
-                rotatorPowerApplied = true;
-                theRobot.rotate();
+            if (gamepad1.circle && gamepad1.cross) {
+                theRobot.goToArmAngle(25);
             }
 
             theRobot.ShowTelemetry();
