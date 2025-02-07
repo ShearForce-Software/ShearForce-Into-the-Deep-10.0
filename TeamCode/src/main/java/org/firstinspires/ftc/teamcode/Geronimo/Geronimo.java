@@ -126,7 +126,7 @@ public class Geronimo {
     RevBlinkinLedDriver.BlinkinPattern Blinken_pattern;
     RevBlinkinLedDriver blinkinLedDriver;
 
-    RevColorSensorV3 leftColorSensor;
+    //RevColorSensorV3 leftColorSensor;
     //RevColorSensorV3 rightColorSensor;
     int redLeft = 0;
     int greenLeft = 0;
@@ -235,9 +235,9 @@ public class Geronimo {
 
         // ********** Color Sensors ********************
 
-        leftColorSensor = hardwareMap.get(RevColorSensorV3.class, "ColorSensorLeft");
+        //leftColorSensor = hardwareMap.get(RevColorSensorV3.class, "ColorSensorLeft");
         //rightColorSensor = hardwareMap.get(RevColorSensorV3.class, "ColorSensorRight");
-        leftColorSensor.enableLed(false);
+        //leftColorSensor.enableLed(false);
         //rightColorSensor.enableLed(false);
 
 
@@ -451,13 +451,15 @@ public class Geronimo {
     // *********************************************************
 
     protected void InitColorRevV3Sensor() {
-        float gain = 51;
+ /*       float gain = 51;
         final float[] hsvValues = new float[3];
         boolean xButtonPreviouslyPressed = false;
         boolean xButtonCurrentlyPressed = false;
         if (leftColorSensor instanceof SwitchableLight) {
             ((SwitchableLight) leftColorSensor).enableLight(true);
         }
+
+  */
     }
 
     // colorFound loop
@@ -476,6 +478,7 @@ public class Geronimo {
     }
     */
 
+    /*
     // returns colorEnum color detected
     float gain = 51;
     float[] hsvValues = {0,0,0};
@@ -542,6 +545,8 @@ public class Geronimo {
         return colorDetected;
 
     }
+
+     */
     public void showColorSensorTelemetry(){
         //int leftColor = leftColorSensor.getNormalizedColors().toColor();
         //opMode.telemetry.addData("leftColorNorm: ", leftColor);
@@ -694,7 +699,7 @@ public class Geronimo {
     }
     public void RemoveFromWallServoPosition() {
         SetIntakeBoxRotatorPosition(0.96); //0.875
-        SetSmallArmHangerPosition(.2); //0 //0.25
+        SetSmallArmHangerPosition(0.2); //0 //0.25
     }
     public void SpecimenDeliverHighChamberAlternate(){
         SetIntakeBoxRotatorPosition(0.945); //0.82  //0.905
@@ -704,11 +709,39 @@ public class Geronimo {
     }
     public void SpecimenDeliverHighChamberFinishingMove(){
         SetIntakeBoxRotatorPosition(0.82); //0.945
-        SetSmallArmHangerPosition(.20); //0 //0.25
+        SetSmallArmHangerPosition(0.2); //0 //0.25
         SetSlideToPosition(2150); //00  //2350  //1750
         SetSlideRotatorArmToPosition(710); //642
     }
+    public void UrchinPickupFromWall(){
+        UrchinPickupFromWallServoPosition();
+        SetUrchinServoPosition(URCHIN_SERVO_MIN_POS);
+        double timeout = opMode.getRuntime() + 0.5;
+        SetSlideToPosition(0);
+        while (!GetSlidesLimitSwitchPressed() && opMode.getRuntime() < timeout) {
+            SpecialSleep(50);
+        }
+        SetSlideRotatorArmToPosition(0);
+    }
+    public void UrchinPickupFromWallServoPosition(){
+        SetIntakeBoxRotatorPosition(0.59);
+        SetSmallArmHangerPosition(0.57);
+    }
+    public void UrchinRemoveFromWall(){
+        SetUrchinServoPosition(URCHIN_SERVO_MAX_POS);
+        UrchinRemoveFromWallServoPosition();
 
+        double timeout = opMode.getRuntime() + 0.5;
+        SetSlideToPosition(0);
+        while (!GetSlidesLimitSwitchPressed() && opMode.getRuntime() < timeout) {
+            SpecialSleep(50);
+        }
+        SetSlideRotatorArmToPosition(0);
+    }
+    public void UrchinRemoveFromWallServoPosition(){
+        SetIntakeBoxRotatorPosition(0.59);
+        SetSmallArmHangerPosition(0.2);
+    }
     // ************************************
     // High Basket Delivery Combo Moves
     // ************************************
@@ -1274,6 +1307,7 @@ public class Geronimo {
         opMode.telemetry.addData("Green Intake BOX ROTATOR Pos: ", intakeBoxRotatorPosition);
         //opMode.telemetry.addData(">", "green intake box rotator - use dpad L/R for control" );
         // color sensor data PLEASE do not delete!
+        /* COLOR SENSOR DISCONNECTED 2/4/2025
         opMode.telemetry.addData("colorDetected: " , ColorRevV3Sensor().toString());
         opMode.telemetry.addData("Blinkin Left: ", Blinken_pattern.toString());
         opMode.telemetry.addData("Hue: " , hsvValues[0]);
@@ -1281,6 +1315,8 @@ public class Geronimo {
         opMode.telemetry.addData("Val: " , hsvValues[2]);
         opMode.telemetry.addData("Swiper Position:", swiper_position);
         showColorSensorTelemetry();
+
+         */
         opMode.telemetry.update();
     }
 

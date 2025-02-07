@@ -65,37 +65,49 @@ public class MM_HighFiveBasketsRoute {
         DeliverStartingSample = myBot.getDrive().actionBuilder(StartPose)
                 //.splineToConstantHeading(new Vector2d(-36, -36),Math.toRadians(90))
                 .setReversed(true)
-                .strafeToConstantHeading(new Vector2d(-56,-56))
+                // move center of front of robot to center of diagonal basket line (6,6) diff from start
+                .strafeToConstantHeading(new Vector2d(-53,-52))
+                // put front corners of robot exactly in corner at a 45 degree angle (12,0) diff from start
+                .strafeToConstantHeading(new Vector2d(-59,-58))
                 .build();
 
-        DriveToSample1 = myBot.getDrive().actionBuilder(new Pose2d(-56, -56, Math.toRadians(45)))
+        DriveToSample1 = myBot.getDrive().actionBuilder(new Pose2d(-59, -58, Math.toRadians(45)))
                 .setReversed(false)
                 .strafeToLinearHeading(new Vector2d(-48,-47), Math.toRadians(90))
                 .build();
 
         DeliverSample1 = myBot.getDrive().actionBuilder(new Pose2d(-48,-47, Math.toRadians(90)))
                 .setReversed(true)
-                .strafeToLinearHeading(new Vector2d(-59,-59), Math.toRadians(45))
+                // move center of front of robot to center of diagonal basket line (6,6) diff from start
+                .strafeToLinearHeading(new Vector2d(-53,-52), Math.toRadians(45.0))
+                // put front corners of robot exactly in corner at a 45 degree angle (12,0) diff from start
+                .strafeToConstantHeading(new Vector2d(-59,-58))
                 .build();
 
-        DriveToSample2 = myBot.getDrive().actionBuilder(new Pose2d(-59, -59, Math.toRadians(45)))
+        DriveToSample2 = myBot.getDrive().actionBuilder(new Pose2d(-59, -58, Math.toRadians(45)))
                 .setReversed(false)
                 .strafeToLinearHeading(new Vector2d(-57,-47), Math.toRadians(90))
                 .build();
         DeliverSample2 = myBot.getDrive().actionBuilder(new Pose2d(-57,-47, Math.toRadians(90)))
                 .setReversed(true)
-                .strafeToLinearHeading(new Vector2d(-59,-59), Math.toRadians(45))
+                // move center of front of robot to center of diagonal basket line (6,6) diff from start
+                .strafeToLinearHeading(new Vector2d(-53,-52), Math.toRadians(45.0))
+                // put front corners of robot exactly in corner at a 45 degree angle (12,0) diff from start
+                .strafeToConstantHeading(new Vector2d(-59,-58))
                 .build();
 
-        DriveToSample3 = myBot.getDrive().actionBuilder(new Pose2d(-59, -59, Math.toRadians(45)))
+        DriveToSample3 = myBot.getDrive().actionBuilder(new Pose2d(-59, -58, Math.toRadians(45)))
                 .setReversed(false)
                 .strafeToLinearHeading(new Vector2d(-55,-40), Math.toRadians(135))
                 .build();
         DeliverSample3 = myBot.getDrive().actionBuilder(new Pose2d(-55,-40, Math.toRadians(135)))
                 .setReversed(true)
-                .strafeToLinearHeading(new Vector2d(-59,-59), Math.toRadians(45))
+                // move center of front of robot to center of diagonal basket line (6,6) diff from start
+                .strafeToLinearHeading(new Vector2d(-53,-52), Math.toRadians(45.0))
+                // put front corners of robot exactly in corner at a 45 degree angle (12,0) diff from start
+                .strafeToConstantHeading(new Vector2d(-59,-58))
                 .build();
-        DriveToSubmersible4 = myBot.getDrive().actionBuilder(new Pose2d(-59, -59, Math.toRadians(45)))
+        DriveToSubmersible4 = myBot.getDrive().actionBuilder(new Pose2d(-59, -58, Math.toRadians(45)))
                 .splineTo(new Vector2d(-36,-12),Math.toRadians(0))
                 .strafeToLinearHeading(new Vector2d(-24, -12), Math.toRadians(0))
                 .build();
