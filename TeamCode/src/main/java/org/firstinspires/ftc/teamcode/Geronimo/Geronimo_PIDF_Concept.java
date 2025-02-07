@@ -41,7 +41,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 //@Disabled
 public class Geronimo_PIDF_Concept extends LinearOpMode {
 
-    public static double p = 0, i = 0, d = 0, f = 0;
+    public static double p = 0.0001, i = 0, d = 0, f = 0.0035;
 
     public static int rotator_arm_angle = 0; // target arm angle
 
@@ -59,7 +59,7 @@ public class Geronimo_PIDF_Concept extends LinearOpMode {
 
         //Initialize PID Controllers for arm rotator motors.
         PIDController Right_controller = new PIDController(p, i, d);
-       // PIDController Left_controller = new PIDController(p, i, d);
+        PIDController Left_controller = new PIDController(p, i, d);
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
@@ -91,7 +91,7 @@ public class Geronimo_PIDF_Concept extends LinearOpMode {
         while (opModeIsActive()) {
 
             Right_controller.setPID(p,i,d);
-           // Left_controller.setPID(p,i,d);
+            Left_controller.setPID(p,i,d);
             rotator_arm_target = rotator_arm_angle * ticks_in_degrees;
 
            //actual arm angle value?
@@ -126,7 +126,7 @@ public class Geronimo_PIDF_Concept extends LinearOpMode {
             //TEST: Set whatever target position get to left, for both
 
             int left_armPos = leftSlideArmRotatorMotor.getCurrentPosition();
-            double left_pid = Right_controller.calculate(left_armPos,rotator_arm_target);
+            double left_pid = Left_controller.calculate(left_armPos,rotator_arm_target);
             double left_ff = Math.cos(Math.toRadians(rotator_arm_target/ticks_in_degrees)) * f;
 
             int right_armPos = rightSlideArmRotatorMotor.getCurrentPosition();
@@ -143,7 +143,7 @@ public class Geronimo_PIDF_Concept extends LinearOpMode {
 
             // Send calculated power to motors
             leftSlideArmRotatorMotor.setPower(leftPower);
-            leftSlideArmRotatorMotor.setPower(rightPower);
+            rightSlideArmRotatorMotor.setPower(rightPower);
 
             // Show arm target, arm positions, and arm power.
             telemetry.addData("Rotator arm target", rotator_arm_target);
