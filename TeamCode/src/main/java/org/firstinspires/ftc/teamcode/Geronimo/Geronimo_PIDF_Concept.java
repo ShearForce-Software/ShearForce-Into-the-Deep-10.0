@@ -77,10 +77,12 @@ public class Geronimo_PIDF_Concept extends LinearOpMode {
         rightSlideArmRotatorMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
         //Stop and Reset to Zero initially
-        leftSlideArmRotatorMotor.setPower(0.0);
-        rightSlideArmRotatorMotor.setPower(0.0);
+      //  leftSlideArmRotatorMotor.setPower(0.0);
+      //  rightSlideArmRotatorMotor.setPower(0.0);
         leftSlideArmRotatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightSlideArmRotatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        //gm0 recommends running without encoder
         leftSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -90,6 +92,8 @@ public class Geronimo_PIDF_Concept extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
+
+
             Right_controller.setPID(p,i,d);
             Left_controller.setPID(p,i,d);
             rotator_arm_target = rotator_arm_angle * ticks_in_degrees;
@@ -97,6 +101,12 @@ public class Geronimo_PIDF_Concept extends LinearOpMode {
            //actual arm angle value?
             double left_rotator_arm_actual_angle = leftSlideArmRotatorMotor.getCurrentPosition()/ticks_in_degrees;
             double right_rotator_arm_actual_angle = rightSlideArmRotatorMotor.getCurrentPosition()/ticks_in_degrees;
+
+         /*   while (left_rotator_arm_actual_angle != rotator_arm_angle){
+
+            }
+
+          */
 /*
             //change target value...
              if(gamepad2.dpad_left){
@@ -151,8 +161,12 @@ public class Geronimo_PIDF_Concept extends LinearOpMode {
             telemetry.addData("Rotator arm angle", rotator_arm_angle);
             telemetry.addData("Rotator positions", "left (%d), right (%d)", left_armPos, right_armPos);
             telemetry.addData("Rotator actual angle", "left (%.2f), right (%.2f)", left_rotator_arm_actual_angle, right_rotator_arm_actual_angle);
-            telemetry.addData("Rotator motor power", "left (%.2f), right (%.2f)", leftPower, rightPower);
+            telemetry.addData("Rotator motor power", "left (%.2f), right (%.2f)", leftSlideArmRotatorMotor.getPower(), rightSlideArmRotatorMotor.getPower());
+
+            //  telemetry.addData("Rotator motor power", "left (%.2f), right (%.2f)", leftPower, rightPower);
             telemetry.update();
+
+            //motor get power
         }
     }
 }
