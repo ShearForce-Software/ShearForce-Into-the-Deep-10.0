@@ -1,9 +1,5 @@
 package org.firstinspires.ftc.teamcode.Geronimo;
 
-import com.acmerobotics.roadrunner.Action;
-import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.Vector2d;
-import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -23,14 +19,10 @@ public class Geronimo_Manual_Control extends LinearOpMode {
 
     public void runOpMode() {
         theRobot = new Geronimo(true, true, this);
-        MecanumDrive_Geronimo drive;
 
         theRobot.Init(this.hardwareMap);
-        theRobot.InitLimelight(hardwareMap);
         theRobot.ShowTelemetry();
         telemetry.update();
-
-        drive = new MecanumDrive_Geronimo(hardwareMap, new Pose2d(0, 0, 0));
 
         waitForStart();
         resetRuntime();
@@ -70,30 +62,8 @@ public class Geronimo_Manual_Control extends LinearOpMode {
 
             }
 
-            if(gamepad1.dpad_down && gamepad1.options){
-               // theRobot.SetSlideToPosition(1400);
-               // theRobot.SetIntakeBoxRotatorPosition(0.04);
-               // theRobot.SetSmallArmHangerPosition(0.365);
-               // sleep(100);
 
-                double [] offsetInches = theRobot.GetStrafeOffsetInInches("block");
-
-                if(Math.abs(offsetInches[0])<0.001){
-                    telemetry.addLine("NOPE");
-                }
-
-                else{
-                        Action strafeAction = drive.actionBuilder(new Pose2d(0, 0, 0))
-                                .strafeToConstantHeading(new Vector2d(-offsetInches[1], offsetInches[0]))
-                                .build();
-
-                        Actions.runBlocking(strafeAction);
-                    }
-                }
-            }
-
-
-            if (gamepad1.dpad_left && !gamepad1.options) {
+            if (gamepad1.dpad_left) {
                 theRobot.SetSwiperPosition(Geronimo.SWIPER_MAX_POS);
                 theRobot.SpecialSleep(500);
                 theRobot.SetSwiperPosition(Geronimo.SWIPER_MIN_POS);
@@ -106,10 +76,10 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             }
 
              */
-            else if(gamepad1.dpad_down && !gamepad1.options){ // Driver will press prehandrobot when he feels he is set
+            else if(gamepad1.dpad_down){ // Driver will press prehandrobot when he feels he is set
                 theRobot.PreHangRobot();
             }
-            else if(gamepad1.dpad_up && !gamepad1.options){ //Driver will eventually hang the robot himself.
+            else if(gamepad1.dpad_up){ //Driver will eventually hang the robot himself.
                 theRobot.ReadyHangRobot();
             }
 
@@ -218,6 +188,13 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 theRobot.SpecimenDeliverHighChamberFinishingMove();
             }
 
+            //urchin pickup from wall
+            if (gamepad2.left_bumper && gamepad2.options) {
+                theRobot.UrchinPickupFromWall();
+            } else if (gamepad2.right_bumper && gamepad2.options){
+                theRobot.UrchinRemoveFromWall();
+            }
+
             // Combo moves for basket deliveries
             else if (gamepad2.dpad_left && !gamepad2.options) {
                 theRobot.SampleUrchinFloorPickup();
@@ -234,9 +211,9 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             }
 
             // Claw Control
-            if (gamepad2.left_bumper) {
+            if (gamepad2.left_bumper && !gamepad2.options) {
                 theRobot.SetClawPosition(Geronimo.CLAW_MAX_POS);
-            } else if (gamepad2.right_bumper) {
+            } else if (gamepad2.right_bumper && !gamepad2.options) {
                 theRobot.SetClawPosition(Geronimo.CLAW_MIN_POS);
             }
 
@@ -251,3 +228,4 @@ public class Geronimo_Manual_Control extends LinearOpMode {
         } // end while (opModeIsActive())
 
     }
+}
