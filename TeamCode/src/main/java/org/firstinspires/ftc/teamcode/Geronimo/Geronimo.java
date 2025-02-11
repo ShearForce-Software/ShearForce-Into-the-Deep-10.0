@@ -704,22 +704,23 @@ public class Geronimo {
         SetSlideRotatorArmToPosition(710); //642
     }
     public void UrchinPickupFromWall(){
-        UrchinPickupFromWallServoPosition();
-        SetUrchinServoPosition(URCHIN_SERVO_MIN_POS);
-        double timeout = opMode.getRuntime() + 0.5;
-        SetSlideToPosition(0);
-        while (!GetSlidesLimitSwitchPressed() && opMode.getRuntime() < timeout) {
-            SpecialSleep(50);
+            UrchinPickupFromWallServoPosition();
+            SetUrchinServoPosition(URCHIN_SERVO_MIN_POS);
+            double timeout = opMode.getRuntime() + 0.5;
+            SetSlideToPosition(0);
+            while (!GetSlidesLimitSwitchPressed() && opMode.getRuntime() < timeout) {
+                SpecialSleep(50);
+            }
+            SetSlideRotatorArmToPosition(0);
         }
-        SetSlideRotatorArmToPosition(0);
-    }
-    public void UrchinPickupFromWallServoPosition(){
-        SetIntakeBoxRotatorPosition(0.59);
-        SetSmallArmHangerPosition(0.57);
-    }
-    public void UrchinRemoveFromWall(){
-        SetUrchinServoPosition(URCHIN_SERVO_MAX_POS);
-        UrchinRemoveFromWallServoPosition();
+        public void UrchinPickupFromWallServoPosition(){
+            SetIntakeBoxRotatorPosition(0.505); //0.59m //0.535
+            SetSmallArmHangerPosition(0.57);
+        }
+        public void UrchinRemoveFromWall(){
+            SetUrchinServoPosition(URCHIN_SERVO_MAX_POS);
+            SpecialSleep(300);
+            UrchinRemoveFromWallServoPosition();
 
         double timeout = opMode.getRuntime() + 0.5;
         SetSlideToPosition(0);
@@ -732,6 +733,18 @@ public class Geronimo {
         SetIntakeBoxRotatorPosition(0.59);
         SetSmallArmHangerPosition(0.2);
     }
+    /* public void UrchinDeliverHighChamberAlternate(){
+        SetIntakeBoxRotatorPosition(0.49); //0.82  //0.905
+        SetSmallArmHangerPosition(.20); //0 //0.25
+        SetSlideToPosition(1240);  //1240  //740
+        SetSlideRotatorArmToPosition(710);
+    }
+    public void UrchinDeliverHighChamberFinishingMove(){
+        SetIntakeBoxRotatorPosition(0.365); //0.945
+        SetSmallArmHangerPosition(0.2); //0 //0.25
+        SetSlideToPosition(2150); //00  //2350  //1750
+        SetSlideRotatorArmToPosition(710); //642 */
+
     // ************************************
     // High Basket Delivery Combo Moves
     // ************************************
