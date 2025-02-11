@@ -272,7 +272,7 @@ public class Geronimo {
 
         LLResult result = limelightbox.getLatestResult();
 
-        if (result.isValid()) {
+        if (result != null && result.isValid()) {
             // Access detector results
             List<LLResultTypes.DetectorResult> detectorResults = result.getDetectorResults();
             for (LLResultTypes.DetectorResult dr : detectorResults) {
@@ -296,39 +296,36 @@ public class Geronimo {
         return offset;
     }
 
-    public double GetStrafeOffsetInInches(String targetImageName) {
+    public double[] GetStrafeOffsetInInches(String targetImageName) {
 
+        // Retrieve scaled offsets (already assumed from the recognized target).
         List<Double> scaledOffsets = FindAlignAngleToTargetImage(targetImageName);
 
-        // Check if target was found
+        // Check if target was found by checking for the -1.0 flag on both tx and ty
         if (scaledOffsets.get(0) == -1.0 && scaledOffsets.get(1) == -1.0) {
-            // Target not found; propagate the -1.0 flags
-            return 0;
+            // Target not found; propagate some "error" condition, for instance [-1, -1].
+            return new double[] {-1.0, -1.0};
         }
 
-        // Convert scaled offsets back to raw angles
-        double rawTx = scaledOffsets.get(0);;
-        double rawTy = scaledOffsets.get(1);;
+        // Convert the scaled offsets back to raw angles
+        double rawTx = scaledOffsets.get(0);
+        double rawTy = scaledOffsets.get(1);
 
-        // Fixed distance from the target in inches guaranteed by roadrunner
-        final double D = 6.0;
+        // Fixed distance from the target in inches
+        final double D = 4.3;
 
-        // Convert angles from degrees to radians for trigonometric functions
+        // Convert angles from degrees to radians
         double txRadians = Math.toRadians(rawTx);
         double tyRadians = Math.toRadians(rawTy);
 
-        // H1 -- height of camera, H2,.. height of object.
-        // Calculate strafing distances
+        // Calculate the strafing offsets
         double strafeX = D * Math.tan(txRadians); // Left/Right adjustment
         double strafeY = D * Math.tan(tyRadians); // Forward/Backward adjustment
 
-        // Create a new list to hold the strafing distances
-        List<Double> strafeOffsetsInInches = new ArrayList<>();
-        strafeOffsetsInInches.add(strafeX);
-        strafeOffsetsInInches.add(strafeY);
-
-        return strafeOffsetsInInches.get(0); // for now, it only returns the x inches in strafing movements
+        // Return the offsets in a double array
+        return new double[] {strafeX, strafeY};
     }
+
 
     public boolean limelightHasTarget() {
         LLResult result = limelightbox.getLatestResult();
