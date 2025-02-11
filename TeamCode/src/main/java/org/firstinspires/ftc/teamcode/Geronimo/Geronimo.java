@@ -272,7 +272,7 @@ public class Geronimo {
 
         LLResult result = limelightbox.getLatestResult();
 
-        if (result.isValid()) {
+        if (result != null && result.isValid()) {
             // Access detector results
             List<LLResultTypes.DetectorResult> detectorResults = result.getDetectorResults();
             for (LLResultTypes.DetectorResult dr : detectorResults) {
@@ -312,7 +312,7 @@ public class Geronimo {
         double rawTy = scaledOffsets.get(1);
 
         // Fixed distance from the target in inches
-        final double D = 9.5;
+        final double D = 4.3;
 
         // Convert angles from degrees to radians
         double txRadians = Math.toRadians(rawTx);

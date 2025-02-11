@@ -69,7 +69,7 @@ public class Geronimo_Manual_Control extends LinearOpMode {
 
             }
 
-            if(gamepad1.dpad_down && gamepad1.options){
+            if(gamepad1.dpad_up && gamepad1.options){
                 // theRobot.SetSlideToPosition(1400);
                 // theRobot.SetIntakeBoxRotatorPosition(0.04);
                 // theRobot.SetSmallArmHangerPosition(0.365);
@@ -82,12 +82,18 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 }
 
                 else{
-                    Action strafeAction = drive.actionBuilder(new Pose2d(0, 0, 0))
+                    Action strafeAction = drive.actionBuilder(new Pose2d(0,0,0))
                             .strafeToConstantHeading(new Vector2d(-offsetInches[1], offsetInches[0]))
                             .build();
 
                     Actions.runBlocking(strafeAction);
                 }
+            }
+
+            if(gamepad1.dpad_right && gamepad1.options){
+                theRobot.SetSlideToPosition(1400);
+                theRobot.SetIntakeBoxRotatorPosition(0.04);
+                theRobot.SetSmallArmHangerPosition(0.365);
             }
 
 
