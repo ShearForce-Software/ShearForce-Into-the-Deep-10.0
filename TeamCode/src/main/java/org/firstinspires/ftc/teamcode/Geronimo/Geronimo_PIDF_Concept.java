@@ -41,7 +41,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 //@Disabled
 public class Geronimo_PIDF_Concept extends LinearOpMode {
 
-    public static double p = 0.0001, i = 0, d = 0, f = 0.0035;
+    public static double p = 0.0001, i = 0, d = 0, f = 0.007;
 
     public static int rotator_arm_angle = 0; // target arm angle
 
@@ -137,11 +137,14 @@ public class Geronimo_PIDF_Concept extends LinearOpMode {
 
             int left_armPos = leftSlideArmRotatorMotor.getCurrentPosition();
             double left_pid = Left_controller.calculate(left_armPos,rotator_arm_target);
-            double left_ff = Math.cos(Math.toRadians(rotator_arm_target/ticks_in_degrees)) * f;
+           // double left_ff = Math.cos(Math.toRadians(rotator_arm_angle)) * f;
+            double left_ff = Math.cos(rotator_arm_angle) * f;
+
 
             int right_armPos = rightSlideArmRotatorMotor.getCurrentPosition();
             double right_pid = Right_controller.calculate(right_armPos,rotator_arm_target);
-            double right_ff = Math.cos(Math.toRadians(rotator_arm_target/ticks_in_degrees)) * f;
+          //  double right_ff = Math.cos(Math.toRadians(rotator_arm_angle)) * f;
+            double right_ff = Math.cos(rotator_arm_angle) * f;
 
 
             // Setup a variable for each arm rotator motor to save power level for telemetry
@@ -161,7 +164,9 @@ public class Geronimo_PIDF_Concept extends LinearOpMode {
             telemetry.addData("Rotator arm angle", rotator_arm_angle);
             telemetry.addData("Rotator positions", "left (%d), right (%d)", left_armPos, right_armPos);
             telemetry.addData("Rotator actual angle", "left (%.2f), right (%.2f)", left_rotator_arm_actual_angle, right_rotator_arm_actual_angle);
-            telemetry.addData("Rotator motor power", "left (%.2f), right (%.2f)", leftSlideArmRotatorMotor.getPower(), rightSlideArmRotatorMotor.getPower());
+            telemetry.addData("pid calculation values", "left_pid (%.4f), right_pid (%.4f)", left_pid, right_pid);
+            telemetry.addData("ff calculation values", "left_ff (%.4f), right_ff (%.4f)", left_ff, right_ff);
+            telemetry.addData("Rotator motor power", "left (%.4f), right (%.4f)", leftSlideArmRotatorMotor.getPower(), rightSlideArmRotatorMotor.getPower());
 
             //  telemetry.addData("Rotator motor power", "left (%.2f), right (%.2f)", leftPower, rightPower);
             telemetry.update();
