@@ -661,7 +661,7 @@ public class Geronimo {
         SetSlideRotatorArmToPosition(0);
     }
     public void SpecimenPickupFromWallServoPosition(){
-        SetIntakeBoxRotatorPosition(0.96); //0.875
+        SetIntakeBoxRotatorPosition(0.82); //0.875 //0.96
         SetSmallArmHangerPosition(0.35); //.15 //0.4
     }
     public void RemoveFromWall(){
@@ -686,17 +686,17 @@ public class Geronimo {
         SetSlideRotatorArmToPosition(0);
     }
     public void RemoveFromWallServoPosition() {
-        SetIntakeBoxRotatorPosition(0.96); //0.875
+        SetIntakeBoxRotatorPosition(0.82); //0.875 //0.96
         SetSmallArmHangerPosition(.2); //0 //0.25
     }
     public void SpecimenDeliverHighChamberAlternate(){
-        SetIntakeBoxRotatorPosition(0.945); //0.82  //0.905
+        SetIntakeBoxRotatorPosition(0.825); //0.82  //0.905 //0.945 //0.795
         SetSmallArmHangerPosition(.20); //0 //0.25
         SetSlideToPosition(1240);  //1240  //740
         SetSlideRotatorArmToPosition(710);
     }
     public void SpecimenDeliverHighChamberFinishingMove(){
-        SetIntakeBoxRotatorPosition(0.82); //0.945
+        SetIntakeBoxRotatorPosition(0.7); //0.945 //0.82 //0.795
         SetSmallArmHangerPosition(.20); //0 //0.25
         SetSlideToPosition(2150); //00  //2350  //1750
         SetSlideRotatorArmToPosition(710); //642
@@ -777,7 +777,9 @@ public class Geronimo {
     public void BasketHighFinishingMove(){
         // Raise slides to high basket height
         BasketHighFinishingMove_SlidesPosition();
-        SpecialSleep(2500); //2000 //4000
+       while (slideLeft.getCurrentPosition() < 6496) {
+                SpecialSleep(5); //2000 //4000 //2500
+        }
         // Rotate urchin to align above basket
         BasketHighFinishingMove_UrchinDeliverPosition();
         SpecialSleep(200);
@@ -1197,7 +1199,13 @@ public class Geronimo {
             rightSlideArmRotatorMotor.setTargetPosition(leftSlideArmRotatorMotor.getCurrentPosition());
         }
         slideArmRotatorRunningToPosition = false;
+    } public void SetSlidesMaxVertPos()
+    {
+        SetSlideToPosition(SLIDE_ARM_MAX_VERTICAL_POS);
+        SetSlideRotatorArmToPosition(710);
     }
+
+
     public boolean GetRotatorArmRunningToPosition()
     {
         return slideArmRotatorRunningToPosition;
