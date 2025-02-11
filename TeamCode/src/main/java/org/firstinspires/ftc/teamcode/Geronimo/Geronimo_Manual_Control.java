@@ -29,7 +29,6 @@ public class Geronimo_Manual_Control extends LinearOpMode {
         theRobot.InitLimelight(hardwareMap);
         theRobot.ShowTelemetry();
         telemetry.update();
-
         drive = new MecanumDrive_Geronimo(hardwareMap, new Pose2d(0, 0, 0));
 
         waitForStart();
@@ -70,11 +69,11 @@ public class Geronimo_Manual_Control extends LinearOpMode {
 
             }
 
-            if(gamepad1.dpad_down && gamepad1.options){
-               // theRobot.SetSlideToPosition(1400);
-               // theRobot.SetIntakeBoxRotatorPosition(0.04);
-               // theRobot.SetSmallArmHangerPosition(0.365);
-               // sleep(100);
+            if(gamepad1.dpad_up && gamepad1.options){
+                // theRobot.SetSlideToPosition(1400);
+                // theRobot.SetIntakeBoxRotatorPosition(0.04);
+                // theRobot.SetSmallArmHangerPosition(0.365);
+                // sleep(100);
 
                 double [] offsetInches = theRobot.GetStrafeOffsetInInches("block");
 
@@ -83,17 +82,22 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 }
 
                 else{
-                        Action strafeAction = drive.actionBuilder(new Pose2d(0, 0, 0))
-                                .strafeToConstantHeading(new Vector2d(-offsetInches[1], offsetInches[0]))
-                                .build();
+                    Action strafeAction = drive.actionBuilder(new Pose2d(0,0,0))
+                            .strafeToConstantHeading(new Vector2d(-offsetInches[1], offsetInches[0]))
+                            .build();
 
-                        Actions.runBlocking(strafeAction);
-                    }
+                    Actions.runBlocking(strafeAction);
                 }
             }
 
+            if(gamepad1.dpad_right && gamepad1.options){
+                theRobot.SetSlideToPosition(1400);
+                theRobot.SetIntakeBoxRotatorPosition(0.04);
+                theRobot.SetSmallArmHangerPosition(0.365);
+            }
 
-            if (gamepad1.dpad_left && !gamepad1.options) {
+
+        if (gamepad1.dpad_left && !gamepad1.options) {
                 theRobot.SetSwiperPosition(Geronimo.SWIPER_MAX_POS);
                 theRobot.SpecialSleep(500);
                 theRobot.SetSwiperPosition(Geronimo.SWIPER_MIN_POS);
@@ -218,6 +222,13 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 theRobot.SpecimenDeliverHighChamberFinishingMove();
             }
 
+            //urchin pickup from wall
+            if (gamepad2.left_bumper && gamepad2.options) {
+                theRobot.UrchinPickupFromWall();
+            } else if (gamepad2.right_bumper && gamepad2.options){
+                theRobot.UrchinRemoveFromWall();
+            }
+
             // Combo moves for basket deliveries
             else if (gamepad2.dpad_left && !gamepad2.options) {
                 theRobot.SampleUrchinFloorPickup();
@@ -234,9 +245,9 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             }
 
             // Claw Control
-            if (gamepad2.left_bumper) {
+            if (gamepad2.left_bumper && !gamepad2.options) {
                 theRobot.SetClawPosition(Geronimo.CLAW_MAX_POS);
-            } else if (gamepad2.right_bumper) {
+            } else if (gamepad2.right_bumper && !gamepad2.options) {
                 theRobot.SetClawPosition(Geronimo.CLAW_MIN_POS);
             }
 
@@ -251,3 +262,4 @@ public class Geronimo_Manual_Control extends LinearOpMode {
         } // end while (opModeIsActive())
 
     }
+}

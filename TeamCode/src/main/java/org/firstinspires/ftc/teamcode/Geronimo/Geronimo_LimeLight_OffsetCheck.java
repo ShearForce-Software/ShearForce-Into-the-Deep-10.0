@@ -14,7 +14,7 @@ public class Geronimo_LimeLight_OffsetCheck extends LinearOpMode {
     private MecanumDrive_Geronimo drive;
 
     // We’ll store the Limelight strafe offset here
-    double[] offsetInches;
+    private double offsetInches = 0.0;
 
     @Override
     public void runOpMode() {
@@ -43,24 +43,16 @@ public class Geronimo_LimeLight_OffsetCheck extends LinearOpMode {
             //----------------------------------------------------
             //  1) DPAD_UP => GET THE LIMELIGHT OFFSET (ONCE)
             //----------------------------------------------------
-            if (currentDpadUp && !lastDpadUp) {
-                //theRobot.SetSlideRotatorArmToPosition(100);
-                theRobot.SetSlideToPosition(1400);
-                theRobot.SetIntakeBoxRotatorPosition(0.04);
-                theRobot.SetSmallArmHangerPosition(0.365);
-sleep(100);
-                // Retrieve the offset from the Limelight
-                offsetInches = theRobot.GetStrafeOffsetInInches("block");
+            /*if (currentDpadUp && !lastDpadUp) {
+                offsetInches[] = theRobot.GetStrafeOffsetInInches("block");
                 // If offsetInches == 0, it likely means "no target found"
-                if (Math.abs(offsetInches[0]) < 0.001) {
+                if (Math.abs(offsetInches) < 0.001) {
                     telemetry.addLine("No target detected => offset = 0");
-
                 } else {
-                    telemetry.addData("Offset X(inches)", "%.2f", offsetInches[0]);
-                    telemetry.addData("Offset Y(inches)", "%.2f", offsetInches[1]);
+                    telemetry.addData("Offset (inches)", "%.2f", offsetInches);
                 }
                 telemetry.update();
-            }
+            }*/
 
 
             //----------------------------------------------------
@@ -69,17 +61,15 @@ sleep(100);
             if (currentDpadRight && !lastDpadRight) {
                 // Build a Road Runner action that starts at (0,0,0)
                 // and strafes in Y by `offsetInches`.
-
                 Action strafeAction = drive.actionBuilder(new Pose2d(0, 0, 0))
-                        .strafeToConstantHeading(new Vector2d(-offsetInches[1], offsetInches[0]))
+                        .strafeToConstantHeading(new Vector2d(0, offsetInches))
                         .build();
 
                 // Run the strafe action (blocking) to move the robot
                 Actions.runBlocking(strafeAction);
 
                 // Telemetry
-                telemetry.addData("Strafed", "%.2f inches", offsetInches[0]);
-                telemetry.addData("Strafed", "%.2f inches", offsetInches[1]);
+                telemetry.addData("Strafed", "%.2f inches", offsetInches);
                 telemetry.update();
             }
 

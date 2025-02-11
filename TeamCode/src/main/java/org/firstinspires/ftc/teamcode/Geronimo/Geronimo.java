@@ -1,10 +1,6 @@
 package org.firstinspires.ftc.teamcode.Geronimo;
 import static org.firstinspires.ftc.teamcode.Geronimo.MecanumDrive_Geronimo.PARAMS;
 
-import com.acmerobotics.roadrunner.Action;
-import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.Vector2d;
-import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
@@ -120,7 +116,7 @@ public class Geronimo {
     RevBlinkinLedDriver.BlinkinPattern Blinken_pattern;
     RevBlinkinLedDriver blinkinLedDriver;
 
-    RevColorSensorV3 leftColorSensor;
+    //RevColorSensorV3 leftColorSensor;
     //RevColorSensorV3 rightColorSensor;
     int redLeft = 0;
     int greenLeft = 0;
@@ -276,7 +272,7 @@ public class Geronimo {
 
         LLResult result = limelightbox.getLatestResult();
 
-        if (result.isValid()) {
+        if (result != null && result.isValid()) {
             // Access detector results
             List<LLResultTypes.DetectorResult> detectorResults = result.getDetectorResults();
             for (LLResultTypes.DetectorResult dr : detectorResults) {
@@ -316,7 +312,7 @@ public class Geronimo {
         double rawTy = scaledOffsets.get(1);
 
         // Fixed distance from the target in inches
-        final double D = 9.5;
+        final double D = 4.3;
 
         // Convert angles from degrees to radians
         double txRadians = Math.toRadians(rawTx);
@@ -345,7 +341,6 @@ public class Geronimo {
         }
         return false;
     }
-
 
     public boolean limelightHasCustomTarget() {
         LLResult result = limelightbox.getLatestResult();
@@ -443,13 +438,15 @@ public class Geronimo {
     // *********************************************************
 
     protected void InitColorRevV3Sensor() {
-        float gain = 51;
+ /*       float gain = 51;
         final float[] hsvValues = new float[3];
         boolean xButtonPreviouslyPressed = false;
         boolean xButtonCurrentlyPressed = false;
         if (leftColorSensor instanceof SwitchableLight) {
             ((SwitchableLight) leftColorSensor).enableLight(true);
         }
+
+  */
     }
 
     // colorFound loop
@@ -468,12 +465,12 @@ public class Geronimo {
     }
     */
 
-
+    /*
     // returns colorEnum color detected
     float gain = 51;
     float[] hsvValues = {0,0,0};
     public colorEnum ColorRevV3Sensor() {
-        //leftColorSensor.setGain(gain);
+        leftColorSensor.setGain(gain);
         NormalizedRGBA colors = leftColorSensor.getNormalizedColors();
         Color.colorToHSV(colors.toColor(), hsvValues);
 
@@ -535,6 +532,8 @@ public class Geronimo {
         return colorDetected;
 
     }
+
+     */
     public void showColorSensorTelemetry(){
         //int leftColor = leftColorSensor.getNormalizedColors().toColor();
         //opMode.telemetry.addData("leftColorNorm: ", leftColor);
@@ -661,7 +660,7 @@ public class Geronimo {
         SetSlideRotatorArmToPosition(0);
     }
     public void SpecimenPickupFromWallServoPosition(){
-        SetIntakeBoxRotatorPosition(0.82); //0.875 //0.96
+        SetIntakeBoxRotatorPosition(0.96); //0.875
         SetSmallArmHangerPosition(0.35); //.15 //0.4
     }
     public void RemoveFromWall(){
@@ -686,22 +685,50 @@ public class Geronimo {
         SetSlideRotatorArmToPosition(0);
     }
     public void RemoveFromWallServoPosition() {
-        SetIntakeBoxRotatorPosition(0.82); //0.875 //0.96
-        SetSmallArmHangerPosition(.2); //0 //0.25
+        SetIntakeBoxRotatorPosition(0.96); //0.875
+        SetSmallArmHangerPosition(0.2); //0 //0.25
     }
     public void SpecimenDeliverHighChamberAlternate(){
-        SetIntakeBoxRotatorPosition(0.825); //0.82  //0.905 //0.945 //0.795
+        SetIntakeBoxRotatorPosition(0.945); //0.82  //0.905
         SetSmallArmHangerPosition(.20); //0 //0.25
         SetSlideToPosition(1240);  //1240  //740
         SetSlideRotatorArmToPosition(710);
     }
     public void SpecimenDeliverHighChamberFinishingMove(){
-        SetIntakeBoxRotatorPosition(0.7); //0.945 //0.82 //0.795
-        SetSmallArmHangerPosition(.20); //0 //0.25
+        SetIntakeBoxRotatorPosition(0.82); //0.945
+        SetSmallArmHangerPosition(0.2); //0 //0.25
         SetSlideToPosition(2150); //00  //2350  //1750
         SetSlideRotatorArmToPosition(710); //642
     }
+    public void UrchinPickupFromWall(){
+        UrchinPickupFromWallServoPosition();
+        SetUrchinServoPosition(URCHIN_SERVO_MIN_POS);
+        double timeout = opMode.getRuntime() + 0.5;
+        SetSlideToPosition(0);
+        while (!GetSlidesLimitSwitchPressed() && opMode.getRuntime() < timeout) {
+            SpecialSleep(50);
+        }
+        SetSlideRotatorArmToPosition(0);
+    }
+    public void UrchinPickupFromWallServoPosition(){
+        SetIntakeBoxRotatorPosition(0.59);
+        SetSmallArmHangerPosition(0.57);
+    }
+    public void UrchinRemoveFromWall(){
+        SetUrchinServoPosition(URCHIN_SERVO_MAX_POS);
+        UrchinRemoveFromWallServoPosition();
 
+        double timeout = opMode.getRuntime() + 0.5;
+        SetSlideToPosition(0);
+        while (!GetSlidesLimitSwitchPressed() && opMode.getRuntime() < timeout) {
+            SpecialSleep(50);
+        }
+        SetSlideRotatorArmToPosition(0);
+    }
+    public void UrchinRemoveFromWallServoPosition(){
+        SetIntakeBoxRotatorPosition(0.59);
+        SetSmallArmHangerPosition(0.2);
+    }
     // ************************************
     // High Basket Delivery Combo Moves
     // ************************************
@@ -777,9 +804,7 @@ public class Geronimo {
     public void BasketHighFinishingMove(){
         // Raise slides to high basket height
         BasketHighFinishingMove_SlidesPosition();
-       while (slideLeft.getCurrentPosition() < 6496) {
-                SpecialSleep(5); //2000 //4000 //2500
-        }
+        SpecialSleep(2500); //2000 //4000
         // Rotate urchin to align above basket
         BasketHighFinishingMove_UrchinDeliverPosition();
         SpecialSleep(200);
@@ -1199,13 +1224,7 @@ public class Geronimo {
             rightSlideArmRotatorMotor.setTargetPosition(leftSlideArmRotatorMotor.getCurrentPosition());
         }
         slideArmRotatorRunningToPosition = false;
-    } public void SetSlidesMaxVertPos()
-    {
-        SetSlideToPosition(SLIDE_ARM_MAX_VERTICAL_POS);
-        SetSlideRotatorArmToPosition(710);
     }
-
-
     public boolean GetRotatorArmRunningToPosition()
     {
         return slideArmRotatorRunningToPosition;
@@ -1254,6 +1273,7 @@ public class Geronimo {
         opMode.telemetry.addData("Green Intake BOX ROTATOR Pos: ", intakeBoxRotatorPosition);
         //opMode.telemetry.addData(">", "green intake box rotator - use dpad L/R for control" );
         // color sensor data PLEASE do not delete!
+        /* COLOR SENSOR DISCONNECTED 2/4/2025
         opMode.telemetry.addData("colorDetected: " , ColorRevV3Sensor().toString());
         opMode.telemetry.addData("Blinkin Left: ", Blinken_pattern.toString());
         opMode.telemetry.addData("Hue: " , hsvValues[0]);
@@ -1261,6 +1281,8 @@ public class Geronimo {
         opMode.telemetry.addData("Val: " , hsvValues[2]);
         opMode.telemetry.addData("Swiper Position:", swiper_position);
         showColorSensorTelemetry();
+
+         */
         opMode.telemetry.update();
     }
 
