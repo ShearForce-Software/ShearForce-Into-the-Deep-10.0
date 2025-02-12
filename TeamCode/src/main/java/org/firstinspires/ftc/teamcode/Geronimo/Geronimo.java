@@ -730,17 +730,18 @@ public class Geronimo {
         SetIntakeBoxRotatorPosition(0.59);
         SetSmallArmHangerPosition(0.2);
     }
-    /* public void UrchinDeliverHighChamberAlternate(){
-        SetIntakeBoxRotatorPosition(0.49); //0.82  //0.905
+    public void UrchinDeliverHighChamberAlternate(){
+        SetIntakeBoxRotatorPosition(0.575); //0.82  //0.905 //0.49
         SetSmallArmHangerPosition(.20); //0 //0.25
         SetSlideToPosition(1240);  //1240  //740
         SetSlideRotatorArmToPosition(710);
     }
     public void UrchinDeliverHighChamberFinishingMove(){
-        SetIntakeBoxRotatorPosition(0.365); //0.945
+        SetIntakeBoxRotatorPosition(0.45); //0.945 //0.365
         SetSmallArmHangerPosition(0.2); //0 //0.25
         SetSlideToPosition(2150); //00  //2350  //1750
-        SetSlideRotatorArmToPosition(710); //642 */
+        SetSlideRotatorArmToPosition(710); //642
+        }
 
     // ************************************
     // High Basket Delivery Combo Moves
@@ -809,6 +810,7 @@ public class Geronimo {
         //STEP ONE
         SetIntakeBoxRotatorPosition(0.935); //0.85
         SetSmallArmHangerPosition(1.0); //.8 //1.05
+        SetSlideToPosition(0);
         SetSlideRotatorArmToPosition(800); //8008, 450
         // wait for the rotators to move to vertical before raising slides
         //SpecialSleep(2000);
