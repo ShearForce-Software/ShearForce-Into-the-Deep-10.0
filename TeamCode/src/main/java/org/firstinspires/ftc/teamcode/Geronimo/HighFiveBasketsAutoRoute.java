@@ -163,7 +163,7 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                         // Rotate urchin back away from the basket
                         finishBasketHigh_UrchinSafeToLowerPosition(),
                         new SleepAction(0.4),
-                        // Rotate arms a little away from basket and lower slides to zero
+                        // Rotate arms a little away from basket and lower slides to zero.
                         finishBasketHigh_ArmSafeToLowerPosition(),
                         slidesToZero(), new SleepAction(1),
                         stowPosition(),
