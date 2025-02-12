@@ -98,7 +98,9 @@ public class Geronimo_PIDF_Concept extends LinearOpMode {
             Left_controller.setPID(p,i,d);
             rotator_arm_target = rotator_arm_angle * ticks_in_degrees;
 
-           //actual arm angle value?
+
+
+           //actual arm angle value
             double left_rotator_arm_actual_angle = leftSlideArmRotatorMotor.getCurrentPosition()/ticks_in_degrees;
             double right_rotator_arm_actual_angle = rightSlideArmRotatorMotor.getCurrentPosition()/ticks_in_degrees;
 
@@ -158,6 +160,13 @@ public class Geronimo_PIDF_Concept extends LinearOpMode {
             leftSlideArmRotatorMotor.setPower(leftPower);
             rightSlideArmRotatorMotor.setPower(rightPower);
 
+            //set tolerance?
+
+            //Period values or
+            double Left_period = Left_controller.getPeriod();
+            double Right_period = Right_controller.getPeriod();
+
+
             // Show arm target, arm positions, and arm power.
             telemetry.addData("Rotator arm target", rotator_arm_target);
             //telemetry for rotator_arm_angle
@@ -167,6 +176,8 @@ public class Geronimo_PIDF_Concept extends LinearOpMode {
             telemetry.addData("pid calculation values", "left_pid (%.4f), right_pid (%.4f)", left_pid, right_pid);
             telemetry.addData("ff calculation values", "left_ff (%.4f), right_ff (%.4f)", left_ff, right_ff);
             telemetry.addData("Rotator motor power", "left (%.4f), right (%.4f)", leftSlideArmRotatorMotor.getPower(), rightSlideArmRotatorMotor.getPower());
+            telemetry.addData("period", "left_period (%.4f), right_period (%.4f)", Left_period, Right_period);
+
 
             //  telemetry.addData("Rotator motor power", "left (%.2f), right (%.2f)", leftPower, rightPower);
             telemetry.update();
