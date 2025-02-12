@@ -204,10 +204,10 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 }
             }
 
-            if (gamepad2.right_trigger > 0.2) {
+            if (gamepad2.right_trigger > 0.2 && !gamepad2.options) {
                 theRobot.SetUrchinServoPosition(0);
             }
-            else if (gamepad2.left_trigger > 0.2) {
+            else if (gamepad2.left_trigger > 0.2 && !gamepad2.options) {
                 theRobot.SetUrchinServoPosition(1);
             }
 
@@ -222,13 +222,17 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 theRobot.SpecimenDeliverHighChamberFinishingMove();
             }
 
-            //urchin pickup from wall
+            //Combo moves for urchin specimen deliveries
             if (gamepad2.left_bumper && gamepad2.options) {
                 theRobot.UrchinPickupFromWall();
             } else if (gamepad2.right_bumper && gamepad2.options){
                 theRobot.UrchinRemoveFromWall();
+            } else if (gamepad2.left_trigger > 0.2 && gamepad2.options) {
+                theRobot.UrchinDeliverHighChamberAlternate();
+            } else if (gamepad2.right_trigger > 0.2 && gamepad2.options) {
+                theRobot.UrchinDeliverHighChamberFinishingMove();
             }
-
+            
             // Combo moves for basket deliveries
             else if (gamepad2.dpad_left && !gamepad2.options) {
                 theRobot.SampleUrchinFloorPickup();
