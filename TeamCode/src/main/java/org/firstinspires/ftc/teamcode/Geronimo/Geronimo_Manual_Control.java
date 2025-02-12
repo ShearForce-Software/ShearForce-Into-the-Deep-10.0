@@ -225,8 +225,15 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             }
 
             // IMUARMPositionTest
+            /*
             if (gamepad1.circle && gamepad1.cross) {
                 theRobot.goToArmAngle(25);
+            }
+            */
+
+            // Level3Ascent
+            if (gamepad1.circle && gamepad1.cross) {
+                theRobot.level3Ascent();
             }
 
             theRobot.ShowTelemetry();

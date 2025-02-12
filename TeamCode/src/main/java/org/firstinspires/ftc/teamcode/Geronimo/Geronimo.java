@@ -651,6 +651,58 @@ public class Geronimo {
          */
     }
 
+    public void level3Ascent() {
+        int stepCounter = 0;
+        int targetArmAngle = 45;
+        while (stepCounter < 6) {
+            goToArmAngle(targetArmAngle); // calls SetSlideToPosition() in method
+            if (stepCounter == 0){
+                SetIntakeBoxRotatorPosition(INTAKE_STAR_BOX_ROTATOR_MAX_POS);
+                SetSmallArmHangerPosition(1);
+                if (leftSlideArmRotatorMotor.getCurrentPosition() >= 100) {
+                    stepCounter++;
+                }
+            }
+            else if (stepCounter == 1) {
+                // slides go up
+                SetSlideToPosition(3049); //  verify is higher than hooks
+                targetArmAngle = 90;
+                if (slideLeft.getCurrentPosition() >= 3049) {
+                    stepCounter++;
+                }
+            }
+            else if (stepCounter == 2) {
+                // slides go down to set position, based on where hooks are
+                SetSlideToPosition(0); // test by moving robot when hooks present (should be horizontally supported by bar)
+                if (slideLeft.getCurrentPosition() == 0) {
+                    stepCounter++;
+                }
+            }
+            else if (stepCounter == 3) {
+                // robot moves while arms remain vertical (clam)
+                SetSlideRotatorArmToPosition(0);
+                if (leftSlideArmRotatorMotor.getCurrentPosition() == 0) {
+                    stepCounter++;
+                }
+            }
+            else if (stepCounter == 4) {
+                // slides go up
+                SetSlideToPosition(3049); // test
+                if (slideLeft.getCurrentPosition() >= 3049) {
+                    stepCounter++;
+                }
+            }
+            else if (stepCounter == 5) {
+                // slides go down to set position, based on where hooks are
+                SetSlideToPosition(0); // test by moving robot when hooks present
+                if (slideLeft.getCurrentPosition() == 0) {
+                    stepCounter++;
+                }
+            }
+            SpecialSleep(50);
+        }
+    }
+
     // ************************************
     // High Specimen Delivery Combo Moves
     // ************************************
