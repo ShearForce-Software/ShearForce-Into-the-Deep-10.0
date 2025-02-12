@@ -71,7 +71,7 @@ public class Geronimo {
     boolean slidesRunningToPosition = false;
     public static final double SLIDES_POS_POWER = 1.0;
     public static final int SLIDE_ARM_MIN_POS = 0;
-    public static final int SLIDE_ARM_MAX_VERTICAL_POS = 5618;
+    public static final int SLIDE_ARM_MAX_VERTICAL_POS = 5918;
     public static final int SLIDE_ARM_MAX_HORIZONTAL_POS = 2900; //1550 //1400  //3690 //3310
     private double slidePower = 0.0;
     TouchSensor touchSensorSlideLeft;
@@ -831,7 +831,7 @@ public class Geronimo {
         BasketHighFinishingMove_ArmSafeToLowerPosition();
     }
     public void BasketHighFinishingMove_SlidesPosition(){
-        SetSlideToPosition(6496);
+        SetSlideToPosition(6856);
     }
     public void BasketHighFinishingMove_UrchinDeliverPosition() {
         SetIntakeBoxRotatorPosition(0.935);
@@ -1215,10 +1215,32 @@ public class Geronimo {
         rightSlideArmRotatorMotor.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
 
     }
+    public void SetSlideRotatorArmToZero(){
+        slideArmRotatorPower = 0.0;
+        leftSlideArmRotatorMotor.setPower(slideArmRotatorPower);
+        rightSlideArmRotatorMotor.setPower(slideArmRotatorPower);
+        //this.SpecialSleep(50);
+        leftSlideArmRotatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightSlideArmRotatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftSlideArmRotatorMotor.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
+        rightSlideArmRotatorMotor.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
+
+    }
     public boolean GetSlideRotatorArmLimitSwitchPressed(){
         boolean returnValue = false;
 
         if ((!touchSensorSlideArmRotatorRight.isPressed()) || (!touchSensorSlideArmRotatorLeft.isPressed())){
+            returnValue = true;
+        }
+
+        return returnValue;
+    }
+    public boolean GetSlideRotatorBothArmLimitSwitchPressed(){
+        boolean returnValue = false;
+
+        if ((!touchSensorSlideArmRotatorRight.isPressed()) && (!touchSensorSlideArmRotatorLeft.isPressed())){
             returnValue = true;
         }
 

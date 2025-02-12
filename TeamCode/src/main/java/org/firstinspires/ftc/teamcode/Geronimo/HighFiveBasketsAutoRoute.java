@@ -176,7 +176,7 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                         sampleUrchinFloorPickupFinishingMove_UrchinGrabPosition(),
                         new SleepAction(0.1),
                         closeUrchin(),
-                        new SleepAction(0.4
+                        new SleepAction(0.5
                         ),
                         sampleUrchinFloorPickup_UrchinReadyPosition(),
                         new SleepAction(0.1),
@@ -199,12 +199,12 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                         finishBasketHigh_UrchinSafeToLowerPosition(),
                         new SleepAction(0.4),
                         // Rotate arms a little away from basket and lower slides to zero
-                        finishBasketHigh_ArmSafeToLowerPosition(),
-                        slidesToZero(), new SleepAction(1),
+                        finishBasketHigh_ArmSafeToLowerPosition(), new SleepAction(1),
+                        slidesToZero(),
                         stowPosition(),
-                        rotatorArmsToZero(),
+                        rotatorArmsToZero(), new SleepAction(10)
         //Drive to Sample 2
-        new ParallelAction(DriveToSample2, sampleUrchinFloorPickup_SlidePosition(), openUrchin()),
+      /*  new ParallelAction(DriveToSample2, sampleUrchinFloorPickup_SlidePosition(), openUrchin()),
                 sampleUrchinFloorPickup_UrchinReadyPosition(),
                 new SleepAction(1.4),
                 sampleUrchinFloorPickupFinishingMove_UrchinGrabPosition(),
@@ -235,9 +235,11 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                 finishBasketHigh_ArmSafeToLowerPosition(),
                 slidesToZero(), new SleepAction(1),
                 stowPosition(),
-                rotatorArmsToZero(),
+                rotatorArmsToZero(), new SleepAction(10)
+
+       */
                         // Drive to Sample 3
-        new ParallelAction(DriveToSample3, sampleUrchinFloorPickup_SlidePosition(), openUrchin()),
+     /*   new ParallelAction(DriveToSample3, sampleUrchinFloorPickup_SlidePosition(), openUrchin()),
                 sampleUrchinFloorPickup_UrchinReadyPosition(),
                 new SleepAction(1.4),
                 sampleUrchinFloorPickupFinishingMove_UrchinGrabPosition(),
@@ -270,6 +272,8 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                 slidesToZero(), new SleepAction(1),
                 stowPosition(),
                 rotatorArmsToZero()
+
+      */
 /*
                         // Drive to Sample 2
                         new ParallelAction(DriveToSample2, sampleUrchinFloorPickup_SlidePosition(), openUrchin()),
@@ -465,7 +469,7 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
             if (!initialized) {
                 control.SetSlideToPosition(0);
                 initialized = true;
-                timeout = control.opMode.getRuntime() + 0.5;
+                timeout = control.opMode.getRuntime() +2.0;
             }
             boolean returnValue = true;
             if (control.opMode.getRuntime()>=timeout || control.GetSlidesLimitSwitchPressed())
@@ -485,11 +489,12 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
             if (!initialized) {
                 control.SetSlideRotatorArmToPosition(0);
                 initialized = true;
-                timeout = control.opMode.getRuntime() + 0.5;
+                timeout = control.opMode.getRuntime() + 2;
             }
             boolean returnValue = true;
-            if (control.opMode.getRuntime()>=timeout || control.GetSlideRotatorArmLimitSwitchPressed())
+            if (control.opMode.getRuntime()>=timeout || control.GetSlideRotatorBothArmLimitSwitchPressed())
             {
+                control.SetSlideRotatorArmToZero();
                 returnValue = false;
             }
             packet.put("rotatorArmsToZero", 0);
