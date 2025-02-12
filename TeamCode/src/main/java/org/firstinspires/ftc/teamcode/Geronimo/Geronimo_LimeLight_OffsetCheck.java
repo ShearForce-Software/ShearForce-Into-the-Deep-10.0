@@ -43,8 +43,8 @@ public class Geronimo_LimeLight_OffsetCheck extends LinearOpMode {
             //----------------------------------------------------
             //  1) DPAD_UP => GET THE LIMELIGHT OFFSET (ONCE)
             //----------------------------------------------------
-            if (currentDpadUp && !lastDpadUp) {
-                offsetInches = theRobot.GetStrafeOffsetInInches("block");
+            /*if (currentDpadUp && !lastDpadUp) {
+                offsetInches[] = theRobot.GetStrafeOffsetInInches("block");
                 // If offsetInches == 0, it likely means "no target found"
                 if (Math.abs(offsetInches) < 0.001) {
                     telemetry.addLine("No target detected => offset = 0");
@@ -52,7 +52,7 @@ public class Geronimo_LimeLight_OffsetCheck extends LinearOpMode {
                     telemetry.addData("Offset (inches)", "%.2f", offsetInches);
                 }
                 telemetry.update();
-            }
+            }*/
 
 
             //----------------------------------------------------

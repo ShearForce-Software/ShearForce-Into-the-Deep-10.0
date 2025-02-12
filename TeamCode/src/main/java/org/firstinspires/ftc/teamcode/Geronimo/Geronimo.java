@@ -274,7 +274,7 @@ public class Geronimo {
 
         LLResult result = limelightbox.getLatestResult();
 
-        if (result.isValid()) {
+        if (result != null && result.isValid()) {
             // Access detector results
             List<LLResultTypes.DetectorResult> detectorResults = result.getDetectorResults();
             for (LLResultTypes.DetectorResult dr : detectorResults) {
@@ -298,39 +298,36 @@ public class Geronimo {
         return offset;
     }
 
-    public double GetStrafeOffsetInInches(String targetImageName) {
+    public double[] GetStrafeOffsetInInches(String targetImageName) {
 
+        // Retrieve scaled offsets (already assumed from the recognized target).
         List<Double> scaledOffsets = FindAlignAngleToTargetImage(targetImageName);
 
-        // Check if target was found
+        // Check if target was found by checking for the -1.0 flag on both tx and ty
         if (scaledOffsets.get(0) == -1.0 && scaledOffsets.get(1) == -1.0) {
-            // Target not found; propagate the -1.0 flags
-            return 0;
+            // Target not found; propagate some "error" condition, for instance [-1, -1].
+            return new double[] {-1.0, -1.0};
         }
 
-        // Convert scaled offsets back to raw angles
-        double rawTx = scaledOffsets.get(0);;
-        double rawTy = scaledOffsets.get(1);;
+        // Convert the scaled offsets back to raw angles
+        double rawTx = scaledOffsets.get(0);
+        double rawTy = scaledOffsets.get(1);
 
-        // Fixed distance from the target in inches guaranteed by roadrunner
-        final double D = 6.0;
+        // Fixed distance from the target in inches
+        final double D = 4.3;
 
-        // Convert angles from degrees to radians for trigonometric functions
+        // Convert angles from degrees to radians
         double txRadians = Math.toRadians(rawTx);
         double tyRadians = Math.toRadians(rawTy);
 
-        // H1 -- height of camera, H2,.. height of object.
-        // Calculate strafing distances
+        // Calculate the strafing offsets
         double strafeX = D * Math.tan(txRadians); // Left/Right adjustment
         double strafeY = D * Math.tan(tyRadians); // Forward/Backward adjustment
 
-        // Create a new list to hold the strafing distances
-        List<Double> strafeOffsetsInInches = new ArrayList<>();
-        strafeOffsetsInInches.add(strafeX);
-        strafeOffsetsInInches.add(strafeY);
-
-        return strafeOffsetsInInches.get(0); // for now, it only returns the x inches in strafing movements
+        // Return the offsets in a double array
+        return new double[] {strafeX, strafeY};
     }
+
 
     public boolean limelightHasTarget() {
         LLResult result = limelightbox.getLatestResult();
@@ -758,22 +755,23 @@ public class Geronimo {
         SetSlideRotatorArmToPosition(710); //642
     }
     public void UrchinPickupFromWall(){
-        UrchinPickupFromWallServoPosition();
-        SetUrchinServoPosition(URCHIN_SERVO_MIN_POS);
-        double timeout = opMode.getRuntime() + 0.5;
-        SetSlideToPosition(0);
-        while (!GetSlidesLimitSwitchPressed() && opMode.getRuntime() < timeout) {
-            SpecialSleep(50);
+            UrchinPickupFromWallServoPosition();
+            SetUrchinServoPosition(URCHIN_SERVO_MIN_POS);
+            double timeout = opMode.getRuntime() + 0.5;
+            SetSlideToPosition(0);
+            while (!GetSlidesLimitSwitchPressed() && opMode.getRuntime() < timeout) {
+                SpecialSleep(50);
+            }
+            SetSlideRotatorArmToPosition(0);
         }
-        SetSlideRotatorArmToPosition(0);
-    }
-    public void UrchinPickupFromWallServoPosition(){
-        SetIntakeBoxRotatorPosition(0.59);
-        SetSmallArmHangerPosition(0.57);
-    }
-    public void UrchinRemoveFromWall(){
-        SetUrchinServoPosition(URCHIN_SERVO_MAX_POS);
-        UrchinRemoveFromWallServoPosition();
+        public void UrchinPickupFromWallServoPosition(){
+            SetIntakeBoxRotatorPosition(0.505); //0.59m //0.535
+            SetSmallArmHangerPosition(0.57);
+        }
+        public void UrchinRemoveFromWall(){
+            SetUrchinServoPosition(URCHIN_SERVO_MAX_POS);
+            SpecialSleep(300);
+            UrchinRemoveFromWallServoPosition();
 
         double timeout = opMode.getRuntime() + 0.5;
         SetSlideToPosition(0);
@@ -786,6 +784,18 @@ public class Geronimo {
         SetIntakeBoxRotatorPosition(0.59);
         SetSmallArmHangerPosition(0.2);
     }
+    /* public void UrchinDeliverHighChamberAlternate(){
+        SetIntakeBoxRotatorPosition(0.49); //0.82  //0.905
+        SetSmallArmHangerPosition(.20); //0 //0.25
+        SetSlideToPosition(1240);  //1240  //740
+        SetSlideRotatorArmToPosition(710);
+    }
+    public void UrchinDeliverHighChamberFinishingMove(){
+        SetIntakeBoxRotatorPosition(0.365); //0.945
+        SetSmallArmHangerPosition(0.2); //0 //0.25
+        SetSlideToPosition(2150); //00  //2350  //1750
+        SetSlideRotatorArmToPosition(710); //642 */
+
     // ************************************
     // High Basket Delivery Combo Moves
     // ************************************
