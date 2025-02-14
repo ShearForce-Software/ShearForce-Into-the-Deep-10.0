@@ -146,10 +146,12 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
         // ****  START DRIVING    ****************************
         // ***************************************************
         Actions.runBlocking(
-                new SequentialAction(preBasketHigh(),
+                new SequentialAction(
+                        preBasketHigh(),
                         new SleepAction(0.1),
                         // Drive to basket and deliver preloaded sample
-                        new ParallelAction(DeliverStartingSample, basketHigh()),
+                        new ParallelAction(DeliverStartingSample,
+                                basketHigh()),
                         new SleepAction(.1),
                         // Raise slides to high basket height
                         finishBasketHigh_SlidesPosition(),
@@ -165,28 +167,32 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                         new SleepAction(0.4),
                         // Rotate arms a little away from basket and lower slides to zero.
                         finishBasketHigh_ArmSafeToLowerPosition(),
-                        slidesToZero(), new SleepAction(1),
+                        slidesToZero(),
+                        new SleepAction(1),
                         stowPosition(),
                         rotatorArmsToZero(),
 
                         // Drive to Sample 1
-                        new ParallelAction(DriveToSample1, sampleUrchinFloorPickup_SlidePosition(), openUrchin()),
+                        new ParallelAction(DriveToSample1,
+                                sampleUrchinFloorPickup_SlidePosition(),
+                                openUrchin()),
                         sampleUrchinFloorPickup_UrchinReadyPosition(),
                         new SleepAction(1.4),
                         sampleUrchinFloorPickupFinishingMove_UrchinGrabPosition(),
                         new SleepAction(0.1),
                         closeUrchin(),
-                        new SleepAction(0.5
-                        ),
+                        new SleepAction(0.5),
                         sampleUrchinFloorPickup_UrchinReadyPosition(),
                         new SleepAction(0.1),
                         stowPosition(),
                         slidesToZero(),
                         new SleepAction(0.2),
+
                         // *** Deliver Sample 1 ***
                         preBasketHigh(),
                         new SleepAction(0.1),
-                        new ParallelAction(DeliverSample1, basketHigh()),
+                        new ParallelAction(DeliverSample1,
+                                basketHigh()),
                         finishBasketHigh_SlidesPosition(),
                         new SleepAction(2.5),
                         // Rotate urchin to align above basket
@@ -199,10 +205,13 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                         finishBasketHigh_UrchinSafeToLowerPosition(),
                         new SleepAction(0.4),
                         // Rotate arms a little away from basket and lower slides to zero
-                        finishBasketHigh_ArmSafeToLowerPosition(), new SleepAction(1),
+                        finishBasketHigh_ArmSafeToLowerPosition(),
+                        new SleepAction(1),
                         slidesToZero(),
                         stowPosition(),
-                        rotatorArmsToZero(), new SleepAction(10)
+                        rotatorArmsToZero(),
+                        new SleepAction(10)
+
         //Drive to Sample 2
       /*  new ParallelAction(DriveToSample2, sampleUrchinFloorPickup_SlidePosition(), openUrchin()),
                 sampleUrchinFloorPickup_UrchinReadyPosition(),
@@ -471,6 +480,7 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                 initialized = true;
                 timeout = control.opMode.getRuntime() + 5.0;
             }
+
             boolean returnValue = true;
             if (control.GetSlidesLimitSwitchPressed())
             {

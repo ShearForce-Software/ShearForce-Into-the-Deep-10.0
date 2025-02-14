@@ -57,7 +57,7 @@ public class Judging_Manual_Control extends LinearOpMode {
 */
             //Inspection button //TODO
             if (gamepad2.x) {
-                 theRobot.SlidesBackInspection();
+                 theRobot.InspectionLowForward();
                 // theRobot.SpecialSleep(3000);
 
             }if(gamepad2.circle && !theRobot.GetSlidesLimitSwitchPressed()) {
