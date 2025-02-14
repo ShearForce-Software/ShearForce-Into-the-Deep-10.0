@@ -1170,6 +1170,20 @@ public class Geronimo {
         slideRight.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
+    public void ResetSlidesToZeroNoWait() {
+        slidesRunningToPosition = false;
+        slidePower = 0;
+        slideLeft.setPower(slidePower);
+        slideRight.setPower(slidePower);
+        slideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slideRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        slideLeft.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
+        slideRight.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
+
+    }
+
     public void SetSlideToPosition (int position)
     {
         // verify not needing to limit because of horizontal limits

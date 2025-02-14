@@ -469,10 +469,15 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
             if (!initialized) {
                 control.SetSlideToPosition(0);
                 initialized = true;
-                timeout = control.opMode.getRuntime() +2.0;
+                timeout = control.opMode.getRuntime() + 5.0;
             }
             boolean returnValue = true;
-            if (control.opMode.getRuntime()>=timeout || control.GetSlidesLimitSwitchPressed())
+            if (control.GetSlidesLimitSwitchPressed())
+            {
+                control.ResetSlidesToZeroNoWait();
+                returnValue = false;
+            }
+            else if (control.opMode.getRuntime()>=timeout )
             {
                 returnValue = false;
             }
@@ -492,9 +497,14 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                 timeout = control.opMode.getRuntime() + 2;
             }
             boolean returnValue = true;
-            if (control.opMode.getRuntime()>=timeout || control.GetSlideRotatorBothArmLimitSwitchPressed())
+
+            if (control.GetSlideRotatorBothArmLimitSwitchPressed())
             {
                 control.SetSlideRotatorArmToZero();
+                returnValue = false;
+            }
+            else if (control.opMode.getRuntime() >= timeout )
+            {
                 returnValue = false;
             }
             packet.put("rotatorArmsToZero", 0);
