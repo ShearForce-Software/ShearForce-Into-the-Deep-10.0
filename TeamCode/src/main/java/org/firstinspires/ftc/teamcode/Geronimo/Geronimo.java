@@ -126,6 +126,7 @@ public class Geronimo {
     int redRight = 0;
     int greenRight = 0;
     int blueRight = 0;
+    private int position;
 
 
     // REV v3 color sensor variables
@@ -647,15 +648,16 @@ public class Geronimo {
 
          */
     }
-
+    int stepCounter = 0;
     public void level3Ascent() {
-        int stepCounter = 0;
+        stepCounter = 0;
         int targetArmAngle = 45;
         while (stepCounter < 6) {
             goToArmAngle(targetArmAngle); // calls SetSlideToPosition() in method
             if (stepCounter == 0){
-                SetIntakeBoxRotatorPosition(INTAKE_STAR_BOX_ROTATOR_MAX_POS);
-                SetSmallArmHangerPosition(1);
+                SetIntakeBoxRotatorPosition(0.41);
+                SetSmallArmHangerPosition(0.79);
+                SetClawPosition(1);
                 if (leftSlideArmRotatorMotor.getCurrentPosition() >= 100) {
                     stepCounter++;
                 }
@@ -1248,8 +1250,13 @@ public class Geronimo {
 
     }
 
+    public void SetSlideRotatorArmToAngle (int targetAngle)
+    {
+        SetSlideRotatorArmToPosition(findRealArmAngle((targetAngle)));
+    }
     public void SetSlideRotatorArmToPosition(int position)
     {
+        this.position = position;
         // if slide arm rotators are going down then reduce the max power
         if (leftSlideArmRotatorMotor.getCurrentPosition() > position) {
             slideArmRotatorPower = SLIDE_ARM_ROTATOR_POWER / 3.0;
@@ -1258,9 +1265,9 @@ public class Geronimo {
             slideArmRotatorPower = SLIDE_ARM_ROTATOR_POWER;
         }
 
-        if (position > SLIDE_ARM_ROTATOR_MAX_POS)
+        if (position > findRealArmAngle(90))
         {
-            slideArmRotatorTargetPosition = SLIDE_ARM_ROTATOR_MAX_POS;
+            slideArmRotatorTargetPosition = findRealArmAngle(90);
         }
         else if (position < SLIDE_ARM_ROTATOR_MIN_POS)
         {
@@ -1383,6 +1390,7 @@ public class Geronimo {
         opMode.telemetry.addData("imu roll: ", (imu.getRobotYawPitchRollAngles().getRoll()));
         opMode.telemetry.addData("imu pitch: ", (imu.getRobotYawPitchRollAngles().getPitch()));
         opMode.telemetry.addData("imu yaw: ", (imu.getRobotYawPitchRollAngles().getYaw()));
+        opMode.telemetry.addData("stepCounter: ", stepCounter);
         opMode.telemetry.addData("Slide Arm Rotator Left Touched: ", !touchSensorSlideArmRotatorLeft.isPressed());
         opMode.telemetry.addData("Slide Arm Rotator Rght Touched: ", !touchSensorSlideArmRotatorRight.isPressed());
         opMode.telemetry.addData("Slide Arm Rotator in RUN_TO_POSITION? ", slideArmRotatorRunningToPosition);
@@ -1538,13 +1546,16 @@ public class Geronimo {
 
         opMode.telemetry.addData("imu position: " , imuPosition);
         SetSlideRotatorArmToPosition(targetPositionIMUARM);
-        /*
-        leftSlideArmRotatorMotor.setPower(powerIMUARM);
-        leftSlideArmRotatorMotor.setTargetPosition(targetPositionIMUARM);
-        leftSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftSlideArmRotatorMotor.setPower(powerIMUARM);
-        leftSlideArmRotatorMotor.setTargetPosition(targetPositionIMUARM);
-        leftSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        */
+    }
+
+    public int findRealArmAngle(double targetIMU_Degrees) {
+        rotatorPosition = leftSlideArmRotatorMotor.getCurrentPosition();
+        YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
+        imuPosition = (orientation.getRoll());
+
+        targetPositionIMUARM = (int) ((targetIMU_Degrees - imuPosition) *  ticksPerDegree);
+
+        opMode.telemetry.addData("imu position: " , imuPosition);
+        return targetPositionIMUARM;
     }
 }
