@@ -673,14 +673,14 @@ public class Geronimo {
             else if (stepCounter == 2) {
                 // slides go down to set position, based on where hooks are
                 SetSlideToPosition(0); // test by moving robot when hooks present (should be horizontally supported by bar)
-                if (slideLeft.getCurrentPosition() == 0) {
+                if (GetSlidesLimitSwitchPressed()) {
                     stepCounter++;
                 }
             }
             else if (stepCounter == 3) {
                 // robot moves while arms remain vertical (clam)
                 SetSlideRotatorArmToPosition(0);
-                if (leftSlideArmRotatorMotor.getCurrentPosition() == 0) {
+                if (leftSlideArmRotatorMotor.getCurrentPosition() < 100) {
                     stepCounter++;
                 }
             }
@@ -698,6 +698,7 @@ public class Geronimo {
                     stepCounter++;
                 }
             }
+            ShowTelemetry();
             SpecialSleep(50);
         }
     }
