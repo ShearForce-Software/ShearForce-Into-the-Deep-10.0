@@ -894,6 +894,13 @@ public class Geronimo {
         //SpecialSleep(2000);
         //SetSlideToPosition(6496); //2320
     }
+
+    public void InspectionHighPos(){
+        BasketHighFinishingMove_UrchinDeliverPosition();
+        BasketHighFinishingMove_SlidesPosition();
+
+    }
+
     public void BasketHighFinishingMove(){
         // Raise slides to high basket height
         BasketHighFinishingMove_SlidesPosition();
@@ -1270,7 +1277,23 @@ public class Geronimo {
     }
     public void SetSlideRotatorArmToPosition(int position)
     {
-        this.position = position;
+        if(isRobotLevel() == true)
+        {
+            if(leftSlideArmRotatorMotor.getCurrentPosition() < position || position < SLIDE_ARM_ROTATOR_POS_TO_LIMIT_SLIDES)
+            {
+                if(!GetSlidesLimitSwitchPressed())
+                {
+                    SetSlideToPosition(0);
+                    while(GetSlideLeftCurrentPosition() > 0 || !GetSlidesLimitSwitchPressed())
+                    {
+                        SpecialSleep(50);
+
+                    }
+                    ResetSlidesToZero();
+                }
+            }
+        }
+
         // if slide arm rotators are going down then reduce the max power
         if (leftSlideArmRotatorMotor.getCurrentPosition() > position) {
             slideArmRotatorPower = SLIDE_ARM_ROTATOR_POWER / 3.0;
@@ -1548,6 +1571,18 @@ public class Geronimo {
                 if (!IsFieldCentric) driveControlsRobotCentric();
             }
         }
+    }
+
+    public boolean isRobotLevel() {
+        boolean returnValue = false;
+        YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
+        imuPosition = (orientation.getRoll());
+        if(imuPosition < 2 || imuPosition > -2)
+        {
+            returnValue = true;
+        }
+        return returnValue;
+
     }
 
     int targetPositionIMUARM = 500;

@@ -1,16 +1,13 @@
-package org.firstinspires.ftc.teamcode.Geronimo;
+package org.firstinspires.ftc.teamcode.Geronimo.Diagrams;
 
-import com.acmerobotics.roadrunner.Action;
-import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.Vector2d;
-import com.acmerobotics.roadrunner.ftc.Actions;
-import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name = "Geronimo 1 Manual Control")
+import org.firstinspires.ftc.teamcode.Geronimo.Geronimo;
+
+@TeleOp(name = "Judging Manual Control")
 //@Disabled
-public class Geronimo_Manual_Control extends LinearOpMode {
+public class Judging_Manual_Control extends LinearOpMode {
     Geronimo theRobot;
     boolean rotatorPowerApplied = false;
     boolean slidePowerApplied = false;
@@ -23,13 +20,10 @@ public class Geronimo_Manual_Control extends LinearOpMode {
 
     public void runOpMode() {
         theRobot = new Geronimo(true, true, this);
-        MecanumDrive_Geronimo drive;
 
         theRobot.Init(this.hardwareMap);
-        theRobot.InitLimelight(hardwareMap);
         theRobot.ShowTelemetry();
         telemetry.update();
-        drive = new MecanumDrive_Geronimo(hardwareMap, new Pose2d(0, 0, 0));
 
         waitForStart();
         resetRuntime();
@@ -45,7 +39,7 @@ public class Geronimo_Manual_Control extends LinearOpMode {
              */
             // Drive Controls uses left_stick_y, left_stick_x, and right_stick_x
             theRobot.RunDriveControls();
-
+/*
             // Press the triangle button / "y" while facing directly away from the driver to set the IMU correctly for field-centric mode if off
             if (gamepad1.triangle && !gamepad1.options) {
                 theRobot.imu.resetYaw();
@@ -60,44 +54,23 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             {
                 theRobot.SetFieldCentricMode(false);
             }
-
+*/
             //Inspection button //TODO
-            if (gamepad1.triangle && gamepad1.options) {
+            if (gamepad2.x) {
                  theRobot.SlidesBackInspection();
                 // theRobot.SpecialSleep(3000);
 
+            }if(gamepad2.circle && !theRobot.GetSlidesLimitSwitchPressed()) {
+
+
+                //theRobot.SetSlideToPosition(Geronimo.SLIDE_ARM_MIN_POS);
+                //theRobot.SetSmallArmHangerPosition(-);
+                //theRobot.SetUrchinServoPosition();
 
             }
 
-            if(gamepad1.dpad_up && gamepad1.options){
-                // theRobot.SetSlideToPosition(1400);
-                // theRobot.SetIntakeBoxRotatorPosition(0.04);
-                // theRobot.SetSmallArmHangerPosition(0.365);
-                // sleep(100);
-
-                double [] offsetInches = theRobot.GetStrafeOffsetInInches("block");
-
-                if(Math.abs(offsetInches[0])<0.001){
-                    telemetry.addLine("NOPE");
-                }
-
-                else{
-                    Action strafeAction = drive.actionBuilder(new Pose2d(0,0,0))
-                            .strafeToConstantHeading(new Vector2d(-offsetInches[1], offsetInches[0]))
-                            .build();
-
-                    Actions.runBlocking(strafeAction);
-                }
-            }
-
-            if(gamepad1.dpad_right && gamepad1.options){
-                theRobot.SetSlideToPosition(1400);
-                theRobot.SetIntakeBoxRotatorPosition(0.04);
-                theRobot.SetSmallArmHangerPosition(0.365);
-            }
-
-
-        if (gamepad1.dpad_left && !gamepad1.options) {
+/*
+            if (gamepad1.dpad_left) {
                 theRobot.SetSwiperPosition(Geronimo.SWIPER_MAX_POS);
                 theRobot.SpecialSleep(500);
                 theRobot.SetSwiperPosition(Geronimo.SWIPER_MIN_POS);
@@ -110,17 +83,14 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             }
 
              */
-            else if(gamepad1.dpad_down && !gamepad1.options){ // Driver will press prehandrobot when he feels he is set
+            /*
+            else if(gamepad1.dpad_down){ // Driver will press prehandrobot when he feels he is set
                 theRobot.PreHangRobot();
             }
-            else if(gamepad1.dpad_up && !gamepad1.options){ //Driver will eventually hang the robot himself.
+            else if(gamepad1.dpad_up){ //Driver will eventually hang the robot himself.
                 theRobot.ReadyHangRobot();
             }
-
-            if (gamepad1.cross && gamepad1.circle) {
-                theRobot.level3Ascent();
-            }
-
+*/
             /* *************************************************
              *************************************************
              * Arm Controls (gamepad2)
@@ -208,13 +178,13 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 }
             }
 
-            if (gamepad2.right_trigger > 0.2 && !gamepad2.options) {
+            if (gamepad2.right_trigger > 0.2) {
                 theRobot.SetUrchinServoPosition(0);
             }
-            else if (gamepad2.left_trigger > 0.2 && !gamepad2.options) {
+            else if (gamepad2.left_trigger > 0.2) {
                 theRobot.SetUrchinServoPosition(1);
             }
-
+/*
             // Combo Moves for specimen deliveries
             if (gamepad2.square && !gamepad2.options) {
                 theRobot.SpecimenPickupFromWall();
@@ -226,17 +196,13 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 theRobot.SpecimenDeliverHighChamberFinishingMove();
             }
 
-            //Combo moves for urchin specimen deliveries
+            //urchin pickup from wall
             if (gamepad2.left_bumper && gamepad2.options) {
                 theRobot.UrchinPickupFromWall();
             } else if (gamepad2.right_bumper && gamepad2.options){
                 theRobot.UrchinRemoveFromWall();
-            } else if (gamepad2.left_trigger > 0.2 && gamepad2.options) {
-                theRobot.UrchinDeliverHighChamberAlternate();
-            } else if (gamepad2.right_trigger > 0.2 && gamepad2.options) {
-                theRobot.UrchinDeliverHighChamberFinishingMove();
             }
-            
+
             // Combo moves for basket deliveries
             else if (gamepad2.dpad_left && !gamepad2.options) {
                 theRobot.SampleUrchinFloorPickup();
@@ -250,17 +216,13 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 theRobot.BasketHigh();
             } else if (gamepad2.dpad_up) {
                 theRobot.BasketHighFinishingMove();
-            }
+            }*/
 
             // Claw Control
-            if (gamepad2.left_bumper && !gamepad2.options) {
+            if (gamepad2.left_bumper) {
                 theRobot.SetClawPosition(Geronimo.CLAW_MAX_POS);
-            } else if (gamepad2.right_bumper && !gamepad2.options) {
+            } else if (gamepad2.right_bumper) {
                 theRobot.SetClawPosition(Geronimo.CLAW_MIN_POS);
-            }
-
-            if(gamepad1.options && gamepad1.circle && gamepad1.cross){
-                theRobot.InspectionHighPos();
             }
 
             // Emergency pause
