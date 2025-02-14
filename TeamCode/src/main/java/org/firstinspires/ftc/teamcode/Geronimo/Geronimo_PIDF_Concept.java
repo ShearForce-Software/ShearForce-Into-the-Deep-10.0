@@ -41,7 +41,12 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 //@Disabled
 public class Geronimo_PIDF_Concept extends LinearOpMode {
 
+    // proportional, integral, derivative, and feedforward
     public static double p = 0.0001, i = 0, d = 0, f = 0.007;
+
+    public static double tolerance = 5.0;
+    public static int sendF_to_Controller = 0;
+    public static int useTolerance = 0;
 
     public static int rotator_arm_angle = 0; // target arm angle
 
@@ -57,6 +62,8 @@ public class Geronimo_PIDF_Concept extends LinearOpMode {
 
         double rotator_arm_target = rotator_arm_angle * ticks_in_degrees;
 
+        // Reference: https://docs.ftclib.org/ftclib/features/controllers
+        // YouTube reference: https://www.youtube.com/watch?v=E6H6Nqe6qJo
         //Initialize PID Controllers for arm rotator motors.
         PIDController Right_controller = new PIDController(p, i, d);
         PIDController Left_controller = new PIDController(p, i, d);
@@ -70,19 +77,13 @@ public class Geronimo_PIDF_Concept extends LinearOpMode {
         leftSlideArmRotatorMotor = hardwareMap.get(DcMotorEx.class, "leftRotater");
         rightSlideArmRotatorMotor = hardwareMap.get(DcMotorEx.class, "rightRotater");
 
-        // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
-        // Pushing the left stick forward MUST make robot go forward. So adjust these two lines based on your first test drive.
-
         leftSlideArmRotatorMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         rightSlideArmRotatorMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
         //Stop and Reset to Zero initially
-      //  leftSlideArmRotatorMotor.setPower(0.0);
-      //  rightSlideArmRotatorMotor.setPower(0.0);
         leftSlideArmRotatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightSlideArmRotatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        //gm0 recommends running without encoder
         leftSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -93,91 +94,67 @@ public class Geronimo_PIDF_Concept extends LinearOpMode {
         while (opModeIsActive()) {
 
 
-
+            // TODO - Jared question: have you  tried .setPIDF(p,i,d,f) ???
             Right_controller.setPID(p,i,d);
             Left_controller.setPID(p,i,d);
+
+            // TODO - Jared added this to try out, should be able to adjust the value in the dashboard to try out effects
+            //set tolerance?
+            if (useTolerance == 1) {
+                Right_controller.setTolerance(tolerance); // sets the error in ticks I think that is tolerated
+                Left_controller.setTolerance(tolerance);
+            }
+
+            // TODO - Jared added this to try out, in dashboard change sendF_to_Controller to be 1 to try out impacts
+            if (sendF_to_Controller == 1) {
+                Left_controller.setF(f);
+                Right_controller.setF(f);
+            }
+
             rotator_arm_target = rotator_arm_angle * ticks_in_degrees;
 
-
-
-           //actual arm angle value
+            //actual arm angle value
             double left_rotator_arm_actual_angle = leftSlideArmRotatorMotor.getCurrentPosition()/ticks_in_degrees;
             double right_rotator_arm_actual_angle = rightSlideArmRotatorMotor.getCurrentPosition()/ticks_in_degrees;
 
-         /*   while (left_rotator_arm_actual_angle != rotator_arm_angle){
-
-            }
-
-          */
-/*
-            //change target value...
-             if(gamepad2.dpad_left){
-                rotator_arm_angle++;
-            }
-            else if(gamepad2.dpad_right){
-                rotator_arm_angle--;
-            }
-
-            //change p
-            else if (gamepad2.dpad_up){
-                p = p + 0.0001;
-             }
-             else if (gamepad2.dpad_down){
-                 p = p - 0.0001;
-             }
-
-             //change f
-             else if (gamepad2.circle){
-                 f = f + 0.0005;
-             }
-             else if (gamepad2.square){
-                 f = f - 0.0005;
-             }
-
- */
-            //TEST: Set whatever target position get to left, for both
-
+            // Calculate the next PID value
             int left_armPos = leftSlideArmRotatorMotor.getCurrentPosition();
             double left_pid = Left_controller.calculate(left_armPos,rotator_arm_target);
-           // double left_ff = Math.cos(Math.toRadians(rotator_arm_angle)) * f;
-            double left_ff = Math.cos(rotator_arm_angle) * f;
-
 
             int right_armPos = rightSlideArmRotatorMotor.getCurrentPosition();
             double right_pid = Right_controller.calculate(right_armPos,rotator_arm_target);
-          //  double right_ff = Math.cos(Math.toRadians(rotator_arm_angle)) * f;
+
+            // Calculate the FeedForward component to adjust the PID by
+            // TODO - Jared question: have you tried using left/right_rotator_arm_actual_angle here? I think this is right as is, but might be interesting to try
+            double left_ff = Math.cos(rotator_arm_angle) * f;
             double right_ff = Math.cos(rotator_arm_angle) * f;
 
-
-            // Setup a variable for each arm rotator motor to save power level for telemetry
+            // Calculate the motor power (PID + FeedForward) component
             double leftPower = left_pid + left_ff;
             double rightPower = right_pid + right_ff;
-
-            // TODO: Driver input - use joystick controls to set rotator_arm_target value
-            //  that is limited between Min and Max values
 
             // Send calculated power to motors
             leftSlideArmRotatorMotor.setPower(leftPower);
             rightSlideArmRotatorMotor.setPower(rightPower);
 
-            //set tolerance?
 
             //Period values or
             double Left_period = Left_controller.getPeriod();
             double Right_period = Right_controller.getPeriod();
 
-
             // Show arm target, arm positions, and arm power.
-            telemetry.addData("Rotator arm target", rotator_arm_target);
             //telemetry for rotator_arm_angle
-            telemetry.addData("Rotator arm angle", rotator_arm_angle);
-            telemetry.addData("Rotator positions", "left (%d), right (%d)", left_armPos, right_armPos);
-            telemetry.addData("Rotator actual angle", "left (%.2f), right (%.2f)", left_rotator_arm_actual_angle, right_rotator_arm_actual_angle);
-            telemetry.addData("pid calculation values", "left_pid (%.4f), right_pid (%.4f)", left_pid, right_pid);
+            telemetry.addData("Rotator arm target(angle)", rotator_arm_angle);
+            telemetry.addData("Rotator arm target(ticks)", rotator_arm_target);
+            telemetry.addData("pidf: ", "p(%.4f), i(%.4f), d(%.4f), f(%.4f)", p, i, d, f);
+            telemetry.addData("tolerance: ", tolerance);
+            telemetry.addData("Rotator actual (angle) ", "left (%.2f), right (%.2f)", left_rotator_arm_actual_angle, right_rotator_arm_actual_angle);
+            telemetry.addData("Rotator actual (ticks)", "left (%d), right (%d)", left_armPos, right_armPos);
+            telemetry.addData("pid calculation values ", "left_pid (%.4f), right_pid (%.4f)", left_pid, right_pid);
             telemetry.addData("ff calculation values", "left_ff (%.4f), right_ff (%.4f)", left_ff, right_ff);
-            telemetry.addData("Rotator motor power", "left (%.4f), right (%.4f)", leftSlideArmRotatorMotor.getPower(), rightSlideArmRotatorMotor.getPower());
+            telemetry.addData("Commanded motor power", "left (%.4f), right (%.4f)", leftPower, rightPower);
+            telemetry.addData("Actual motor power", "left (%.4f), right (%.4f)", leftSlideArmRotatorMotor.getPower(), rightSlideArmRotatorMotor.getPower());
             telemetry.addData("period", "left_period (%.4f), right_period (%.4f)", Left_period, Right_period);
-
 
             //  telemetry.addData("Rotator motor power", "left (%.2f), right (%.2f)", leftPower, rightPower);
             telemetry.update();
