@@ -170,7 +170,8 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                         rotatorArmsToZero(),
 
                         // Drive to Sample 1
-                        new ParallelAction(DriveToSample1, sampleUrchinFloorPickup_SlidePosition(), openUrchin()),
+                        new ParallelAction(DriveToSample1, sampleUrchinFloorPickup_SlidePosition(), openUrchin(),
+                                new SequentialAction (swiperPositionMin(), new SleepAction(0.2), swiperPositionMax())),
                         sampleUrchinFloorPickup_UrchinReadyPosition(),
                         new SleepAction(1.4),
                         sampleUrchinFloorPickupFinishingMove_UrchinGrabPosition(),
@@ -204,7 +205,8 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                         stowPosition(),
                         rotatorArmsToZero(),
         //Drive to Sample 2
-        new ParallelAction(DriveToSample2, sampleUrchinFloorPickup_SlidePosition(), openUrchin()),
+        new ParallelAction(DriveToSample2, sampleUrchinFloorPickup_SlidePosition(), openUrchin(),
+                new SequentialAction (swiperPositionMin(), new SleepAction(0.2), swiperPositionMax())),
                 sampleUrchinFloorPickup_UrchinReadyPosition(),
                 new SleepAction(1.4),
                 sampleUrchinFloorPickupFinishingMove_UrchinGrabPosition(),
@@ -237,7 +239,8 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                 stowPosition(),
                 rotatorArmsToZero(),
                         // Drive to Sample 3
-        new ParallelAction(DriveToSample3, sampleUrchinFloorPickup_SlidePosition(), openUrchin()),
+        new ParallelAction(DriveToSample3, sampleUrchinFloorPickup_SlidePosition(), openUrchin(),
+                new SequentialAction (swiperPositionMin(), new SleepAction(0.2), swiperPositionMax())),
                 sampleUrchinFloorPickup_UrchinReadyPosition(),
                 new SleepAction(1.4),
                 sampleUrchinFloorPickupFinishingMove_UrchinGrabPosition(),
@@ -453,6 +456,35 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                 initialized = true;
             }
             packet.put("closeUrchin", 0);
+            return false;  // returning true means not done, and will be called again.  False means action is completely done
+        }
+    }
+    public Action swiperPositionMax (){return new SwiperPositionMax();}
+    public class SwiperPositionMax implements Action{
+        private boolean initialized = false;
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            if (!initialized) {
+                control.SetSwiperPosition(1);
+                initialized = true;
+            }
+            packet.put("lock purple pixel", 0);
+            return false;  // returning true means not done, and will be called again.  False means action is completely done
+        }
+    }
+
+    public Action swiperPositionMin(){return new SwiperPositionMin();}
+    public class SwiperPositionMin implements Action{
+        private boolean initialized = false;
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            if (!initialized) {
+                control.SetSwiperPosition(1);
+                initialized = true;
+            }
+            packet.put("lock purple pixel", 0);
             return false;  // returning true means not done, and will be called again.  False means action is completely done
         }
     }
