@@ -117,6 +117,10 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 theRobot.ReadyHangRobot();
             }
 
+            if (gamepad1.cross && gamepad1.circle) {
+                theRobot.level3Ascent();
+            }
+
             /* *************************************************
              *************************************************
              * Arm Controls (gamepad2)
