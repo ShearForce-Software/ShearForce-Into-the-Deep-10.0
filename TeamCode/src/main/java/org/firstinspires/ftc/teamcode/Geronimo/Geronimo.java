@@ -766,7 +766,7 @@ public class Geronimo {
             SetSlideRotatorArmToPosition(0);
         }
         public void UrchinPickupFromWallServoPosition(){
-            SetIntakeBoxRotatorPosition(0.505); //0.59m //0.535
+            SetIntakeBoxRotatorPosition(0.505); //0.59 //0.535
             SetSmallArmHangerPosition(0.57);
         }
         public void UrchinRemoveFromWall(){
@@ -786,17 +786,17 @@ public class Geronimo {
         SetSmallArmHangerPosition(0.2);
     }
     public void UrchinDeliverHighChamberAlternate(){
-        SetIntakeBoxRotatorPosition(0.575); //0.82  //0.905 //0.49
+        SetIntakeBoxRotatorPosition(0.415); //0.82  //0.905 //0.49 //0.575
         SetSmallArmHangerPosition(.20); //0 //0.25
-        SetSlideToPosition(1240);  //1240  //740
+        SetSlideToPosition(2027);  //1240  //740 //1240
         SetSlideRotatorArmToPosition(710);
     }
     public void UrchinDeliverHighChamberFinishingMove(){
-        SetIntakeBoxRotatorPosition(0.45); //0.945 //0.365
+        SetIntakeBoxRotatorPosition(0.415); //0.945 //0.365 //0.45
         SetSmallArmHangerPosition(0.2); //0 //0.25
-        SetSlideToPosition(2150); //00  //2350  //1750
-        SetSlideRotatorArmToPosition(710); //642
-        }
+        SetSlideRotatorArmToPosition(715); //642 //710
+        SetSlideToPosition(3662); //00  //2350  //1750 //2150
+    }
 
     // ************************************
     // High Basket Delivery Combo Moves
