@@ -73,8 +73,12 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                     telemetry.addLine("NOPE");
                 }
                 else{
-                    Action strafeAction = drive.actionBuilder(new Pose2d(0,0,0))
-                            .strafeToConstantHeading(new Vector2d(-offsetInches[1], offsetInches[0]))
+                    drive.updatePoseEstimate();//Update the current post estimate
+
+                    Pose2d currentPose = drive.pose;
+
+                    Action strafeAction = drive.actionBuilder(currentPose)
+                            .strafeToConstantHeading(new Vector2d(-offsetInches[0], offsetInches[1]))
                             .build();
 
                     Actions.runBlocking(strafeAction);
