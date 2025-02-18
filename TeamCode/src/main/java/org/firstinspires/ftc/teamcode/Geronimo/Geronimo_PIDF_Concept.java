@@ -44,7 +44,7 @@ public class Geronimo_PIDF_Concept extends LinearOpMode {
     // proportional, integral, derivative, and feedforward
     public static double p = 0.0001, i = 0, d = 0, f = 0.007;
 
-    public static double tolerance = 5.0;
+    public static double tolerance = 5.0; //half a degree in ticks
     public static int sendF_to_Controller = 0;
     public static int useTolerance = 0;
 
@@ -96,14 +96,25 @@ public class Geronimo_PIDF_Concept extends LinearOpMode {
 
             // TODO - Jared question: have you  tried .setPIDF(p,i,d,f) ???
             Right_controller.setPID(p,i,d);
-            Left_controller.setPID(p,i,d);
+             Left_controller.setPID(p,i,d);
+          //  Right_controller.setPIDF(p,i,d,f);
+         //   Left_controller.setPIDF(p,i,d,f);
 
             // TODO - Jared added this to try out, should be able to adjust the value in the dashboard to try out effects
             //set tolerance?
             if (useTolerance == 1) {
-                Right_controller.setTolerance(tolerance); // sets the error in ticks I think that is tolerated
+                Right_controller.setTolerance(tolerance); // sets the error in ticks I think that is tolerated > go back to ticks and degrees, plus or minus the tolerance
                 Left_controller.setTolerance(tolerance);
             }
+
+            //TODO- Claire: maybe use tolerance with setpoint code?
+
+          /*   if (Right_controller.atSetPoint() && Left_controller.atSetPoint()){
+
+            }
+
+           */
+
 
             // TODO - Jared added this to try out, in dashboard change sendF_to_Controller to be 1 to try out impacts
             if (sendF_to_Controller == 1) {
@@ -135,10 +146,11 @@ public class Geronimo_PIDF_Concept extends LinearOpMode {
 
             // Send calculated power to motors
             leftSlideArmRotatorMotor.setPower(leftPower);
-            rightSlideArmRotatorMotor.setPower(rightPower);
+            //changed
+            rightSlideArmRotatorMotor.setPower(leftPower);
 
 
-            //Period values or
+            //Period values or cycle time of current loop
             double Left_period = Left_controller.getPeriod();
             double Right_period = Right_controller.getPeriod();
 
