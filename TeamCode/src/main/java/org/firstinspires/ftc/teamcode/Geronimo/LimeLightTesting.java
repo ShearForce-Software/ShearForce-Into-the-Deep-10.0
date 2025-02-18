@@ -73,6 +73,7 @@ public class LimeLightTesting extends LinearOpMode {
 
     private Limelight3A limelight;
 
+
     @Override
     public void runOpMode() throws InterruptedException
     {
@@ -93,6 +94,7 @@ public class LimeLightTesting extends LinearOpMode {
 
         while (opModeIsActive()) {
             LLStatus status = limelight.getStatus();
+
             telemetry.addData("Name", "%s",
                     status.getName());
             telemetry.addData("LL", "Temp: %.1fC, CPU: %.1f%%, FPS: %d",
