@@ -5,22 +5,25 @@
 ---
 
 
-- [ ] Claire: Create a special button (or two) to use for inspections
+- [ ] Shrey: Test inspection buttons, verify IMU logic working for inspection
+- [ ] Akshay: Get Limelight grab sample integrated and working for yellow samples
+- [ ] Claire: Test using PIDF arm control for manual and autonomous routines
+- [ ] Akshay: Get Limelight grab sample integrated and working for blue/red samples
+- [ ] Matthew: Test Level-3 ascent with new motors and hooks
 - [ ] Aidan: Test and get Auto Left delivering at least 3 samples to high basket
-- [ ] Speed up Hang routines
-- [ ] Speed up basket delivery routines in Teleop (and then Auto)
-- [ ] Change Auto routines to have better start positions (left start in box 2, right - start on a line instead of middle)
-- [ ] Determine if there are swiper actions needed in more places of our autonomous routines
-- [ ] Experiment again with using urchin to grab from specimen wall and hanging on high bar
-- [ ] Akshay: Test Limelight on Geronimo for aligning on wall specimens
-- [ ] Akshay: Create routine in Geronimo that uses the Limelight to report Red, Blue, or Yellow -- Prove on SummerChassis
-- [ ] Fully Re-Calibrate Geronimo
-- [ ] Claire: Experiment with PID control for rotator arms
-- [ ] Aidan: Make a NEW Auto Right that does at least 4 specimens (deliver, try grabbing samples with urchin to speed up, deliver, deliver, deliver)
-- [ ] Make a NEW auto left to put at least 4 samples into the high basket
-- [ ] Create TeleOp Auto drive routines using roadrunner to get to basket and wall spot
+- [ ] Gianna: Make manual rotator arm harder to do, require 2 player coordination
+- [ ] Gianna: Make mode buttons that specify if looking for yellow, blue, or red samples for limelight logic to use, make LED lights match
+- [ ] ALL: Fully recalibrate Geronimo after new motors and parts installed
 
 ---
+- [ ] Akshay: Test Limelight on Geronimo for aligning on wall specimens
+- [ ] Akshay: Create routine in Geronimo that uses the Limelight to report Red, Blue, or Yellow -- Prove on SummerChassis
+- [ ] Aidan: Make a NEW Auto Right that does at least 4 specimens (deliver, try grabbing samples with urchin to speed up, deliver, deliver, deliver)
+- [ ] Make a NEW auto left to put at least 4 samples into the high basket
+
+---
+- [x] Claire: Experiment with PID control for rotator arms
+- [x] Experiment again with using urchin to grab from specimen wall and hanging on high bar
 - [x] Create Programming section of Judging presentation
 - [x] experiment with other positions to see if can get urchin more reliable for intake
 - [x] experiment with using urchin to push blocks away from the target urchin

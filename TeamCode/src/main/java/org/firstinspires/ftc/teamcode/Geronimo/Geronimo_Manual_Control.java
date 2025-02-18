@@ -15,6 +15,8 @@ public class Geronimo_Manual_Control extends LinearOpMode {
     boolean slidePowerApplied = false;
     boolean intakeStarPowerApplied = false;
 
+
+
     // Scrimmage Meet Ideas:
     // Press intake button, have claw grab the sample
     // Have claw go down when slides extend forward?
@@ -60,6 +62,8 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             {
                 theRobot.SetFieldCentricMode(false);
             }
+
+
             // LIMELIGHT Test Function
             else if(gamepad1.dpad_up && gamepad1.options){
                 // theRobot.SetSlideToPosition(1400);
@@ -68,7 +72,7 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 // sleep(100);
                 theRobot.SetIntakeBoxRotatorPosition(0.255);
                 theRobot.SetSmallArmHangerPosition(0.56);
-                sleep(400);
+                sleep(1000);
 
                 double [] offsetInches = theRobot.GetStrafeOffsetInInches("block");
 
@@ -77,17 +81,19 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 }
                 else{
                     drive.updatePoseEstimate();//Update the current post estimate
+                    double fixedForwardAdjustment = 3;
 
                     Pose2d currentPose = drive.pose;
+                    Vector2d targetVector = new Vector2d(-offsetInches[1] + fixedForwardAdjustment, offsetInches[0]);
 
                     Action strafeAction = drive.actionBuilder(currentPose)
-                            .strafeToConstantHeading(new Vector2d(-offsetInches[0], offsetInches[1]))
+                            .strafeToConstantHeading(targetVector)
                             .build();
 
                     Actions.runBlocking(strafeAction);
                 }
             }
-            // ??? What is this for?
+            // TODO - ??? What is this for?
             else if(gamepad1.dpad_right && gamepad1.options){
                 theRobot.SetSlideToPosition(1400);
                 theRobot.SetIntakeBoxRotatorPosition(0.04);

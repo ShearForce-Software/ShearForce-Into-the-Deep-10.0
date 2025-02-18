@@ -56,7 +56,6 @@ public class Geronimo {
     PIDController Right_controller = new PIDController(p, i, d);
     PIDController Left_controller = new PIDController(p, i, d);
 
- //   public static int rotator_arm_angle = 0; // target arm angle
     final double arm_gear_ratio = 90.0/20.0;
     final double yellow_jacket_27_ticks = 751.8;    //9.4 ticks for each degree of arm rotation
     final double yellow_jacket_51_ticks = 1425.1;   //17.81 ticks for each degree of arm rotation
@@ -263,10 +262,6 @@ public class Geronimo {
         imu.initialize(parameters);
         imu.resetYaw();
 
-
-
-
-
     }
 
     // *********************************************************
@@ -324,8 +319,8 @@ public class Geronimo {
 
         // Check if target was found by checking for the -1.0 flag on both tx and ty
         if (scaledOffsets.get(0) == -1.0 && scaledOffsets.get(1) == -1.0) {
-            // Target not found; propagate some "error" condition, for instance [-1, -1].
-            return new double[] {-1.0, -1.0};
+            // Target not found; propagate some "error" condition, [0,0].
+            return new double[] {0.0, 0.0};
         }
 
         // Convert the scaled offsets back to raw angles
@@ -645,7 +640,7 @@ public class Geronimo {
     // Hanging Combo Moves
     // ************************************
     public void PreHangRobot(){
-        SetSlideRotatorArmToPosition(323);
+        SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(34.37));
         SpecialSleep(2000);
         SetIntakeBoxRotatorPosition(INTAKE_STAR_BOX_ROTATOR_MAX_POS);
         SetSmallArmHangerPosition(1);
@@ -657,14 +652,9 @@ public class Geronimo {
     public void ReadyHangRobot(){
         SetSlideToPosition(1547);
         SpecialSleep(2000);
-        SetSlideRotatorArmToPosition(480);  //323 <<original  503  //400 did not work
+        SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(51.08));  //323 <<original  503  //400 did not work
         SpecialSleep(2000);
         SetSlideToPosition(1200);  //1365 <<original
-        /*
-        SpecialSleep(2000);
-        SetSlideRotatorArmToPosition(180);
-
-         */
     }
     int stepCounter = 0;
     public void level3Ascent() {
@@ -792,13 +782,13 @@ public class Geronimo {
         SetIntakeBoxRotatorPosition(0.945); //0.82  //0.905
         SetSmallArmHangerPosition(.20); //0 //0.25
         SetSlideToPosition(1240);  //1240  //740
-        SetSlideRotatorArmToPosition(710);
+        SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(75.55));
     }
     public void SpecimenDeliverHighChamberFinishingMove(){
         SetIntakeBoxRotatorPosition(0.82); //0.945
         SetSmallArmHangerPosition(0.2); //0 //0.25
         SetSlideToPosition(2150); //00  //2350  //1750
-        SetSlideRotatorArmToPosition(710); //642
+        SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(75.55)); //642
     }
     public void UrchinPickupFromWall(){
             UrchinPickupFromWallServoPosition();
@@ -834,12 +824,12 @@ public class Geronimo {
         SetIntakeBoxRotatorPosition(0.415); //0.82  //0.905 //0.49 //0.575
         SetSmallArmHangerPosition(.20); //0 //0.25
         SetSlideToPosition(2027);  //1240  //740 //1240
-        SetSlideRotatorArmToPosition(710);
+        SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(75.55));
     }
     public void UrchinDeliverHighChamberFinishingMove(){
         SetIntakeBoxRotatorPosition(0.415); //0.945 //0.365 //0.45
         SetSmallArmHangerPosition(0.2); //0 //0.25
-        SetSlideRotatorArmToPosition(715); //642 //710
+        SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(76.08)); //642 //710
         SetSlideToPosition(3662); //00  //2350  //1750 //2150
     }
 
@@ -932,7 +922,7 @@ public class Geronimo {
         SetIntakeBoxRotatorPosition(0.935); //0.85
         SetSmallArmHangerPosition(1.0); //.8 //1.05
         SetSlideToPosition(0);
-        SetSlideRotatorArmToPosition(800); //8008, 450
+        SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(85.13)); //8008, 450
         // wait for the rotators to move to vertical before raising slides
         //SpecialSleep(2000);
         //SetSlideToPosition(6496); //2320
@@ -966,13 +956,13 @@ public class Geronimo {
     public void BasketHighFinishingMove_UrchinDeliverPosition() {
         SetIntakeBoxRotatorPosition(0.935);
         SetSmallArmHangerPosition(0.5);  //1.0
-        SetSlideRotatorArmToPosition(800);
+        SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(85.13));
     }
     public void BasketHighFinishingMove_UrchinSafeToLowerPosition(){
         SetSmallArmHangerPosition(1.0);
     }
     public void BasketHighFinishingMove_ArmSafeToLowerPosition(){
-        SetSlideRotatorArmToPosition(700);
+        SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(74.49));
         SetSlideToPosition(0);
     }
 
@@ -1304,18 +1294,16 @@ public class Geronimo {
     // ****       Slide Rotator Arm Controls                ****
     // *********************************************************
 
-    //TODO PIDF method using solely positions, no angles
-    public void SetSlideRotatorArmToPositionPIDF(double rotator_arm_target){
-        //creating new instance in the method
-        //PIDController Right_controller = new PIDController(p, i, d);
-        //PIDController Left_controller = new PIDController(p, i, d);
+    public int GetRotatorArmTicksFromDegrees (double target_arm_angle)
+    {
+        return ((int)(target_arm_angle * ticks_in_degrees));
+    }
 
+    public void SetSlideRotatorArmToPositionPIDF(double rotator_arm_target_ticks){
         //Right_controller.setPID(p,i,d);
         //Left_controller.setPID(p,i,d);
 
-        double rotator_arm_angle = rotator_arm_target / ticks_in_degrees;
-
-     //   rotator_arm_target = rotator_arm_angle * ticks_in_degrees;
+        double rotator_arm_angle = rotator_arm_target_ticks / ticks_in_degrees;
 
         //actual arm angle value
         /*
@@ -1325,13 +1313,12 @@ public class Geronimo {
 
         // Calculate the next PID value
         int left_armPos = leftSlideArmRotatorMotor.getCurrentPosition();
-        double left_pid = Left_controller.calculate(left_armPos,rotator_arm_target);
+        double left_pid = Left_controller.calculate(left_armPos,rotator_arm_target_ticks);
 
         int right_armPos = rightSlideArmRotatorMotor.getCurrentPosition();
-        double right_pid = Right_controller.calculate(right_armPos,rotator_arm_target);
+        double right_pid = Right_controller.calculate(right_armPos,rotator_arm_target_ticks);
 
         // Calculate the FeedForward component to adjust the PID by
-        // TODO - Jared question: have you tried using left/right_rotator_arm_actual_angle here? I think this is right as is, but might be interesting to try
         double left_ff = Math.cos(rotator_arm_angle) * f;
         double right_ff = Math.cos(rotator_arm_angle) * f;
 
@@ -1339,12 +1326,16 @@ public class Geronimo {
         double leftPower = left_pid + left_ff;
         double rightPower = right_pid + right_ff;
 
+        leftSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         // Send calculated power to motors
         leftSlideArmRotatorMotor.setPower(leftPower);
         //changed so both leftPower
+        // TODO - try again with rightPower when new motors installed
         rightSlideArmRotatorMotor.setPower(leftPower);
 
-        //NEED TO CREATE CODE THAT HELPS WITH RESET/REACHING ZERO
+        // TODO - NEED TO CREATE CODE THAT HELPS WITH RESET/REACHING ZERO
 
     }
 
@@ -1374,7 +1365,7 @@ public class Geronimo {
     }
     public void SetSlideRotatorArmToPosition(int position)
     {
-        if(isRobotLevel() == true)
+        if(isRobotLevel())
         {
             if(leftSlideArmRotatorMotor.getCurrentPosition() < position || position < SLIDE_ARM_ROTATOR_POS_TO_LIMIT_SLIDES)
             {
@@ -1382,19 +1373,6 @@ public class Geronimo {
                 {
                     SetSlideToPosition(SLIDE_ARM_MAX_HORIZONTAL_POS);
                 }
-                /*
-                if(!GetSlidesLimitSwitchPressed())
-                {
-                    SetSlideToPosition(0);
-                    while(GetSlideLeftCurrentPosition() > 0 || !GetSlidesLimitSwitchPressed())
-                    {
-                        SpecialSleep(50);
-
-                    }
-                    ResetSlidesToZero();
-                }
-
-                 */
             }
         }
 
@@ -1511,6 +1489,10 @@ public class Geronimo {
     }
 
     public void ShowTelemetry(){
+        opMode.telemetry.addData("Limelight OffSet (x,y) inches no correction:" ,"R: %.2f, L: %.2f" ,GetStrafeOffsetInInches("block")[1], GetStrafeOffsetInInches("block")[2]);
+        opMode.telemetry.addData("Limelight Offset (x,y) inches no correction:", "R: %.2f, L: %.2f", GetStrafeOffsetInInches("block")[1]+3, GetStrafeOffsetInInches("block")[2]+3);
+
+
         opMode.telemetry.addData("Auto Last Time Left: ", autoTimeLeft);
         opMode.telemetry.addData("imu Heading: ", GetIMU_HeadingInDegrees());
 
