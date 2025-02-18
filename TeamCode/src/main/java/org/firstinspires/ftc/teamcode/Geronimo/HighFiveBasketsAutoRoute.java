@@ -376,7 +376,7 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!initialized) {
-                control.SetSlideRotatorArmToPosition(400);
+                control.SetSlideRotatorArmToPosition(control.GetRotatorArmTicksFromDegrees(42.56));
                 initialized = true;
             }
             packet.put("finishBasketHigh_SlidesPosition", 0);

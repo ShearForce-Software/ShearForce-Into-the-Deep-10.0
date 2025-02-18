@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Geronimo;
 import static org.firstinspires.ftc.teamcode.Geronimo.MecanumDrive_Geronimo.PARAMS;
 
+import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
@@ -48,6 +49,18 @@ public class Geronimo {
     public static double autoTimeLeft = 0.0;
     boolean IsDriverControl = true;
     boolean IsFieldCentric = true;
+
+    //pidf variables
+    boolean pidfEnabled = false;
+    public static double p = 0.0001, i = 0, d = 0, f = 0.007;
+    PIDController Right_controller = new PIDController(p, i, d);
+    PIDController Left_controller = new PIDController(p, i, d);
+
+    final double arm_gear_ratio = 90.0/20.0;
+    final double yellow_jacket_27_ticks = 751.8;    //9.4 ticks for each degree of arm rotation
+    final double yellow_jacket_51_ticks = 1425.1;   //17.81 ticks for each degree of arm rotation
+    final double ticks_in_degrees = (arm_gear_ratio/360.0) * yellow_jacket_27_ticks;
+    double rotator_arm_target = 0; //in ticks
 
     DcMotor leftFront;
     DcMotor leftRear;
@@ -627,7 +640,7 @@ public class Geronimo {
     // Hanging Combo Moves
     // ************************************
     public void PreHangRobot(){
-        SetSlideRotatorArmToPosition(323);
+        SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(34.37));
         SpecialSleep(2000);
         SetIntakeBoxRotatorPosition(INTAKE_STAR_BOX_ROTATOR_MAX_POS);
         SetSmallArmHangerPosition(1);
@@ -639,14 +652,9 @@ public class Geronimo {
     public void ReadyHangRobot(){
         SetSlideToPosition(1547);
         SpecialSleep(2000);
-        SetSlideRotatorArmToPosition(480);  //323 <<original  503  //400 did not work
+        SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(51.08));  //323 <<original  503  //400 did not work
         SpecialSleep(2000);
         SetSlideToPosition(1200);  //1365 <<original
-        /*
-        SpecialSleep(2000);
-        SetSlideRotatorArmToPosition(180);
-
-         */
     }
     int stepCounter = 0;
     public void level3Ascent() {
@@ -749,13 +757,13 @@ public class Geronimo {
         SetIntakeBoxRotatorPosition(0.945); //0.82  //0.905
         SetSmallArmHangerPosition(.20); //0 //0.25
         SetSlideToPosition(1240);  //1240  //740
-        SetSlideRotatorArmToPosition(710);
+        SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(75.55));
     }
     public void SpecimenDeliverHighChamberFinishingMove(){
         SetIntakeBoxRotatorPosition(0.82); //0.945
         SetSmallArmHangerPosition(0.2); //0 //0.25
         SetSlideToPosition(2150); //00  //2350  //1750
-        SetSlideRotatorArmToPosition(710); //642
+        SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(75.55)); //642
     }
     public void UrchinPickupFromWall(){
             UrchinPickupFromWallServoPosition();
@@ -791,12 +799,12 @@ public class Geronimo {
         SetIntakeBoxRotatorPosition(0.415); //0.82  //0.905 //0.49 //0.575
         SetSmallArmHangerPosition(.20); //0 //0.25
         SetSlideToPosition(2027);  //1240  //740 //1240
-        SetSlideRotatorArmToPosition(710);
+        SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(75.55));
     }
     public void UrchinDeliverHighChamberFinishingMove(){
         SetIntakeBoxRotatorPosition(0.415); //0.945 //0.365 //0.45
         SetSmallArmHangerPosition(0.2); //0 //0.25
-        SetSlideRotatorArmToPosition(715); //642 //710
+        SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(76.08)); //642 //710
         SetSlideToPosition(3662); //00  //2350  //1750 //2150
     }
 
@@ -889,7 +897,7 @@ public class Geronimo {
         SetIntakeBoxRotatorPosition(0.935); //0.85
         SetSmallArmHangerPosition(1.0); //.8 //1.05
         SetSlideToPosition(0);
-        SetSlideRotatorArmToPosition(800); //8008, 450
+        SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(85.13)); //8008, 450
         // wait for the rotators to move to vertical before raising slides
         //SpecialSleep(2000);
         //SetSlideToPosition(6496); //2320
@@ -923,13 +931,13 @@ public class Geronimo {
     public void BasketHighFinishingMove_UrchinDeliverPosition() {
         SetIntakeBoxRotatorPosition(0.935);
         SetSmallArmHangerPosition(0.5);  //1.0
-        SetSlideRotatorArmToPosition(800);
+        SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(85.13));
     }
     public void BasketHighFinishingMove_UrchinSafeToLowerPosition(){
         SetSmallArmHangerPosition(1.0);
     }
     public void BasketHighFinishingMove_ArmSafeToLowerPosition(){
-        SetSlideRotatorArmToPosition(700);
+        SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(74.49));
         SetSlideToPosition(0);
     }
 
@@ -1251,6 +1259,52 @@ public class Geronimo {
     // *********************************************************
     // ****       Slide Rotator Arm Controls                ****
     // *********************************************************
+
+    public int GetRotatorArmTicksFromDegrees (double target_arm_angle)
+    {
+        return ((int)(target_arm_angle * ticks_in_degrees));
+    }
+
+    public void SetSlideRotatorArmToPositionPIDF(double rotator_arm_target_ticks){
+        //Right_controller.setPID(p,i,d);
+        //Left_controller.setPID(p,i,d);
+
+        double rotator_arm_angle = rotator_arm_target_ticks / ticks_in_degrees;
+
+        //actual arm angle value
+        /*
+        double left_rotator_arm_actual_angle = leftSlideArmRotatorMotor.getCurrentPosition()/ticks_in_degrees;
+        double right_rotator_arm_actual_angle = rightSlideArmRotatorMotor.getCurrentPosition()/ticks_in_degrees;
+         */
+
+        // Calculate the next PID value
+        int left_armPos = leftSlideArmRotatorMotor.getCurrentPosition();
+        double left_pid = Left_controller.calculate(left_armPos,rotator_arm_target_ticks);
+
+        int right_armPos = rightSlideArmRotatorMotor.getCurrentPosition();
+        double right_pid = Right_controller.calculate(right_armPos,rotator_arm_target_ticks);
+
+        // Calculate the FeedForward component to adjust the PID by
+        double left_ff = Math.cos(rotator_arm_angle) * f;
+        double right_ff = Math.cos(rotator_arm_angle) * f;
+
+        // Calculate the motor power (PID + FeedForward) component
+        double leftPower = left_pid + left_ff;
+        double rightPower = right_pid + right_ff;
+
+        leftSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        // Send calculated power to motors
+        leftSlideArmRotatorMotor.setPower(leftPower);
+        //changed so both leftPower
+        // TODO - try again with rightPower when new motors installed
+        rightSlideArmRotatorMotor.setPower(leftPower);
+
+        // TODO - NEED TO CREATE CODE THAT HELPS WITH RESET/REACHING ZERO
+
+    }
+
     public void SetSlideRotatorToPowerMode(double power)
     {
         slideArmRotatorPower = power;
@@ -1277,7 +1331,7 @@ public class Geronimo {
     }
     public void SetSlideRotatorArmToPosition(int position)
     {
-        if(isRobotLevel() == true)
+        if(isRobotLevel())
         {
             if(leftSlideArmRotatorMotor.getCurrentPosition() < position || position < SLIDE_ARM_ROTATOR_POS_TO_LIMIT_SLIDES)
             {
@@ -1285,19 +1339,6 @@ public class Geronimo {
                 {
                     SetSlideToPosition(SLIDE_ARM_MAX_HORIZONTAL_POS);
                 }
-                /*
-                if(!GetSlidesLimitSwitchPressed())
-                {
-                    SetSlideToPosition(0);
-                    while(GetSlideLeftCurrentPosition() > 0 || !GetSlidesLimitSwitchPressed())
-                    {
-                        SpecialSleep(50);
-
-                    }
-                    ResetSlidesToZero();
-                }
-
-                 */
             }
         }
 
@@ -1321,15 +1362,22 @@ public class Geronimo {
             slideArmRotatorTargetPosition = position;
         }
         slideArmRotatorRunningToPosition = true;
-        rightSlideArmRotatorMotor.setTargetPosition(slideArmRotatorTargetPosition);
-        leftSlideArmRotatorMotor.setTargetPosition(slideArmRotatorTargetPosition);
-        leftSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftSlideArmRotatorMotor.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
-        rightSlideArmRotatorMotor.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
 
-        leftSlideArmRotatorMotor.setPower(slideArmRotatorPower);
-        rightSlideArmRotatorMotor.setPower(slideArmRotatorPower);
+        if (pidfEnabled)
+        {
+            SetSlideRotatorArmToPositionPIDF(position);
+        }
+        else {
+            rightSlideArmRotatorMotor.setTargetPosition(slideArmRotatorTargetPosition);
+            leftSlideArmRotatorMotor.setTargetPosition(slideArmRotatorTargetPosition);
+            leftSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            leftSlideArmRotatorMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            rightSlideArmRotatorMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+            leftSlideArmRotatorMotor.setPower(slideArmRotatorPower);
+            rightSlideArmRotatorMotor.setPower(slideArmRotatorPower);
+        }
     }
     public void ResetSlideRotatorArmToZero(){
         slideArmRotatorPower = 0.0;
