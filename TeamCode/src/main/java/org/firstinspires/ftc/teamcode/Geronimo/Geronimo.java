@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.Geronimo;
 import static org.firstinspires.ftc.teamcode.Geronimo.MecanumDrive_Geronimo.PARAMS;
 
-import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
@@ -49,19 +48,6 @@ public class Geronimo {
     public static double autoTimeLeft = 0.0;
     boolean IsDriverControl = true;
     boolean IsFieldCentric = true;
-
-    //pidf variables
-    boolean pidfEnabled = false;
-    public static double p = 0.0001, i = 0, d = 0, f = 0.007;
-    PIDController Right_controller = new PIDController(p, i, d);
-    PIDController Left_controller = new PIDController(p, i, d);
-
- //   public static int rotator_arm_angle = 0; // target arm angle
-    final double arm_gear_ratio = 90.0/20.0;
-    final double yellow_jacket_27_ticks = 751.8;    //9.4 ticks for each degree of arm rotation
-    final double yellow_jacket_51_ticks = 1425.1;   //17.81 ticks for each degree of arm rotation
-    final double ticks_in_degrees = (arm_gear_ratio/360.0) * yellow_jacket_27_ticks;
-    double rotator_arm_target = 0; //in ticks
 
     DcMotor leftFront;
     DcMotor leftRear;
@@ -263,10 +249,6 @@ public class Geronimo {
         imu.initialize(parameters);
         imu.resetYaw();
 
-
-
-
-
     }
 
     // *********************************************************
@@ -324,8 +306,8 @@ public class Geronimo {
 
         // Check if target was found by checking for the -1.0 flag on both tx and ty
         if (scaledOffsets.get(0) == -1.0 && scaledOffsets.get(1) == -1.0) {
-            // Target not found; propagate some "error" condition, for instance [-1, -1].
-            return new double[] {-1.0, -1.0};
+            // Target not found; propagate some "error" condition, [0,0].
+            return new double[] {0.0, 0.0};
         }
 
         // Convert the scaled offsets back to raw angles
@@ -1269,51 +1251,6 @@ public class Geronimo {
     // *********************************************************
     // ****       Slide Rotator Arm Controls                ****
     // *********************************************************
-
-    //TODO PIDF method using solely positions, no angles
-    public void SetSlideRotatorArmToPositionPIDF(double rotator_arm_target){
-        //creating new instance in the method
-        //PIDController Right_controller = new PIDController(p, i, d);
-        //PIDController Left_controller = new PIDController(p, i, d);
-
-        //Right_controller.setPID(p,i,d);
-        //Left_controller.setPID(p,i,d);
-
-        double rotator_arm_angle = rotator_arm_target / ticks_in_degrees;
-
-     //   rotator_arm_target = rotator_arm_angle * ticks_in_degrees;
-
-        //actual arm angle value
-        /*
-        double left_rotator_arm_actual_angle = leftSlideArmRotatorMotor.getCurrentPosition()/ticks_in_degrees;
-        double right_rotator_arm_actual_angle = rightSlideArmRotatorMotor.getCurrentPosition()/ticks_in_degrees;
-         */
-
-        // Calculate the next PID value
-        int left_armPos = leftSlideArmRotatorMotor.getCurrentPosition();
-        double left_pid = Left_controller.calculate(left_armPos,rotator_arm_target);
-
-        int right_armPos = rightSlideArmRotatorMotor.getCurrentPosition();
-        double right_pid = Right_controller.calculate(right_armPos,rotator_arm_target);
-
-        // Calculate the FeedForward component to adjust the PID by
-        // TODO - Jared question: have you tried using left/right_rotator_arm_actual_angle here? I think this is right as is, but might be interesting to try
-        double left_ff = Math.cos(rotator_arm_angle) * f;
-        double right_ff = Math.cos(rotator_arm_angle) * f;
-
-        // Calculate the motor power (PID + FeedForward) component
-        double leftPower = left_pid + left_ff;
-        double rightPower = right_pid + right_ff;
-
-        // Send calculated power to motors
-        leftSlideArmRotatorMotor.setPower(leftPower);
-        //changed so both leftPower
-        rightSlideArmRotatorMotor.setPower(leftPower);
-
-        //NEED TO CREATE CODE THAT HELPS WITH RESET/REACHING ZERO
-
-    }
-
     public void SetSlideRotatorToPowerMode(double power)
     {
         slideArmRotatorPower = power;
@@ -1384,22 +1321,15 @@ public class Geronimo {
             slideArmRotatorTargetPosition = position;
         }
         slideArmRotatorRunningToPosition = true;
+        rightSlideArmRotatorMotor.setTargetPosition(slideArmRotatorTargetPosition);
+        leftSlideArmRotatorMotor.setTargetPosition(slideArmRotatorTargetPosition);
+        leftSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftSlideArmRotatorMotor.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
+        rightSlideArmRotatorMotor.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
 
-        if (pidfEnabled)
-        {
-            SetSlideRotatorArmToPositionPIDF(position);
-        }
-        else {
-            rightSlideArmRotatorMotor.setTargetPosition(slideArmRotatorTargetPosition);
-            leftSlideArmRotatorMotor.setTargetPosition(slideArmRotatorTargetPosition);
-            leftSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rightSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            leftSlideArmRotatorMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            rightSlideArmRotatorMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-            leftSlideArmRotatorMotor.setPower(slideArmRotatorPower);
-            rightSlideArmRotatorMotor.setPower(slideArmRotatorPower);
-        }
+        leftSlideArmRotatorMotor.setPower(slideArmRotatorPower);
+        rightSlideArmRotatorMotor.setPower(slideArmRotatorPower);
     }
     public void ResetSlideRotatorArmToZero(){
         slideArmRotatorPower = 0.0;
@@ -1477,6 +1407,10 @@ public class Geronimo {
     }
 
     public void ShowTelemetry(){
+        opMode.telemetry.addData("Limelight OffSet (x,y) inches no correction:" ,"R: %.2f, L: %.2f" ,GetStrafeOffsetInInches("block")[1], GetStrafeOffsetInInches("block")[2]);
+        opMode.telemetry.addData("Limelight Offset (x,y) inches no correction:", "R: %.2f, L: %.2f", GetStrafeOffsetInInches("block")[1]+3, GetStrafeOffsetInInches("block")[2]+3);
+
+
         opMode.telemetry.addData("Auto Last Time Left: ", autoTimeLeft);
         opMode.telemetry.addData("imu Heading: ", GetIMU_HeadingInDegrees());
 
