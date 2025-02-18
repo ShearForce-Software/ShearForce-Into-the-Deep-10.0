@@ -668,11 +668,16 @@ public class Geronimo {
     }
     int stepCounter = 0;
     public void level3Ascent() {
+        double timeout = opMode.getRuntime() + 0.5;
         stepCounter = 0;
+        int targetAngle = 90;
         int targetArmAngle = 45;
         while (stepCounter < 6) {
-            goToArmAngle(targetArmAngle); // calls SetSlideToPosition() in method
+            SetSlideRotatorArmToPosition(findRealArmAngle((targetAngle)));
             if (stepCounter == 0){
+                // hanger arms and urchin intake go to safe place (blue color)
+                Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;
+                blinkinLedDriver.setPattern(Blinken_pattern);
                 SetIntakeBoxRotatorPosition(0.41);
                 SetSmallArmHangerPosition(0.79);
                 SetClawPosition(1);
@@ -681,38 +686,57 @@ public class Geronimo {
                 }
             }
             else if (stepCounter == 1) {
-                // slides go up
-                SetSlideToPosition(3049); //  verify is higher than hooks
+                // slides go up (yellow color)
+                Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.YELLOW;
+                blinkinLedDriver.setPattern(Blinken_pattern);
+                SetSlideToPosition(2580); //  verify is higher than hooks
                 targetArmAngle = 90;
-                if (slideLeft.getCurrentPosition() >= 3049) {
+                SpecialSleep(2000);
+                if (slideLeft.getCurrentPosition() >= 2580) {
                     stepCounter++;
+                    Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.RED;
+                    blinkinLedDriver.setPattern(Blinken_pattern);
                 }
             }
             else if (stepCounter == 2) {
-                // slides go down to set position, based on where hooks are
-                SetSlideToPosition(0); // test by moving robot when hooks present (should be horizontally supported by bar)
-                if (GetSlidesLimitSwitchPressed()) {
+                // slides go down till hooks engage (blue color)
+                Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;
+                blinkinLedDriver.setPattern(Blinken_pattern);
+                SetSlideToPosition(3000); // verify
+                // red color if timeout used
+                if (slideLeft.getCurrentPosition() <= 3000 || opMode.getRuntime() < timeout) {
                     stepCounter++;
+                    Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.RED;
+                    blinkinLedDriver.setPattern(Blinken_pattern);
                 }
             }
             else if (stepCounter == 3) {
-                // robot moves while arms remain vertical (clam)
-                SetSlideRotatorArmToPosition(0);
-                if (leftSlideArmRotatorMotor.getCurrentPosition() < 100) {
+                // support robot horizontally on barrier & slides are vertical (yellow color)
+                Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.YELLOW;
+                blinkinLedDriver.setPattern(Blinken_pattern);
+                SetSlideRotatorArmToPosition(160); // verify
+                // red color if timeout used
+                if (leftSlideArmRotatorMotor.getCurrentPosition() >= 160 || opMode.getRuntime() < timeout) {
                     stepCounter++;
                 }
             }
+
             else if (stepCounter == 4) {
-                // slides go up
-                SetSlideToPosition(3049); // test
+                // slides extend upward to reach second ascent zone (blue color)
+                Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;
+                blinkinLedDriver.setPattern(Blinken_pattern);
+                SetSlideToPosition(3049); // verify
                 if (slideLeft.getCurrentPosition() >= 3049) {
                     stepCounter++;
                 }
             }
+
             else if (stepCounter == 5) {
-                // slides go down to set position, based on where hooks are
-                SetSlideToPosition(0); // test by moving robot when hooks present
-                if (slideLeft.getCurrentPosition() == 0) {
+                // robot pull up (yellow color)
+                Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.YELLOW;
+                blinkinLedDriver.setPattern(Blinken_pattern);
+                SetSlideToPosition(0);
+                if (GetSlidesLimitSwitchPressed()) {
                     stepCounter++;
                 }
             }
@@ -1213,9 +1237,18 @@ public class Geronimo {
     public void SetSlideToPosition (int position)
     {
         // verify not needing to limit because of horizontal limits
+        /*
         if (((slideArmRotatorTargetPosition <= SLIDE_ARM_ROTATOR_POS_TO_LIMIT_SLIDES) ||
                 (!slideArmRotatorRunningToPosition && leftSlideArmRotatorMotor.getCurrentPosition() <= SLIDE_ARM_ROTATOR_POS_TO_LIMIT_SLIDES) ) &&
                 (position >= SLIDE_ARM_MAX_HORIZONTAL_POS)) {
+            slidesTargetPosition = SLIDE_ARM_MAX_HORIZONTAL_POS;
+        }
+        
+         */
+
+        if (slideArmRotatorTargetPosition <= findRealArmAngle(45.0) &&
+                (position >= SLIDE_ARM_MAX_HORIZONTAL_POS))
+        {
             slidesTargetPosition = SLIDE_ARM_MAX_HORIZONTAL_POS;
         }
         else if (position > SLIDE_ARM_MAX_VERTICAL_POS)
@@ -1664,17 +1697,6 @@ public class Geronimo {
     }
 
     int targetPositionIMUARM = 500;
-    public void goToArmAngle(double targetIMU_Degrees) {
-        rotatorPosition = leftSlideArmRotatorMotor.getCurrentPosition();
-        YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
-        imuPosition = (orientation.getRoll());
-
-        targetPositionIMUARM = (int) ((targetIMU_Degrees - imuPosition) *  ticksPerDegree);
-
-        opMode.telemetry.addData("imu position: " , imuPosition);
-        SetSlideRotatorArmToPosition(targetPositionIMUARM);
-    }
-
     public int findRealArmAngle(double targetIMU_Degrees) {
         rotatorPosition = leftSlideArmRotatorMotor.getCurrentPosition();
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
