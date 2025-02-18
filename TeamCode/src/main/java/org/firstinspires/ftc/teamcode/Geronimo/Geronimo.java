@@ -92,7 +92,7 @@ public class Geronimo {
     Servo intakeBoxRotaterServo;
     public static final double INTAKE_STAR_BOX_ROTATOR_MAX_POS = 1.0;
     public static final double INTAKE_STAR_BOX_ROTATOR_MIN_POS = 0.0;
-    public static final double INTAKE_STAR_BOX_ROTATOR_INCREMENT = 0.005;
+    public static final double INTAKE_STAR_BOX_ROTATOR_INCREMENT = 0.01;
     double intakeBoxRotatorPosition = 0.5;
 
     Servo smallArmHangerLeftServo;
@@ -1281,6 +1281,11 @@ public class Geronimo {
         {
             if(leftSlideArmRotatorMotor.getCurrentPosition() < position || position < SLIDE_ARM_ROTATOR_POS_TO_LIMIT_SLIDES)
             {
+                if (GetSlideLeftCurrentPosition() > SLIDE_ARM_MAX_HORIZONTAL_POS)
+                {
+                    SetSlideToPosition(SLIDE_ARM_MAX_HORIZONTAL_POS);
+                }
+                /*
                 if(!GetSlidesLimitSwitchPressed())
                 {
                     SetSlideToPosition(0);
@@ -1291,6 +1296,8 @@ public class Geronimo {
                     }
                     ResetSlidesToZero();
                 }
+
+                 */
             }
         }
 
