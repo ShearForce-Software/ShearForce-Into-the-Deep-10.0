@@ -105,7 +105,7 @@ public class Geronimo {
     Servo intakeBoxRotaterServo;
     public static final double INTAKE_STAR_BOX_ROTATOR_MAX_POS = 1.0;
     public static final double INTAKE_STAR_BOX_ROTATOR_MIN_POS = 0.0;
-    public static final double INTAKE_STAR_BOX_ROTATOR_INCREMENT = 0.01;
+    public static final double INTAKE_STAR_BOX_ROTATOR_INCREMENT = 0.2;
     double intakeBoxRotatorPosition = 0.5;
 
     Servo smallArmHangerLeftServo;
@@ -1455,8 +1455,8 @@ public class Geronimo {
     }
 
     public void ShowTelemetry(){
-        opMode.telemetry.addData("Limelight OffSet (x,y) inches no correction:" ,"R: %.2f, L: %.2f" ,GetStrafeOffsetInInches("block")[1], GetStrafeOffsetInInches("block")[2]);
-        opMode.telemetry.addData("Limelight Offset (x,y) inches no correction:", "R: %.2f, L: %.2f", GetStrafeOffsetInInches("block")[1]+3, GetStrafeOffsetInInches("block")[2]+3);
+        //opMode.telemetry.addData("Limelight OffSet (x,y) inches no correction:" ,"R: %.2f, L: %.2f" ,GetStrafeOffsetInInches("block")[1], GetStrafeOffsetInInches("block")[2]);
+        //opMode.telemetry.addData("Limelight Offset (x,y) inches no correction:", "R: %.2f, L: %.2f", GetStrafeOffsetInInches("block")[1]+3, GetStrafeOffsetInInches("block")[2]+3);
 
 
         opMode.telemetry.addData("Auto Last Time Left: ", autoTimeLeft);
