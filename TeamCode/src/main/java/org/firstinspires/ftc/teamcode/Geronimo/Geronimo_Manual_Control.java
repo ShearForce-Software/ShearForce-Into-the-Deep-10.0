@@ -183,6 +183,9 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             // Make sure the slides aren't ever trying to go past their horizontal limits
             theRobot.Slides_Horizontal_MAX_Limit();
 
+            //looping PIDF code- need to check if enabled?
+            theRobot.SetSlideRotatorArmToPositionPIDF();
+
             // small hanger arms holding the urchin / green box
             if (gamepad2.right_stick_x > 0.1 && gamepad2.options) {
                 theRobot.SetSmallArmHangerIncrementUp();

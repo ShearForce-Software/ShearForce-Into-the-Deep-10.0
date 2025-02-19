@@ -61,6 +61,7 @@ public class Geronimo {
     final double yellow_jacket_51_ticks = 1425.1;   //17.81 ticks for each degree of arm rotation
     final double ticks_in_degrees = (arm_gear_ratio/360.0) * yellow_jacket_27_ticks;
     double rotator_arm_target = 0; //in ticks
+    public double rotator_arm_target_ticks = 0;
 
     DcMotor leftFront;
     DcMotor leftRear;
@@ -1265,43 +1266,46 @@ public class Geronimo {
         return ((int)(target_arm_angle * ticks_in_degrees));
     }
 
-    public void SetSlideRotatorArmToPositionPIDF(double rotator_arm_target_ticks){
-        //Right_controller.setPID(p,i,d);
-        //Left_controller.setPID(p,i,d);
+    public void SetSlideRotatorArmToPositionPIDF(){
+        if (pidfEnabled) {
+            //Right_controller.setPID(p,i,d);
+            //Left_controller.setPID(p,i,d);
 
-        double rotator_arm_angle = rotator_arm_target_ticks / ticks_in_degrees;
+            //store in geronimo rotator_arm_target_ticks. Call loop again and again. then if and everything else, else
 
-        //actual arm angle value
-        /*
-        double left_rotator_arm_actual_angle = leftSlideArmRotatorMotor.getCurrentPosition()/ticks_in_degrees;
-        double right_rotator_arm_actual_angle = rightSlideArmRotatorMotor.getCurrentPosition()/ticks_in_degrees;
-         */
+            if (rotator_arm_target_ticks == 0 && GetSlideRotatorArmLimitSwitchPressed()) {
+                ResetSlideRotatorArmToZero();
+            } else {
+                double rotator_arm_angle = rotator_arm_target_ticks / ticks_in_degrees;
 
-        // Calculate the next PID value
-        int left_armPos = leftSlideArmRotatorMotor.getCurrentPosition();
-        double left_pid = Left_controller.calculate(left_armPos,rotator_arm_target_ticks);
+                // Calculate the next PID value
+                int left_armPos = leftSlideArmRotatorMotor.getCurrentPosition();
+                double left_pid = Left_controller.calculate(left_armPos, rotator_arm_target_ticks);
 
-        int right_armPos = rightSlideArmRotatorMotor.getCurrentPosition();
-        double right_pid = Right_controller.calculate(right_armPos,rotator_arm_target_ticks);
+                int right_armPos = rightSlideArmRotatorMotor.getCurrentPosition();
+                double right_pid = Right_controller.calculate(right_armPos, rotator_arm_target_ticks);
 
-        // Calculate the FeedForward component to adjust the PID by
-        double left_ff = Math.cos(rotator_arm_angle) * f;
-        double right_ff = Math.cos(rotator_arm_angle) * f;
+                // Calculate the FeedForward component to adjust the PID by
+                double left_ff = Math.cos(rotator_arm_angle) * f;
+                double right_ff = Math.cos(rotator_arm_angle) * f;
 
-        // Calculate the motor power (PID + FeedForward) component
-        double leftPower = left_pid + left_ff;
-        double rightPower = right_pid + right_ff;
+                // Calculate the motor power (PID + FeedForward) component
+                double leftPower = left_pid + left_ff;
+                double rightPower = right_pid + right_ff;
 
-        leftSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                leftSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                rightSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        // Send calculated power to motors
-        leftSlideArmRotatorMotor.setPower(leftPower);
-        //changed so both leftPower
-        // TODO - try again with rightPower when new motors installed
-        rightSlideArmRotatorMotor.setPower(leftPower);
+                // Send calculated power to motors
+                leftSlideArmRotatorMotor.setPower(leftPower);
+                //changed so both leftPower
+                // TODO - try again with rightPower when new motors installed
+                rightSlideArmRotatorMotor.setPower(leftPower);
 
-        // TODO - NEED TO CREATE CODE THAT HELPS WITH RESET/REACHING ZERO
+                // TODO - NEED TO CREATE CODE THAT HELPS WITH RESET/REACHING ZERO
+
+            }
+        }
 
     }
 
@@ -1365,7 +1369,8 @@ public class Geronimo {
 
         if (pidfEnabled)
         {
-            SetSlideRotatorArmToPositionPIDF(position);
+         //   SetSlideRotatorArmToPositionPIDF(position);
+            rotator_arm_target_ticks = position;
         }
         else {
             rightSlideArmRotatorMotor.setTargetPosition(slideArmRotatorTargetPosition);
