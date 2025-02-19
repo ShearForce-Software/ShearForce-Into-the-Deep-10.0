@@ -661,7 +661,6 @@ public class Geronimo {
         double timeout = opMode.getRuntime() + 0.5;
         stepCounter = 0;
         int targetAngle = 90;
-        int targetArmAngle = 45;
         while (stepCounter < 6) {
             SetSlideRotatorArmToPosition(findRealArmAngle((targetAngle)));
             if (stepCounter == 0){
@@ -679,20 +678,16 @@ public class Geronimo {
                 // slides go up (yellow color)
                 Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.YELLOW;
                 blinkinLedDriver.setPattern(Blinken_pattern);
-                SetSlideToPosition(2580); //  verify is higher than hooks
-                targetArmAngle = 90;
-                SpecialSleep(2000);
+                SetSlideToPosition(2580);
                 if (slideLeft.getCurrentPosition() >= 2580) {
                     stepCounter++;
-                    Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.RED;
-                    blinkinLedDriver.setPattern(Blinken_pattern);
                 }
             }
             else if (stepCounter == 2) {
                 // slides go down till hooks engage (blue color)
                 Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;
                 blinkinLedDriver.setPattern(Blinken_pattern);
-                SetSlideToPosition(3000); // verify
+                SetSlideToPosition(2000); // verify
                 // red color if timeout used
                 if (slideLeft.getCurrentPosition() <= 3000 || opMode.getRuntime() < timeout) {
                     stepCounter++;
@@ -705,12 +700,10 @@ public class Geronimo {
                 Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.YELLOW;
                 blinkinLedDriver.setPattern(Blinken_pattern);
                 SetSlideRotatorArmToPosition(160); // verify
-                // red color if timeout used
-                if (leftSlideArmRotatorMotor.getCurrentPosition() >= 160 || opMode.getRuntime() < timeout) {
+                if (leftSlideArmRotatorMotor.getCurrentPosition() >= 160) {
                     stepCounter++;
                 }
             }
-
             else if (stepCounter == 4) {
                 // slides extend upward to reach second ascent zone (blue color)
                 Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;
@@ -720,7 +713,6 @@ public class Geronimo {
                     stepCounter++;
                 }
             }
-
             else if (stepCounter == 5) {
                 // robot pull up (yellow color)
                 Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.YELLOW;
@@ -1489,9 +1481,10 @@ public class Geronimo {
     }
 
     public void ShowTelemetry(){
+        /*
         opMode.telemetry.addData("Limelight OffSet (x,y) inches no correction:" ,"R: %.2f, L: %.2f" ,GetStrafeOffsetInInches("block")[1], GetStrafeOffsetInInches("block")[2]);
         opMode.telemetry.addData("Limelight Offset (x,y) inches no correction:", "R: %.2f, L: %.2f", GetStrafeOffsetInInches("block")[1]+3, GetStrafeOffsetInInches("block")[2]+3);
-
+         */
 
         opMode.telemetry.addData("Auto Last Time Left: ", autoTimeLeft);
         opMode.telemetry.addData("imu Heading: ", GetIMU_HeadingInDegrees());
