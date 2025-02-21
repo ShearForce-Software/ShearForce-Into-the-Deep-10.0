@@ -103,6 +103,11 @@ public class Geronimo {
     public static final double SWIPER_MIN_POS = 0.25;
     private double swiper_position = 0.5;
 
+    Servo swiper2;
+    public static final double SWIPER2_MAX_POS = 0.8;
+    public static final double SWIPER2_MIN_POS = 0.25;
+    private double swiper2_position = 0.5;
+
     Servo intakeBoxRotaterServo;
     public static final double INTAKE_STAR_BOX_ROTATOR_MAX_POS = 1.0;
     public static final double INTAKE_STAR_BOX_ROTATOR_MIN_POS = 0.0;
@@ -239,6 +244,7 @@ public class Geronimo {
       //  intakeStarServo = hardwareMap.get(CRServo.class, "intakeStar");
         urchinServo = hardwareMap.get(Servo.class, "urchinServo");
         swiperServo = hardwareMap.get(Servo.class, "swiper");
+        swiper2 = hardwareMap.get(Servo.class, "swiper2");
 
         // ********** Color Sensors ********************
 
@@ -630,6 +636,7 @@ public class Geronimo {
         SetSlideRotatorArmToPosition(0);
         SetClawPosition(Geronimo.CLAW_MIN_POS);
         SetSwiperPosition(Geronimo.SWIPER_MAX_POS);
+        SetSwiper2Position(Geronimo.SWIPER2_MAX_POS);
     }
 
     public void SpecimenDeliverLow(){
@@ -1087,6 +1094,23 @@ public class Geronimo {
             swiper_position = position;
         }
         swiperServo.setPosition(swiper_position);
+    }
+
+    public void SetSwiper2Position(double position)
+    {
+        if (position > SWIPER2_MAX_POS)
+        {
+            swiper2_position = SWIPER2_MAX_POS;
+        }
+        else if (position < SWIPER2_MIN_POS)
+        {
+            swiper2_position = SWIPER2_MIN_POS;
+        }
+        else
+        {
+            swiper2_position = position;
+        }
+        swiper2.setPosition(swiper2_position);
     }
 
     // **********************************************************
