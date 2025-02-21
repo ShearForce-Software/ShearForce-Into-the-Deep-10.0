@@ -7,7 +7,7 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.acmerobotics.roadrunner.Action;
 
-@TeleOp(name = "Geronimo Limelight Offset (All Zeros)", group = "Geronimo")
+@TeleOp(name = "Get Strafe Inches", group = "Geronimo")
 public class GetStrafeInches extends LinearOpMode {
 
     private Geronimo theRobot;
