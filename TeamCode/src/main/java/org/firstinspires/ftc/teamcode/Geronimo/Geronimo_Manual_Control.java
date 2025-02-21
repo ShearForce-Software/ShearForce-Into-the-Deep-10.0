@@ -65,8 +65,8 @@ public class Geronimo_Manual_Control extends LinearOpMode {
 
 
             // LIMELIGHT Test Function
-            else if(gamepad1.dpad_up && gamepad1.options){
-                // theRobot.SetSlideToPosition(1400);
+            else if(gamepad2.dpad_left && !gamepad2.options){
+                theRobot.SetSlideToPosition(1800);
                 // theRobot.SetIntakeBoxRotatorPosition(0.04);
                 // theRobot.SetSmallArmHangerPosition(0.365);
                 // sleep(100);
@@ -74,7 +74,7 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 theRobot.SetSmallArmHangerPosition(0.56);
                 sleep(1000);
 
-                double [] offsetInches = theRobot.GetStrafeOffsetInInches("block");
+                double [] offsetInches = theRobot.GetStrafeOffsetInInches("red");
 
                 if(Math.abs(offsetInches[0])<0.001){
                     telemetry.addLine("NOPE");
@@ -183,6 +183,9 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             // Make sure the slides aren't ever trying to go past their horizontal limits
             theRobot.Slides_Horizontal_MAX_Limit();
 
+            //looping PIDF code- need to check if enabled?
+            theRobot.SetSlideRotatorArmToPositionPIDF();
+
             // small hanger arms holding the urchin / green box
             if (gamepad2.right_stick_x > 0.1 && gamepad2.options) {
                 theRobot.SetSmallArmHangerIncrementUp();
@@ -254,9 +257,8 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             }
             
             // Combo moves for basket deliveries
-            else if (gamepad2.dpad_left && !gamepad2.options) {
-                theRobot.SampleUrchinFloorPickup();
-            } else if (gamepad2.dpad_left && gamepad2.options) {
+
+            else if (gamepad2.dpad_left && gamepad2.options) {
                 theRobot.SampleUrchinFloorJam();
             } else if (gamepad2.dpad_down && !gamepad2.options){
                 theRobot.SampleUrchinFloorPickupFinishingMove();
