@@ -62,6 +62,7 @@ public class Geronimo {
     final double ticks_in_degrees = (arm_gear_ratio/360.0) * yellow_jacket_51_ticks;
     double rotator_arm_target = 0; //in ticks
     public double rotator_arm_target_ticks = 0;
+    public static double angle_test = 0;
 
     DcMotor leftFront;
     DcMotor leftRear;
@@ -76,7 +77,7 @@ public class Geronimo {
     double slideArmRotatorPower = 0.0;
     boolean slideArmRotatorRunningToPosition = false;
     public static final int SLIDE_ARM_ROTATOR_MIN_POS = 0;
-    public static final int SLIDE_ARM_ROTATOR_MAX_POS = 870;  //920
+    public static final int SLIDE_ARM_ROTATOR_MAX_POS = 1640;  //  //870
     public static final int SLIDE_ARM_ROTATOR_POS_TO_LIMIT_SLIDES = 300; // TODO need to find the lowest rotator position we can allow the slides to go out
     public static final double SLIDE_ARM_ROTATOR_POWER = 0.75;
 
@@ -784,7 +785,7 @@ public class Geronimo {
         SetIntakeBoxRotatorPosition(0.945); //0.82  //0.905
         SetSmallArmHangerPosition(.20); //0 //0.25
         SetSlideToPosition(1240);  //1240  //740
-        SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(75.55));
+        SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(85)); //75.55
     }
     public void SpecimenDeliverHighChamberFinishingMove(){
         SetIntakeBoxRotatorPosition(0.82); //0.945
@@ -1532,7 +1533,7 @@ public class Geronimo {
         opMode.telemetry.addData("slides Position ", "L: %d, R: %d", slideLeft.getCurrentPosition(), slideRight.getCurrentPosition());
         opMode.telemetry.addData("slides ", "Target: %d, Power: %.2f", slidesTargetPosition, slidePower);
         opMode.telemetry.addData("Slides Left Touched: ", !touchSensorSlideLeft.isPressed());
-        opMode.telemetry.addData("Slides Rght Touched: ", !touchSensorSlideRight.isPressed());
+        opMode.telemetry.addData("Slides Right Touched: ", !touchSensorSlideRight.isPressed());
         opMode.telemetry.addData("Slides in RUN_TO_POSITION? ", slidesRunningToPosition);
         //opMode.telemetry.addData(">", "slides - use leftStick Y for control" );
 
@@ -1545,7 +1546,7 @@ public class Geronimo {
         opMode.telemetry.addData("imu yaw: ", (imu.getRobotYawPitchRollAngles().getYaw()));
         opMode.telemetry.addData("stepCounter: ", stepCounter);
         opMode.telemetry.addData("Slide Arm Rotator Left Touched: ", !touchSensorSlideArmRotatorLeft.isPressed());
-        opMode.telemetry.addData("Slide Arm Rotator Rght Touched: ", !touchSensorSlideArmRotatorRight.isPressed());
+        opMode.telemetry.addData("Slide Arm Rotator Right Touched: ", !touchSensorSlideArmRotatorRight.isPressed());
         opMode.telemetry.addData("Slide Arm Rotator in RUN_TO_POSITION? ", slideArmRotatorRunningToPosition);
         //opMode.telemetry.addData(">", "rotateArms - use triggers for control" );
 

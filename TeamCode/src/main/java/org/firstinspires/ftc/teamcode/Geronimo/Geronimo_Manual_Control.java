@@ -98,7 +98,7 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 theRobot.SetSlideToPosition(1400);
                 theRobot.SetIntakeBoxRotatorPosition(0.04);
                 theRobot.SetSmallArmHangerPosition(0.365);
-            }
+            }  
             // dpad left WITHOUT options is for the swipers
             else if (gamepad1.dpad_left && !gamepad1.options) {
                 theRobot.SetSwiperPosition(Geronimo.SWIPER_MAX_POS);
