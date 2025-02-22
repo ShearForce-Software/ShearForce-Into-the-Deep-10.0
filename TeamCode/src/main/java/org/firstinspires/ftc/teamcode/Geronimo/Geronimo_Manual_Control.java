@@ -102,13 +102,13 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             // dpad left WITHOUT options is for the swipers
             else if (gamepad1.dpad_left && !gamepad1.options) {
                 theRobot.SetSwiperPosition(Geronimo.SWIPER_MAX_POS);
-                theRobot.SetSwiper2Position(Geronimo.SWIPER2_MAX_POS);
-                theRobot.SpecialSleep(500);
-                theRobot.SetSwiperPosition(Geronimo.SWIPER_MIN_POS);
                 theRobot.SetSwiper2Position(Geronimo.SWIPER2_MIN_POS);
                 theRobot.SpecialSleep(500);
-                theRobot.SetSwiperPosition(Geronimo.SWIPER_MAX_POS);
+                theRobot.SetSwiperPosition(Geronimo.SWIPER_MIN_POS);
                 theRobot.SetSwiper2Position(Geronimo.SWIPER2_MAX_POS);
+                theRobot.SpecialSleep(500);
+                theRobot.SetSwiperPosition(Geronimo.SWIPER_MAX_POS);
+                theRobot.SetSwiper2Position(Geronimo.SWIPER2_MIN_POS);
             }
             // LEVEL-2 Hang Logic
             else if(gamepad1.dpad_down && !gamepad1.options){ // Driver will press prehandrobot when he feels he is set

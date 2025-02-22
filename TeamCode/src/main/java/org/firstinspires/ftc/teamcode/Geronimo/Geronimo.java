@@ -59,7 +59,7 @@ public class Geronimo {
     final double arm_gear_ratio = 90.0/20.0;
     final double yellow_jacket_27_ticks = 751.8;    //9.4 ticks for each degree of arm rotation
     final double yellow_jacket_51_ticks = 1425.1;   //17.81 ticks for each degree of arm rotation
-    final double ticks_in_degrees = (arm_gear_ratio/360.0) * yellow_jacket_27_ticks;
+    final double ticks_in_degrees = (arm_gear_ratio/360.0) * yellow_jacket_51_ticks;
     double rotator_arm_target = 0; //in ticks
     public double rotator_arm_target_ticks = 0;
 
@@ -156,7 +156,6 @@ public class Geronimo {
         blue;
     }
     colorEnum colorDetected = colorEnum.noColor;
-
     //NAV TO TAG VARIABLES
     final double DESIRED_DISTANCE = 12.0; //  this is how close the camera should get to the target (inches)
     final double SPEED_GAIN  =  0.02  ;   //  Forward Speed Control "Gain". eg: Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
@@ -260,7 +259,7 @@ public class Geronimo {
         touchSensorSlideLeft = hardwareMap.get(TouchSensor.class, "sensor_touchLeft");
         touchSensorSlideRight = hardwareMap.get(TouchSensor.class, "sensor_touchRight");
 
-        // limelightbox = hardwareMap.get(Limelight3A.class, "limelight");
+         limelightbox = hardwareMap.get(Limelight3A.class, "limelight");
         InitBlinkin(hardwareMap);
 
         imu = hardwareMap.get(IMU.class, "imu");
@@ -274,6 +273,7 @@ public class Geronimo {
     // *********************************************************
     // ****      LIME LIGHT Methods                         ****
     // *********************************************************
+
     public void InitLimelight(HardwareMap hardwareMap){
         limelightbox = hardwareMap.get(Limelight3A.class, "limelight");
         limelightbox.pipelineSwitch(0);
@@ -286,6 +286,8 @@ public class Geronimo {
        // XDistance_to_object = distance_to_object*Math.cos((limelightbox.getLatestResult().getTx()));
        // YDistance_to_object = distance_to_object*Math.sin((limelightbox.getLatestResult().getTx()));
     }
+
+
 
 
     //This method basically finds the amount of tx and ty angle from crosshair to target.
