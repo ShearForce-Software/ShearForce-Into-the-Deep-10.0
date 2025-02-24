@@ -98,10 +98,10 @@ public class Geronimo_Intake_Servo_Test extends LinearOpMode {
                 if (small_rotator_position <= MIN_POS) {
                     small_rotator_position = MIN_POS;
                 }
-            }
+            //}
             smallArmHangerLeftServo.setPosition(small_rotator_position);
             smallArmHangerRightServo.setPosition(small_rotator_position);
-
+            }
             // Rotate Urchin -- Triangle + Left Stick X
             if (gamepad1.left_stick_x != 0 && gamepad1.triangle) {
                 // Keep stepping until servo reaches the min/max value.
@@ -113,9 +113,9 @@ public class Geronimo_Intake_Servo_Test extends LinearOpMode {
                 if (urchin_rotate_position <= MIN_POS) {
                     urchin_rotate_position = MIN_POS;
                 }
-            }
+            //}
             intakeBoxRotaterServo.setPosition(urchin_rotate_position);
-
+            }
             // Open/Close Claw -- Square + Left Stick Y
             if (gamepad1.left_stick_y != 0 && gamepad1.square) {
                 // Keep stepping until servo reaches the min/max value.
@@ -127,9 +127,9 @@ public class Geronimo_Intake_Servo_Test extends LinearOpMode {
                 if (claw_position <= MIN_POS) {
                     claw_position = MIN_POS;
                 }
-            }
+            //}
             clawServo.setPosition(claw_position);
-
+            }
             // Open/Close Urchin -- Circle + Left Stick Y
             if (gamepad1.left_stick_y != 0 && gamepad1.circle) {
                 // Keep stepping until servo reaches the min/max value.
@@ -141,9 +141,9 @@ public class Geronimo_Intake_Servo_Test extends LinearOpMode {
                 if (urchin_claw_position <= MIN_POS) {
                     urchin_claw_position = MIN_POS;
                 }
-            }
+            //}
             urchinServo.setPosition(urchin_claw_position);
-
+            }
             //Rotate Swiper Straws -- X + Left Stick Y
             if (gamepad1.left_stick_y != 0 && gamepad1.x) {
                 // Keep stepping until servo reaches the min/max value.
@@ -155,10 +155,10 @@ public class Geronimo_Intake_Servo_Test extends LinearOpMode {
                 if (swiper_position <= MIN_POS) {
                     swiper_position = MIN_POS;
                 }
-            }
+            //}
             swiperServo.setPosition(swiper_position);
             swiper2.setPosition(swiper_position);
-
+            }
             // Display the commanded servo value
             telemetry.addData("Small Arm Hanger Servo Positions", "%5.2f", small_rotator_position);
             telemetry.addData("Urchin Rotate Servo Position", "%5.2f", urchin_rotate_position);
