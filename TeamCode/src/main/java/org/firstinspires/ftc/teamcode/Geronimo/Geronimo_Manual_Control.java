@@ -72,6 +72,7 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 // sleep(100);
                 theRobot.SetIntakeBoxRotatorPosition(0.255);
                 theRobot.SetSmallArmHangerPosition(0.56);
+                theRobot.SetUrchinServoPosition(0);
                 sleep(1000);
 
                 double [] offsetInches = theRobot.GetStrafeOffsetInInches("red");
