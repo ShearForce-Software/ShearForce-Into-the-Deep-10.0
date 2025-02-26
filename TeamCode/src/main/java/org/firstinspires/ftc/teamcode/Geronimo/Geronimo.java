@@ -1352,7 +1352,7 @@ public class Geronimo {
                 leftSlideArmRotatorMotor.setPower(leftPower);
                 //changed so both leftPower
                 // TODO - try again with rightPower when new motors installed
-                rightSlideArmRotatorMotor.setPower(leftPower);
+                rightSlideArmRotatorMotor.setPower(rightPower);
 
                 // TODO - NEED TO CREATE CODE THAT HELPS WITH RESET/REACHING ZERO
 
