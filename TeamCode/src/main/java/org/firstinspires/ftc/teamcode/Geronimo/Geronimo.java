@@ -59,8 +59,10 @@ public class Geronimo {
     final double arm_gear_ratio = 90.0/20.0;
     final double yellow_jacket_27_ticks = 751.8;    //9.4 ticks for each degree of arm rotation
     final double yellow_jacket_51_ticks = 1425.1;   //17.81 ticks for each degree of arm rotation
-    final double ticks_in_degrees = (arm_gear_ratio/360.0) * yellow_jacket_27_ticks;
+    final double ticks_in_degrees = (arm_gear_ratio/360.0) * yellow_jacket_51_ticks;
     double rotator_arm_target = 0; //in ticks
+    public double rotator_arm_target_ticks = 0;
+    public static double angle_test = 0;
 
     DcMotor leftFront;
     DcMotor leftRear;
@@ -75,7 +77,7 @@ public class Geronimo {
     double slideArmRotatorPower = 0.0;
     boolean slideArmRotatorRunningToPosition = false;
     public static final int SLIDE_ARM_ROTATOR_MIN_POS = 0;
-    public static final int SLIDE_ARM_ROTATOR_MAX_POS = 870;  //920
+    public static final int SLIDE_ARM_ROTATOR_MAX_POS = 1640;  //  //870
     public static final int SLIDE_ARM_ROTATOR_POS_TO_LIMIT_SLIDES = 300; // TODO need to find the lowest rotator position we can allow the slides to go out
     public static final double SLIDE_ARM_ROTATOR_POWER = 0.75;
 
@@ -102,10 +104,15 @@ public class Geronimo {
     public static final double SWIPER_MIN_POS = 0.25;
     private double swiper_position = 0.5;
 
+    Servo swiper2;
+    public static final double SWIPER2_MAX_POS = 0.8;
+    public static final double SWIPER2_MIN_POS = 0.25;
+    private double swiper2_position = 0.5;
+
     Servo intakeBoxRotaterServo;
     public static final double INTAKE_STAR_BOX_ROTATOR_MAX_POS = 1.0;
     public static final double INTAKE_STAR_BOX_ROTATOR_MIN_POS = 0.0;
-    public static final double INTAKE_STAR_BOX_ROTATOR_INCREMENT = 0.2;
+    public static final double INTAKE_STAR_BOX_ROTATOR_INCREMENT = 0.01;
     double intakeBoxRotatorPosition = 0.5;
 
     Servo smallArmHangerLeftServo;
@@ -150,7 +157,6 @@ public class Geronimo {
         blue;
     }
     colorEnum colorDetected = colorEnum.noColor;
-
     //NAV TO TAG VARIABLES
     final double DESIRED_DISTANCE = 12.0; //  this is how close the camera should get to the target (inches)
     final double SPEED_GAIN  =  0.02  ;   //  Forward Speed Control "Gain". eg: Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
@@ -238,6 +244,7 @@ public class Geronimo {
       //  intakeStarServo = hardwareMap.get(CRServo.class, "intakeStar");
         urchinServo = hardwareMap.get(Servo.class, "urchinServo");
         swiperServo = hardwareMap.get(Servo.class, "swiper");
+        swiper2 = hardwareMap.get(Servo.class, "swiper2");
 
         // ********** Color Sensors ********************
 
@@ -253,7 +260,7 @@ public class Geronimo {
         touchSensorSlideLeft = hardwareMap.get(TouchSensor.class, "sensor_touchLeft");
         touchSensorSlideRight = hardwareMap.get(TouchSensor.class, "sensor_touchRight");
 
-        // limelightbox = hardwareMap.get(Limelight3A.class, "limelight");
+         limelightbox = hardwareMap.get(Limelight3A.class, "limelight");
         InitBlinkin(hardwareMap);
 
         imu = hardwareMap.get(IMU.class, "imu");
@@ -267,6 +274,7 @@ public class Geronimo {
     // *********************************************************
     // ****      LIME LIGHT Methods                         ****
     // *********************************************************
+
     public void InitLimelight(HardwareMap hardwareMap){
         limelightbox = hardwareMap.get(Limelight3A.class, "limelight");
         limelightbox.pipelineSwitch(0);
@@ -279,6 +287,8 @@ public class Geronimo {
        // XDistance_to_object = distance_to_object*Math.cos((limelightbox.getLatestResult().getTx()));
        // YDistance_to_object = distance_to_object*Math.sin((limelightbox.getLatestResult().getTx()));
     }
+
+
 
 
     //This method basically finds the amount of tx and ty angle from crosshair to target.
@@ -629,6 +639,7 @@ public class Geronimo {
         SetSlideRotatorArmToPosition(0);
         SetClawPosition(Geronimo.CLAW_MIN_POS);
         SetSwiperPosition(Geronimo.SWIPER_MAX_POS);
+        SetSwiper2Position(Geronimo.SWIPER2_MAX_POS);
     }
 
     public void SpecimenDeliverLow(){
@@ -658,11 +669,15 @@ public class Geronimo {
     }
     int stepCounter = 0;
     public void level3Ascent() {
+        double timeout = opMode.getRuntime() + 0.5;
         stepCounter = 0;
-        int targetArmAngle = 45;
+        int targetAngle = 90;
         while (stepCounter < 6) {
-            goToArmAngle(targetArmAngle); // calls SetSlideToPosition() in method
+            SetSlideRotatorArmToPosition(findRealArmAngle((targetAngle)));
             if (stepCounter == 0){
+                // hanger arms and urchin intake go to safe place (blue color)
+                Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;
+                blinkinLedDriver.setPattern(Blinken_pattern);
                 SetIntakeBoxRotatorPosition(0.41);
                 SetSmallArmHangerPosition(0.79);
                 SetClawPosition(1);
@@ -671,41 +686,54 @@ public class Geronimo {
                 }
             }
             else if (stepCounter == 1) {
-                // slides go up
-                SetSlideToPosition(3049); //  verify is higher than hooks
-                targetArmAngle = 90;
-                if (slideLeft.getCurrentPosition() >= 3049) {
+                // slides go up (yellow color)
+                Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.YELLOW;
+                blinkinLedDriver.setPattern(Blinken_pattern);
+                SetSlideToPosition(2580);
+                if (slideLeft.getCurrentPosition() >= 2580) {
                     stepCounter++;
                 }
             }
             else if (stepCounter == 2) {
-                // slides go down to set position, based on where hooks are
-                SetSlideToPosition(0); // test by moving robot when hooks present (should be horizontally supported by bar)
-                if (slideLeft.getCurrentPosition() == 0) {
+                // slides go down till hooks engage (blue color)
+                Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;
+                blinkinLedDriver.setPattern(Blinken_pattern);
+                SetSlideToPosition(2000); // verify
+                // red color if timeout used
+                if (slideLeft.getCurrentPosition() <= 3000 || opMode.getRuntime() < timeout) {
                     stepCounter++;
+                    Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.RED;
+                    blinkinLedDriver.setPattern(Blinken_pattern);
                 }
             }
             else if (stepCounter == 3) {
-                // robot moves while arms remain vertical (clam)
-                SetSlideRotatorArmToPosition(0);
-                if (leftSlideArmRotatorMotor.getCurrentPosition() == 0) {
+                // support robot horizontally on barrier & slides are vertical (yellow color)
+                Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.YELLOW;
+                blinkinLedDriver.setPattern(Blinken_pattern);
+                SetSlideRotatorArmToPosition(160); // verify
+                if (leftSlideArmRotatorMotor.getCurrentPosition() >= 160) {
                     stepCounter++;
                 }
             }
             else if (stepCounter == 4) {
-                // slides go up
-                SetSlideToPosition(3049); // test
+                // slides extend upward to reach second ascent zone (blue color)
+                Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;
+                blinkinLedDriver.setPattern(Blinken_pattern);
+                SetSlideToPosition(3049); // verify
                 if (slideLeft.getCurrentPosition() >= 3049) {
                     stepCounter++;
                 }
             }
             else if (stepCounter == 5) {
-                // slides go down to set position, based on where hooks are
-                SetSlideToPosition(0); // test by moving robot when hooks present
-                if (slideLeft.getCurrentPosition() == 0) {
+                // robot pull up (yellow color)
+                Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.YELLOW;
+                blinkinLedDriver.setPattern(Blinken_pattern);
+                SetSlideToPosition(0);
+                if (GetSlidesLimitSwitchPressed()) {
                     stepCounter++;
                 }
             }
+            ShowTelemetry();
             SpecialSleep(50);
         }
     }
@@ -757,7 +785,7 @@ public class Geronimo {
         SetIntakeBoxRotatorPosition(0.945); //0.82  //0.905
         SetSmallArmHangerPosition(.20); //0 //0.25
         SetSlideToPosition(1240);  //1240  //740
-        SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(75.55));
+        SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(85)); //75.55
     }
     public void SpecimenDeliverHighChamberFinishingMove(){
         SetIntakeBoxRotatorPosition(0.82); //0.945
@@ -1071,6 +1099,23 @@ public class Geronimo {
         swiperServo.setPosition(swiper_position);
     }
 
+    public void SetSwiper2Position(double position)
+    {
+        if (position > SWIPER2_MAX_POS)
+        {
+            swiper2_position = SWIPER2_MAX_POS;
+        }
+        else if (position < SWIPER2_MIN_POS)
+        {
+            swiper2_position = SWIPER2_MIN_POS;
+        }
+        else
+        {
+            swiper2_position = position;
+        }
+        swiper2.setPosition(swiper2_position);
+    }
+
     // **********************************************************
     // ****       Small Arm (Hangers) Controls              ****
     // *********************************************************
@@ -1202,9 +1247,18 @@ public class Geronimo {
     public void SetSlideToPosition (int position)
     {
         // verify not needing to limit because of horizontal limits
+        /*
         if (((slideArmRotatorTargetPosition <= SLIDE_ARM_ROTATOR_POS_TO_LIMIT_SLIDES) ||
                 (!slideArmRotatorRunningToPosition && leftSlideArmRotatorMotor.getCurrentPosition() <= SLIDE_ARM_ROTATOR_POS_TO_LIMIT_SLIDES) ) &&
                 (position >= SLIDE_ARM_MAX_HORIZONTAL_POS)) {
+            slidesTargetPosition = SLIDE_ARM_MAX_HORIZONTAL_POS;
+        }
+
+         */
+
+        if (slideArmRotatorTargetPosition <= findRealArmAngle(45.0) &&
+                (position >= SLIDE_ARM_MAX_HORIZONTAL_POS))
+        {
             slidesTargetPosition = SLIDE_ARM_MAX_HORIZONTAL_POS;
         }
         else if (position > SLIDE_ARM_MAX_VERTICAL_POS)
@@ -1265,43 +1319,46 @@ public class Geronimo {
         return ((int)(target_arm_angle * ticks_in_degrees));
     }
 
-    public void SetSlideRotatorArmToPositionPIDF(double rotator_arm_target_ticks){
-        //Right_controller.setPID(p,i,d);
-        //Left_controller.setPID(p,i,d);
+    public void SetSlideRotatorArmToPositionPIDF(){
+        if (pidfEnabled) {
+            //Right_controller.setPID(p,i,d);
+            //Left_controller.setPID(p,i,d);
 
-        double rotator_arm_angle = rotator_arm_target_ticks / ticks_in_degrees;
+            //store in geronimo rotator_arm_target_ticks. Call loop again and again. then if and everything else, else
 
-        //actual arm angle value
-        /*
-        double left_rotator_arm_actual_angle = leftSlideArmRotatorMotor.getCurrentPosition()/ticks_in_degrees;
-        double right_rotator_arm_actual_angle = rightSlideArmRotatorMotor.getCurrentPosition()/ticks_in_degrees;
-         */
+            if (rotator_arm_target_ticks == 0 && GetSlideRotatorArmLimitSwitchPressed()) {
+                ResetSlideRotatorArmToZero();
+            } else {
+                double rotator_arm_angle = rotator_arm_target_ticks / ticks_in_degrees;
 
-        // Calculate the next PID value
-        int left_armPos = leftSlideArmRotatorMotor.getCurrentPosition();
-        double left_pid = Left_controller.calculate(left_armPos,rotator_arm_target_ticks);
+                // Calculate the next PID value
+                int left_armPos = leftSlideArmRotatorMotor.getCurrentPosition();
+                double left_pid = Left_controller.calculate(left_armPos, rotator_arm_target_ticks);
 
-        int right_armPos = rightSlideArmRotatorMotor.getCurrentPosition();
-        double right_pid = Right_controller.calculate(right_armPos,rotator_arm_target_ticks);
+                int right_armPos = rightSlideArmRotatorMotor.getCurrentPosition();
+                double right_pid = Right_controller.calculate(right_armPos, rotator_arm_target_ticks);
 
-        // Calculate the FeedForward component to adjust the PID by
-        double left_ff = Math.cos(rotator_arm_angle) * f;
-        double right_ff = Math.cos(rotator_arm_angle) * f;
+                // Calculate the FeedForward component to adjust the PID by
+                double left_ff = Math.cos(rotator_arm_angle) * f;
+                double right_ff = Math.cos(rotator_arm_angle) * f;
 
-        // Calculate the motor power (PID + FeedForward) component
-        double leftPower = left_pid + left_ff;
-        double rightPower = right_pid + right_ff;
+                // Calculate the motor power (PID + FeedForward) component
+                double leftPower = left_pid + left_ff;
+                double rightPower = right_pid + right_ff;
 
-        leftSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                leftSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                rightSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        // Send calculated power to motors
-        leftSlideArmRotatorMotor.setPower(leftPower);
-        //changed so both leftPower
-        // TODO - try again with rightPower when new motors installed
-        rightSlideArmRotatorMotor.setPower(leftPower);
+                // Send calculated power to motors
+                leftSlideArmRotatorMotor.setPower(leftPower);
+                //changed so both leftPower
+                // TODO - try again with rightPower when new motors installed
+                rightSlideArmRotatorMotor.setPower(leftPower);
 
-        // TODO - NEED TO CREATE CODE THAT HELPS WITH RESET/REACHING ZERO
+                // TODO - NEED TO CREATE CODE THAT HELPS WITH RESET/REACHING ZERO
+
+            }
+        }
 
     }
 
@@ -1365,7 +1422,8 @@ public class Geronimo {
 
         if (pidfEnabled)
         {
-            SetSlideRotatorArmToPositionPIDF(position);
+         //   SetSlideRotatorArmToPositionPIDF(position);
+            rotator_arm_target_ticks = position;
         }
         else {
             rightSlideArmRotatorMotor.setTargetPosition(slideArmRotatorTargetPosition);
@@ -1455,8 +1513,8 @@ public class Geronimo {
     }
 
     public void ShowTelemetry(){
-        //opMode.telemetry.addData("Limelight OffSet (x,y) inches no correction:" ,"R: %.2f, L: %.2f" ,GetStrafeOffsetInInches("block")[1], GetStrafeOffsetInInches("block")[2]);
-        //opMode.telemetry.addData("Limelight Offset (x,y) inches no correction:", "R: %.2f, L: %.2f", GetStrafeOffsetInInches("block")[1]+3, GetStrafeOffsetInInches("block")[2]+3);
+        opMode.telemetry.addData("Limelight OffSet (x,y) inches no correction:" ,"R: %.2f, L: %.2f" ,GetStrafeOffsetInInches("block")[0], GetStrafeOffsetInInches("block")[1]);
+        opMode.telemetry.addData("Limelight Offset (x,y) inches no correction:", "R: %.2f, L: %.2f", GetStrafeOffsetInInches("block")[0]+3, GetStrafeOffsetInInches("block")[1]);
 
 
         opMode.telemetry.addData("Auto Last Time Left: ", autoTimeLeft);
@@ -1475,7 +1533,7 @@ public class Geronimo {
         opMode.telemetry.addData("slides Position ", "L: %d, R: %d", slideLeft.getCurrentPosition(), slideRight.getCurrentPosition());
         opMode.telemetry.addData("slides ", "Target: %d, Power: %.2f", slidesTargetPosition, slidePower);
         opMode.telemetry.addData("Slides Left Touched: ", !touchSensorSlideLeft.isPressed());
-        opMode.telemetry.addData("Slides Rght Touched: ", !touchSensorSlideRight.isPressed());
+        opMode.telemetry.addData("Slides Right Touched: ", !touchSensorSlideRight.isPressed());
         opMode.telemetry.addData("Slides in RUN_TO_POSITION? ", slidesRunningToPosition);
         //opMode.telemetry.addData(">", "slides - use leftStick Y for control" );
 
@@ -1488,7 +1546,7 @@ public class Geronimo {
         opMode.telemetry.addData("imu yaw: ", (imu.getRobotYawPitchRollAngles().getYaw()));
         opMode.telemetry.addData("stepCounter: ", stepCounter);
         opMode.telemetry.addData("Slide Arm Rotator Left Touched: ", !touchSensorSlideArmRotatorLeft.isPressed());
-        opMode.telemetry.addData("Slide Arm Rotator Rght Touched: ", !touchSensorSlideArmRotatorRight.isPressed());
+        opMode.telemetry.addData("Slide Arm Rotator Right Touched: ", !touchSensorSlideArmRotatorRight.isPressed());
         opMode.telemetry.addData("Slide Arm Rotator in RUN_TO_POSITION? ", slideArmRotatorRunningToPosition);
         //opMode.telemetry.addData(">", "rotateArms - use triggers for control" );
 
@@ -1645,17 +1703,6 @@ public class Geronimo {
     }
 
     int targetPositionIMUARM = 500;
-    public void goToArmAngle(double targetIMU_Degrees) {
-        rotatorPosition = leftSlideArmRotatorMotor.getCurrentPosition();
-        YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
-        imuPosition = (orientation.getRoll());
-
-        targetPositionIMUARM = (int) ((targetIMU_Degrees - imuPosition) *  ticksPerDegree);
-
-        opMode.telemetry.addData("imu position: " , imuPosition);
-        SetSlideRotatorArmToPosition(targetPositionIMUARM);
-    }
-
     public int findRealArmAngle(double targetIMU_Degrees) {
         rotatorPosition = leftSlideArmRotatorMotor.getCurrentPosition();
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
