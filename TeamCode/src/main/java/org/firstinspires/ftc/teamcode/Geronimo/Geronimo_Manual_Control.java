@@ -66,12 +66,12 @@ public class Geronimo_Manual_Control extends LinearOpMode {
 
             // LIMELIGHT Test Function
             else if(gamepad2.dpad_left && !gamepad2.options){
-                theRobot.SetSlideToPosition(1800);
+                //theRobot.SetSlideToPosition(1800);
                 // theRobot.SetIntakeBoxRotatorPosition(0.04);
                 // theRobot.SetSmallArmHangerPosition(0.365);
                 // sleep(100);
-                theRobot.SetIntakeBoxRotatorPosition(0.255);
-                theRobot.SetSmallArmHangerPosition(0.56);
+                //theRobot.SetIntakeBoxRotatorPosition(0.255);
+                //theRobot.SetSmallArmHangerPosition(0.56);
                 sleep(1000);
 
                 double [] offsetInches = theRobot.GetStrafeOffsetInInches("red");
@@ -94,11 +94,7 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 }
             }
             // TODO - ??? What is this for?
-            else if(gamepad1.dpad_right && gamepad1.options){
-                theRobot.SetSlideToPosition(1400);
-                theRobot.SetIntakeBoxRotatorPosition(0.04);
-                theRobot.SetSmallArmHangerPosition(0.365);
-            }  
+
             // dpad left WITHOUT options is for the swipers
             else if (gamepad1.dpad_left && !gamepad1.options) {
                 theRobot.SetSwiperPosition(Geronimo.SWIPER_MAX_POS);
@@ -136,7 +132,9 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             else if (gamepad1.circle && !gamepad1.options) {
                 // TBD
             }
+            else if(gamepad1.dpad_right && gamepad1.options){
 
+            }
 
             /* *************************************************
              *************************************************
