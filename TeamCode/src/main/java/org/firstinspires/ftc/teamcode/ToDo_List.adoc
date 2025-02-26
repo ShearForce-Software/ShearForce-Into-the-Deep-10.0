@@ -6,6 +6,9 @@
 
 
 - [ ] Shrey: Test inspection buttons, verify IMU logic working for inspection
+- [ ] Hook servos need to be added (lock1 and lock2 in test code)
+- [ ] Change network password for connecting to the new control hub/ update control hub?
+- [ ] Init servos in manual control?
 - [ ] Akshay: Get Limelight grab sample integrated and working for yellow samples
 - [ ] Claire: Test using PIDF arm control for manual and autonomous routines
 - [ ] Akshay: Get Limelight grab sample integrated and working for blue/red samples
