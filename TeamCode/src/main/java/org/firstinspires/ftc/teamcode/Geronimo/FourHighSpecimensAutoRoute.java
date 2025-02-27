@@ -72,13 +72,6 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
         telemetry.update();
         control.imuOffsetInDegrees = 270; // Math.toDegrees(startPose.heading.toDouble());
 
-        while(!isStarted()){
-            telemetry.update();
-        }
-        resetRuntime();
-        Geronimo.autoTimeLeft = 0.0;
-        control.SetClawPosition(Geronimo.CLAW_MAX_POS);
-
         // ***************************************************
         // ****  Define Trajectories    **********************
         // ***************************************************
@@ -156,8 +149,7 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(5,-30), Math.toRadians(270), intakeVelocityConstraint)
                 .build();
 
-
-         ParkinDeck = drive.actionBuilder(new Pose2d(5,-30,Math.toRadians(270)))
+        ParkinDeck = drive.actionBuilder(new Pose2d(5,-30,Math.toRadians(270)))
                  //Pose 2D 50,-54, 270
                  //.splineTo(new Vector2d(49,-45),Math.toRadians(90))
                  .strafeToLinearHeading(new Vector2d(6,-35), Math.toRadians(270), intakeVelocityConstraint)
@@ -168,7 +160,17 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
                  //.strafeToLinearHeading(new Vector2d(49,-58), Math.toRadians(90), speedUpVelocityConstraint)
                  // .turnTo(Math.toRadians(90))
                  .build();
-        //before:
+
+
+        // WAIT for START/PLAY to be pushed
+        while(!isStarted()){
+            telemetry.update();
+        }
+        resetRuntime();
+        Geronimo.autoTimeLeft = 0.0;
+        control.SetClawPosition(Geronimo.CLAW_MAX_POS);
+
+
         // ***************************************************
         // ****  START DRIVING    ****************************
         // ***************************************************
@@ -178,18 +180,22 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
                         new ParallelAction(DeliverStartingSpecimen
                                 , new SequentialAction(
                                         new SleepAction(0.3),
-                                deliverSpecimenHigh())),
+                                        deliverSpecimenHigh())),
                         finishdeliverSpecimenHigh(),
                         new SleepAction(.6),
                         releaseSpecimen(),
-                        new SleepAction(.3),
+                        new SleepAction(.3),   // TODO -- candidate to make faster
 
                         // Gather the 3 floor samples into the observation area
                         new ParallelAction(DriveToSamplesandDeliver1
                                 , new SequentialAction(new SleepAction(.3),
                                         //don't call stow; call wall position
                                         slidestozero(), rotatorarmstozero(), stowPosition()
-                        )),
+                                )
+                                , new SequentialAction(new SleepAction(.3),
+                                      swiperAction1(), new SleepAction(.5), swiperAction2()
+                                )
+                        ),
                         DriveToSamplesandDeliver2,
                         // 1st Initial Delivery
                         // Drive to the wall and prepare to grab a specimen
@@ -199,9 +205,9 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
                         // TODO -- need to test how small we can make these sleep actions, these servos are pretty fast this year
                         // grab the specimen off of the wall
                         grabSpecimen(),
-                        new SleepAction(.3),
+                        new SleepAction(.3), // TODO -- candidate to make faster
                         liftSpecimenoffWall(),
-                        new SleepAction(.5),
+                        new SleepAction(.5), // TODO -- candidate to make faster
 
                         // Deliver the specimen to the High bar
                         new ParallelAction(DriveToSubmersible1
@@ -213,7 +219,12 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
                         //2nd delivery
                         new ParallelAction(DrivetoDeck2,
                                 new SequentialAction(//don't call stow; call wall position
-                                slidestozero(), rotatorarmstozero(), stowPosition(), grabSpecimenfromwall())),
+                                      slidestozero(), rotatorarmstozero(), stowPosition(), grabSpecimenfromwall()
+                                )
+                                , new SequentialAction(new SleepAction(.3),
+                                      swiperAction1(), new SleepAction(.5), swiperAction2()
+                                )
+                        ),
                         grabSpecimen(),
                         new SleepAction(.3),
                         liftSpecimenoffWall(),
@@ -227,7 +238,12 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
                         //3rd delivery
                         new ParallelAction(DrivetoDeck3,
                                 new SequentialAction(//don't call stow; call wall position
-                                        slidestozero(), rotatorarmstozero(), stowPosition(), grabSpecimenfromwall()))
+                                        slidestozero(), rotatorarmstozero(), stowPosition(), grabSpecimenfromwall()
+                                )
+                                , new SequentialAction(new SleepAction(.3),
+                                        swiperAction1(), new SleepAction(.5), swiperAction2()
+                                )
+                        )
                         ,grabSpecimen(),
                         new SleepAction(.3),
                         liftSpecimenoffWall()
@@ -404,7 +420,38 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
                 control.SpecimenDeliverHighChamberFinishingMove();
                 initialized = true;
             }
+            // TODO -- need to try logic to not finish this until slides have reached their goal, instead of relying on a sleep
+
             packet.put("lock purple pixel", 0);
+            return false;  // returning true means not done, and will be called again.  False means action is completely done
+        }
+    }
+
+    public Action swiperAction1 () { return new SwiperAction1(); }
+    public class SwiperAction1 implements Action {
+        private boolean initialized = false;
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            if (!initialized) {
+                control.SetSwiperPosition(Geronimo.SWIPER_MIN_POS);
+                control.SetSwiper2Position(Geronimo.SWIPER2_MAX_POS);
+                initialized = true;
+            }
+            packet.put("SwiperAction1", 0);
+            return false;  // returning true means not done, and will be called again.  False means action is completely done
+        }
+    }
+    public Action swiperAction2 () { return new SwiperAction1(); }
+    public class SwiperAction2 implements Action {
+        private boolean initialized = false;
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            if (!initialized) {
+                control.SetSwiperPosition(Geronimo.SWIPER_MAX_POS);
+                control.SetSwiper2Position(Geronimo.SWIPER2_MIN_POS);
+                initialized = true;
+            }
+            packet.put("SwiperAction2", 0);
             return false;  // returning true means not done, and will be called again.  False means action is completely done
         }
     }

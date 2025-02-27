@@ -28,10 +28,10 @@ public class MM_FourHighSpecimensRoute {
     static Action ParkinDeck;
 
     static VelConstraint speedUpVelocityConstraint;
-    static AccelConstraint speedUpAccelerationConstraint;
+    //static AccelConstraint speedUpAccelerationConstraint;
     static VelConstraint normalVelocityConstraint;
     static AccelConstraint normalAccelerationConstraint;
-    static VelConstraint slowDownVelocityConstraint;
+    //static VelConstraint slowDownVelocityConstraint;
     static AccelConstraint slowDownAccelerationConstraint;
     static VelConstraint intakeVelocityConstraint;
     static VelConstraint humanPlayerVelocityConstraint;
@@ -45,19 +45,19 @@ public class MM_FourHighSpecimensRoute {
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
-                .setConstraints(60, 50, Math.PI*.6, Math.PI*.8, 15)
+                .setConstraints(50, 50, Math.PI*.6, Math.PI*.8, 15)
                 .build();
 
 
 
-        Pose2d StartPose = new Pose2d(11, -64, Math.toRadians(270));
+        Pose2d StartPose = new Pose2d(9, -64, Math.toRadians(270));
 // Fix it
         // Define some custom constraints to use when wanting to go faster than defaults
-        speedUpVelocityConstraint = new TranslationalVelConstraint(60.0);
-        speedUpAccelerationConstraint = new ProfileAccelConstraint(-40.0, 60.0);
-        normalVelocityConstraint = new TranslationalVelConstraint(50.0);
+        speedUpVelocityConstraint = new TranslationalVelConstraint(70.0);
+        //speedUpAccelerationConstraint = new ProfileAccelConstraint(-40.0, 60.0);
+        normalVelocityConstraint = new TranslationalVelConstraint(60.0);
         normalAccelerationConstraint = new ProfileAccelConstraint(-35.0, 50.0);
-        slowDownVelocityConstraint = new TranslationalVelConstraint(30);
+        //slowDownVelocityConstraint = new TranslationalVelConstraint(30);
         slowDownAccelerationConstraint = new ProfileAccelConstraint(-20, 50);
         intakeVelocityConstraint = new TranslationalVelConstraint(15);
         humanPlayerVelocityConstraint = new TranslationalVelConstraint(7);
@@ -68,26 +68,28 @@ public class MM_FourHighSpecimensRoute {
                 //.strafeToLinearHeading(new Vector2d(4,-30), Math.toRadians(270))
                 //.strafeToLinearHeading(new Vector2d(0,-30), Math.toRadians(270), slowDownVelocityConstraint)
                 .setReversed(true)
-                .splineToConstantHeading(new Vector2d(0,-39), Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
-                .strafeToLinearHeading(new Vector2d(0,-30), Math.toRadians(270), intakeVelocityConstraint)
+                .splineToConstantHeading(new Vector2d(-2,-39), Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
+                .strafeToLinearHeading(new Vector2d(-2,-30), Math.toRadians(270), intakeVelocityConstraint)
                 .build();
 
-        DriveToSamplesandDeliver1 = myBot.getDrive().actionBuilder(new Pose2d(0, -30, Math.toRadians(270)))
+        DriveToSamplesandDeliver1 = myBot.getDrive().actionBuilder(new Pose2d(-2, -30, Math.toRadians(270)))
                 //.strafeToLinearHeading(new Vector2d(0,-48), Math.toRadians(270))
                 //.splineToLinearHeading(new Pose2d(36,-48,Math.toRadians(270)), Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
                 //.splineToConstantHeading(new Vector2d(36,-48), Math.toRadians(90))
                 //.splineToLinearHeading(new Pose2d(36,-48,Math.toRadians(270)),Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
-                .splineToConstantHeading(new Vector2d(38, -40),Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
-                .strafeToLinearHeading(new Vector2d(38,-15), Math.toRadians(270), slowDownVelocityConstraint)
+                .splineToConstantHeading(new Vector2d(38, -40),Math.toRadians(90), normalVelocityConstraint, slowDownAccelerationConstraint)
+                .strafeToLinearHeading(new Vector2d(38,-15), Math.toRadians(270), normalVelocityConstraint, slowDownAccelerationConstraint)
                 //.strafeToLinearHeading(new Vector2d(44,-54),Math.toRadians(270))
-                .splineToConstantHeading(new Vector2d(46,-15), Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
-                .lineToYConstantHeading(-54)
+                .splineToConstantHeading(new Vector2d(46,-15), Math.toRadians(270), normalVelocityConstraint, slowDownAccelerationConstraint)
+                .lineToYConstantHeading(-54, speedUpVelocityConstraint)
+                //.strafeToConstantHeading(new Vector2d(48,-54), normalVelocityConstraint, normalAccelerationConstraint)
                 .build();
 
         DriveToSamplesandDeliver2 = myBot.getDrive().actionBuilder(new Pose2d(46,-54, Math.toRadians(270)))
-                .strafeToLinearHeading(new Vector2d(46, -15), Math.toRadians(270), slowDownVelocityConstraint)
-                .splineToConstantHeading(new Vector2d(56,-15), Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
-                .lineToYConstantHeading(-54)
+                .strafeToLinearHeading(new Vector2d(42, -25), Math.toRadians(270), normalVelocityConstraint, slowDownAccelerationConstraint)
+                .splineToConstantHeading(new Vector2d(54,-15), Math.toRadians(270), normalVelocityConstraint, slowDownAccelerationConstraint)
+                .lineToYConstantHeading(-54, speedUpVelocityConstraint)
+                //.strafeToConstantHeading(new Vector2d(56,-54), normalVelocityConstraint, normalAccelerationConstraint)
                 .build();
 
         /*DriveToSamplesandDeliver3 = myBot.getDrive().actionBuilder(new Pose2d(56,-54,Math.toRadians(270)))
@@ -100,7 +102,7 @@ public class MM_FourHighSpecimensRoute {
                 .strafeToLinearHeading(new Vector2d(44,-46),Math.toRadians(270))
                 .build();
 */
-        DrivetoDeck1 = myBot.getDrive().actionBuilder(new Pose2d(56,-54,Math.toRadians(270)))
+        DrivetoDeck1 = myBot.getDrive().actionBuilder(new Pose2d(54,-54,Math.toRadians(270)))
                 .splineToLinearHeading(new Pose2d(38,-54,Math.toRadians(270)),Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
                 .strafeToLinearHeading(new Vector2d(38, -63),Math.toRadians(270), humanPlayerVelocityConstraint)
                 .build();
@@ -110,11 +112,11 @@ public class MM_FourHighSpecimensRoute {
                 //.strafeToLinearHeading(new Vector2d(48, -54), Math.toRadians(270))
                 //.strafeToLinearHeading(new Vector2d(2, -54), Math.toRadians(270))
                 //.strafeToLinearHeading(new Vector2d(16,-56), Math.toRadians(270))
-                .splineToConstantHeading(new Vector2d(2,-39),Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
-                .strafeToLinearHeading(new Vector2d(2,-30), Math.toRadians(270), intakeVelocityConstraint)
+                .splineToConstantHeading(new Vector2d(0,-39),Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
+                .strafeToLinearHeading(new Vector2d(0,-30), Math.toRadians(270), intakeVelocityConstraint)
                 .build();
 
-        DrivetoDeck2 = myBot.getDrive().actionBuilder(new Pose2d(2,-30,Math.toRadians(270)))
+        DrivetoDeck2 = myBot.getDrive().actionBuilder(new Pose2d(0,-30,Math.toRadians(270)))
                 .splineToLinearHeading(new Pose2d(38,-54,Math.toRadians(270)),Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
                 .strafeToLinearHeading(new Vector2d(38,-63), Math.toRadians(270), humanPlayerVelocityConstraint) //May change to 270 heading once delivery is clarified
                 .build();
@@ -122,10 +124,10 @@ public class MM_FourHighSpecimensRoute {
                 .setReversed(true)
                 //.strafeTkjoLinearHeading(new Vector2d(16,-56), Math.toRadians(270))
                 //.splineToLinearHeading(new Pose2d(4,-39,Math.toRadians(270)), Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
-                .splineToConstantHeading(new Vector2d(3,-39),Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
-                .strafeToLinearHeading(new Vector2d(3,-30), Math.toRadians(270), intakeVelocityConstraint)
+                .splineToConstantHeading(new Vector2d(2,-39),Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
+                .strafeToLinearHeading(new Vector2d(2,-30), Math.toRadians(270), intakeVelocityConstraint)
                 .build();
-        DrivetoDeck3 = myBot.getDrive().actionBuilder(new Pose2d(3,-30,Math.toRadians(270)))
+        DrivetoDeck3 = myBot.getDrive().actionBuilder(new Pose2d(2,-30,Math.toRadians(270)))
                 .splineToLinearHeading(new Pose2d(38,-54,Math.toRadians(270)),Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
                 .strafeToLinearHeading(new Vector2d(38,-63), Math.toRadians(270), humanPlayerVelocityConstraint) //May change to 270 heading once delivery is clarified
                 .build();
@@ -140,7 +142,7 @@ public class MM_FourHighSpecimensRoute {
         ParkinDeck = myBot.getDrive().actionBuilder(new Pose2d(4,-30,Math.toRadians(270)))
                 //Pose 2D 50,-54, 270
                 //.splineTo(new Vector2d(49,-45),Math.toRadians(90))
-                .strafeToLinearHeading(new Vector2d(4,-35), Math.toRadians(270), intakeVelocityConstraint)
+                .strafeToLinearHeading(new Vector2d(6,-35), Math.toRadians(270), intakeVelocityConstraint)
                 //.strafeToLinearHeading(new Vector2d(36,-58), Math.toRadians(90), intakeVelocityConstraint)
                 //.splineToLinearHeading(new Pose2d(30,-48,Math.toRadians(90)),Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
                 .splineToLinearHeading(new Pose2d(38,-58,Math.toRadians(90)),Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
@@ -159,16 +161,17 @@ public class MM_FourHighSpecimensRoute {
                 DriveToSamplesandDeliver1,
                 DriveToSamplesandDeliver2,
                 DrivetoDeck1,
-                new SleepAction(.5),
+                new SleepAction(1.0),
                 DriveToSubmersible1,
                 new SleepAction(1),
                 DrivetoDeck2,
-                new SleepAction(.5),
+                new SleepAction(1),
                 DriveToSubmersible2,
                 new SleepAction(1),
                 DrivetoDeck3,
-                new SleepAction(.5),
-                DriveToSubmersible3, ParkinDeck));
+                new SleepAction(.5)//,
+                //DriveToSubmersible3, ParkinDeck
+        ));
 
                 //new SleepAction(1)
                 //Drop submersible

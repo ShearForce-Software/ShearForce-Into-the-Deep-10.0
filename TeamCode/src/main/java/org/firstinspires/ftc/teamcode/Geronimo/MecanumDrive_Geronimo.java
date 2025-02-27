@@ -86,13 +86,13 @@ public final class MecanumDrive_Geronimo {
         public double kA = 0.000035;
 
         // path profile parameters (in inches)
-        public double maxWheelVel = 60; //40 //60
-        public double minProfileAccel = -35;
-        public double maxProfileAccel = 50; //40
+        public double maxWheelVel = 60; //40 //60 // original is 50
+        public double minProfileAccel = -35; // original is -30
+        public double maxProfileAccel = 50; //40 // original is 50
 
         // turn profile parameters (in radians)
-        public double maxAngVel = Math.PI*.6; // shared with path //*.8
-        public double maxAngAccel = Math.PI*.8;
+        public double maxAngVel = Math.PI*.6; // shared with path //*.8 // original is Math.PI
+        public double maxAngAccel = Math.PI*.8; // original is Math.PI
 
         // path controller gains
         public double axialGain = 5;  //13
