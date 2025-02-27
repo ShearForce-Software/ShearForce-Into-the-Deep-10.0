@@ -886,7 +886,7 @@ public class Geronimo {
     public void SpecimenDeliverHighChamberFinishingMove(){
         SetIntakeBoxRotatorPosition(0.908); //0.945
         SetSmallArmHangerPosition(0.2); //0 //0.25
-        SetSlideToPosition(2700); //00  //2350  //1750
+        SetSlideToPosition(2900); //00  //2350  //1750
         SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(70.68)); //642
     }
     public void UrchinPickupFromWall(){
