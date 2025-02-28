@@ -42,7 +42,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 public class Geronimo_PIDF_Concept extends LinearOpMode {
 
     // proportional, integral, derivative, and feedforward
-    public static double p = 0.0001, i = 0, d = 0, f = 0.007;
+    public static double p = 0.005, i = 0, d = 0, f = 0.007;
 
     public static double tolerance = 5.0; //half a degree in ticks
     public static int sendF_to_Controller = 0;
@@ -106,6 +106,8 @@ public class Geronimo_PIDF_Concept extends LinearOpMode {
                 Right_controller.setTolerance(tolerance); // sets the error in ticks I think that is tolerated > go back to ticks and degrees, plus or minus the tolerance
                 Left_controller.setTolerance(tolerance);
             }
+            Left_controller.atSetPoint();
+            Right_controller.atSetPoint();
 
             //TODO- Claire: maybe use tolerance with setpoint code?
 
