@@ -231,6 +231,17 @@ public class Geronimo {
         urchinServo = hardwareMap.get(Servo.class, "urchinServo");
         swiperServo = hardwareMap.get(Servo.class, "swiper");
         swiper2 = hardwareMap.get(Servo.class, "swiper2");
+        Servo lockServo1;
+        Servo lockServo2;
+
+        //lockServo1 = hardwareMap.get(Servo.class, "lock1"); TODO uncomment after config file update
+        //lockServo2 = hardwareMap.get(Servo.class, "lock2"); TODO uncomment after config file update
+
+        //lockServo1.setDirection(Servo.Direction.FORWARD); TODO uncomment after config file update
+        //lockServo2.setDirection(Servo.Direction.REVERSE); TODO uncomment after config file update
+
+        //lockServo1.setPosition(lock_position); TODO uncomment after config file update
+        //lockServo2.setPosition(lock_position); TODO uncomment after config file update
 
         // ********** Color Sensors ********************
 
@@ -680,15 +691,15 @@ public class Geronimo {
             // *** and puts the hanger arms in a safe spot for climbing
             // *** Blinkin is Blue while in this step, goes yellow when done
             // *******************************************
-            if (stepCounter == 0){
-                // hanger arms and urchin intake go to safe place
+            if (stepCounter == 0) {
+                targetAngle = 85;
                 SetIntakeBoxRotatorPosition(0.33);
                 SetSmallArmHangerPosition(0.79);
                 SetClawPosition(1);
-                if (leftSlideArmRotatorMotor.getCurrentPosition() >= 1500 || opMode.getRuntime() < timeout) {
+                if (leftSlideArmRotatorMotor.getCurrentPosition() >= 1500 || opMode.getRuntime() > timeout) {
                     Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.YELLOW;
                     blinkinLedDriver.setPattern(Blinken_pattern);
-                    timeout = opMode.getRuntime() + 2.0;
+                    timeout = opMode.getRuntime() + 5.0;
                     stepCounter++;
                 }
             }
@@ -700,9 +711,9 @@ public class Geronimo {
             // *** Blinkin is Yellow in this step, goes orange when done
             // *******************************************
             else if (stepCounter == 1) {
-                // slides go up (yellow color)
-                SetSlideToPosition(2580);
-                if (slideLeft.getCurrentPosition() >= 2580 || opMode.getRuntime() < timeout) {
+                SetSlideToPosition(3300);
+                targetAngle = 90;
+                if (slideLeft.getCurrentPosition() >= 3300 || opMode.getRuntime() > timeout) {
                     Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.ORANGE;
                     blinkinLedDriver.setPattern(Blinken_pattern);
                     timeout = opMode.getRuntime() + 2.0;
@@ -722,19 +733,19 @@ public class Geronimo {
             // *** Blinkin is Orange in this step, goes Red when done
             // *******************************************
             else if (stepCounter == 2) {
-                // slides go down till hooks engage
-                SetSlideToPosition(2000); // verify
-                if (slideLeft.getCurrentPosition() <= 3000 || opMode.getRuntime() < timeout) {
-                    stepCounter++;
+                SetSlideToPosition(420);
+                SpecialSleep(50);
+                if (slideLeft.getCurrentPosition() <= 420 || opMode.getRuntime() > timeout) {
                     Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.RED;
                     blinkinLedDriver.setPattern(Blinken_pattern);
                     timeout = opMode.getRuntime() + 2.0;
+                    stepCounter++;
                 }
             }
-
+/*
             // *******************************************
             // *** STEP 3 Jared thinks this one is completely wrong and should go away
-            //            we shouldn't clam shell closed until later
+            //            we shouldn't clam shell closed until later (Matthew agrees!)
             // *******************************************
             //else if (stepCounter == 3) {
                 // support robot horizontally on barrier & slides are vertical (yellow color)
@@ -753,9 +764,8 @@ public class Geronimo {
             // *** Blinkin is Red in this step, goes Aqua when done
             // *******************************************
             else if (stepCounter == 3) {
-                // slides extend upward to reach level-3 ascent zone
-                SetSlideToPosition(3049); // verify
-                if (slideLeft.getCurrentPosition() >= 3049 || opMode.getRuntime() < timeout) {
+                SetSlideToPosition(5380);
+                if (slideLeft.getCurrentPosition() >= 5380 || opMode.getRuntime() > timeout) {
                     Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.AQUA;
                     blinkinLedDriver.setPattern(Blinken_pattern);
                     timeout = opMode.getRuntime() + 2.0;
@@ -772,8 +782,8 @@ public class Geronimo {
             // *** Blinkin is Aqua in this step, goes GREEN when done
             // *******************************************
             else if (stepCounter == 4) {
-                SetSlideToPosition(0); // TODO -- zero is wrong, need correct value here
-                if (GetSlidesLimitSwitchPressed() || opMode.getRuntime() < timeout) {  //TODO -- this is wrong logic, slides should only come in enough to put weight on the green hooks
+                SetSlideToPosition(4890);
+                if (slideLeft.getCurrentPosition() <= 0 || opMode.getRuntime() > timeout) {
                     Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.GREEN;
                     blinkinLedDriver.setPattern(Blinken_pattern);
                     timeout = opMode.getRuntime() + 2.0;
@@ -792,7 +802,7 @@ public class Geronimo {
             {
                 // CLAM SHELL CLOSED
                 SetSlideRotatorArmToPosition(0);
-                if (leftSlideArmRotatorMotor.getCurrentPosition() <= 160 || opMode.getRuntime() < timeout) {
+                if (leftSlideArmRotatorMotor.getCurrentPosition() <= 160 || opMode.getRuntime() > timeout) {
                     timeout = opMode.getRuntime() + 2.0;
                     stepCounter++;
                 }
@@ -807,6 +817,9 @@ public class Geronimo {
             else if (stepCounter == 6)
             {
                 // TODO -- NEED Lock servo logic
+                lock_position;
+                lockServo1.setPosition(lock_position);
+                lockServo2.setPosition(lock_position);
                 stepCounter++;
             }
 
@@ -824,11 +837,11 @@ public class Geronimo {
                 //TODO -- Remove power from arm rotators when locks are verified to be working
                 //SetSlideRotatorToPowerMode(0);
                 SetSlideToPosition(0); // TODO -- zero is wrong, need correct value here
-                if (GetSlidesLimitSwitchPressed() || opMode.getRuntime() < timeout) {  //TODO -- this is wrong logic, slides should only come in enough to balance the robot
+                if (GetSlidesLimitSwitchPressed() || opMode.getRuntime() > timeout) {  //TODO -- this is wrong logic, slides should only come in enough to balance the robot
                     stepCounter++;
                 }
             }
-
+*/
             ShowTelemetry();
             SpecialSleep(50);
         } // END while loop
