@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -226,25 +227,36 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             } else if (gamepad2.right_trigger > 0.2 && gamepad2.options) {
                 theRobot.UrchinDeliverHighChamberFinishingMove();
             }
+
+            else if(gamepad2.dpad_up && gamepad2.options){
+                theRobot.SetSlideToPosition(1800);
+                theRobot.SetIntakeBoxRotatorPosition(0.255);
+                theRobot.SetSmallArmHangerPosition(0.56);
+                theRobot.SetUrchinServoPosition(0);
+            }
             
             // Combo moves for basket deliveries
             // LIMELIGHT Test Function
-            else if(gamepad2.dpad_left && !gamepad2.options){
+            else if(gamepad2.dpad_left && !gamepad2.options) {
                 theRobot.SetSlideToPosition(1800);
-                // theRobot.SetIntakeBoxRotatorPosition(0.04);
-                // theRobot.SetSmallArmHangerPosition(0.365);
+                //theRobot.SetIntakeBoxRotatorPosition(0.04);
+                //theRobot.SetSmallArmHangerPosition(0.365);
                 // sleep(100);
                 theRobot.SetIntakeBoxRotatorPosition(0.255);
                 theRobot.SetSmallArmHangerPosition(0.56);
                 theRobot.SetUrchinServoPosition(0);
-                sleep(1000);
+                //sleep(3000);
+            }
 
+/*
                 double [] offsetInches = theRobot.GetStrafeOffsetInInches("red");
 
                 if(Math.abs(offsetInches[0])<0.001){
                     telemetry.addLine("NOPE");
                 }
                 else{
+                    theRobot.Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.RED;
+                    theRobot.blinkinLedDriver.setPattern(theRobot.Blinken_pattern);
                     drive.updatePoseEstimate();//Update the current post estimate
                     double fixedForwardAdjustment = 3;
 
@@ -258,6 +270,8 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                     Actions.runBlocking(strafeAction);
                 }
             }
+
+ */
             else if (gamepad2.dpad_left && gamepad2.options) {
                 theRobot.SampleUrchinFloorJam();
             } else if (gamepad2.dpad_down && !gamepad2.options){

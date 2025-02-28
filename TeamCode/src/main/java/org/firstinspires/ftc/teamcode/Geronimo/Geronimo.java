@@ -272,7 +272,7 @@ public class Geronimo {
 
     public void InitLimelight(HardwareMap hardwareMap){
         limelightbox = hardwareMap.get(Limelight3A.class, "limelight");
-        limelightbox.pipelineSwitch(0);
+        limelightbox.pipelineSwitch(3);
         limelightbox.start();
         //limelightbox.getLatestResult().getTx();
        // limelightbox.getLatestResult().getTy();
@@ -696,7 +696,7 @@ public class Geronimo {
             // *******************************************
             // *** STEP 0 Raises arms to 90 degrees
             // *** and puts the hanger arms in a safe spot for climbing
-            // *** Blinkin is Blue while in this step, goes yellow when done
+            // ***  is Blue while in this step, goes yellow when done
             // *******************************************
             if (stepCounter == 0) {
                 targetAngle = 85;
@@ -1635,8 +1635,8 @@ public class Geronimo {
     }
 
     public void ShowTelemetry(){
-        opMode.telemetry.addData("Limelight OffSet (x,y) inches no correction:" ,"R: %.2f, L: %.2f" ,GetStrafeOffsetInInches("block")[0], GetStrafeOffsetInInches("block")[1]);
-        opMode.telemetry.addData("Limelight Offset (x,y) inches no correction:", "R: %.2f, L: %.2f", GetStrafeOffsetInInches("block")[0]+3, GetStrafeOffsetInInches("block")[1]);
+        opMode.telemetry.addData("Limelight OffSet (x,y) inches no correction:" ,"R: %.2f, L: %.2f" ,GetStrafeOffsetInInches("red")[0], GetStrafeOffsetInInches("red")[1]);
+        opMode.telemetry.addData("Limelight Offset (x,y) inches no correction:", "R: %.2f, L: %.2f", GetStrafeOffsetInInches("red")[0]+3, GetStrafeOffsetInInches("red")[1]);
 
 
         opMode.telemetry.addData("Auto Last Time Left: ", autoTimeLeft);
