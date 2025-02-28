@@ -256,6 +256,7 @@ public class FourHighSpecimensAutoRoute2 extends LinearOpMode {
                         new SleepAction(.1),
                         slidestozero(), rotatorarmstozero(), stowPosition(), grabSpecimenfromwall()
                         /*
+                        //It works
                         new SleepAction(.5),
                         new ParallelAction(DriveToSubmersible3
                                 , deliverSpecimenHigh()),

@@ -234,7 +234,7 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
                         finishdeliverSpecimenHigh(),
                         new SleepAction(.6),
                         releaseSpecimen(),
-                        new SleepAction(.1),
+                        new SleepAction(.1),//
                         //3rd delivery
                         new ParallelAction(DrivetoDeck3,
                                 new SequentialAction(//don't call stow; call wall position
