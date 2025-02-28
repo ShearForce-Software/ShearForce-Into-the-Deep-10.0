@@ -50,7 +50,7 @@ public class Geronimo {
     DcMotor rightRear;
 
     //pidf variables
-    boolean pidfEnabled = true;
+    boolean pidfEnabled = false;
     public static double p = 0.005, i = 0, d = 0.0, f = 0.007; //0.0001
     PIDController Right_controller = new PIDController(p, i, d);
     PIDController Left_controller = new PIDController(p, i, d);
@@ -114,6 +114,11 @@ public class Geronimo {
     double smallArmHangerLeftPosition = 0.5;
     double smallArmHangerRightPosition = 0.5;
     static final double SMALL_ARM_HANGER_INCREMENT = 0.01;
+
+
+    Servo lockServo1;
+    Servo lockServo2;
+    double lock_position = 0;       // release position
 
     public Servo urchinServo;
     double urchinServo_position = 0.5;
@@ -231,17 +236,10 @@ public class Geronimo {
         urchinServo = hardwareMap.get(Servo.class, "urchinServo");
         swiperServo = hardwareMap.get(Servo.class, "swiper");
         swiper2 = hardwareMap.get(Servo.class, "swiper2");
-        Servo lockServo1;
-        Servo lockServo2;
-
-        //lockServo1 = hardwareMap.get(Servo.class, "lock1"); TODO uncomment after config file update
-        //lockServo2 = hardwareMap.get(Servo.class, "lock2"); TODO uncomment after config file update
-
-        //lockServo1.setDirection(Servo.Direction.FORWARD); TODO uncomment after config file update
-        //lockServo2.setDirection(Servo.Direction.REVERSE); TODO uncomment after config file update
-
-        //lockServo1.setPosition(lock_position); TODO uncomment after config file update
-        //lockServo2.setPosition(lock_position); TODO uncomment after config file update
+        lockServo1 = hardwareMap.get(Servo.class, "lock1");
+        lockServo2 = hardwareMap.get(Servo.class, "lock2");
+        lockServo1.setDirection(Servo.Direction.FORWARD);
+        lockServo2.setDirection(Servo.Direction.REVERSE);
 
         // ********** Color Sensors ********************
 
@@ -647,6 +645,15 @@ public class Geronimo {
     // ************************************
     // Hanging Combo Moves
     // ************************************
+    public void HooksReleased(){
+        lockServo1.setPosition(lock_position);
+        lockServo2.setPosition(lock_position);
+    }
+    public void HooksLocked(){
+        lockServo1.setPosition(1.0);
+        lockServo2.setPosition(1.0);
+    }
+
     public void PreHangRobot(){
         SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(34.37));
         SpecialSleep(2000);

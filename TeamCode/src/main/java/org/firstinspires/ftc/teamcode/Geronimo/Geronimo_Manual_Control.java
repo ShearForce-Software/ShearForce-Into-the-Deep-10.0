@@ -94,10 +94,10 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             }
             // available buttons on GamePad1
             else if (gamepad1.dpad_right && !gamepad1.options) {
-                //TBD
+                theRobot.HooksReleased();
             }
             else if (gamepad1.square && !gamepad1.options) {
-                // TBD
+                theRobot.HooksLocked();
             }
             else if (gamepad1.circle && !gamepad1.options) {
                 // TBD
