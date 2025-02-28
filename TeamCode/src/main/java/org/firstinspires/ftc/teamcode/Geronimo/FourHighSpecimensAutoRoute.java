@@ -52,11 +52,11 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
         startPose = new Pose2d(9,-64, Math.toRadians(270));
 
         // Define some custom constraints to use when wanting to go faster than defaults
-        speedUpVelocityConstraint = new TranslationalVelConstraint(60.0);
+        speedUpVelocityConstraint = new TranslationalVelConstraint(70.0);
         speedUpAccelerationConstraint = new ProfileAccelConstraint(-40.0, 60.0);
-        normalVelocityConstraint = new TranslationalVelConstraint(70.0);
-        normalAccelerationConstraint = new ProfileAccelConstraint(-50.0, 60.0);
-        slowDownVelocityConstraint = new TranslationalVelConstraint(30);
+        normalVelocityConstraint = new TranslationalVelConstraint(60.0);
+        normalAccelerationConstraint = new ProfileAccelConstraint(-35.0, 50.0);
+        //slowDownVelocityConstraint = new TranslationalVelConstraint(30);
         slowDownAccelerationConstraint = new ProfileAccelConstraint(-20, 50);
         intakeVelocityConstraint = new TranslationalVelConstraint(15);
         humanPlayerVelocityConstraint = new TranslationalVelConstraint(7);
@@ -80,11 +80,11 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
                 //.strafeToLinearHeading(new Vector2d(4,-30), Math.toRadians(270))
                 //.strafeToLinearHeading(new Vector2d(0,-30), Math.toRadians(270), slowDownVelocityConstraint)
                 .setReversed(true)
-                .splineToConstantHeading(new Vector2d(0,-39), Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
-                .strafeToLinearHeading(new Vector2d(0,-30), Math.toRadians(270), intakeVelocityConstraint)
+                .splineToConstantHeading(new Vector2d(-2,-39), Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
+                .strafeToLinearHeading(new Vector2d(-2,-30), Math.toRadians(270), intakeVelocityConstraint)
                 .build();
 
-        DriveToSamplesandDeliver1 = drive.actionBuilder(new Pose2d(0, -30, Math.toRadians(270)))
+        DriveToSamplesandDeliver1 = drive.actionBuilder(new Pose2d(-2, -30, Math.toRadians(270)))
                 //.strafeToLinearHeading(new Vector2d(0,-48), Math.toRadians(270))
                 //.splineToLinearHeading(new Pose2d(36,-48,Math.toRadians(270)), Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
                 //.splineToConstantHeading(new Vector2d(36,-48), Math.toRadians(90))
@@ -92,15 +92,15 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
                 .splineToConstantHeading(new Vector2d(38, -40),Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
                 .strafeToLinearHeading(new Vector2d(38,-15), Math.toRadians(270), slowDownVelocityConstraint)
                 //.strafeToLinearHeading(new Vector2d(48,-15),Math.toRadians(270),normalVelocityConstraint, normalAccelerationConstraint)
-                .splineToConstantHeading(new Vector2d(48,-15), Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
-                .strafeToConstantHeading(new Vector2d(48,-54), normalVelocityConstraint, normalAccelerationConstraint)
+                .splineToConstantHeading(new Vector2d(47.5,-15), Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
+                .lineToYConstantHeading(-54, speedUpVelocityConstraint)
                 .build();
 // Fix
-        DriveToSamplesandDeliver2 = drive.actionBuilder(new Pose2d(48,-54, Math.toRadians(270)))
-                .strafeToLinearHeading(new Vector2d(48, -16.5), Math.toRadians(270), normalVelocityConstraint)
+        DriveToSamplesandDeliver2 = drive.actionBuilder(new Pose2d(47.5,-54, Math.toRadians(270)))
+                .strafeToLinearHeading(new Vector2d(42, -25), Math.toRadians(270), normalVelocityConstraint)
                 //.strafeToLinearHeading(new Vector2d(56,-16.5),Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
-                .splineToConstantHeading(new Vector2d(56,-16.5), Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
-                .strafeToConstantHeading(new Vector2d(56,-54), normalVelocityConstraint, normalAccelerationConstraint)
+                .splineToConstantHeading(new Vector2d(54,-15), Math.toRadians(270), normalVelocityConstraint, slowDownAccelerationConstraint)
+                .lineToYConstantHeading(-54, speedUpVelocityConstraint)
                 .build();
 
         /*DriveToSamplesandDeliver3 = drive.actionBuilder(new Pose2d(56,-54,Math.toRadians(270)))
@@ -113,7 +113,7 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(44,-46),Math.toRadians(270))
                 .build();
 */
-        DrivetoDeck1 = drive.actionBuilder(new Pose2d(56,-54,Math.toRadians(270)))
+        DrivetoDeck1 = drive.actionBuilder(new Pose2d(54,-54,Math.toRadians(270)))
                 .splineToLinearHeading(new Pose2d(38,-54,Math.toRadians(270)),Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
                 .strafeToLinearHeading(new Vector2d(38, -63),Math.toRadians(270), humanPlayerVelocityConstraint)
                 .build();
@@ -123,10 +123,10 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
                 //.strafeToLinearHeading(new Vector2d(48, -54), Math.toRadians(270))
                 //.strafeToLinearHeading(new Vector2d(2, -54), Math.toRadians(270))
                 //.strafeToLinearHeading(new Vector2d(16,-56), Math.toRadians(270))
-                .splineToConstantHeading(new Vector2d(2,-39),Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
-                .strafeToLinearHeading(new Vector2d(2,-30), Math.toRadians(270), intakeVelocityConstraint)
+                .splineToConstantHeading(new Vector2d(0,-39),Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
+                .strafeToLinearHeading(new Vector2d(0,-30), Math.toRadians(270), intakeVelocityConstraint)
                 .build();
-        DrivetoDeck2 = drive.actionBuilder(new Pose2d(2,-30,Math.toRadians(270)))
+        DrivetoDeck2 = drive.actionBuilder(new Pose2d(0,-30,Math.toRadians(270)))
                 .splineToLinearHeading(new Pose2d(38,-54,Math.toRadians(270)),Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
                 .strafeToLinearHeading(new Vector2d(38,-63), Math.toRadians(270), humanPlayerVelocityConstraint) //May change to 270 heading once delivery is clarified
                 .build();
@@ -134,10 +134,10 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
                 .setReversed(true)
                 //.strafeToLinearHeading(new Vector2d(16,-56), Math.toRadians(270))
                 //.splineToLinearHeading(new Pose2d(4,-39,Math.toRadians(270)), Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
-                .splineToConstantHeading(new Vector2d(4,-39),Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
-                .strafeToLinearHeading(new Vector2d(4,-30), Math.toRadians(270), intakeVelocityConstraint)
+                .splineToConstantHeading(new Vector2d(2,-39),Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
+                .strafeToLinearHeading(new Vector2d(2,-30), Math.toRadians(270), intakeVelocityConstraint)
                 .build();
-        DrivetoDeck3 = drive.actionBuilder(new Pose2d(4,-30,Math.toRadians(270)))
+        DrivetoDeck3 = drive.actionBuilder(new Pose2d(2,-30,Math.toRadians(270)))
                 .splineToLinearHeading(new Pose2d(38,-54,Math.toRadians(270)),Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
                 .strafeToLinearHeading(new Vector2d(38,-63), Math.toRadians(270), humanPlayerVelocityConstraint) //May change to 270 heading once delivery is clarified
                 .build();
@@ -145,11 +145,11 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
                 .setReversed(true)
                 //.strafeToLinearHeading(new Vector2d(16,-56), Math.toRadians(270))
                 //.splineToLinearHeading(new Pose2d(3,-39,Math.toRadians(270)), Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
-                .splineToConstantHeading(new Vector2d(5,-39),Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
-                .strafeToLinearHeading(new Vector2d(5,-30), Math.toRadians(270), intakeVelocityConstraint)
+                .splineToConstantHeading(new Vector2d(4,-39),Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
+                .strafeToLinearHeading(new Vector2d(4,-30), Math.toRadians(270), intakeVelocityConstraint)
                 .build();
 
-        ParkinDeck = drive.actionBuilder(new Pose2d(5,-30,Math.toRadians(270)))
+        ParkinDeck = drive.actionBuilder(new Pose2d(4,-30,Math.toRadians(270)))
                  //Pose 2D 50,-54, 270
                  //.splineTo(new Vector2d(49,-45),Math.toRadians(90))
                  .strafeToLinearHeading(new Vector2d(6,-35), Math.toRadians(270), intakeVelocityConstraint)
@@ -184,7 +184,7 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
                         finishdeliverSpecimenHigh(),
                         new SleepAction(.6),
                         releaseSpecimen(),
-                        new SleepAction(.3),   // TODO -- candidate to make faster
+                        new SleepAction(.1),   // TODO -- candidate to make faster
 
                         // Gather the 3 floor samples into the observation area
                         new ParallelAction(DriveToSamplesandDeliver1
@@ -205,9 +205,9 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
                         // TODO -- need to test how small we can make these sleep actions, these servos are pretty fast this year
                         // grab the specimen off of the wall
                         grabSpecimen(),
-                        new SleepAction(.3), // TODO -- candidate to make faster
+                        new SleepAction(.1), // TODO -- candidate to make faster
                         liftSpecimenoffWall(),
-                        new SleepAction(.5), // TODO -- candidate to make faster
+                        new SleepAction(.2), // TODO -- candidate to make faster
 
                         // Deliver the specimen to the High bar
                         new ParallelAction(DriveToSubmersible1
@@ -221,32 +221,33 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
                                 new SequentialAction(//don't call stow; call wall position
                                       slidestozero(), rotatorarmstozero(), stowPosition(), grabSpecimenfromwall()
                                 )
-                                , new SequentialAction(new SleepAction(.3),
+                                , new SequentialAction(new SleepAction(.1),
                                       swiperAction1(), new SleepAction(.5), swiperAction2()
                                 )
                         ),
                         grabSpecimen(),
-                        new SleepAction(.3),
+                        new SleepAction(.1),
                         liftSpecimenoffWall(),
-                        new SleepAction(.5),
+                        new SleepAction(.2),
                         new ParallelAction(DriveToSubmersible2
                                 , deliverSpecimenHigh()),
                         finishdeliverSpecimenHigh(),
                         new SleepAction(.6),
                         releaseSpecimen(),
-                        new SleepAction(.3),
+                        new SleepAction(.1),
                         //3rd delivery
                         new ParallelAction(DrivetoDeck3,
                                 new SequentialAction(//don't call stow; call wall position
                                         slidestozero(), rotatorarmstozero(), stowPosition(), grabSpecimenfromwall()
                                 )
-                                , new SequentialAction(new SleepAction(.3),
+                                , new SequentialAction(new SleepAction(.1),
                                         swiperAction1(), new SleepAction(.5), swiperAction2()
                                 )
                         )
                         ,grabSpecimen(),
-                        new SleepAction(.3),
-                        liftSpecimenoffWall()
+                        new SleepAction(.1),
+                        liftSpecimenoffWall(),
+                        new SleepAction(.2)
                         /*
                         new SleepAction(.5),
                         new ParallelAction(DriveToSubmersible3
