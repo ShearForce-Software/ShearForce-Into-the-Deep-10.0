@@ -469,7 +469,7 @@ public class FourHighSpecimensAutoRoute2_PIDF extends LinearOpMode {
             return false;  // returning true means not done, and will be called again.  False means action is completely done
         }
     }
-    public Action swiperAction2 () { return new SwiperAction1(); }
+    public Action swiperAction2 () { return new SwiperAction2(); }
     public class SwiperAction2 implements Action {
         private boolean initialized = false;
         @Override
