@@ -76,28 +76,28 @@ public final class MecanumDrive_Geronimo {
                 RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
 
         // drive model parameters
-        public double inPerTick = 0.00104283; //0.00104655  45148.5       0.00951437
-        public double lateralInPerTick =  0.0007371805024633574;
-        public double trackWidthTicks = 11171.777210064613;//15548.620725915256;
+        public double inPerTick = 0.00104283; //45148.5       0.00951437
+        public double lateralInPerTick =  0.0005936929969017011; //0.0007371805024633574;
+        public double trackWidthTicks = 11537.820000803547;//11171.777210064613;//15548.620725915256;
 
         // feedforward parameters (in tick units)
-        public double kS = 0.9855547873117123;
-        public double kV = 0.00021130672422951157;
-        public double kA = 0.00005;
+        public double kS = 1.5768775053052755; //0.9855547873117123;
+        public double kV = 0.00014986306601697652; //0.00021130672422951157;
+        public double kA = 0.000035;
 
         // path profile parameters (in inches)
-        public double maxWheelVel = 60; //40 //60
-        public double minProfileAccel = -35;
-        public double maxProfileAccel = 50; //40
+        public double maxWheelVel = 60; //40 //60 // original is 50
+        public double minProfileAccel = -35; // original is -30
+        public double maxProfileAccel = 50; //40 // original is 50
 
         // turn profile parameters (in radians)
-        public double maxAngVel = Math.PI*.6; // shared with path //*.8
-        public double maxAngAccel = Math.PI*.8;
+        public double maxAngVel = Math.PI*.6; // shared with path //*.8 // original is Math.PI
+        public double maxAngAccel = Math.PI*.8; // original is Math.PI
 
         // path controller gains
-        public double axialGain = 10;  //13
+        public double axialGain = 5;  //13
         public double lateralGain = 5;
-        public double headingGain = 13; // shared with turn //10 //15
+        public double headingGain = 10; // shared with turn //13 //10 //15
         public double axialVelGain = 0.0;
         public double lateralVelGain = 1.0;
         public double headingVelGain = 0.5; // shared with turn

@@ -37,18 +37,17 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 public class Geronimo {
     IMU imu;
     public double imuOffsetInDegrees = 0.0;
-    int logoFacingDirectionPosition = 0;
-    int usbFacingDirectionPosition = 2;
-    int targetPosition = 1000;
-    double rotatorPosition = 0;
     double imuPosition = 0;
-    int power = 50;
-    double ticksPerDegree = 9.4; // YellowJacket Motor
+
     LinearOpMode opMode;
-    public static boolean allianceColorIsBlue = false;
     public static double autoTimeLeft = 0.0;
     boolean IsDriverControl = true;
     boolean IsFieldCentric = true;
+
+    DcMotor leftFront;
+    DcMotor leftRear;
+    DcMotor rightFront;
+    DcMotor rightRear;
 
     //pidf variables
     boolean pidfEnabled = false;
@@ -60,14 +59,7 @@ public class Geronimo {
     final double yellow_jacket_27_ticks = 751.8;    //9.4 ticks for each degree of arm rotation
     final double yellow_jacket_51_ticks = 1425.1;   //17.81 ticks for each degree of arm rotation
     final double ticks_in_degrees = (arm_gear_ratio/360.0) * yellow_jacket_51_ticks;
-    double rotator_arm_target = 0; //in ticks
     public double rotator_arm_target_ticks = 0;
-    public static double angle_test = 0;
-
-    DcMotor leftFront;
-    DcMotor leftRear;
-    DcMotor rightFront;
-    DcMotor rightRear;
 
     DcMotor leftSlideArmRotatorMotor;
     DcMotor rightSlideArmRotatorMotor;
@@ -122,12 +114,6 @@ public class Geronimo {
     double smallArmHangerLeftPosition = 0.5;
     double smallArmHangerRightPosition = 0.5;
     static final double SMALL_ARM_HANGER_INCREMENT = 0.01;
-
-  /*  public CRServo intakeStarServo;
-    double intakeStarPower = 0.0;
-    boolean intakeStarLastForward = false;
-
-   */
 
     public Servo urchinServo;
     double urchinServo_position = 0.5;
@@ -633,7 +619,7 @@ public class Geronimo {
 
     public void AutoStartPosition()
     {
-        SetIntakeBoxRotatorPosition(0.875); //0.875
+        SetIntakeBoxRotatorPosition(0.805); //0.875
         SetSmallArmHangerPosition(0.1); //0 //.25
         SetSlideToPosition(0);
         SetSlideRotatorArmToPosition(0);
@@ -643,7 +629,7 @@ public class Geronimo {
     }
 
     public void SpecimenDeliverLow(){
-        SetIntakeBoxRotatorPosition(0.525); //0.44
+        SetIntakeBoxRotatorPosition(0.455); //0.44
         SetSmallArmHangerPosition(0.6); //0.4 //0.65
     }
 
@@ -669,73 +655,183 @@ public class Geronimo {
     }
     int stepCounter = 0;
     public void level3Ascent() {
-        double timeout = opMode.getRuntime() + 0.5;
         stepCounter = 0;
         int targetAngle = 90;
-        while (stepCounter < 6) {
-            SetSlideRotatorArmToPosition(findRealArmAngle((targetAngle)));
+
+        // Initialize the Blinkin at the start to be blue
+        Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;
+        blinkinLedDriver.setPattern(Blinken_pattern);
+
+        // Initialize the hanger arms and urchin intake go to safe place
+        SetIntakeBoxRotatorPosition(0.33);
+        SetSmallArmHangerPosition(0.79);
+        SpecialSleep(200);
+
+        double timeout = opMode.getRuntime() + 2.0;
+
+        while (stepCounter <= 7) {
+            // Continually Hold the arms at 90 degrees from the floor until step 5 (then will clam shell close)
+            if (stepCounter < 5) {
+                SetSlideRotatorArmToPosition(findRealArmAngle((targetAngle)));
+            }
+
+            // *******************************************
+            // *** STEP 0 Raises arms to 90 degrees
+            // *** and puts the hanger arms in a safe spot for climbing
+            // *** Blinkin is Blue while in this step, goes yellow when done
+            // *******************************************
             if (stepCounter == 0){
-                // hanger arms and urchin intake go to safe place (blue color)
-                Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;
-                blinkinLedDriver.setPattern(Blinken_pattern);
-                SetIntakeBoxRotatorPosition(0.41);
+                // hanger arms and urchin intake go to safe place
+                SetIntakeBoxRotatorPosition(0.33);
                 SetSmallArmHangerPosition(0.79);
                 SetClawPosition(1);
-                if (leftSlideArmRotatorMotor.getCurrentPosition() >= 100) {
+                if (leftSlideArmRotatorMotor.getCurrentPosition() >= 1500 || opMode.getRuntime() < timeout) {
+                    Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.YELLOW;
+                    blinkinLedDriver.setPattern(Blinken_pattern);
+                    timeout = opMode.getRuntime() + 2.0;
                     stepCounter++;
                 }
             }
+
+            // *******************************************
+            // *** STEP 1 Arms stay at 90 degrees and
+            // *** the slides go out/up, bringing the two
+            // *** hooks above the lower bar
+            // *** Blinkin is Yellow in this step, goes orange when done
+            // *******************************************
             else if (stepCounter == 1) {
                 // slides go up (yellow color)
-                Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.YELLOW;
-                blinkinLedDriver.setPattern(Blinken_pattern);
                 SetSlideToPosition(2580);
-                if (slideLeft.getCurrentPosition() >= 2580) {
+                if (slideLeft.getCurrentPosition() >= 2580 || opMode.getRuntime() < timeout) {
+                    Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.ORANGE;
+                    blinkinLedDriver.setPattern(Blinken_pattern);
+                    timeout = opMode.getRuntime() + 2.0;
                     stepCounter++;
                 }
             }
+
+            // *******************************************
+            // *** STEP 2 Arms stay at 90 degrees throughout and
+            // *** the slides come back down to put the
+            // *** weight on the dolphin fins.
+            // *** as weight transfers to fins, the rotator arm
+            // *** has to keep increasing the angle to maintain
+            // *** 90 degrees to the floor
+            // *** This achieves a LEVEL-2 HANG once the robot is off the floor
+            // *** Robot should look very open, just touching the bottom base bar but not the floor
+            // *** Blinkin is Orange in this step, goes Red when done
+            // *******************************************
             else if (stepCounter == 2) {
-                // slides go down till hooks engage (blue color)
-                Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;
-                blinkinLedDriver.setPattern(Blinken_pattern);
+                // slides go down till hooks engage
                 SetSlideToPosition(2000); // verify
-                // red color if timeout used
                 if (slideLeft.getCurrentPosition() <= 3000 || opMode.getRuntime() < timeout) {
                     stepCounter++;
                     Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.RED;
                     blinkinLedDriver.setPattern(Blinken_pattern);
+                    timeout = opMode.getRuntime() + 2.0;
                 }
             }
-            else if (stepCounter == 3) {
+
+            // *******************************************
+            // *** STEP 3 Jared thinks this one is completely wrong and should go away
+            //            we shouldn't clam shell closed until later
+            // *******************************************
+            //else if (stepCounter == 3) {
                 // support robot horizontally on barrier & slides are vertical (yellow color)
-                Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.YELLOW;
-                blinkinLedDriver.setPattern(Blinken_pattern);
-                SetSlideRotatorArmToPosition(160); // verify
-                if (leftSlideArmRotatorMotor.getCurrentPosition() >= 160) {
-                    stepCounter++;
-                }
-            }
-            else if (stepCounter == 4) {
-                // slides extend upward to reach second ascent zone (blue color)
-                Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;
-                blinkinLedDriver.setPattern(Blinken_pattern);
+                //Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.YELLOW;
+                //blinkinLedDriver.setPattern(Blinken_pattern);
+                //SetSlideRotatorArmToPosition(160); // verify
+                //if (leftSlideArmRotatorMotor.getCurrentPosition() >= 160) {
+                //    stepCounter++;
+                //}
+            //}
+
+            // *******************************************
+            // *** STEP 3 Arms stay at 90 degrees to the floor and
+            // *** the slides extend up, bringing the green
+            // *** hooks above the HIGH bar
+            // *** Blinkin is Red in this step, goes Aqua when done
+            // *******************************************
+            else if (stepCounter == 3) {
+                // slides extend upward to reach level-3 ascent zone
                 SetSlideToPosition(3049); // verify
-                if (slideLeft.getCurrentPosition() >= 3049) {
+                if (slideLeft.getCurrentPosition() >= 3049 || opMode.getRuntime() < timeout) {
+                    Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.AQUA;
+                    blinkinLedDriver.setPattern(Blinken_pattern);
+                    timeout = opMode.getRuntime() + 2.0;
                     stepCounter++;
                 }
             }
-            else if (stepCounter == 5) {
-                // robot pull up (yellow color)
-                Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.YELLOW;
-                blinkinLedDriver.setPattern(Blinken_pattern);
-                SetSlideToPosition(0);
-                if (GetSlidesLimitSwitchPressed()) {
+
+            // *******************************************
+            // *** STEP 4 Arms stay at 90 degrees to the floor and
+            // *** the slides come down to hook the green
+            // *** hooks on the HIGH bar, and bring weight off of the dolphin fins
+            // *** But the slides stay extended enough to keep the robot
+            // *** touching both horizontal bars and probably still touching the bottom bar (but still off the floor)
+            // *** Blinkin is Aqua in this step, goes GREEN when done
+            // *******************************************
+            else if (stepCounter == 4) {
+                SetSlideToPosition(0); // TODO -- zero is wrong, need correct value here
+                if (GetSlidesLimitSwitchPressed() || opMode.getRuntime() < timeout) {  //TODO -- this is wrong logic, slides should only come in enough to put weight on the green hooks
+                    Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.GREEN;
+                    blinkinLedDriver.setPattern(Blinken_pattern);
+                    timeout = opMode.getRuntime() + 2.0;
                     stepCounter++;
                 }
             }
+
+            // *******************************************
+            // *** STEP 5 Arms stay at 90 degrees to the floor
+            // *** Because it is pressed against both horizontal bars,
+            // *** the base of the robot clam-shells closed
+            // *** showing the SHEAR FORCE bottom to the crowd!!!
+            // *** Blinkin is GREEN and stays Green from here on out to look cool
+            // *******************************************
+            else if (stepCounter == 5)
+            {
+                // CLAM SHELL CLOSED
+                SetSlideRotatorArmToPosition(0);
+                if (leftSlideArmRotatorMotor.getCurrentPosition() <= 160 || opMode.getRuntime() < timeout) {
+                    timeout = opMode.getRuntime() + 2.0;
+                    stepCounter++;
+                }
+            }
+
+            // *******************************************
+            // *** STEP 6 Arms stay at 90 degrees to the floor
+            // *** Because it is pressed against both horizontal bars, (but no longer the bottom base bar)
+            // *** Blinkin STAYS GREEN
+            // *** Lock pin servos lock the base of the robot in the clam shell position
+            // *******************************************
+            else if (stepCounter == 6)
+            {
+                // TODO -- NEED Lock servo logic
+                stepCounter++;
+            }
+
+            // *******************************************
+            // *** STEP 7
+            // *** Arm Rotator power removed (lock pins holding now)
+            // *** Blinkin should stay GREEN here
+            // *** Slides come in (but not all the way,
+            // *** just enough to balance the weight of the back of the robot)
+            // *** As slides comes in the robot comes lose from
+            // *** the lower hang bar and swings to a horizontal state
+            // *******************************************
+            else if (stepCounter == 7)
+            {
+                //TODO -- Remove power from arm rotators when locks are verified to be working
+                //SetSlideRotatorToPowerMode(0);
+                SetSlideToPosition(0); // TODO -- zero is wrong, need correct value here
+                if (GetSlidesLimitSwitchPressed() || opMode.getRuntime() < timeout) {  //TODO -- this is wrong logic, slides should only come in enough to balance the robot
+                    stepCounter++;
+                }
+            }
+
             ShowTelemetry();
             SpecialSleep(50);
-        }
+        } // END while loop
     }
 
 
@@ -753,7 +849,7 @@ public class Geronimo {
         SetSlideRotatorArmToPosition(0);
     }
     public void SpecimenPickupFromWallServoPosition(){
-        SetIntakeBoxRotatorPosition(0.96); //0.875
+        SetIntakeBoxRotatorPosition(0.89); //0.875
         SetSmallArmHangerPosition(0.35); //.15 //0.4
     }
     public void RemoveFromWall(){
@@ -768,7 +864,7 @@ public class Geronimo {
     }
     public void Stow(){
         //RemoveFromWallServoPosition();
-        SetIntakeBoxRotatorPosition(0.375); //0.875 //0.96  //0.2
+        SetIntakeBoxRotatorPosition(0.305); //0.875 //0.96  //0.2
         SetSmallArmHangerPosition(0.2); //0 //0.25
         double timeout = opMode.getRuntime() + 0.5;
         SetSlideToPosition(0);
@@ -778,20 +874,20 @@ public class Geronimo {
         SetSlideRotatorArmToPosition(0);
     }
     public void RemoveFromWallServoPosition() {
-        SetIntakeBoxRotatorPosition(0.96); //0.875
+        SetIntakeBoxRotatorPosition(0.89); //0.875
         SetSmallArmHangerPosition(0.2); //0 //0.25
     }
     public void SpecimenDeliverHighChamberAlternate(){
-        SetIntakeBoxRotatorPosition(0.945); //0.82  //0.905
+        SetIntakeBoxRotatorPosition(0.908); //0.82  //0.905
         SetSmallArmHangerPosition(.20); //0 //0.25
-        SetSlideToPosition(1240);  //1240  //740
-        SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(85)); //75.55
+        SetSlideToPosition(1342);  //1240  //740
+        SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(70.68)); //75.55 //1259  //85
     }
     public void SpecimenDeliverHighChamberFinishingMove(){
-        SetIntakeBoxRotatorPosition(0.82); //0.945
+        SetIntakeBoxRotatorPosition(0.908); //0.945
         SetSmallArmHangerPosition(0.2); //0 //0.25
-        SetSlideToPosition(2150); //00  //2350  //1750
-        SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(75.55)); //642
+        SetSlideToPosition(2900); //00  //2350  //1750
+        SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(70.68)); //642
     }
     public void UrchinPickupFromWall(){
             UrchinPickupFromWallServoPosition();
@@ -804,7 +900,7 @@ public class Geronimo {
             SetSlideRotatorArmToPosition(0);
         }
         public void UrchinPickupFromWallServoPosition(){
-            SetIntakeBoxRotatorPosition(0.505); //0.59 //0.535
+            SetIntakeBoxRotatorPosition(0.435); //0.59 //0.535
             SetSmallArmHangerPosition(0.57);
         }
         public void UrchinRemoveFromWall(){
@@ -820,17 +916,17 @@ public class Geronimo {
         SetSlideRotatorArmToPosition(0);
     }
     public void UrchinRemoveFromWallServoPosition(){
-        SetIntakeBoxRotatorPosition(0.59);
+        SetIntakeBoxRotatorPosition(0.53);
         SetSmallArmHangerPosition(0.2);
     }
     public void UrchinDeliverHighChamberAlternate(){
-        SetIntakeBoxRotatorPosition(0.415); //0.82  //0.905 //0.49 //0.575
+        SetIntakeBoxRotatorPosition(0.345); //0.82  //0.905 //0.49 //0.575
         SetSmallArmHangerPosition(.20); //0 //0.25
         SetSlideToPosition(2027);  //1240  //740 //1240
         SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(75.55));
     }
     public void UrchinDeliverHighChamberFinishingMove(){
-        SetIntakeBoxRotatorPosition(0.415); //0.945 //0.365 //0.45
+        SetIntakeBoxRotatorPosition(0.345); //0.945 //0.365 //0.45
         SetSmallArmHangerPosition(0.2); //0 //0.25
         SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(76.08)); //642 //710
         SetSlideToPosition(3662); //00  //2350  //1750 //2150
@@ -892,13 +988,13 @@ public class Geronimo {
     }
     public void SampleUrchinFloorPickup_UrchinReadyPosition() {
         // position the urchin to be ready to intake
-        SetIntakeBoxRotatorPosition(0.425);
+        SetIntakeBoxRotatorPosition(0.355);
         SetSmallArmHangerPosition(0.7); //.15 //0.80
         SetSlideRotatorArmToPosition(0);
     }
     public void SampleUrchinFloorPickup_UrchinJamReadyPosition() {
         // position the urchin to be ready to intake
-        SetIntakeBoxRotatorPosition(0.54);
+        SetIntakeBoxRotatorPosition(0.47);
         SetSmallArmHangerPosition(0.87); //.15 //0.80 //0.81
         SetSlideRotatorArmToPosition(0);
     }
@@ -916,13 +1012,13 @@ public class Geronimo {
     }
     public void SampleUrchinFloorPickupFinishingMove_UrchinGrabPosition() {
         // Lower the urchin to be closer to the floor
-        SetIntakeBoxRotatorPosition(0.555);   //0.485 //0.525 //0
+        SetIntakeBoxRotatorPosition(0.485);   //0.485 //0.525 //0
         SetSmallArmHangerPosition(0.85); //.15 //0.80 //0.8
         SetSlideRotatorArmToPosition(0);
     }
     public void BasketHigh(){
         //STEP ONE
-        SetIntakeBoxRotatorPosition(0.935); //0.85
+        SetIntakeBoxRotatorPosition(0.865); //0.85
         SetSmallArmHangerPosition(1.0); //.8 //1.05
         SetSlideToPosition(0);
         SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(85.13)); //8008, 450
@@ -954,12 +1050,12 @@ public class Geronimo {
         BasketHighFinishingMove_ArmSafeToLowerPosition();
     }
     public void BasketHighFinishingMove_SlidesPosition(){
-        SetSlideToPosition(6856);
+        SetSlideToPosition(6560);
     }
     public void BasketHighFinishingMove_UrchinDeliverPosition() {
-        SetIntakeBoxRotatorPosition(0.935);
-        SetSmallArmHangerPosition(0.5);  //1.0
-        SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(85.13));
+        SetIntakeBoxRotatorPosition(0.705);
+        SetSmallArmHangerPosition(0.52);  //1.0
+        SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(85.1));
     }
     public void BasketHighFinishingMove_UrchinSafeToLowerPosition(){
         SetSmallArmHangerPosition(1.0);
@@ -1353,7 +1449,7 @@ public class Geronimo {
                 leftSlideArmRotatorMotor.setPower(leftPower);
                 //changed so both leftPower
                 // TODO - try again with rightPower when new motors installed
-                rightSlideArmRotatorMotor.setPower(leftPower);
+                rightSlideArmRotatorMotor.setPower(rightPower);
 
                 // TODO - NEED TO CREATE CODE THAT HELPS WITH RESET/REACHING ZERO
 
@@ -1366,7 +1462,7 @@ public class Geronimo {
     {
         slideArmRotatorPower = power;
         //820 to 920 for limit -- SLIDE_ARM_ROTATOR_MAX_POS
-        if (slideArmRotatorPower > 0 && leftSlideArmRotatorMotor.getCurrentPosition() >= SLIDE_ARM_ROTATOR_MAX_POS) {
+        if (slideArmRotatorPower > 0 && leftSlideArmRotatorMotor.getCurrentPosition() >= findRealArmAngle(90)) {
             SetSlideRotatorArmToPosition(SLIDE_ARM_ROTATOR_MAX_POS);
         }
         else {
@@ -1401,7 +1497,7 @@ public class Geronimo {
 
         // if slide arm rotators are going down then reduce the max power
         if (leftSlideArmRotatorMotor.getCurrentPosition() > position) {
-            slideArmRotatorPower = SLIDE_ARM_ROTATOR_POWER / 3.0;
+            slideArmRotatorPower = SLIDE_ARM_ROTATOR_POWER;
         }
         else{
             slideArmRotatorPower = SLIDE_ARM_ROTATOR_POWER;
@@ -1704,11 +1800,10 @@ public class Geronimo {
 
     int targetPositionIMUARM = 500;
     public int findRealArmAngle(double targetIMU_Degrees) {
-        rotatorPosition = leftSlideArmRotatorMotor.getCurrentPosition();
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
         imuPosition = (orientation.getRoll());
 
-        targetPositionIMUARM = (int) ((targetIMU_Degrees - imuPosition) *  ticksPerDegree);
+        targetPositionIMUARM = (int) ((targetIMU_Degrees - imuPosition) *  ticks_in_degrees);
 
         opMode.telemetry.addData("imu position: " , imuPosition);
         return targetPositionIMUARM;

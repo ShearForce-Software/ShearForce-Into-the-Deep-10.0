@@ -64,36 +64,6 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             }
 
 
-            // LIMELIGHT Test Function
-            else if(gamepad2.dpad_left && !gamepad2.options){
-                //theRobot.SetSlideToPosition(1800);
-                // theRobot.SetIntakeBoxRotatorPosition(0.04);
-                // theRobot.SetSmallArmHangerPosition(0.365);
-                // sleep(100);
-                //theRobot.SetIntakeBoxRotatorPosition(0.255);
-                //theRobot.SetSmallArmHangerPosition(0.56);
-                sleep(1000);
-
-                double [] offsetInches = theRobot.GetStrafeOffsetInInches("red");
-
-                if(Math.abs(offsetInches[0])<0.001){
-                    telemetry.addLine("NOPE");
-                }
-                else{
-                    drive.updatePoseEstimate();//Update the current post estimate
-                    double fixedForwardAdjustment = 3;
-
-                    Pose2d currentPose = drive.pose;
-                    Vector2d targetVector = new Vector2d(-offsetInches[1] + fixedForwardAdjustment, offsetInches[0]);
-
-                    Action strafeAction = drive.actionBuilder(currentPose)
-                            .strafeToConstantHeading(targetVector)
-                            .build();
-
-                    Actions.runBlocking(strafeAction);
-                }
-            }
-            // TODO - ??? What is this for?
 
             // dpad left WITHOUT options is for the swipers
             else if (gamepad1.dpad_left && !gamepad1.options) {
@@ -258,7 +228,36 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             }
             
             // Combo moves for basket deliveries
+            // LIMELIGHT Test Function
+            else if(gamepad2.dpad_left && !gamepad2.options){
+                theRobot.SetSlideToPosition(1800);
+                // theRobot.SetIntakeBoxRotatorPosition(0.04);
+                // theRobot.SetSmallArmHangerPosition(0.365);
+                // sleep(100);
+                theRobot.SetIntakeBoxRotatorPosition(0.255);
+                theRobot.SetSmallArmHangerPosition(0.56);
+                theRobot.SetUrchinServoPosition(0);
+                sleep(1000);
 
+                double [] offsetInches = theRobot.GetStrafeOffsetInInches("red");
+
+                if(Math.abs(offsetInches[0])<0.001){
+                    telemetry.addLine("NOPE");
+                }
+                else{
+                    drive.updatePoseEstimate();//Update the current post estimate
+                    double fixedForwardAdjustment = 3;
+
+                    Pose2d currentPose = drive.pose;
+                    Vector2d targetVector = new Vector2d(-offsetInches[1] + fixedForwardAdjustment, offsetInches[0]);
+
+                    Action strafeAction = drive.actionBuilder(currentPose)
+                            .strafeToConstantHeading(targetVector)
+                            .build();
+
+                    Actions.runBlocking(strafeAction);
+                }
+            }
             else if (gamepad2.dpad_left && gamepad2.options) {
                 theRobot.SampleUrchinFloorJam();
             } else if (gamepad2.dpad_down && !gamepad2.options){
