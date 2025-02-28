@@ -6,6 +6,11 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 
+import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.Vector2d;
+import com.acmerobotics.roadrunner.ftc.Actions;
+
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -39,6 +44,8 @@ public class Geronimo {
     public double imuOffsetInDegrees = 0.0;
     double imuPosition = 0;
 
+    MecanumDrive_Geronimo drive;
+
     LinearOpMode opMode;
     public static double autoTimeLeft = 0.0;
     boolean IsDriverControl = true;
@@ -50,7 +57,7 @@ public class Geronimo {
     DcMotor rightRear;
 
     //pidf variables
-    boolean pidfEnabled = false;
+    public static boolean pidfEnabled = false;
     public static double p = 0.005, i = 0, d = 0.0, f = 0.007; //0.0001
     PIDController Right_controller = new PIDController(p, i, d);
     PIDController Left_controller = new PIDController(p, i, d);
@@ -60,8 +67,9 @@ public class Geronimo {
     final double yellow_jacket_51_ticks = 1425.1;   //17.81 ticks for each degree of arm rotation
     final double ticks_in_degrees = (arm_gear_ratio/360.0) * yellow_jacket_51_ticks;
     public double rotator_arm_target_ticks = 0;
+    public double rotator_arm_target_angle = 0.0;
 
-    DcMotor leftSlideArmRotatorMotor;
+            DcMotor leftSlideArmRotatorMotor;
     DcMotor rightSlideArmRotatorMotor;
     TouchSensor touchSensorSlideArmRotatorRight;
     TouchSensor touchSensorSlideArmRotatorLeft;
@@ -171,6 +179,7 @@ public class Geronimo {
     double angletoObject = Math.toRadians(60);
 
     //LimeLight
+    public static boolean limelightEnabled = false;
     Limelight3A limelightbox;
     private static final double KpDistance = -0.1; // Proportional control constant for distance adjustment
     private static final double KpAim = 0.1; // Proportional control constant for aiming adjustment
@@ -266,9 +275,18 @@ public class Geronimo {
 
     }
 
+    public void InitRoadRunner(HardwareMap hardwareMap)
+    {
+        drive = new MecanumDrive_Geronimo(hardwareMap, new Pose2d(0, 0, 0));
+    }
     // *********************************************************
     // ****      LIME LIGHT Methods                         ****
     // *********************************************************
+
+    public void SetLimelightEnabled (boolean enabled)
+    {
+        limelightEnabled = enabled;
+    }
 
     public void InitLimelight(HardwareMap hardwareMap){
         limelightbox = hardwareMap.get(Limelight3A.class, "limelight");
@@ -282,9 +300,6 @@ public class Geronimo {
        // XDistance_to_object = distance_to_object*Math.cos((limelightbox.getLatestResult().getTx()));
        // YDistance_to_object = distance_to_object*Math.sin((limelightbox.getLatestResult().getTx()));
     }
-
-
-
 
     //This method basically finds the amount of tx and ty angle from crosshair to target.
     //It then returns an ArrayList giving back both tx and ty values.
@@ -317,6 +332,19 @@ public class Geronimo {
         return offset;
     }
 
+    String limelight_targetImageName = "red";
+    public void SetLimelightToRed()
+    {
+        limelight_targetImageName = "red";
+    }
+    public void SetLimelightToBlue()
+    {
+        limelight_targetImageName = "blue";
+    }
+    public void SetLimelightToYellow()
+    {
+        limelight_targetImageName = "yellow";
+    }
     public double[] GetStrafeOffsetInInches(String targetImageName) {
 
         // Retrieve scaled offsets (already assumed from the recognized target).
@@ -347,6 +375,42 @@ public class Geronimo {
         return new double[] {strafeX, strafeY};
     }
 
+    public void AlignOnFloorSample()
+    {
+        double [] offsetInches = GetStrafeOffsetInInches(limelight_targetImageName);
+
+        if(Math.abs(offsetInches[0])<0.001){
+            opMode.telemetry.addLine("NOPE");
+            Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.GREEN;
+            blinkinLedDriver.setPattern(Blinken_pattern);
+        }
+        else{
+            if (limelight_targetImageName.equals("red")) {
+                Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.RED;
+            }
+            else if (limelight_targetImageName.equals("yellow"))
+            {
+                Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.YELLOW;
+            }
+            else if (limelight_targetImageName.equals("blue"))
+            {
+                Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;
+            }
+            blinkinLedDriver.setPattern(Blinken_pattern);
+
+            drive.updatePoseEstimate();//Update the current roadrunner pose estimate
+            double fixedForwardAdjustment = 3;
+
+            Pose2d currentPose = drive.pose;
+            Vector2d targetVector = new Vector2d(-offsetInches[1] + fixedForwardAdjustment, offsetInches[0]);
+
+            Action strafeAction = drive.actionBuilder(currentPose)
+                    .strafeToConstantHeading(targetVector)
+                    .build();
+
+            Actions.runBlocking(strafeAction);
+        }
+    }
 
     public boolean limelightHasTarget() {
         LLResult result = limelightbox.getLatestResult();
@@ -886,11 +950,14 @@ public class Geronimo {
         //RemoveFromWallServoPosition();
         SetIntakeBoxRotatorPosition(0.305); //0.875 //0.96  //0.2
         SetSmallArmHangerPosition(0.2); //0 //0.25
-        double timeout = opMode.getRuntime() + 0.5;
+
+        double timeout = opMode.getRuntime() + 2.0;
         SetSlideToPosition(0);
         while (!GetSlidesLimitSwitchPressed() && opMode.getRuntime() < timeout) {
             SpecialSleep(50);
+            ResetSlidesToZero();
         }
+
         SetSlideRotatorArmToPosition(0);
     }
     public void RemoveFromWallServoPosition() {
@@ -912,11 +979,14 @@ public class Geronimo {
     public void UrchinPickupFromWall(){
             UrchinPickupFromWallServoPosition();
             SetUrchinServoPosition(URCHIN_SERVO_MIN_POS);
-            double timeout = opMode.getRuntime() + 0.5;
+
+            double timeout = opMode.getRuntime() + 2.0;
             SetSlideToPosition(0);
             while (!GetSlidesLimitSwitchPressed() && opMode.getRuntime() < timeout) {
                 SpecialSleep(50);
             }
+            ResetSlidesToZero();
+
             SetSlideRotatorArmToPosition(0);
         }
         public void UrchinPickupFromWallServoPosition(){
@@ -955,56 +1025,65 @@ public class Geronimo {
     // ************************************
     // High Basket Delivery Combo Moves
     // ************************************
-    /*
-    // Existing method
-    public void SampleUrchinFloorPickup(){
-        // Move slides a little in front of robot
-        SampleUrchinFloorPickup_SlidePosition();
-        SpecialSleep(300);
 
-        // Open the urchin and position to be ready to intake
-        SampleUrchinFloorPickup_UrchinReadyPosition();
-        SpecialSleep(400);
-        SetUrchinServoPosition(0);
-
-        //These two lines were already commented out
-        SetUrchinServoPosition(0);
-        SampleUrchinFloorPickup_UrchinReadyPosition();
-    }
-     */
     // New method
     public void SampleUrchinFloorPickup(){
-        if (!(GetRotatorLeftArmCurrentPosition() == 0 && GetSlideLeftCurrentPosition() >= 1925 && GetSlideLeftCurrentPosition() <= 1965)) {
+        // if the slides need to be moved out in front of the robot still (doesn't waste time if already there)
+        if (!(GetRotatorLeftArmCurrentPosition() <= 20 && GetSlideLeftCurrentPosition() >= 1700 )) {
             // Move slides a little in front of robot
             SampleUrchinFloorPickup_SlidePosition();
             SpecialSleep(300);
         }
-         if (!(intakeBoxRotatorPosition == 0.425 && smallArmHangerLeftPosition == 0.7 && slideArmRotatorTargetPosition <= 20)) {
+        // if the urchin needs to be positioned still (doesn't waste time if already there)
+        if (!(intakeBoxRotatorPosition == 0.225 && smallArmHangerLeftPosition == 0.56 && slideArmRotatorTargetPosition <= 20)) {
             // Open the urchin and position to be ready to intake
-            SampleUrchinFloorPickup_UrchinReadyPosition();
+            //SampleUrchinFloorPickup_UrchinReadyPosition();
+            SampleUrchinLimelightViewPosition();
             SpecialSleep(400);
         }
-        SetUrchinServoPosition(0);
 
-        /*
-        SetUrchinServoPosition(0);
-        SampleUrchinFloorPickup_UrchinReadyPosition();
-         */
+        // if need to open the Urchin
+        if (urchinServo_position != 0) {
+            SetUrchinServoPosition(0);
+            SpecialSleep(200);
+        }
+
+        // if limelight is enabled
+        if (limelightEnabled)
+        {
+            // center up the robot on the sample using the limelight
+            AlignOnFloorSample();
+        }
     }
-    public void SampleUrchinFloorJam(){
-        // Move slides a little in front of robot
-        SampleUrchinFloorPickup_SlidePosition();
-        SpecialSleep(300);
 
-        // Open the urchin and position to be ready to intake
-        SetUrchinServoPosition(0);
-        SpecialSleep(400);
+
+    public void SampleUrchinLimelightViewPosition()
+    {
+        SetIntakeBoxRotatorPosition(0.255);
+        SetSmallArmHangerPosition(0.56);
+    }
+
+    public void SampleUrchinFloorJam(){
+        // if the slides need to be moved out in front of the robot still (doesn't waste time if already there)
+        if (!(GetRotatorLeftArmCurrentPosition() <= 20 && GetSlideLeftCurrentPosition() >= 1700 )) {
+            // Move slides a little in front of robot
+            SampleUrchinFloorPickup_SlidePosition();
+            SpecialSleep(300);
+        }
+
+        // if need to close the Urchin
+        if (urchinServo_position != 1) {
+            SetUrchinServoPosition(1);
+            SpecialSleep(200);
+        }
+
+        // move the urchin position to jam into the floor
         SampleUrchinFloorPickup_UrchinJamReadyPosition();
     }
     public void SampleUrchinFloorPickup_SlidePosition() {
         // Move slides a little in front of robot
         SetSlideRotatorArmToPosition(0);
-        SetSlideToPosition(1945);
+        SetSlideToPosition(1800);  // 1945
     }
     public void SampleUrchinFloorPickup_UrchinReadyPosition() {
         // position the urchin to be ready to intake
@@ -1036,27 +1115,77 @@ public class Geronimo {
         SetSmallArmHangerPosition(0.85); //.15 //0.80 //0.8
         SetSlideRotatorArmToPosition(0);
     }
+
+    public void InspectionLowForward(){
+        // if the rotator arm is raised
+        if (GetRotatorLeftArmCurrentPosition() > GetRotatorArmTicksFromDegrees(10))
+        {
+            // if the rotator arm is raised a lot (be more careful on lowering it)
+            if (GetRotatorLeftArmCurrentPosition() > GetRotatorArmTicksFromDegrees(70))
+            {
+                // Rotate urchin back away from the basket
+                BasketHighFinishingMove_UrchinSafeToLowerPosition();
+                SpecialSleep(400);
+                // Rotate arms a little away from basket and lower slides to zero
+                BasketHighFinishingMove_ArmSafeToLowerPosition();
+                SpecialSleep(400);
+            }
+            Stow();
+        }
+        SetSlideToPosition(SLIDE_ARM_MAX_HORIZONTAL_POS);
+        SetIntakeBoxRotatorPosition(0.96); //0.875
+        // SetSmallArmHangerPosition(0.35);
+        SetClawPosition(CLAW_MIN_POS);
+    }
+
+    public void InspectionHighPos(){
+        // if the slides are currently horizontally extended, but the rotator arm is not raised yet
+        if (GetRotatorLeftArmCurrentPosition() <= GetRotatorArmTicksFromDegrees(30) && GetSlideLeftCurrentPosition() >= 1700 ) {
+            // Stow the urchin before raising the arms and reraising the slides
+            Stow();
+        }
+
+        BasketHighFinishingMove_UrchinDeliverPosition();
+        BasketHighFinishingMove_SlidesPosition();
+    }
+
     public void BasketHigh(){
         //STEP ONE
         SetIntakeBoxRotatorPosition(0.865); //0.85
         SetSmallArmHangerPosition(1.0); //.8 //1.05
-        SetSlideToPosition(0);
+
+        // if in a horizontal arm position, then should do a reset on the slides, first before raising the arm to keep from tipping over
+        if (leftSlideArmRotatorMotor.getCurrentPosition() < GetRotatorArmTicksFromDegrees(20)) {
+            double timeout = opMode.getRuntime() + 2.0;
+            SetSlideToPosition(0);
+            while (!GetSlidesLimitSwitchPressed() && opMode.getRuntime() < timeout) {
+                SpecialSleep(50);
+            }
+            ResetSlidesToZero();
+        }
+
         SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(85.13)); //8008, 450
         // wait for the rotators to move to vertical before raising slides
         //SpecialSleep(2000);
         //SetSlideToPosition(6496); //2320
     }
 
-    public void InspectionHighPos(){
-        BasketHighFinishingMove_UrchinDeliverPosition();
-        BasketHighFinishingMove_SlidesPosition();
-
-    }
-
     public void BasketHighFinishingMove(){
+
+        // if driver forgot to prepare and is trying to go straight up from a horizontal extended position
+        if (leftSlideArmRotatorMotor.getCurrentPosition() < GetRotatorArmTicksFromDegrees(70))
+        {
+            BasketHigh();
+        }
         // Raise slides to high basket height
         BasketHighFinishingMove_SlidesPosition();
-        SpecialSleep(2500); //2000 //4000
+        double timeout = opMode.getRuntime() + 2.0;
+        while (slideLeft.getCurrentPosition() < 6500 && opMode.getRuntime() < timeout)
+        {
+            SpecialSleep(50);
+        }
+        //SpecialSleep(2500); //2000 //4000
+
         // Rotate urchin to align above basket
         BasketHighFinishingMove_UrchinDeliverPosition();
         SpecialSleep(200);
@@ -1065,7 +1194,7 @@ public class Geronimo {
         SpecialSleep(400);
         // Rotate urchin back away from the basket
         BasketHighFinishingMove_UrchinSafeToLowerPosition();
-        SpecialSleep(400);
+        SpecialSleep(200);
         // Rotate arms a little away from basket and lower slides to zero
         BasketHighFinishingMove_ArmSafeToLowerPosition();
     }
@@ -1283,13 +1412,6 @@ public class Geronimo {
         return returnValue;
     }
 
-    public void InspectionLowForward(){
-        SetSlideToPosition(SLIDE_ARM_MAX_HORIZONTAL_POS);
-        SetIntakeBoxRotatorPosition(0.96); //0.875
-       // SetSmallArmHangerPosition(0.35);
-        SetClawPosition(CLAW_MIN_POS);
-    }
-
     // TODO -- need to determine other rotator arm positions to limit than just zero
     public void Slides_Horizontal_MAX_Limit(){
         // if the rotator arms are in a horizontal orientation
@@ -1436,6 +1558,10 @@ public class Geronimo {
         return ((int)(target_arm_angle * ticks_in_degrees));
     }
 
+    public void SetPIDF_Enabled(boolean enabled)
+    {
+        pidfEnabled = enabled;
+    }
     public void SetSlideRotatorArmToPositionPIDF(){
         if (pidfEnabled) {
             //Right_controller.setPID(p,i,d);
@@ -1446,7 +1572,7 @@ public class Geronimo {
             if (rotator_arm_target_ticks == 0 && GetSlideRotatorArmLimitSwitchPressed()) {
                 ResetSlideRotatorArmToZero();
             } else {
-                double rotator_arm_angle = rotator_arm_target_ticks / ticks_in_degrees;
+                rotator_arm_target_angle = rotator_arm_target_ticks / ticks_in_degrees;
 
                 Right_controller.setTolerance(5.0); // sets the error in ticks I think that is tolerated > go back to ticks and degrees, plus or minus the tolerance
                 Left_controller.setTolerance(5.0);
@@ -1461,8 +1587,8 @@ public class Geronimo {
                 double right_pid = Right_controller.calculate(right_armPos, rotator_arm_target_ticks);
 
                 // Calculate the FeedForward component to adjust the PID by
-                double left_ff = Math.cos(rotator_arm_angle) * f;
-                double right_ff = Math.cos(rotator_arm_angle) * f;
+                double left_ff = Math.cos(rotator_arm_target_angle) * f;
+                double right_ff = Math.cos(rotator_arm_target_angle) * f;
 
                 // Calculate the motor power (PID + FeedForward) component
                 double leftPower = left_pid + left_ff;
@@ -1635,8 +1761,10 @@ public class Geronimo {
     }
 
     public void ShowTelemetry(){
-        opMode.telemetry.addData("Limelight OffSet (x,y) inches no correction:" ,"R: %.2f, L: %.2f" ,GetStrafeOffsetInInches("red")[0], GetStrafeOffsetInInches("red")[1]);
-        opMode.telemetry.addData("Limelight Offset (x,y) inches no correction:", "R: %.2f, L: %.2f", GetStrafeOffsetInInches("red")[0]+3, GetStrafeOffsetInInches("red")[1]);
+        opMode.telemetry.addData("Limelight Enabled:" , limelightEnabled);
+        opMode.telemetry.addData("Limelight Target:" , limelight_targetImageName);
+        opMode.telemetry.addData("Limelight OffSet (x,y) inches no correction:" ,"R: %.2f, L: %.2f" ,GetStrafeOffsetInInches(limelight_targetImageName)[0], GetStrafeOffsetInInches(limelight_targetImageName)[1]);
+        opMode.telemetry.addData("Limelight Offset (x,y) inches no correction:", "R: %.2f, L: %.2f", GetStrafeOffsetInInches(limelight_targetImageName)[0]+3, GetStrafeOffsetInInches(limelight_targetImageName)[1]);
 
 
         opMode.telemetry.addData("Auto Last Time Left: ", autoTimeLeft);
@@ -1659,9 +1787,11 @@ public class Geronimo {
         opMode.telemetry.addData("Slides in RUN_TO_POSITION? ", slidesRunningToPosition);
         //opMode.telemetry.addData(">", "slides - use leftStick Y for control" );
 
+        opMode.telemetry.addData("PIDF Enabled:", pidfEnabled);
+        opMode.telemetry.addData("PIDF Target:", " %.1f (ticks), %.1f (deg) ", rotator_arm_target_ticks, rotator_arm_target_angle);
         opMode.telemetry.addData("Slide Arm Rotator Positions: ", "L: %d, R: %d", leftSlideArmRotatorMotor.getCurrentPosition(), rightSlideArmRotatorMotor.getCurrentPosition());
         opMode.telemetry.addData("Slide Arm Rotator ", "Target: %d, Power: %.2f", slideArmRotatorTargetPosition, slideArmRotatorPower);
-        opMode.telemetry.addData("targetPositionIMUARM: " , targetPositionIMUARM);
+        opMode.telemetry.addData("targetPositionIMUARM: " , " %d (ticks), %.1f (deg) ", targetPositionIMUARM_ticks, targetIMU_Degrees);
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
         opMode.telemetry.addData("imu roll: ", (imu.getRobotYawPitchRollAngles().getRoll()));
         opMode.telemetry.addData("imu pitch: ", (imu.getRobotYawPitchRollAngles().getPitch()));
@@ -1824,14 +1954,16 @@ public class Geronimo {
 
     }
 
-    int targetPositionIMUARM = 500;
-    public int findRealArmAngle(double targetIMU_Degrees) {
+    private int targetPositionIMUARM_ticks = 500;
+    private double targetIMU_Degrees = 0.0;
+    public int findRealArmAngle(double targetDegrees) {
+        targetIMU_Degrees = targetDegrees;
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
         imuPosition = (orientation.getRoll());
 
-        targetPositionIMUARM = (int) ((targetIMU_Degrees - imuPosition) *  ticks_in_degrees);
+        targetPositionIMUARM_ticks = (int) ((targetIMU_Degrees - imuPosition) *  ticks_in_degrees);
 
         opMode.telemetry.addData("imu position: " , imuPosition);
-        return targetPositionIMUARM;
+        return targetPositionIMUARM_ticks;
     }
 }

@@ -25,13 +25,14 @@ public class Geronimo_Manual_Control extends LinearOpMode {
 
     public void runOpMode() {
         theRobot = new Geronimo(true, true, this);
-        MecanumDrive_Geronimo drive;
+        //MecanumDrive_Geronimo drive;
 
         theRobot.Init(this.hardwareMap);
         theRobot.InitLimelight(hardwareMap);
         theRobot.ShowTelemetry();
         telemetry.update();
-        drive = new MecanumDrive_Geronimo(hardwareMap, new Pose2d(0, 0, 0));
+        //drive = new MecanumDrive_Geronimo(hardwareMap, new Pose2d(0, 0, 0));
+        theRobot.InitRoadRunner(hardwareMap);
 
         waitForStart();
         resetRuntime();
@@ -64,8 +65,6 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 theRobot.SetFieldCentricMode(false);
             }
 
-
-
             // dpad left WITHOUT options is for the swipers
             else if (gamepad1.dpad_left && !gamepad1.options) {
                 theRobot.SetSwiperPosition(Geronimo.SWIPER_MAX_POS);
@@ -77,15 +76,8 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 theRobot.SetSwiperPosition(Geronimo.SWIPER_MAX_POS);
                 theRobot.SetSwiper2Position(Geronimo.SWIPER2_MIN_POS);
             }
-            // LEVEL-2 Hang Logic
-            else if(gamepad1.dpad_down && !gamepad1.options){ // Driver will press prehandrobot when he feels he is set
-                theRobot.PreHangRobot();
-            }
-            else if(gamepad1.dpad_up && !gamepad1.options){ //Driver will eventually hang the robot himself.
-                theRobot.ReadyHangRobot();
-            }
             // LEVEL-3 Hang Logic
-            else if (gamepad1.cross && !gamepad1.options) {
+            else if(gamepad1.dpad_up && !gamepad1.options){ //Driver will eventually hang the robot himself.
                 theRobot.level3Ascent();
             }
             // Emergency pause
@@ -93,18 +85,27 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 theRobot.SetSlidesToHoldCurrentPosition();
                 theRobot.SetSlideRotatorArmToHoldCurrentPosition();
             }
-            // available buttons on GamePad1
+            // LOCKS
             else if (gamepad1.dpad_right && !gamepad1.options) {
                 theRobot.HooksReleased();
             }
-            else if (gamepad1.square && !gamepad1.options) {
+            else if(gamepad1.dpad_down && !gamepad1.options){
                 theRobot.HooksLocked();
             }
-            else if (gamepad1.circle && !gamepad1.options) {
-                // TBD
+            // LIMELIGHT Color Target
+            else if (gamepad1.square && !gamepad1.options) {
+                theRobot.SetLimelightToRed();
             }
+            else if (gamepad1.cross && !gamepad1.options) {
+                theRobot.SetLimelightToYellow();
+            }
+            else if (gamepad1.circle && !gamepad1.options) {
+                theRobot.SetLimelightToBlue();
+            }
+            // AVAILABLE COMMANDS
+            // TEMP -- turn limelight on/off
             else if(gamepad1.dpad_right && gamepad1.options){
-
+                theRobot.SetLimelightEnabled(!Geronimo.limelightEnabled);
             }
 
             /* *************************************************
@@ -173,11 +174,11 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             }
 
             // Slide Rotator Controls
-            if (gamepad2.right_stick_y < -0.25) {
+            if (gamepad2.right_stick_y < -0.25 && !Geronimo.pidfEnabled) {
                 rotatorPowerApplied = true;
                 theRobot.SetSlideRotatorToPowerMode(0.4);
             }
-            else if (gamepad2.right_stick_y > 0.25) {
+            else if (gamepad2.right_stick_y > 0.25 && !Geronimo.pidfEnabled) {
                 rotatorPowerApplied = true;
                 theRobot.SetSlideRotatorToPowerMode(-0.4);
             }
@@ -228,50 +229,15 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 theRobot.UrchinDeliverHighChamberFinishingMove();
             }
 
+            //TEMP? -- PIDF Enabled toggle
             else if(gamepad2.dpad_up && gamepad2.options){
-                theRobot.SetSlideToPosition(1800);
-                theRobot.SetIntakeBoxRotatorPosition(0.255);
-                theRobot.SetSmallArmHangerPosition(0.56);
-                theRobot.SetUrchinServoPosition(0);
+                theRobot.SetPIDF_Enabled(!Geronimo.pidfEnabled);
             }
             
             // Combo moves for basket deliveries
-            // LIMELIGHT Test Function
             else if(gamepad2.dpad_left && !gamepad2.options) {
-                theRobot.SetSlideToPosition(1800);
-                //theRobot.SetIntakeBoxRotatorPosition(0.04);
-                //theRobot.SetSmallArmHangerPosition(0.365);
-                // sleep(100);
-                theRobot.SetIntakeBoxRotatorPosition(0.255);
-                theRobot.SetSmallArmHangerPosition(0.56);
-                theRobot.SetUrchinServoPosition(0);
-                //sleep(3000);
+                theRobot.SampleUrchinFloorPickup();
             }
-
-/*
-                double [] offsetInches = theRobot.GetStrafeOffsetInInches("red");
-
-                if(Math.abs(offsetInches[0])<0.001){
-                    telemetry.addLine("NOPE");
-                }
-                else{
-                    theRobot.Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.RED;
-                    theRobot.blinkinLedDriver.setPattern(theRobot.Blinken_pattern);
-                    drive.updatePoseEstimate();//Update the current post estimate
-                    double fixedForwardAdjustment = 3;
-
-                    Pose2d currentPose = drive.pose;
-                    Vector2d targetVector = new Vector2d(-offsetInches[1] + fixedForwardAdjustment, offsetInches[0]);
-
-                    Action strafeAction = drive.actionBuilder(currentPose)
-                            .strafeToConstantHeading(targetVector)
-                            .build();
-
-                    Actions.runBlocking(strafeAction);
-                }
-            }
-
- */
             else if (gamepad2.dpad_left && gamepad2.options) {
                 theRobot.SampleUrchinFloorJam();
             } else if (gamepad2.dpad_down && !gamepad2.options){

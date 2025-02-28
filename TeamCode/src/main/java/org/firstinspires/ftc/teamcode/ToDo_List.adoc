@@ -6,20 +6,15 @@
 
 
 - [ ] Shrey: Test inspection buttons, verify IMU logic working for inspection
-- [ ] Hook servos need to be added (lock1 and lock2 in test code)
 - [ ] Change network password for connecting to the new control hub/ update control hub?
-- [ ] Init servos in manual control?
 - [ ] Akshay: Get Limelight grab sample integrated and working for yellow samples
 - [ ] Claire: Test using PIDF arm control for manual and autonomous routines
 - [ ] Akshay: Get Limelight grab sample integrated and working for blue/red samples
 - [ ] Matthew: Test Level-3 ascent with new motors and hooks
 - [ ] Aidan: Test and get Auto Left delivering at least 3 samples to high basket
-- [ ] Gianna: Make mode buttons that specify if looking for yellow, blue, or red samples for limelight logic to use, make LED lights match
 
 ---
 - [ ] Akshay: Test Limelight on Geronimo for aligning on wall specimens
-- [ ] Akshay: Create routine in Geronimo that uses the Limelight to report Red, Blue, or Yellow -- Prove on SummerChassis
-- [ ] Aidan: Make a NEW Auto Right that does at least 4 specimens (deliver, try grabbing samples with urchin to speed up, deliver, deliver, deliver)
 - [ ] Make a NEW auto left to put at least 4 samples into the high basket
 
 
