@@ -18,10 +18,10 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 
-@Autonomous(name="Four High Specimens Auto Route", preselectTeleOp =
+@Autonomous(name="Four High Specimens Auto Route 2.0", preselectTeleOp =
         "Geronimo 1 Manual Control")
 // @Disabled
-public class FourHighSpecimensAutoRoute extends LinearOpMode {
+public class FourHighSpecimensAutoRoute2 extends LinearOpMode {
     Geronimo control = new Geronimo(true, false,this);
     MecanumDrive_Geronimo drive;
     Pose2d startPose;
@@ -59,7 +59,7 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
         //slowDownVelocityConstraint = new TranslationalVelConstraint(30);
         slowDownAccelerationConstraint = new ProfileAccelConstraint(-20, 50);
         intakeVelocityConstraint = new TranslationalVelConstraint(15);
-        humanPlayerVelocityConstraint = new TranslationalVelConstraint(7);
+        humanPlayerVelocityConstraint = new TranslationalVelConstraint(12);
 
 
         /* Initialize the Robot */
@@ -215,7 +215,7 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
                         finishdeliverSpecimenHigh(),
                         new SleepAction(.6),
                         releaseSpecimen(),
-                        new SleepAction(.3),
+                        new SleepAction(.1),
                         //2nd delivery
                         new ParallelAction(DrivetoDeck2,
                                 new SequentialAction(//don't call stow; call wall position
@@ -247,7 +247,14 @@ public class FourHighSpecimensAutoRoute extends LinearOpMode {
                         ,grabSpecimen(),
                         new SleepAction(.1),
                         liftSpecimenoffWall(),
-                        new SleepAction(.2)
+                        new SleepAction(.2),
+                        new ParallelAction(DriveToSubmersible3
+                                , deliverSpecimenHigh()),
+                        finishdeliverSpecimenHigh(),
+                        new SleepAction(.6),
+                        releaseSpecimen(),
+                        new SleepAction(.1),
+                        slidestozero(), rotatorarmstozero(), stowPosition(), grabSpecimenfromwall()
                         /*
                         new SleepAction(.5),
                         new ParallelAction(DriveToSubmersible3
