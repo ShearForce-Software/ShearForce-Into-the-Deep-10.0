@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode.Geronimo;
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 import static org.firstinspires.ftc.teamcode.Geronimo.MecanumDrive_Geronimo.PARAMS;
 
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
+import com.qualcomm.hardware.limelightvision.LLStatus;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 
 import com.acmerobotics.roadrunner.Action;
@@ -26,6 +28,7 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 //import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
@@ -83,6 +86,7 @@ public class Geronimo {
     public static final int SLIDE_ARM_ROTATOR_MAX_POS = 1640;  //  //870
     public static final int SLIDE_ARM_ROTATOR_POS_TO_LIMIT_SLIDES = 300; // TODO need to find the lowest rotator position we can allow the slides to go out
     public static final double SLIDE_ARM_ROTATOR_POWER = 0.75;
+
 
     //slides
     DcMotor slideLeft;
@@ -181,9 +185,25 @@ public class Geronimo {
     double YDistance_to_object = 0;
     double angletoObject = Math.toRadians(60);
 
+
+
+
+
     //LimeLight
     public static boolean limelightEnabled = false;
     Limelight3A limelightbox;
+
+
+    LLResult result;//= new LLResult();
+    LLStatus status = new LLStatus();
+    //double captureLatency = result.getCaptureLatency();
+    //double targetingLatency = result.getTargetingLatency();
+    //ouble parseLatency = result.getParseLatency();
+
+
+
+
+
     private static final double KpDistance = -0.1; // Proportional control constant for distance adjustment
     private static final double KpAim = 0.1; // Proportional control constant for aiming adjustment
 
@@ -267,7 +287,7 @@ public class Geronimo {
         touchSensorSlideLeft = hardwareMap.get(TouchSensor.class, "sensor_touchLeft");
         touchSensorSlideRight = hardwareMap.get(TouchSensor.class, "sensor_touchRight");
 
-         limelightbox = hardwareMap.get(Limelight3A.class, "limelight");
+         //limelightbox = hardwareMap.get(Limelight3A.class, "limelight");
         InitBlinkin(hardwareMap);
 
         imu = hardwareMap.get(IMU.class, "imu");
@@ -293,8 +313,11 @@ public class Geronimo {
 
     public void InitLimelight(HardwareMap hardwareMap){
         limelightbox = hardwareMap.get(Limelight3A.class, "limelight");
+        limelightbox.setPollRateHz(100);
         limelightbox.pipelineSwitch(3);
         limelightbox.start();
+        status = limelightbox.getStatus();
+        result = limelightbox.getLatestResult();
         //limelightbox.getLatestResult().getTx();
        // limelightbox.getLatestResult().getTy();
        // angletoObject = LimelightMountingAngle + (limelightbox.getLatestResult().getTy());
@@ -306,10 +329,19 @@ public class Geronimo {
 
     //This method basically finds the amount of tx and ty angle from crosshair to target.
     //It then returns an ArrayList giving back both tx and ty values.
+
+    public void SetLatestResult(){
+        LLResult tempResult = limelightbox.getLatestResult();
+        if(tempResult != null && tempResult.isValid()){
+            result = tempResult;
+        }
+
+
+    }
+
     public List<Double>  FindAlignAngleToTargetImage(String targetImageName) {
         List<Double> offset = new ArrayList<>();
 
-        LLResult result = limelightbox.getLatestResult();
 
         if (result != null && result.isValid()) {
             // Access detector results
@@ -1777,10 +1809,24 @@ public class Geronimo {
     }
 
     public void ShowTelemetry(){
+
         opMode.telemetry.addData("Limelight Enabled:" , limelightEnabled);
         opMode.telemetry.addData("Limelight Target:" , limelight_targetImageName);
-        opMode.telemetry.addData("Limelight OffSet (x,y) inches no correction:" ,"R: %.2f, L: %.2f" ,GetStrafeOffsetInInches(limelight_targetImageName)[0], GetStrafeOffsetInInches(limelight_targetImageName)[1]);
-        opMode.telemetry.addData("Limelight Offset (x,y) inches no correction:", "R: %.2f, L: %.2f", GetStrafeOffsetInInches(limelight_targetImageName)[0]+3, GetStrafeOffsetInInches(limelight_targetImageName)[1]);
+        //opMode.telemetry.addData("FindAngleToTargetImageMethod:", FindAlignAngleToTargetImage("red"));
+        //opMode.telemetry.addData("Limelight OffSet (x,y) inches no correction:" ,"R: %.2f, L: %.2f" ,GetStrafeOffsetInInches(limelight_targetImageName)[0], GetStrafeOffsetInInches(limelight_targetImageName)[1]);
+        //opMode.telemetry.addData("Limelight Offset (x,y) inches no correction:", "R: %.2f, L: %.2f", GetStrafeOffsetInInches(limelight_targetImageName)[0]+3, GetStrafeOffsetInInches(limelight_targetImageName)[1]);
+        opMode.telemetry.addData("Name", "%s",
+                status.getName());
+        opMode.telemetry.addData("LL", "Temp: %.1fC, CPU: %.1f%%, FPS: %d",
+                status.getTemp(), status.getCpu(),(int)status.getFps());
+        opMode.telemetry.addData("Pipeline", "Index: %d, Type: %s",
+                status.getPipelineIndex(), status.getPipelineType());
+        if(result != null && result.isValid()){
+            opMode.telemetry.addData("tx", result.getTx());
+            opMode.telemetry.addData("txnc", result.getTxNC());
+            opMode.telemetry.addData("ty", result.getTy());
+            opMode.telemetry.addData("tync", result.getTyNC());
+        }
 
 
         opMode.telemetry.addData("Auto Last Time Left: ", autoTimeLeft);

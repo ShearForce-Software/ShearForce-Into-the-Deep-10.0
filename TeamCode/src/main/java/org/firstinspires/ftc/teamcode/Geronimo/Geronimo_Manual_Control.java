@@ -26,7 +26,7 @@ public class Geronimo_Manual_Control extends LinearOpMode {
     public void runOpMode() {
         theRobot = new Geronimo(true, true, this);
         //MecanumDrive_Geronimo drive;
-
+        telemetry.setMsTransmissionInterval(11);
         theRobot.Init(this.hardwareMap);
         theRobot.InitLimelight(hardwareMap);
         theRobot.ShowTelemetry();
@@ -40,13 +40,14 @@ public class Geronimo_Manual_Control extends LinearOpMode {
 
         // TODO - consider doing multi-thread
         // create a thread to control the rotator arm position with PIDF control
-        //Thread pidfThread = new Thread(() -> {
-        //    while (!isStopRequested()) {
+        Thread pidfThread = new Thread(() -> {
+            while (!isStopRequested()) {
         //        control.SetSlideRotatorArmToPositionPIDF();
+                //theRobot.SetLatestResult();
 
-        //        sleep(10);
-        //    }
-        //});
+                sleep(50);
+            }
+        });
 
         while (opModeIsActive()) {
             theRobot.EndgameBuzzer();
@@ -55,10 +56,11 @@ public class Geronimo_Manual_Control extends LinearOpMode {
              * Driver Controls (gamepad1)
              *************************************************
              *************************************************
+
              */
             // Drive Controls uses left_stick_y, left_stick_x, and right_stick_x
             theRobot.RunDriveControls();
-
+            theRobot.SetLatestResult();
             // RESERVED COMBOS    options + cross and options + circle
             // Press the triangle button / "y" while facing directly away from the driver to set the IMU correctly for field-centric mode if off
             if (gamepad1.triangle && !gamepad1.options) {
@@ -247,6 +249,7 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             
             // Combo moves for basket deliveries
             else if(gamepad2.dpad_left && !gamepad2.options) {
+
                 theRobot.SampleUrchinFloorPickup();
             }
             else if (gamepad2.dpad_left && gamepad2.options) {
@@ -282,7 +285,7 @@ public class Geronimo_Manual_Control extends LinearOpMode {
 
         // TODO - consider doing multi-thread
         // end the arm control thread
-        //pidfThread.interrupt();
+        pidfThread.interrupt();
 
     }
 }
