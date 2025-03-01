@@ -34,12 +34,15 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 
 @Config
 public class Geronimo {
+    ReentrantLock lock = new ReentrantLock();
+
     IMU imu;
     public double imuOffsetInDegrees = 0.0;
     double imuPosition = 0;
@@ -1567,6 +1570,14 @@ public class Geronimo {
             //Right_controller.setPID(p,i,d);
             //Left_controller.setPID(p,i,d);
 
+/*          // Multi-threading lock example
+            lock.lock();
+            try {
+                //do stuff here
+            } finally {
+                lock.unlock();
+            }
+*/
             //store in geronimo rotator_arm_target_ticks. Call loop again and again. then if and everything else, else
 
             if (rotator_arm_target_ticks == 0 && GetSlideRotatorArmLimitSwitchPressed()) {
@@ -1599,11 +1610,7 @@ public class Geronimo {
 
                 // Send calculated power to motors
                 leftSlideArmRotatorMotor.setPower(leftPower);
-                //changed so both leftPower
-                // TODO - try again with rightPower when new motors installed
                 rightSlideArmRotatorMotor.setPower(rightPower);
-
-                // TODO - NEED TO CREATE CODE THAT HELPS WITH RESET/REACHING ZERO
 
             }
         }
@@ -1671,6 +1678,15 @@ public class Geronimo {
         if (pidfEnabled)
         {
          //   SetSlideRotatorArmToPositionPIDF(position);
+/*          // Multi-threading lock example
+            lock.lock();
+            try {
+                //do stuff here
+            } finally {
+                lock.unlock();
+            }
+*/
+
             rotator_arm_target_ticks = position;
         }
         else {

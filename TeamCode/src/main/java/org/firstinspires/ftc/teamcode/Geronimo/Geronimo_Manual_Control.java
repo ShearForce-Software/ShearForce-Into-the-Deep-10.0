@@ -38,6 +38,16 @@ public class Geronimo_Manual_Control extends LinearOpMode {
         resetRuntime();
        // theRobot.AutoStartPosition();
 
+        // TODO - consider doing multi-thread
+        // create a thread to control the rotator arm position with PIDF control
+        //Thread pidfThread = new Thread(() -> {
+        //    while (!isStopRequested()) {
+        //        control.SetSlideRotatorArmToPositionPIDF();
+
+        //        sleep(10);
+        //    }
+        //});
+
         while (opModeIsActive()) {
             theRobot.EndgameBuzzer();
             /* *************************************************
@@ -156,7 +166,8 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             // Make sure the slides aren't ever trying to go past their horizontal limits
             theRobot.Slides_Horizontal_MAX_Limit();
 
-            //looping PIDF code- need to check if enabled?
+            // TODO - Consider moving this to a separate Thread
+            //looping PIDF code
             theRobot.SetSlideRotatorArmToPositionPIDF();
 
             // small hanger arms holding the urchin / green box
@@ -268,6 +279,10 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             theRobot.ShowTelemetry();
             telemetry.update();
         } // end while (opModeIsActive())
+
+        // TODO - consider doing multi-thread
+        // end the arm control thread
+        //pidfThread.interrupt();
 
     }
 }
