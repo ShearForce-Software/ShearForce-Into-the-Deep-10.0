@@ -196,6 +196,8 @@ public class Geronimo {
 
     LLResult result;//= new LLResult();
     LLStatus status = new LLStatus();
+    int limelightPipelineId = 3;
+
     //double captureLatency = result.getCaptureLatency();
     //double targetingLatency = result.getTargetingLatency();
     //ouble parseLatency = result.getParseLatency();
@@ -313,8 +315,8 @@ public class Geronimo {
 
     public void InitLimelight(HardwareMap hardwareMap){
         limelightbox = hardwareMap.get(Limelight3A.class, "limelight");
-        limelightbox.setPollRateHz(100);
-        limelightbox.pipelineSwitch(3);
+        limelightbox.setPollRateHz(100);  // TODO experiment with changing this value
+        limelightbox.pipelineSwitch(limelightPipelineId);
         limelightbox.start();
         status = limelightbox.getStatus();
         result = limelightbox.getLatestResult();
@@ -331,12 +333,24 @@ public class Geronimo {
     //It then returns an ArrayList giving back both tx and ty values.
 
     public void SetLatestResult(){
-        LLResult tempResult = limelightbox.getLatestResult();
-        if(tempResult != null && tempResult.isValid()){
-            result = tempResult;
+        result = limelightbox.getLatestResult();
+        //LLResult tempResult = limelightbox.getLatestResult();
+        //if(tempResult != null && tempResult.isValid()){
+        //    result = tempResult;
+        //}
+    }
+
+    // TODO - need to find an available button to trigger this, so can try different pipelines
+    public void SwitchLimelightPipeline() {
+        if (limelightPipelineId < 3)
+        {
+            ++limelightPipelineId;
         }
-
-
+        else {
+            limelightPipelineId = 0;
+        }
+        limelightbox.pipelineSwitch(limelightPipelineId);
+        limelightbox.start();
     }
 
     public List<Double>  FindAlignAngleToTargetImage(String targetImageName) {
@@ -1812,20 +1826,38 @@ public class Geronimo {
 
         opMode.telemetry.addData("Limelight Enabled:" , limelightEnabled);
         opMode.telemetry.addData("Limelight Target:" , limelight_targetImageName);
+        opMode.telemetry.addData("Limelight Connected:" , limelightbox.isConnected());
+        opMode.telemetry.addData("Limelight IsRunning:" , limelightbox.isRunning());
         //opMode.telemetry.addData("FindAngleToTargetImageMethod:", FindAlignAngleToTargetImage("red"));
         //opMode.telemetry.addData("Limelight OffSet (x,y) inches no correction:" ,"R: %.2f, L: %.2f" ,GetStrafeOffsetInInches(limelight_targetImageName)[0], GetStrafeOffsetInInches(limelight_targetImageName)[1]);
         //opMode.telemetry.addData("Limelight Offset (x,y) inches no correction:", "R: %.2f, L: %.2f", GetStrafeOffsetInInches(limelight_targetImageName)[0]+3, GetStrafeOffsetInInches(limelight_targetImageName)[1]);
         opMode.telemetry.addData("Name", "%s",
                 status.getName());
-        opMode.telemetry.addData("LL", "Temp: %.1fC, CPU: %.1f%%, FPS: %d",
-                status.getTemp(), status.getCpu(),(int)status.getFps());
+        opMode.telemetry.addData("LL", "Temp: %.1fC, CPU: %.1f%%, FPS: %d, RAM: %.1f",
+                status.getTemp(), status.getCpu(),(int)status.getFps(), status.getRam());
+        opMode.telemetry.addData("ConnectionInfo: ", limelightbox.getConnectionInfo());
         opMode.telemetry.addData("Pipeline", "Index: %d, Type: %s",
                 status.getPipelineIndex(), status.getPipelineType());
-        if(result != null && result.isValid()){
-            opMode.telemetry.addData("tx", result.getTx());
-            opMode.telemetry.addData("txnc", result.getTxNC());
-            opMode.telemetry.addData("ty", result.getTy());
-            opMode.telemetry.addData("tync", result.getTyNC());
+        opMode.telemetry.addData("TimeSinceLastUpdate: ", limelightbox.getTimeSinceLastUpdate());
+        if(result != null){
+            if (result.isValid()) {
+                opMode.telemetry.addData("tx", result.getTx());
+                opMode.telemetry.addData("txnc", result.getTxNC());
+                opMode.telemetry.addData("ty", result.getTy());
+                opMode.telemetry.addData("tync", result.getTyNC());
+            }
+            else {
+                opMode.telemetry.addData("tx", "INVALID");
+                opMode.telemetry.addData("txnc", "INVALID");
+                opMode.telemetry.addData("ty", "INVALID");
+                opMode.telemetry.addData("tync", "INVALID");
+            }
+        }
+        else {
+            opMode.telemetry.addData("tx", "NULL");
+            opMode.telemetry.addData("txnc", "NULL");
+            opMode.telemetry.addData("ty", "NULL");
+            opMode.telemetry.addData("tync", "NULL");
         }
 
 
