@@ -18,7 +18,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.util.Range;
+//import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -26,14 +26,14 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.vision.VisionPortal;
-import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
-import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+//import org.firstinspires.ftc.vision.VisionPortal;
+//import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+//import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReentrantLock;
+//import java.util.concurrent.locks.ReentrantLock;
 
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
@@ -341,7 +341,7 @@ public class Geronimo {
     }
 
     // TODO - need to find an available button to trigger this, so can try different pipelines
-    public void SwitchLimelightPipeline() {
+/*    public void SwitchLimelightPipeline() {
         if (limelightPipelineId < 3)
         {
             ++limelightPipelineId;
@@ -352,6 +352,8 @@ public class Geronimo {
         limelightbox.pipelineSwitch(limelightPipelineId);
         limelightbox.start();
     }
+
+ */
 
     public List<Double>  FindAlignAngleToTargetImage(String targetImageName) {
         List<Double> offset = new ArrayList<>();
@@ -434,16 +436,19 @@ public class Geronimo {
             blinkinLedDriver.setPattern(Blinken_pattern);
         }
         else{
-            if (limelight_targetImageName.equals("red")) {
-                Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.RED;
-            }
-            else if (limelight_targetImageName.equals("yellow"))
-            {
-                Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.YELLOW;
-            }
-            else if (limelight_targetImageName.equals("blue"))
-            {
-                Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;
+            switch (limelight_targetImageName) {
+                case "red":
+                    Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.RED;
+                    break;
+                case "yellow":
+                    Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.YELLOW;
+                    break;
+                case "blue":
+                    Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;
+                    break;
+                default:
+                    Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.GREEN;
+                    break;
             }
             blinkinLedDriver.setPattern(Blinken_pattern);
 
@@ -476,6 +481,7 @@ public class Geronimo {
         return false;
     }
 
+    /*
     public boolean limelightHasCustomTarget() {
         LLResult result = limelightbox.getLatestResult();
         if (result != null && result.isValid()) {
@@ -495,6 +501,8 @@ public class Geronimo {
         }
         return false;
     }
+
+     */
 
 /*    public void WebcamInit (HardwareMap hardwareMap){
         double  drive           = 0;        // Desired forward power/speed (-1 to +1)
@@ -1395,7 +1403,7 @@ public class Geronimo {
 
     public void SetSwiperPosition(double position)
     {
-        double swiper_position = 0.5;
+        double swiper_position;
         if (position > SWIPER_MAX_POS)
         {
             swiper_position = SWIPER_MAX_POS;
@@ -1413,7 +1421,7 @@ public class Geronimo {
 
     public void SetSwiper2Position(double position)
     {
-        double swiper2_position = 0.5;
+        double swiper2_position;
         if (position > SWIPER2_MAX_POS)
         {
             swiper2_position = SWIPER2_MAX_POS;
@@ -1905,7 +1913,7 @@ public class Geronimo {
         opMode.telemetry.addData("Slide Arm Rotator Positions: ", "L: %d, R: %d", leftSlideArmRotatorMotor.getCurrentPosition(), rightSlideArmRotatorMotor.getCurrentPosition());
         opMode.telemetry.addData("Slide Arm Rotator ", "Target: %d, Power: %.2f", slideArmRotatorTargetPosition, slideArmRotatorPower);
         opMode.telemetry.addData("targetPositionIMUARM: " , " %d (ticks), %.1f (deg) ", targetPositionIMUARM_ticks, targetIMU_Degrees);
-        YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
+        //YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
         opMode.telemetry.addData("imu roll: ", (imu.getRobotYawPitchRollAngles().getRoll()));
         opMode.telemetry.addData("imu pitch: ", (imu.getRobotYawPitchRollAngles().getPitch()));
         opMode.telemetry.addData("imu yaw: ", (imu.getRobotYawPitchRollAngles().getYaw()));
@@ -2012,9 +2020,7 @@ public class Geronimo {
 
     public double GetIMU_HeadingInDegrees()
     {
-        double botHeading = AngleUnit.normalizeDegrees(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) + imuOffsetInDegrees);
-
-        return botHeading;
+        return AngleUnit.normalizeDegrees(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) + imuOffsetInDegrees);
 
     }
     public void driveControlsFieldCentric() {
@@ -2035,10 +2041,10 @@ public class Geronimo {
         double frontRightPower = (rotY - rotX - rx) / denominator;
         double backRightPower = (rotY + rotX - rx) / denominator;
 
-        leftFront.setPower(frontLeftPower*1.0);
-        leftRear.setPower(backLeftPower*1.0);
-        rightFront.setPower(frontRightPower*1.0);
-        rightRear.setPower(backRightPower*1.0);
+        leftFront.setPower(frontLeftPower);
+        leftRear.setPower(backLeftPower);
+        rightFront.setPower(frontRightPower);
+        rightRear.setPower(backRightPower);
     }
     public void RunDriveControls() {
         if (IsFieldCentric) {
