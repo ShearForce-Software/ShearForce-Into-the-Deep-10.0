@@ -1479,13 +1479,7 @@ public class Geronimo {
     // *********************************************************
 
     public boolean GetSlidesLimitSwitchPressed(){
-        boolean returnValue = false;
-
-        if ((!touchSensorSlideLeft.isPressed()) || (!touchSensorSlideRight.isPressed())){
-            returnValue = true;
-        }
-
-        return returnValue;
+        return (!touchSensorSlideLeft.isPressed()) || (!touchSensorSlideRight.isPressed());
     }
 
     // TODO -- need to determine other rotator arm positions to limit than just zero
@@ -1801,22 +1795,10 @@ public class Geronimo {
 
     }
     public boolean GetSlideRotatorArmLimitSwitchPressed(){
-        boolean returnValue = false;
-
-        if ((!touchSensorSlideArmRotatorRight.isPressed()) || (!touchSensorSlideArmRotatorLeft.isPressed())){
-            returnValue = true;
-        }
-
-        return returnValue;
+        return (!touchSensorSlideArmRotatorRight.isPressed()) || (!touchSensorSlideArmRotatorLeft.isPressed());
     }
     public boolean GetSlideRotatorBothArmLimitSwitchPressed(){
-        boolean returnValue = false;
-
-        if ((!touchSensorSlideArmRotatorRight.isPressed()) && (!touchSensorSlideArmRotatorLeft.isPressed())){
-            returnValue = true;
-        }
-
-        return returnValue;
+        return (!touchSensorSlideArmRotatorRight.isPressed()) && (!touchSensorSlideArmRotatorLeft.isPressed());
     }
     public void SetSlideRotatorArmToHoldCurrentPosition()
     {
