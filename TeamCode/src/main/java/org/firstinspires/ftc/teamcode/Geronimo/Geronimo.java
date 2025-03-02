@@ -1,5 +1,4 @@
 package org.firstinspires.ftc.teamcode.Geronimo;
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 import static org.firstinspires.ftc.teamcode.Geronimo.MecanumDrive_Geronimo.PARAMS;
 
 import com.arcrobotics.ftclib.controller.PIDController;
@@ -27,12 +26,9 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-//import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
-import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
-//import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +40,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 @Config
 public class Geronimo {
-    ReentrantLock lock = new ReentrantLock();
+    //ReentrantLock lock = new ReentrantLock();
 
     IMU imu;
     public double imuOffsetInDegrees = 0.0;
@@ -54,8 +50,8 @@ public class Geronimo {
 
     LinearOpMode opMode;
     public static double autoTimeLeft = 0.0;
-    boolean IsDriverControl = true;
-    boolean IsFieldCentric = true;
+    boolean IsDriverControl;
+    boolean IsFieldCentric;
 
     DcMotor leftFront;
     DcMotor leftRear;
@@ -69,7 +65,7 @@ public class Geronimo {
     PIDController Left_controller = new PIDController(p, i, d);
 
     final double arm_gear_ratio = 90.0/20.0;
-    final double yellow_jacket_27_ticks = 751.8;    //9.4 ticks for each degree of arm rotation
+    //final double yellow_jacket_27_ticks = 751.8;    //9.4 ticks for each degree of arm rotation
     final double yellow_jacket_51_ticks = 1425.1;   //17.81 ticks for each degree of arm rotation
     final double ticks_in_degrees = (arm_gear_ratio/360.0) * yellow_jacket_51_ticks;
     public double rotator_arm_target_ticks = 0;
@@ -109,12 +105,10 @@ public class Geronimo {
     Servo swiperServo;
     public static final double SWIPER_MAX_POS = 0.8;
     public static final double SWIPER_MIN_POS = 0.25;
-    private double swiper_position = 0.5;
 
     Servo swiper2;
     public static final double SWIPER2_MAX_POS = 0.8;
     public static final double SWIPER2_MIN_POS = 0.25;
-    private double swiper2_position = 0.5;
 
     Servo intakeBoxRotaterServo;
     public static final double INTAKE_STAR_BOX_ROTATOR_MAX_POS = 1.0;
@@ -146,23 +140,27 @@ public class Geronimo {
 
     //RevColorSensorV3 leftColorSensor;
     //RevColorSensorV3 rightColorSensor;
-    int redLeft = 0;
-    int greenLeft = 0;
-    int blueLeft = 0;
-    int redRight = 0;
-    int greenRight = 0;
-    int blueRight = 0;
-    private int position;
+    //int redLeft = 0;
+    //int greenLeft = 0;
+    //int blueLeft = 0;
+    //int redRight = 0;
+    //int greenRight = 0;
+    //int blueRight = 0;
+    //private int position;
 
-
+/*
     // REV v3 color sensor variables
     public enum colorEnum {
         noColor,
         red,
-        yellow,
-        blue;
+        //yellow,
+        blue
     }
-    colorEnum colorDetected = colorEnum.noColor;
+
+ */
+
+    /*
+    //colorEnum colorDetected = colorEnum.noColor;
     //NAV TO TAG VARIABLES
     final double DESIRED_DISTANCE = 12.0; //  this is how close the camera should get to the target (inches)
     final double SPEED_GAIN  =  0.02  ;   //  Forward Speed Control "Gain". eg: Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
@@ -172,18 +170,20 @@ public class Geronimo {
     final double MAX_AUTO_STRAFE= 0.5;   //  Clip the approach speed to this max value (adjust for your robot)
     final double MAX_AUTO_TURN  = 0.3;   //  Clip the turn speed to this max value (adjust for your robot)
     public static int DESIRED_TAG_ID = -1;     // Choose the tag you want to approach or set to -1 for ANY tag.
-    private VisionPortal visionPortal;               // Used to manage the video source.
+    //private VisionPortal visionPortal;               // Used to manage the video source.
     private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
     private AprilTagDetection desiredTag = null;     // Used to hold the data for a detected AprilTag
     double rangeError = 0;
     double yawError = 0;
-    double LimelightMountingHeight = 6;  //Adjust when robot is built
-    double LimelightMountingAngle = Math.toDegrees(90);
-    double distance_to_object = 0;
-    double objectHeight = 0;
-    double XDistance_to_object = 0;
-    double YDistance_to_object = 0;
-    double angletoObject = Math.toRadians(60);
+    //double LimelightMountingHeight = 6;  //Adjust when robot is built
+    //double LimelightMountingAngle = Math.toDegrees(90);
+    //double distance_to_object = 0;
+    //double objectHeight = 0;
+    //double XDistance_to_object = 0;
+    //double YDistance_to_object = 0;
+    //double angletoObject = Math.toRadians(60);
+
+     */
 
 
 
@@ -206,8 +206,8 @@ public class Geronimo {
 
 
 
-    private static final double KpDistance = -0.1; // Proportional control constant for distance adjustment
-    private static final double KpAim = 0.1; // Proportional control constant for aiming adjustment
+    //private static final double KpDistance = -0.1; // Proportional control constant for distance adjustment
+    //private static final double KpAim = 0.1; // Proportional control constant for aiming adjustment
 
     public Geronimo(boolean isDriverControl, boolean isFieldCentric, LinearOpMode opMode) {
         this.IsDriverControl = isDriverControl;
@@ -496,15 +496,15 @@ public class Geronimo {
         return false;
     }
 
-    public void WebcamInit (HardwareMap hardwareMap){
+/*    public void WebcamInit (HardwareMap hardwareMap){
         double  drive           = 0;        // Desired forward power/speed (-1 to +1)
         double  strafe          = 0;        // Desired strafe power/speed (-1 to +1)
         double  turn            = 0;        // Desired turning power/speed (-1 to +1)
-        /*aprilTag = new AprilTagProcessor.Builder().build();
+        aprilTag = new AprilTagProcessor.Builder().build();
         visionPortal = new VisionPortal.Builder()
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
                 .addProcessor(aprilTag)
-                .build();*/
+                .build();
         // Create the TensorFlow processor the easy way.
         // = TfodProcessor.easyCreateWithDefaults();
 
@@ -514,6 +514,9 @@ public class Geronimo {
         //             hardwareMap.get(WebcamName.class, "Webcam 1"), tfod);
     }
 
+ */
+
+/*
     public void NavToTag(){
         desiredTag  = null;
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
@@ -529,7 +532,9 @@ public class Geronimo {
             }
         }
     }
+*/
 
+/*
     public void DriveToTag() {
         double drive = 0.0;        // Desired forward power/speed (-1 to +1)
         double strafe = 0.0;        // Desired strafe power/speed (-1 to +1)
@@ -567,12 +572,14 @@ public class Geronimo {
         }
     }
 
+ */
+
     // *********************************************************
     // ****      Color Sensor Methods                       ****
     // *********************************************************
-
+/*
     protected void InitColorRevV3Sensor() {
- /*       float gain = 51;
+        float gain = 51;
         final float[] hsvValues = new float[3];
         boolean xButtonPreviouslyPressed = false;
         boolean xButtonCurrentlyPressed = false;
@@ -580,8 +587,9 @@ public class Geronimo {
             ((SwitchableLight) leftColorSensor).enableLight(true);
         }
 
-  */
+
     }
+ */
 
     // colorFound loop
     /*
@@ -668,6 +676,8 @@ public class Geronimo {
     }
 
      */
+
+    /*
     public void showColorSensorTelemetry(){
         //int leftColor = leftColorSensor.getNormalizedColors().toColor();
         //opMode.telemetry.addData("leftColorNorm: ", leftColor);
@@ -677,7 +687,7 @@ public class Geronimo {
         //opMode.telemetry.addData("leftColorNorm(red): ", leftColorSensor.getNormalizedColors().red);
         //opMode.telemetry.addData("leftColorNorm(green): ", leftColorSensor.getNormalizedColors().green);
         //opMode.telemetry.addData("leftColorNorm(blue): ", leftColorSensor.getNormalizedColors().blue);
-        /*
+
         int red = leftColorSensor.red();
         int green = leftColorSensor.green();
         int blue = leftColorSensor.blue();
@@ -704,8 +714,9 @@ public class Geronimo {
             opMode.telemetry.addData("Left: ", "unknown");
         }
 
-         */
+
     }
+    */
 
     // *********************************************************
     // ****      BLINKIN LED Lights Controls                ****
@@ -730,10 +741,10 @@ public class Geronimo {
         blinkinLedDriver.setPattern(Blinken_pattern);
     }
 
-    public void setBlinken_to5Volt()
-    {
-        blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.fromNumber(1625));
-    }
+    //public void setBlinken_to5Volt()
+    //{
+    //    blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.fromNumber(1625));
+    //}
 
     // *********************************************************
     // ****      COMBO MOVES                                ****
@@ -767,6 +778,7 @@ public class Geronimo {
         lockServo2.setPosition(1.0);
     }
 
+    /*
     public void PreHangRobot(){
         SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(34.37));
         SpecialSleep(2000);
@@ -784,6 +796,9 @@ public class Geronimo {
         SpecialSleep(2000);
         SetSlideToPosition(1200);  //1365 <<original
     }
+
+     */
+
     int stepCounter = 0;
     public void level3Ascent() {
         stepCounter = 0;
@@ -1324,9 +1339,9 @@ public class Geronimo {
     // *********************************************************
     // ****       Intake Stars Controls                     ****
     // *********************************************************
-
+/*
     public void SetIntakeStarPower(double power)
-    {/*
+    {
         intakeStarPower = power;
         intakeStarServo.setPower(intakeStarPower);
         if (power > 0.0)
@@ -1337,11 +1352,11 @@ public class Geronimo {
         {
             intakeStarLastForward = false;
         }
-        */
+
     }
 
     public void CycleIntakeStarMode() {
-        /*
+
         if (intakeStarPower != 0.0) {
             SetIntakeStarPower(0);
         } else if(intakeStarLastForward) {
@@ -1352,8 +1367,10 @@ public class Geronimo {
 
         }
 
-         */
+
     }
+
+ */
 
     // *********************************************************
     // ****       CLAW Controls                             ****
@@ -1378,6 +1395,7 @@ public class Geronimo {
 
     public void SetSwiperPosition(double position)
     {
+        double swiper_position = 0.5;
         if (position > SWIPER_MAX_POS)
         {
             swiper_position = SWIPER_MAX_POS;
@@ -1395,6 +1413,7 @@ public class Geronimo {
 
     public void SetSwiper2Position(double position)
     {
+        double swiper2_position = 0.5;
         if (position > SWIPER2_MAX_POS)
         {
             swiper2_position = SWIPER2_MAX_POS;
@@ -1683,10 +1702,10 @@ public class Geronimo {
 
     }
 
-    public void SetSlideRotatorArmToAngle (int targetAngle)
-    {
-        SetSlideRotatorArmToPosition(findRealArmAngle((targetAngle)));
-    }
+    //public void SetSlideRotatorArmToAngle (int targetAngle)
+    //{
+    //    SetSlideRotatorArmToPosition(findRealArmAngle((targetAngle)));
+    //}
     public void SetSlideRotatorArmToPosition(int position)
     {
         if(isRobotLevel())
@@ -1912,6 +1931,7 @@ public class Geronimo {
         opMode.telemetry.update();
     }
 
+    /*
     public void moveRobot(double x, double y, double yaw) {
         // opMode.telemetry.addData("Claw Distance: ", clawDistanceSensor.getDistance(DistanceUnit.MM));
         //  opMode.telemetry.update();
@@ -1943,6 +1963,8 @@ public class Geronimo {
         //  opMode.telemetry.update();
     }
 
+     */
+
     public void EndgameBuzzer(){
         if(opMode.getRuntime() < 84.5 && opMode.getRuntime() > 84.0){
             opMode.gamepad1.rumble(1000);
@@ -1968,6 +1990,7 @@ public class Geronimo {
         rightRear.setPower(backRightPower);
     }
 
+    /*
     public void driveControlsRobotCentricKID() {
         double y = -opMode.gamepad2.left_stick_y;
         double x = opMode.gamepad2.left_stick_x * 1.1;
@@ -1984,6 +2007,8 @@ public class Geronimo {
         rightFront.setPower(frontRightPower*.25);
         rightRear.setPower(backRightPower*.25);
     }
+
+     */
 
     public double GetIMU_HeadingInDegrees()
     {

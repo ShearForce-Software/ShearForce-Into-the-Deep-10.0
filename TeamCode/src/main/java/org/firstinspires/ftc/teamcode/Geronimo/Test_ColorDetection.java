@@ -75,6 +75,7 @@ public class Test_ColorDetection extends LinearOpMode {
         waitForStart();
         resetRuntime();
 
+        /*
         Geronimo.colorEnum targetColor = Geronimo.colorEnum.red;
 
         // Scan servo till stop pressed.
@@ -90,7 +91,7 @@ public class Test_ColorDetection extends LinearOpMode {
             }
             if (gamepad2.a)
             {
-                /*theRobot.ColorRevV3SensorChecker(targetColor);*/
+                //theRobot.ColorRevV3SensorChecker(targetColor);
             }
 
 
@@ -101,6 +102,8 @@ public class Test_ColorDetection extends LinearOpMode {
             telemetry.update();
 
         }
+
+         */
 
         // Signal done;
         telemetry.addData(">", "Done");
