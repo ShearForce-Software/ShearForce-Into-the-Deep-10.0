@@ -304,9 +304,17 @@ public class Geronimo {
 
     public void InitLimelight(HardwareMap hardwareMap){
         limelightbox = hardwareMap.get(Limelight3A.class, "limelight");
-        limelightbox.setPollRateHz(100);  // TODO experiment with changing this value
+
+        // According to the limelight AI, the default is 100 Hz (fresh results every 10ms),
+        // going beyond that might "overwhelm the network"
+        limelightbox.setPollRateHz(100);  // TODO experiment with changing this value to be lower, like 10
+
         limelightbox.pipelineSwitch(limelightPipelineId);
+
+        // the start should be called anytime the limelight has been paused/stopped or a new pipeline loaded
+        // if start has not been called then getLatestResult will return a null
         limelightbox.start();
+
         limelight_status = limelightbox.getStatus();
         limelight_result = limelightbox.getLatestResult();
         //limelightbox.getLatestResult().getTx();
@@ -1855,40 +1863,41 @@ public class Geronimo {
 
     public void ShowTelemetry(){
 
-        opMode.telemetry.addData("Limelight Enabled:" , limelightEnabled);
-        opMode.telemetry.addData("Limelight Target:" , limelight_targetImageName);
-        opMode.telemetry.addData("Limelight Connected:" , limelightbox.isConnected());
-        opMode.telemetry.addData("Limelight IsRunning:" , limelightbox.isRunning());
+        opMode.telemetry.addData("Limelight Enabled: " , limelightEnabled);
+        opMode.telemetry.addData("Limelight Target: " , limelight_targetImageName);
+        opMode.telemetry.addData("Limelight Connected: " , limelightbox.isConnected());
+        opMode.telemetry.addData("Limelight IsRunning: " , limelightbox.isRunning());
+        opMode.telemetry.addData("Limelight Version: " , limelightbox.getVersion());
         //opMode.telemetry.addData("FindAngleToTargetImageMethod:", FindAlignAngleToTargetImage("red"));
         //opMode.telemetry.addData("Limelight OffSet (x,y) inches no correction:" ,"R: %.2f, L: %.2f" ,GetStrafeOffsetInInches(limelight_targetImageName)[0], GetStrafeOffsetInInches(limelight_targetImageName)[1]);
         //opMode.telemetry.addData("Limelight Offset (x,y) inches no correction:", "R: %.2f, L: %.2f", GetStrafeOffsetInInches(limelight_targetImageName)[0]+3, GetStrafeOffsetInInches(limelight_targetImageName)[1]);
-        opMode.telemetry.addData("Name", "%s",
+        opMode.telemetry.addData("Name ", "%s",
                 limelight_status.getName());
-        opMode.telemetry.addData("LL", "Temp: %.1fC, CPU: %.1f%%, FPS: %d, RAM: %.1f",
+        opMode.telemetry.addData("LL ", "Temp: %.1fC, CPU: %.1f%%, FPS: %d, RAM: %.1f",
                 limelight_status.getTemp(), limelight_status.getCpu(),(int) limelight_status.getFps(), limelight_status.getRam());
         opMode.telemetry.addData("ConnectionInfo: ", limelightbox.getConnectionInfo());
-        opMode.telemetry.addData("Pipeline", "Index: %d, Type: %s",
+        opMode.telemetry.addData("Pipeline ", "Index: %d, Type: %s",
                 limelight_status.getPipelineIndex(), limelight_status.getPipelineType());
         opMode.telemetry.addData("TimeSinceLastUpdate: ", limelightbox.getTimeSinceLastUpdate());
         if(limelight_result != null){
             if (limelight_result.isValid()) {
-                opMode.telemetry.addData("tx", limelight_result.getTx());
-                opMode.telemetry.addData("txnc", limelight_result.getTxNC());
-                opMode.telemetry.addData("ty", limelight_result.getTy());
-                opMode.telemetry.addData("tync", limelight_result.getTyNC());
+                opMode.telemetry.addData("tx ", limelight_result.getTx());
+                opMode.telemetry.addData("txnc ", limelight_result.getTxNC());
+                opMode.telemetry.addData("ty ", limelight_result.getTy());
+                opMode.telemetry.addData("tync ", limelight_result.getTyNC());
             }
             else {
-                opMode.telemetry.addData("tx", "INVALID");
-                opMode.telemetry.addData("txnc", "INVALID");
-                opMode.telemetry.addData("ty", "INVALID");
-                opMode.telemetry.addData("tync", "INVALID");
+                opMode.telemetry.addData("tx ", "INVALID");
+                opMode.telemetry.addData("txnc ", "INVALID");
+                opMode.telemetry.addData("ty ", "INVALID");
+                opMode.telemetry.addData("tync ", "INVALID");
             }
         }
         else {
-            opMode.telemetry.addData("tx", "NULL");
-            opMode.telemetry.addData("txnc", "NULL");
-            opMode.telemetry.addData("ty", "NULL");
-            opMode.telemetry.addData("tync", "NULL");
+            opMode.telemetry.addData("tx ", "NULL");
+            opMode.telemetry.addData("txnc ", "NULL");
+            opMode.telemetry.addData("ty ", "NULL");
+            opMode.telemetry.addData("tync ", "NULL");
         }
 
         opMode.telemetry.addData("Auto Last Time Left: ", autoTimeLeft);
