@@ -1,10 +1,5 @@
 package org.firstinspires.ftc.teamcode.Geronimo;
 
-import com.acmerobotics.roadrunner.Action;
-import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.Vector2d;
-import com.acmerobotics.roadrunner.ftc.Actions;
-import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -43,7 +38,7 @@ public class Geronimo_Manual_Control extends LinearOpMode {
         Thread pidfThread = new Thread(() -> {
             while (!isStopRequested()) {
         //        control.SetSlideRotatorArmToPositionPIDF();
-                //theRobot.SetLatestResult();
+                //theRobot.UpdateLimelightStatusAndResults();
 
                 sleep(50);
             }
@@ -60,8 +55,10 @@ public class Geronimo_Manual_Control extends LinearOpMode {
              */
             // Drive Controls uses left_stick_y, left_stick_x, and right_stick_x
             theRobot.RunDriveControls();
-            theRobot.SetLatestResult();
+            theRobot.UpdateLimelightStatusAndResults();
+
             // RESERVED COMBOS    options + cross and options + circle
+
             // Press the triangle button / "y" while facing directly away from the driver to set the IMU correctly for field-centric mode if off
             if (gamepad1.triangle && !gamepad1.options) {
                 theRobot.imu.resetYaw();
@@ -118,6 +115,10 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             // TEMP -- turn limelight on/off
             else if(gamepad1.dpad_right && gamepad1.options){
                 theRobot.SetLimelightEnabled(!Geronimo.limelightEnabled);
+            }
+            // TEMP -- Switch Limelight to different pipelines/models
+            else if(gamepad1.dpad_down && gamepad1.options){
+                theRobot.SwitchLimelightPipeline();
             }
 
             /* *************************************************
@@ -280,7 +281,6 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             }
 
             theRobot.ShowTelemetry();
-            telemetry.update();
         } // end while (opModeIsActive())
 
         // TODO - consider doing multi-thread

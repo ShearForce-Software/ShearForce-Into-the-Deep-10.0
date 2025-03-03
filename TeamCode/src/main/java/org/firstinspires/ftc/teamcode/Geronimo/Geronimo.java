@@ -71,7 +71,8 @@ public class Geronimo {
     public double rotator_arm_target_ticks = 0;
     public double rotator_arm_target_angle = 0.0;
 
-            DcMotor leftSlideArmRotatorMotor;
+    // Slide Arm Rotators
+    DcMotor leftSlideArmRotatorMotor;
     DcMotor rightSlideArmRotatorMotor;
     TouchSensor touchSensorSlideArmRotatorRight;
     TouchSensor touchSensorSlideArmRotatorLeft;
@@ -82,7 +83,6 @@ public class Geronimo {
     public static final int SLIDE_ARM_ROTATOR_MAX_POS = 1640;  //  //870
     public static final int SLIDE_ARM_ROTATOR_POS_TO_LIMIT_SLIDES = 300; // TODO need to find the lowest rotator position we can allow the slides to go out
     public static final double SLIDE_ARM_ROTATOR_POWER = 0.75;
-
 
     //slides
     DcMotor slideLeft;
@@ -124,7 +124,6 @@ public class Geronimo {
     double smallArmHangerRightPosition = 0.5;
     static final double SMALL_ARM_HANGER_INCREMENT = 0.01;
 
-
     Servo lockServo1;
     Servo lockServo2;
     double lock_position = 0;       // release position
@@ -133,7 +132,6 @@ public class Geronimo {
     double urchinServo_position = 0.5;
     public static final double URCHIN_SERVO_MAX_POS = 1.0;
     public static final double URCHIN_SERVO_MIN_POS = 0.0;
-
 
     RevBlinkinLedDriver.BlinkinPattern Blinken_pattern;
     RevBlinkinLedDriver blinkinLedDriver;
@@ -185,26 +183,17 @@ public class Geronimo {
 
      */
 
-
-
-
-
     //LimeLight
-    public static boolean limelightEnabled = false;
-    Limelight3A limelightbox;
+    public static boolean limelightEnabled = true;
+    private Limelight3A limelightbox;
 
-
-    LLResult result;//= new LLResult();
-    LLStatus status = new LLStatus();
+    LLResult limelight_result;//= new LLResult();
+    LLStatus limelight_status = new LLStatus();
     int limelightPipelineId = 3;
 
     //double captureLatency = result.getCaptureLatency();
     //double targetingLatency = result.getTargetingLatency();
     //ouble parseLatency = result.getParseLatency();
-
-
-
-
 
     //private static final double KpDistance = -0.1; // Proportional control constant for distance adjustment
     //private static final double KpAim = 0.1; // Proportional control constant for aiming adjustment
@@ -318,8 +307,8 @@ public class Geronimo {
         limelightbox.setPollRateHz(100);  // TODO experiment with changing this value
         limelightbox.pipelineSwitch(limelightPipelineId);
         limelightbox.start();
-        status = limelightbox.getStatus();
-        result = limelightbox.getLatestResult();
+        limelight_status = limelightbox.getStatus();
+        limelight_result = limelightbox.getLatestResult();
         //limelightbox.getLatestResult().getTx();
        // limelightbox.getLatestResult().getTy();
        // angletoObject = LimelightMountingAngle + (limelightbox.getLatestResult().getTy());
@@ -332,16 +321,16 @@ public class Geronimo {
     //This method basically finds the amount of tx and ty angle from crosshair to target.
     //It then returns an ArrayList giving back both tx and ty values.
 
-    public void SetLatestResult(){
-        result = limelightbox.getLatestResult();
+    public void UpdateLimelightStatusAndResults(){
+        limelight_status = limelightbox.getStatus();
+        limelight_result = limelightbox.getLatestResult();
         //LLResult tempResult = limelightbox.getLatestResult();
         //if(tempResult != null && tempResult.isValid()){
         //    result = tempResult;
         //}
     }
 
-    // TODO - need to find an available button to trigger this, so can try different pipelines
-/*    public void SwitchLimelightPipeline() {
+    public void SwitchLimelightPipeline() {
         if (limelightPipelineId < 3)
         {
             ++limelightPipelineId;
@@ -353,22 +342,20 @@ public class Geronimo {
         limelightbox.start();
     }
 
- */
-
     public List<Double>  FindAlignAngleToTargetImage(String targetImageName) {
         List<Double> offset = new ArrayList<>();
 
 
-        if (result != null && result.isValid()) {
+        if (limelight_result != null && limelight_result.isValid()) {
             // Access detector results
-            List<LLResultTypes.DetectorResult> detectorResults = result.getDetectorResults();
+            List<LLResultTypes.DetectorResult> detectorResults = limelight_result.getDetectorResults();
             for (LLResultTypes.DetectorResult dr : detectorResults) {
                 String BoxType = dr.getClassName();
 
                 // Confirm once that Target Image is Found, before attempting alignment
                 if (BoxType.equals(targetImageName)) {
-                    double currentOffsetX = result.getTx() ;
-                    double currentOffsetY = result.getTy() ;
+                    double currentOffsetX = limelight_result.getTx() ;
+                    double currentOffsetY = limelight_result.getTy() ;
 
                     //Return both offsets as a list
                     offset.add(currentOffsetX);
@@ -778,13 +765,18 @@ public class Geronimo {
     // Hanging Combo Moves
     // ************************************
     public void HooksReleased(){
+        lock_position = 0.0;
         lockServo1.setPosition(lock_position);
         lockServo2.setPosition(lock_position);
     }
     public void HooksLocked(){
-        lockServo1.setPosition(1.0);
-        lockServo2.setPosition(1.0);
+        lock_position = 1.0;
+        lockServo1.setPosition(lock_position);
+        lockServo2.setPosition(lock_position);
     }
+    //public boolean GetLockPosition() {
+    //    return (lock_position == 0.0);
+    //}
 
     /*
     public void PreHangRobot(){
@@ -823,9 +815,9 @@ public class Geronimo {
 
         double timeout = opMode.getRuntime() + 2.0;
 
-        while (stepCounter <= 7) {
-            // Continually Hold the arms at 90 degrees from the floor until step 5 (then will clam shell close)
-            if (stepCounter < 5) {
+        while (stepCounter <= 8) {
+            // Continually Hold the arms at 90 degrees from the floor until step 6 (then will clam shell close)
+            if (stepCounter < 6) {
                 SetSlideRotatorArmToPosition(findRealArmAngle((targetAngle)));
             }
 
@@ -885,30 +877,37 @@ public class Geronimo {
                     stepCounter++;
                 }
             }
-/*
-            // *******************************************
-            // *** STEP 3 Jared thinks this one is completely wrong and should go away
-            //            we shouldn't clam shell closed until later (Matthew agrees!)
-            // *******************************************
-            //else if (stepCounter == 3) {
-                // support robot horizontally on barrier & slides are vertical (yellow color)
-                //Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.YELLOW;
-                //blinkinLedDriver.setPattern(Blinken_pattern);
-                //SetSlideRotatorArmToPosition(160); // verify
-                //if (leftSlideArmRotatorMotor.getCurrentPosition() >= 160) {
-                //    stepCounter++;
-                //}
-            //}
 
             // *******************************************
-            // *** STEP 3 Arms stay at 90 degrees to the floor and
-            // *** the slides extend up, bringing the green
-            // *** hooks above the HIGH bar
-            // *** Blinkin is Red in this step, goes Aqua when done
+            // *** STEP 3 Arms reduce to 80 degree angle to the floor
+            // *** to allow the green hooks to go beyond the top bar
+            // *** without getting caught on the bar and
+            // *** the slides extend up / out
+            // *** Blinkin is Red in this step, goes HOT_PINK when done
             // *******************************************
             else if (stepCounter == 3) {
+                targetAngle = 80;
                 SetSlideToPosition(5380);
-                if (slideLeft.getCurrentPosition() >= 5380 || opMode.getRuntime() > timeout) {
+                if ((leftSlideArmRotatorMotor.getCurrentPosition() >= findRealArmAngle((70)) &&
+                        leftSlideArmRotatorMotor.getCurrentPosition() < findRealArmAngle((83)))
+                        || opMode.getRuntime() > timeout) {
+                    Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.HOT_PINK;
+                    blinkinLedDriver.setPattern(Blinken_pattern);
+                    timeout = opMode.getRuntime() + 2.0;
+                    stepCounter++;
+                }
+            }
+            // *******************************************
+            // *** STEP 4 Arms returns to 90 degrees to the floor
+            // *** bringing the green hooks directly above the
+            // *** top bar, robot is very open touching multiple bars
+            // *** Blinkin is Pink in this step, goes Aqua when done
+            // *******************************************
+            else if (stepCounter == 4) {
+                targetAngle = 90;
+                if ((slideLeft.getCurrentPosition() >= 5380 &&
+                        leftSlideArmRotatorMotor.getCurrentPosition() > findRealArmAngle((87)) )
+                        || opMode.getRuntime() > timeout) {
                     Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.AQUA;
                     blinkinLedDriver.setPattern(Blinken_pattern);
                     timeout = opMode.getRuntime() + 2.0;
@@ -917,16 +916,16 @@ public class Geronimo {
             }
 
             // *******************************************
-            // *** STEP 4 Arms stay at 90 degrees to the floor and
+            // *** STEP 5 Arms stay at 90 degrees to the floor and
             // *** the slides come down to hook the green
             // *** hooks on the HIGH bar, and bring weight off of the dolphin fins
             // *** But the slides stay extended enough to keep the robot
             // *** touching both horizontal bars and probably still touching the bottom bar (but still off the floor)
             // *** Blinkin is Aqua in this step, goes GREEN when done
             // *******************************************
-            else if (stepCounter == 4) {
+            else if (stepCounter == 5) {
                 SetSlideToPosition(4890);
-                if (slideLeft.getCurrentPosition() <= 0 || opMode.getRuntime() > timeout) {
+                if (slideLeft.getCurrentPosition() < 5000 || opMode.getRuntime() > timeout) {
                     Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.GREEN;
                     blinkinLedDriver.setPattern(Blinken_pattern);
                     timeout = opMode.getRuntime() + 2.0;
@@ -935,39 +934,42 @@ public class Geronimo {
             }
 
             // *******************************************
-            // *** STEP 5 Arms stay at 90 degrees to the floor
+            // *** STEP 6 Arms stay at 90 degrees to the floor
             // *** Because it is pressed against both horizontal bars,
             // *** the base of the robot clam-shells closed
             // *** showing the SHEAR FORCE bottom to the crowd!!!
             // *** Blinkin is GREEN and stays Green from here on out to look cool
             // *******************************************
-            else if (stepCounter == 5)
+            else if (stepCounter == 6)
             {
                 // CLAM SHELL CLOSED
                 SetSlideRotatorArmToPosition(0);
                 if (leftSlideArmRotatorMotor.getCurrentPosition() <= 160 || opMode.getRuntime() > timeout) {
+                    timeout = opMode.getRuntime() + 0.5;
+                    stepCounter++;
+                }
+            }
+
+            // *******************************************
+            // *** STEP 7 Arms stay at 90 degrees to the floor
+            // *** Because it is pressed against both horizontal bars, (but no longer the bottom base bar)
+            // *** Blinkin STAYS GREEN
+            // *** Lock pin servos lock the base of the robot in the clam shell position
+            // *******************************************
+            else if (stepCounter == 7)
+            {
+                // TODO -- NEED to test Lock servo logic
+                lock_position = 1.0;
+                lockServo1.setPosition(lock_position);
+                lockServo2.setPosition(lock_position);
+                if (opMode.getRuntime() > timeout) {
                     timeout = opMode.getRuntime() + 2.0;
                     stepCounter++;
                 }
             }
 
             // *******************************************
-            // *** STEP 6 Arms stay at 90 degrees to the floor
-            // *** Because it is pressed against both horizontal bars, (but no longer the bottom base bar)
-            // *** Blinkin STAYS GREEN
-            // *** Lock pin servos lock the base of the robot in the clam shell position
-            // *******************************************
-            else if (stepCounter == 6)
-            {
-                // TODO -- NEED Lock servo logic
-                lock_position;
-                lockServo1.setPosition(lock_position);
-                lockServo2.setPosition(lock_position);
-                stepCounter++;
-            }
-
-            // *******************************************
-            // *** STEP 7
+            // *** STEP 8
             // *** Arm Rotator power removed (lock pins holding now)
             // *** Blinkin should stay GREEN here
             // *** Slides come in (but not all the way,
@@ -975,16 +977,16 @@ public class Geronimo {
             // *** As slides comes in the robot comes lose from
             // *** the lower hang bar and swings to a horizontal state
             // *******************************************
-            else if (stepCounter == 7)
+            else if (stepCounter == 8)
             {
-                //TODO -- Remove power from arm rotators when locks are verified to be working
-                //SetSlideRotatorToPowerMode(0);
-                SetSlideToPosition(0); // TODO -- zero is wrong, need correct value here
-                if (GetSlidesLimitSwitchPressed() || opMode.getRuntime() > timeout) {  //TODO -- this is wrong logic, slides should only come in enough to balance the robot
+                // Remove power from arm rotators when locks are engaged
+                //TODO SetSlideRotatorToPowerMode(0);
+                SetSlideToPosition(500); // TODO -- need correct value here
+                if (slideLeft.getCurrentPosition() < 600 || opMode.getRuntime() > timeout) {
                     stepCounter++;
                 }
             }
-*/
+
             ShowTelemetry();
             SpecialSleep(50);
         } // END while loop
@@ -1841,19 +1843,19 @@ public class Geronimo {
         //opMode.telemetry.addData("Limelight OffSet (x,y) inches no correction:" ,"R: %.2f, L: %.2f" ,GetStrafeOffsetInInches(limelight_targetImageName)[0], GetStrafeOffsetInInches(limelight_targetImageName)[1]);
         //opMode.telemetry.addData("Limelight Offset (x,y) inches no correction:", "R: %.2f, L: %.2f", GetStrafeOffsetInInches(limelight_targetImageName)[0]+3, GetStrafeOffsetInInches(limelight_targetImageName)[1]);
         opMode.telemetry.addData("Name", "%s",
-                status.getName());
+                limelight_status.getName());
         opMode.telemetry.addData("LL", "Temp: %.1fC, CPU: %.1f%%, FPS: %d, RAM: %.1f",
-                status.getTemp(), status.getCpu(),(int)status.getFps(), status.getRam());
+                limelight_status.getTemp(), limelight_status.getCpu(),(int) limelight_status.getFps(), limelight_status.getRam());
         opMode.telemetry.addData("ConnectionInfo: ", limelightbox.getConnectionInfo());
         opMode.telemetry.addData("Pipeline", "Index: %d, Type: %s",
-                status.getPipelineIndex(), status.getPipelineType());
+                limelight_status.getPipelineIndex(), limelight_status.getPipelineType());
         opMode.telemetry.addData("TimeSinceLastUpdate: ", limelightbox.getTimeSinceLastUpdate());
-        if(result != null){
-            if (result.isValid()) {
-                opMode.telemetry.addData("tx", result.getTx());
-                opMode.telemetry.addData("txnc", result.getTxNC());
-                opMode.telemetry.addData("ty", result.getTy());
-                opMode.telemetry.addData("tync", result.getTyNC());
+        if(limelight_result != null){
+            if (limelight_result.isValid()) {
+                opMode.telemetry.addData("tx", limelight_result.getTx());
+                opMode.telemetry.addData("txnc", limelight_result.getTxNC());
+                opMode.telemetry.addData("ty", limelight_result.getTy());
+                opMode.telemetry.addData("tync", limelight_result.getTyNC());
             }
             else {
                 opMode.telemetry.addData("tx", "INVALID");
@@ -1868,7 +1870,6 @@ public class Geronimo {
             opMode.telemetry.addData("ty", "NULL");
             opMode.telemetry.addData("tync", "NULL");
         }
-
 
         opMode.telemetry.addData("Auto Last Time Left: ", autoTimeLeft);
         opMode.telemetry.addData("imu Heading: ", GetIMU_HeadingInDegrees());
