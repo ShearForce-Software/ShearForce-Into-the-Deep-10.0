@@ -20,13 +20,12 @@ public class Geronimo_Manual_Control extends LinearOpMode {
 
     public void runOpMode() {
         theRobot = new Geronimo(true, true, this);
-        //MecanumDrive_Geronimo drive;
         telemetry.setMsTransmissionInterval(11);
+
         theRobot.Init(this.hardwareMap);
         theRobot.InitLimelight(hardwareMap);
         theRobot.ShowTelemetry();
         telemetry.update();
-        //drive = new MecanumDrive_Geronimo(hardwareMap, new Pose2d(0, 0, 0));
         theRobot.InitRoadRunner(hardwareMap);
 
         waitForStart();
@@ -34,14 +33,11 @@ public class Geronimo_Manual_Control extends LinearOpMode {
         theRobot.HooksReleased();
         theRobot.SetSwiperPosition(Geronimo.SWIPER_MAX_POS);
         theRobot.SetSwiper2Position(Geronimo.SWIPER2_MIN_POS);
-       // theRobot.AutoStartPosition();
 
-        // TODO - consider doing multi-thread
         // create a thread to control the rotator arm position with PIDF control
         Thread pidfThread = new Thread(() -> {
             while (!isStopRequested()) {
-        //        control.SetSlideRotatorArmToPositionPIDF();
-                //theRobot.UpdateLimelightStatusAndResults();
+                // TODO -  control.SetSlideRotatorArmToPositionPIDF();
 
                 sleep(50);
             }
@@ -286,7 +282,6 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             theRobot.ShowTelemetry();
         } // end while (opModeIsActive())
 
-        // TODO - consider doing multi-thread
         // end the arm control thread
         pidfThread.interrupt();
 
