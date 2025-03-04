@@ -189,7 +189,7 @@ public class Geronimo {
 
     LLResult limelight_result;//= new LLResult();
     LLStatus limelight_status = new LLStatus();
-    int limelightPipelineId = 3;
+    int limelightPipelineId = 0;
 
     //double captureLatency = result.getCaptureLatency();
     //double targetingLatency = result.getTargetingLatency();
@@ -448,10 +448,10 @@ public class Geronimo {
             blinkinLedDriver.setPattern(Blinken_pattern);
 
             drive.updatePoseEstimate();//Update the current roadrunner pose estimate
-            double fixedForwardAdjustment = 3;
+            double fixedForwardAdjustment = 1.5;
 
             Pose2d currentPose = drive.pose;
-            Vector2d targetVector = new Vector2d(-offsetInches[1] + fixedForwardAdjustment, offsetInches[0]);
+            Vector2d targetVector = new Vector2d(-offsetInches[1] , offsetInches[0]);
 
             Action strafeAction = drive.actionBuilder(currentPose)
                     .strafeToConstantHeading(targetVector)
@@ -1161,7 +1161,7 @@ public class Geronimo {
 
     public void SampleUrchinLimelightViewPosition()
     {
-        SetIntakeBoxRotatorPosition(0.255);
+        SetIntakeBoxRotatorPosition(0.2);
         SetSmallArmHangerPosition(0.56);
     }
 
@@ -1881,7 +1881,7 @@ public class Geronimo {
         opMode.telemetry.addData("TimeSinceLastUpdate: ", limelightbox.getTimeSinceLastUpdate());
         if(limelight_result != null){
             if (limelight_result.isValid()) {
-                opMode.telemetry.addData("tx ", limelight_result.getTx());
+                opMode.telemetry.addData("tx ", -limelight_result.getTx());
                 opMode.telemetry.addData("txnc ", limelight_result.getTxNC());
                 opMode.telemetry.addData("ty ", limelight_result.getTy());
                 opMode.telemetry.addData("tync ", limelight_result.getTyNC());
