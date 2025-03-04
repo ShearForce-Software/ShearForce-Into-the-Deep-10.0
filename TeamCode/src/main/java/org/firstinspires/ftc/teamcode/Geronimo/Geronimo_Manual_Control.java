@@ -31,6 +31,9 @@ public class Geronimo_Manual_Control extends LinearOpMode {
 
         waitForStart();
         resetRuntime();
+        theRobot.HooksReleased();
+        theRobot.SetSwiperPosition(Geronimo.SWIPER_MAX_POS);
+        theRobot.SetSwiper2Position(Geronimo.SWIPER2_MIN_POS);
        // theRobot.AutoStartPosition();
 
         // TODO - consider doing multi-thread

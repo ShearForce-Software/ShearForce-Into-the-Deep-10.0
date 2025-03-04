@@ -69,6 +69,7 @@ public class FourHighSpecimensAutoRoute2_PIDF extends LinearOpMode {
         control.Init(hardwareMap);
         //  -- need to adjust this starting position to keep the specimen out of the wall Check
         control.AutoStartPosition();
+        control.HooksReleased();
         control.SetSwiperPosition(Geronimo.SWIPER_MAX_POS);
         control.SetSwiper2Position(Geronimo.SWIPER2_MIN_POS);
         telemetry.update();

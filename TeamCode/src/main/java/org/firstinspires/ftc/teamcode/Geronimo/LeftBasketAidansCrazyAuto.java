@@ -63,6 +63,9 @@ public class LeftBasketAidansCrazyAuto extends LinearOpMode {
         //control.WebcamInit(hardwareMap);
         telemetry.update();
         control.imuOffsetInDegrees = 270; // Math.toDegrees(startPose.heading.toDouble());
+        control.HooksReleased();
+        control.SetSwiperPosition(Geronimo.SWIPER_MAX_POS);
+        control.SetSwiper2Position(Geronimo.SWIPER2_MIN_POS);
 
         while(!isStarted()){
             telemetry.update();

@@ -67,6 +67,9 @@ public class HighFiveBasketsAutoRouteLimelight extends LinearOpMode {
         telemetry.update();
         control.imuOffsetInDegrees = 90; // Math.toDegrees(startPose.heading.toDouble());
         control.SetUrchinServoPosition(0);
+        control.HooksReleased();
+        control.SetSwiperPosition(Geronimo.SWIPER_MAX_POS);
+        control.SetSwiper2Position(Geronimo.SWIPER2_MIN_POS);
 
         // Wait for start to be pressed
         while(!isStarted()){
