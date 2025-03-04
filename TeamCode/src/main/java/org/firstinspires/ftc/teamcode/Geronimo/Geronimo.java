@@ -448,7 +448,7 @@ public class Geronimo {
             blinkinLedDriver.setPattern(Blinken_pattern);
 
             drive.updatePoseEstimate();//Update the current roadrunner pose estimate
-            double fixedForwardAdjustment = 1.5;
+            //TODO -- double fixedForwardAdjustment = 1.5;
 
             Pose2d currentPose = drive.pose;
             Vector2d targetVector = new Vector2d(-offsetInches[1] , offsetInches[0]);
@@ -1554,22 +1554,17 @@ public class Geronimo {
 
          */
 
+        slidesTargetPosition = position;
+        // Limit the range to valid values
+        slidesTargetPosition = Math.min(slidesTargetPosition, SLIDE_ARM_MAX_VERTICAL_POS);
+        slidesTargetPosition = Math.max(slidesTargetPosition, SLIDE_ARM_MIN_POS);
+
         if (slideArmRotatorTargetPosition <= findRealArmAngle(45.0) &&
-                (position >= SLIDE_ARM_MAX_HORIZONTAL_POS))
+                (slidesTargetPosition >= SLIDE_ARM_MAX_HORIZONTAL_POS))
         {
             slidesTargetPosition = SLIDE_ARM_MAX_HORIZONTAL_POS;
         }
-        else if (position > SLIDE_ARM_MAX_VERTICAL_POS)
-        {
-            slidesTargetPosition = SLIDE_ARM_MAX_VERTICAL_POS;
-        }
-        else if (position < SLIDE_ARM_MIN_POS)
-        {
-            slidesTargetPosition = SLIDE_ARM_MIN_POS;
-        }
-        else {
-            slidesTargetPosition = position;
-        }
+
         slidesRunningToPosition = true;
         slideLeft.setTargetPosition(slidesTargetPosition);
         slideRight.setTargetPosition(slidesTargetPosition);
@@ -1710,25 +1705,11 @@ public class Geronimo {
             }
         }
 
-        // if slide arm rotators are going down then reduce the max power
-        if (leftSlideArmRotatorMotor.getCurrentPosition() > position) {
-            slideArmRotatorPower = SLIDE_ARM_ROTATOR_POWER;
-        }
-        else{
-            slideArmRotatorPower = SLIDE_ARM_ROTATOR_POWER;
-        }
+        slideArmRotatorTargetPosition = position;
+        // Limit the range to valid values
+        slideArmRotatorTargetPosition = Math.min(slideArmRotatorTargetPosition, findRealArmAngle(90));
+        slideArmRotatorTargetPosition = Math.max(slideArmRotatorTargetPosition, SLIDE_ARM_ROTATOR_MIN_POS);
 
-        if (position > findRealArmAngle(90))
-        {
-            slideArmRotatorTargetPosition = findRealArmAngle(90);
-        }
-        else if (position < SLIDE_ARM_ROTATOR_MIN_POS)
-        {
-            slideArmRotatorTargetPosition = SLIDE_ARM_ROTATOR_MIN_POS;
-        }
-        else {
-            slideArmRotatorTargetPosition = position;
-        }
         slideArmRotatorRunningToPosition = true;
 
         if (pidfEnabled)
