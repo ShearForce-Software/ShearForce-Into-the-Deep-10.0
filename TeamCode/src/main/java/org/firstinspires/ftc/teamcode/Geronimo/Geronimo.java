@@ -773,12 +773,12 @@ public class Geronimo {
     // Hanging Combo Moves
     // ************************************
     public void HooksReleased(){
-        lock_position = 0.0;
+        lock_position = 1.0;
         lockServo1.setPosition(lock_position);
         lockServo2.setPosition(lock_position);
     }
     public void HooksLocked(){
-        lock_position = 1.0;
+        lock_position = 0.4;
         lockServo1.setPosition(lock_position);
         lockServo2.setPosition(lock_position);
     }
