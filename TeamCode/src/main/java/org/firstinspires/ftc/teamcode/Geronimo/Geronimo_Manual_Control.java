@@ -9,7 +9,7 @@ public class Geronimo_Manual_Control extends LinearOpMode {
     Geronimo theRobot;
     boolean rotatorPowerApplied = false;
     boolean slidePowerApplied = false;
-    boolean intakeStarPowerApplied = false;
+    //boolean intakeStarPowerApplied = false;
 
 
 
