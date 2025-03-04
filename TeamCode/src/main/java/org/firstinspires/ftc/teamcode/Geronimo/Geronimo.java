@@ -1328,17 +1328,11 @@ public class Geronimo {
 
     public void SetIntakeBoxRotatorPosition(double position)
     {
-        if (position > INTAKE_STAR_BOX_ROTATOR_MAX_POS)
-        {
-            intakeBoxRotatorPosition = INTAKE_STAR_BOX_ROTATOR_MAX_POS;
-        }
-        else if (position < INTAKE_STAR_BOX_ROTATOR_MIN_POS)
-        {
-            intakeBoxRotatorPosition = INTAKE_STAR_BOX_ROTATOR_MIN_POS;
-        }
-        else {
-            intakeBoxRotatorPosition = position;
-        }
+        intakeBoxRotatorPosition = position;
+        // Limit the range to valid values
+        intakeBoxRotatorPosition = Math.min(intakeBoxRotatorPosition, INTAKE_STAR_BOX_ROTATOR_MAX_POS);
+        intakeBoxRotatorPosition = Math.max(intakeBoxRotatorPosition, INTAKE_STAR_BOX_ROTATOR_MIN_POS);
+
         intakeBoxRotaterServo.setPosition(intakeBoxRotatorPosition);
     }
 
@@ -1359,17 +1353,11 @@ public class Geronimo {
 
     public void SetUrchinServoPosition(double position)
     {
-        if (position > URCHIN_SERVO_MAX_POS)
-        {
-            urchinServo_position = URCHIN_SERVO_MAX_POS;
-        }
-        else if (position < URCHIN_SERVO_MIN_POS)
-        {
-            urchinServo_position = URCHIN_SERVO_MIN_POS;
-        }
-        else {
-            urchinServo_position = position;
-        }
+        urchinServo_position = position;
+        // Limit the range to valid values
+        urchinServo_position = Math.min(urchinServo_position, URCHIN_SERVO_MAX_POS);
+        urchinServo_position = Math.max(urchinServo_position, URCHIN_SERVO_MIN_POS);
+
         urchinServo.setPosition(urchinServo_position);
     }
 
@@ -1416,54 +1404,32 @@ public class Geronimo {
 
     public void SetClawPosition(double position)
     {
-        if (position > CLAW_MAX_POS)
-        {
-            claw_position = CLAW_MAX_POS;
-        }
-        else if (position < CLAW_MIN_POS)
-        {
-            claw_position = CLAW_MIN_POS;
-        }
-        else
-        {
-            claw_position = position;
-        }
+        claw_position = position;
+        // Limit the range to valid values
+        claw_position = Math.min(claw_position, CLAW_MAX_POS);
+        claw_position = Math.max(claw_position, CLAW_MIN_POS);
+
         clawServo.setPosition(claw_position);
     }
 
     public void SetSwiperPosition(double position)
     {
-        double swiper_position;
-        if (position > SWIPER_MAX_POS)
-        {
-            swiper_position = SWIPER_MAX_POS;
-        }
-        else if (position < SWIPER_MIN_POS)
-        {
-           swiper_position = SWIPER_MIN_POS;
-        }
-        else
-        {
-            swiper_position = position;
-        }
+        double swiper_position = position;
+        // Limit the range to valid values
+        swiper_position = Math.min(swiper_position, SWIPER_MAX_POS);
+        swiper_position = Math.max(swiper_position, SWIPER_MIN_POS);
+
         swiperServo.setPosition(swiper_position);
     }
 
     public void SetSwiper2Position(double position)
     {
-        double swiper2_position;
-        if (position > SWIPER2_MAX_POS)
-        {
-            swiper2_position = SWIPER2_MAX_POS;
-        }
-        else if (position < SWIPER2_MIN_POS)
-        {
-            swiper2_position = SWIPER2_MIN_POS;
-        }
-        else
-        {
-            swiper2_position = position;
-        }
+        double swiper2_position = position;
+        // Limit the range to valid values
+        swiper2_position = Math.min(swiper2_position, SWIPER2_MAX_POS);
+        swiper2_position = Math.max(swiper2_position, SWIPER2_MIN_POS);
+
+
         swiper2.setPosition(swiper2_position);
     }
 
@@ -1486,19 +1452,12 @@ public class Geronimo {
 
     public void SetSmallArmHangerPosition(double position)
     {
-        if (position > SMALL_ARM_HANGER_MAX_POS)
-        {
-            smallArmHangerRightPosition = SMALL_ARM_HANGER_MAX_POS;
-            smallArmHangerLeftPosition = SMALL_ARM_HANGER_MIN_POS;
-        }
-        else if (position < SMALL_ARM_HANGER_MIN_POS) {
-            smallArmHangerRightPosition = SMALL_ARM_HANGER_MIN_POS;
-            smallArmHangerLeftPosition = SMALL_ARM_HANGER_MAX_POS;
-        }
-        else {
-            smallArmHangerRightPosition = position;
-            smallArmHangerLeftPosition = SMALL_ARM_HANGER_MAX_POS - position;
-        }
+        smallArmHangerRightPosition = position;
+        // Limit the range to valid values
+        smallArmHangerRightPosition = Math.min(smallArmHangerRightPosition, SMALL_ARM_HANGER_MAX_POS);
+        smallArmHangerRightPosition = Math.max(smallArmHangerRightPosition, SMALL_ARM_HANGER_MIN_POS);
+
+        smallArmHangerLeftPosition = SMALL_ARM_HANGER_MAX_POS - position;
 
         smallArmHangerLeftServo.setPosition(smallArmHangerLeftPosition);
         smallArmHangerRightServo.setPosition(smallArmHangerRightPosition);
