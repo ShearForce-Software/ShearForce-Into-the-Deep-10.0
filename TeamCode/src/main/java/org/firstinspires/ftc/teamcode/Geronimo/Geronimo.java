@@ -1255,7 +1255,6 @@ public class Geronimo {
         //STEP ONE
         SetIntakeBoxRotatorPosition(0.865); //0.85
         SetSmallArmHangerPosition(1.0); //.8 //1.05
-
         // if in a horizontal arm position, then should do a reset on the slides, first before raising the arm to keep from tipping over
         if (leftSlideArmRotatorMotor.getCurrentPosition() < GetRotatorArmTicksFromDegrees(20)) {
             double timeout = opMode.getRuntime() + 2.0;
@@ -1694,6 +1693,7 @@ public class Geronimo {
     //}
     public void SetSlideRotatorArmToPosition(int position)
     {
+        slideArmRotatorPower = 1.0;
         if(isRobotLevel())
         {
             if(leftSlideArmRotatorMotor.getCurrentPosition() < position || position < SLIDE_ARM_ROTATOR_POS_TO_LIMIT_SLIDES)
