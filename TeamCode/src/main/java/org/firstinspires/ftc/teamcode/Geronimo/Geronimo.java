@@ -810,7 +810,7 @@ public class Geronimo {
     int stepCounter = 0;
     public void level3Ascent() {
         stepCounter = 0;
-        int targetAngle = 85;
+        int targetAngle = 75;
 
         // Initialize the Blinkin at the start to be blue
         Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;
@@ -856,10 +856,10 @@ public class Geronimo {
             else if (stepCounter == 1) {
                 SetSlideToPosition(3400);
                 targetAngle = 75;
-                if (slideLeft.getCurrentPosition() >= 3400 || opMode.getRuntime() > timeout) {
+                if (slideLeft.getCurrentPosition() >= 3300 || opMode.getRuntime() > timeout) {
                     Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.ORANGE;
                     blinkinLedDriver.setPattern(Blinken_pattern);
-                    timeout = opMode.getRuntime() + 3.0;
+                    timeout = opMode.getRuntime() + 5.0;
                     stepCounter++;
                 }
             }
@@ -872,7 +872,8 @@ public class Geronimo {
             // *******************************************
             else if (stepCounter == 2) {
                 targetAngle = 90;
-                if ((slideLeft.getCurrentPosition() >= 3400 &&
+                SetSlideToPosition(3400);
+                if ((slideLeft.getCurrentPosition() >= 3300 &&
                         leftSlideArmRotatorMotor.getCurrentPosition() > findRealArmAngle((88)) )
                         || opMode.getRuntime() > timeout) {
                     Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.RED_ORANGE;
@@ -901,23 +902,24 @@ public class Geronimo {
                 if (slideLeft.getCurrentPosition() <= 420 || opMode.getRuntime() > timeout) {
                     Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.RED;
                     blinkinLedDriver.setPattern(Blinken_pattern);
-                    timeout = opMode.getRuntime() + 3.0;
+                    timeout = opMode.getRuntime() + 5.0;
                     stepCounter++;
                 }
             }
 
             // *******************************************
-            // *** STEP 4 Arms reduce to 85 degree angle to the floor
+            // *** STEP 4 Arms reduce to 75 degree angle to the floor
             // *** to allow the green hooks to go beyond the top bar
             // *** without getting caught on the bar and
             // *** the slides extend up / out
             // *** Blinkin is Red in this step, goes HOT_PINK when done
             // *******************************************
             else if (stepCounter == 4) {
-                targetAngle = 85;
+                targetAngle = 75;
                 SetSlideToPosition(5380);
-                if ((leftSlideArmRotatorMotor.getCurrentPosition() >= findRealArmAngle(70) &&
-                        leftSlideArmRotatorMotor.getCurrentPosition() < findRealArmAngle(86))
+                if ((leftSlideArmRotatorMotor.getCurrentPosition() >= findRealArmAngle(72) &&
+                        leftSlideArmRotatorMotor.getCurrentPosition() < findRealArmAngle(78) &&
+                        slideLeft.getCurrentPosition() >= 5300)
                         || opMode.getRuntime() > timeout) {
                     Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.HOT_PINK;
                     blinkinLedDriver.setPattern(Blinken_pattern);
@@ -933,12 +935,13 @@ public class Geronimo {
             // *******************************************
             else if (stepCounter == 5) {
                 targetAngle = 90;
-                if ((slideLeft.getCurrentPosition() >= 5380 &&
-                        leftSlideArmRotatorMotor.getCurrentPosition() > findRealArmAngle((87)) )
+                SetSlideToPosition(5380);
+                if ((slideLeft.getCurrentPosition() >= 5300 &&
+                        leftSlideArmRotatorMotor.getCurrentPosition() > findRealArmAngle((88)) )
                         || opMode.getRuntime() > timeout) {
                     Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.AQUA;
                     blinkinLedDriver.setPattern(Blinken_pattern);
-                    timeout = opMode.getRuntime() + 3.0;
+                    timeout = opMode.getRuntime() + 5.0;
                     stepCounter++;
                 }
             }
@@ -987,10 +990,7 @@ public class Geronimo {
             // *******************************************
             else if (stepCounter == 8)
             {
-                // TODO -- NEED to test Lock servo logic
-                lock_position = 1.0;
-                lockServo1.setPosition(lock_position);
-                lockServo2.setPosition(lock_position);
+                HooksLocked();
                 if (opMode.getRuntime() > timeout) {
                     timeout = opMode.getRuntime() + 3.0;
                     stepCounter++;
@@ -1028,11 +1028,13 @@ public class Geronimo {
     public void SpecimenPickupFromWall() {
         SpecimenPickupFromWallServoPosition();
         SetClawPosition(CLAW_MIN_POS);
+
         double timeout = opMode.getRuntime() + 0.5;
         SetSlideToPosition(0);
         while (!GetSlidesLimitSwitchPressed() && opMode.getRuntime() < timeout) {
             SpecialSleep(50);
         }
+
         SetSlideRotatorArmToPosition(0);
     }
     public void SpecimenPickupFromWallServoPosition(){
@@ -1058,7 +1060,9 @@ public class Geronimo {
         SetSlideToPosition(0);
         while (!GetSlidesLimitSwitchPressed() && opMode.getRuntime() < timeout) {
             SpecialSleep(50);
-            ResetSlidesToZero();
+            if (GetSlidesLimitSwitchPressed()) {
+                ResetSlidesToZero();
+            }
         }
 
         SetSlideRotatorArmToPosition(0);
@@ -1088,7 +1092,9 @@ public class Geronimo {
             while (!GetSlidesLimitSwitchPressed() && opMode.getRuntime() < timeout) {
                 SpecialSleep(50);
             }
-            ResetSlidesToZero();
+            if (GetSlidesLimitSwitchPressed()) {
+                ResetSlidesToZero();
+            }
 
             SetSlideRotatorArmToPosition(0);
         }
@@ -1131,20 +1137,25 @@ public class Geronimo {
 
     // New method
     public void SampleUrchinFloorPickup(){
+        // if the rotator arm is raised for some reason
+        if (GetRotatorLeftArmCurrentPosition() > 20)
+        {
+            SetSlideRotatorArmToPosition(0);
+            SpecialSleep(200);
+        }
         // if the slides need to be moved out in front of the robot still (doesn't waste time if already there)
-        if (!(GetRotatorLeftArmCurrentPosition() <= 20 && GetSlideLeftCurrentPosition() >= 1700 )) {
+        if (GetSlideLeftCurrentPosition() < 1700 ) {
             // Move slides a little in front of robot
             SampleUrchinFloorPickup_SlidePosition();
             SpecialSleep(300);
         }
         // if the urchin needs to be positioned still (doesn't waste time if already there)
-        if (!(intakeBoxRotatorPosition == 0.225 && smallArmHangerLeftPosition == 0.56 && slideArmRotatorTargetPosition <= 20)) {
+        if (intakeBoxRotatorPosition != 0.2 || smallArmHangerLeftPosition != 0.56 ) {
             // Open the urchin and position to be ready to intake
             //SampleUrchinFloorPickup_UrchinReadyPosition();
             SampleUrchinLimelightViewPosition();
             SpecialSleep(400);
         }
-
         // if need to open the Urchin
         if (urchinServo_position != 0) {
             SetUrchinServoPosition(0);
@@ -1210,7 +1221,13 @@ public class Geronimo {
         SpecialSleep( 400); //300
 
         // Raise the Urchin back up to ready position to assess if succeeded
-        SampleUrchinFloorPickup_UrchinReadyPosition();
+        if (limelightEnabled)
+        {
+            SampleUrchinLimelightViewPosition();
+        }
+        else {
+            SampleUrchinFloorPickup_UrchinReadyPosition();
+        }
     }
     public void SampleUrchinFloorPickupFinishingMove_UrchinGrabPosition() {
         // Lower the urchin to be closer to the floor
@@ -1263,7 +1280,9 @@ public class Geronimo {
             while (!GetSlidesLimitSwitchPressed() && opMode.getRuntime() < timeout) {
                 SpecialSleep(50);
             }
-            ResetSlidesToZero();
+            if (GetSlidesLimitSwitchPressed()) {
+                ResetSlidesToZero();
+            }
         }
 
         SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(85.13)); //8008, 450
@@ -1475,8 +1494,9 @@ public class Geronimo {
     public void Slides_Horizontal_MAX_Limit(){
         // if the rotator arms are in a horizontal orientation
         // AND the slides are starting to go past the max horizontal position
-        if ((GetRotatorRightArmCurrentPosition() <= SLIDE_ARM_ROTATOR_POS_TO_LIMIT_SLIDES || GetRotatorLeftArmCurrentPosition() <= SLIDE_ARM_ROTATOR_POS_TO_LIMIT_SLIDES) &&
-                (slideLeft.getCurrentPosition() >= SLIDE_ARM_MAX_HORIZONTAL_POS || slideRight.getCurrentPosition() >= SLIDE_ARM_MAX_HORIZONTAL_POS)){
+        if ((GetRotatorLeftArmCurrentPosition() <= findRealArmAngle(45)) && (slideLeft.getCurrentPosition() >= SLIDE_ARM_MAX_HORIZONTAL_POS)) {
+        //if ((GetRotatorRightArmCurrentPosition() <= SLIDE_ARM_ROTATOR_POS_TO_LIMIT_SLIDES || GetRotatorLeftArmCurrentPosition() <= SLIDE_ARM_ROTATOR_POS_TO_LIMIT_SLIDES) &&
+        //        (slideLeft.getCurrentPosition() >= SLIDE_ARM_MAX_HORIZONTAL_POS || slideRight.getCurrentPosition() >= SLIDE_ARM_MAX_HORIZONTAL_POS)){
             // if slides are in power mode
             if (!slidesRunningToPosition) {
                 // if user is not commanding slides to go in
@@ -1579,11 +1599,11 @@ public class Geronimo {
 
     public void SetSlidesToHoldCurrentPosition()
     {
-        if (slidesTargetPosition == 0)
-        {
-            ResetSlidesToZero();
-        }
-        else {
+        //if (slidesTargetPosition == 0)
+        //{
+        //    ResetSlidesToZero();
+        //}
+        //else {
             slidePower = 0;
             slideLeft.setPower(slidePower);
             slideRight.setPower(slidePower);
@@ -1594,7 +1614,7 @@ public class Geronimo {
             slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             slideLeft.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
             slideRight.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
-        }
+        //}
         slidesRunningToPosition = false;
     }
 
@@ -1697,7 +1717,9 @@ public class Geronimo {
         slideArmRotatorPower = 1.0;
         if(isRobotLevel())
         {
-            if(leftSlideArmRotatorMotor.getCurrentPosition() < position || position < SLIDE_ARM_ROTATOR_POS_TO_LIMIT_SLIDES)
+            // if the arm rotator is being commanded down, and the target position to rotate to will be less than 45 degrees
+            if(leftSlideArmRotatorMotor.getCurrentPosition() > position || position <= findRealArmAngle(45))
+            //if(leftSlideArmRotatorMotor.getCurrentPosition() < position || position < SLIDE_ARM_ROTATOR_POS_TO_LIMIT_SLIDES)
             {
                 if (GetSlideLeftCurrentPosition() > SLIDE_ARM_MAX_HORIZONTAL_POS)
                 {
@@ -1773,16 +1795,16 @@ public class Geronimo {
     }
     public void SetSlideRotatorArmToHoldCurrentPosition()
     {
-        if (slideArmRotatorTargetPosition == 0) {
-            ResetSlideRotatorArmToZero();
-        }
-        else {
+        //if (slideArmRotatorTargetPosition == 0) {
+        //    ResetSlideRotatorArmToZero();
+        //}
+        //else {
             slideArmRotatorPower = SLIDE_ARM_ROTATOR_POWER;
             leftSlideArmRotatorMotor.setPower(slideArmRotatorPower);
             rightSlideArmRotatorMotor.setPower(slideArmRotatorPower);
             leftSlideArmRotatorMotor.setTargetPosition(leftSlideArmRotatorMotor.getCurrentPosition());
             rightSlideArmRotatorMotor.setTargetPosition(leftSlideArmRotatorMotor.getCurrentPosition());
-        }
+        //}
         slideArmRotatorRunningToPosition = false;
     }
     public boolean GetRotatorArmRunningToPosition()
