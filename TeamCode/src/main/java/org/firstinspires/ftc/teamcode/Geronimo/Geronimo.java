@@ -59,7 +59,7 @@ public class Geronimo {
     DcMotor rightRear;
 
     //pidf variables
-    public static boolean pidfEnabled = false;
+    public static boolean pidfEnabled = true;
     public static double p = 0.005, i = 0, d = 0.0, f = 0.007; //0.0001
     PIDController Right_controller = new PIDController(p, i, d);
     PIDController Left_controller = new PIDController(p, i, d);
@@ -1635,10 +1635,10 @@ public class Geronimo {
             } else {
                 rotator_arm_target_angle = rotator_arm_target_ticks / ticks_in_degrees;
 
-                Right_controller.setTolerance(5.0); // sets the error in ticks I think that is tolerated > go back to ticks and degrees, plus or minus the tolerance
-                Left_controller.setTolerance(5.0);
-                Left_controller.atSetPoint();
-                Right_controller.atSetPoint();
+                Right_controller.setTolerance(10.0); // sets the error in ticks I think that is tolerated > go back to ticks and degrees, plus or minus the tolerance
+                Left_controller.setTolerance(10.0);  //originally both 5.0 which is half a degree
+                //Left_controller.atSetPoint();
+               // Right_controller.atSetPoint();
 
                 // Calculate the next PID value
                 int left_armPos = leftSlideArmRotatorMotor.getCurrentPosition();

@@ -37,11 +37,13 @@ public class Geronimo_Manual_Control extends LinearOpMode {
         // create a thread to control the rotator arm position with PIDF control
         Thread pidfThread = new Thread(() -> {
             while (!isStopRequested()) {
-                // TODO -  control.SetSlideRotatorArmToPositionPIDF();
+                // TODO - theRobot.SetSlideRotatorArmToPositionPIDF();
 
                 sleep(50);
             }
         });
+
+      //  pidfThread.start();
 
         while (opModeIsActive()) {
             theRobot.EndgameBuzzer();
