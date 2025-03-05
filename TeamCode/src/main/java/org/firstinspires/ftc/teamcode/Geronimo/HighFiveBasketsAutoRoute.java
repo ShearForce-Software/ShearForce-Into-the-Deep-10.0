@@ -36,7 +36,7 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
     Action DeliverSample3;
     Action DriveToSubmersible4;
     Action DeliverSample4;
-
+    public boolean readyToEnd = false;
     VelConstraint speedUpVelocityConstraint;
     AccelConstraint speedUpAccelerationConstraint;
     VelConstraint normalVelocityConstraint;
@@ -98,7 +98,7 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                 .build();
         DriveToSample1 = drive.actionBuilder(new Pose2d(-59,-58,Math.toRadians(45)))
                 .setReversed(false)
-                .strafeToLinearHeading(new Vector2d(-46,-45), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(-46.5,-44.5), Math.toRadians(90))
                 .build();
         DeliverSample1 = drive.actionBuilder(new Pose2d(-46,-45,Math.toRadians(90)))
                 .setReversed(true)
@@ -159,6 +159,7 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                         // Raise slides to high basket height
                         finishBasketHigh_SlidesPosition(),
                         new SleepAction(2.5),
+
                         // Rotate urchin to align above basket
                         finishBasketHigh_UrchinDeliverPosition(),
                         new SleepAction(0.4),
@@ -171,7 +172,7 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                         // Rotate arms a little away from basket and lower slides to zero.
                         finishBasketHigh_ArmSafeToLowerPosition(),
                         slidesToZero(),
-                        new SleepAction(1),
+                        new SleepAction(1.125),
                         stowPosition(),
                         rotatorArmsToZero(),
 
@@ -386,6 +387,16 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
             return false;  // returning true means not done, and will be called again.  False means action is completely done
         }
     }
+    public Action managePidfArmControl () { return new HighFiveBasketsAutoRoute.ManagePIDF_ArmControl(); }
+    public class ManagePIDF_ArmControl implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            if (!readyToEnd) {
+                control.SetSlideRotatorArmToPositionPIDF();
+            }
+            return !readyToEnd;  // returning true means not done, and will be called again.  False means action is completely done
+        }
+    }
     public Action finishBasketHigh_UrchinDeliverPosition (){return new FinishBasketHigh_UrchinDeliverPosition();}
     public class FinishBasketHigh_UrchinDeliverPosition implements Action {
         private boolean initialized = false;
@@ -484,7 +495,7 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                 timeout = control.opMode.getRuntime() + 5.0;
             }
 
-            boolean returnValue = true;
+          /*  boolean returnValue = true;
             if (control.GetSlidesLimitSwitchPressed())
             {
                 control.ResetSlidesToZeroNoWait();
@@ -493,9 +504,9 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
             else if (control.opMode.getRuntime()>=timeout )
             {
                 returnValue = false;
-            }
+            }*/
             packet.put("slidesToZero", 0);
-            return returnValue ;  // returning true means not done, and will be called again.  False means action is completely done
+            return false ;  // returning true means not done, and will be called again.  False means action is completely done
         }
     }
     public Action rotatorArmsToZero(){return new RotatorArmsToZero();}
