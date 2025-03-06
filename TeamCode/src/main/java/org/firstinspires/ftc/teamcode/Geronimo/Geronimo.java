@@ -41,6 +41,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 @Config
 public class Geronimo {
     //ReentrantLock lock = new ReentrantLock();
+    public static double txCorrectionSensitivity = 1.18;
+    public static double tyCorrectionSensitivity = 0.78;
 
     IMU imu;
     public double imuOffsetInDegrees = 0.0;
@@ -407,15 +409,15 @@ public class Geronimo {
         double rawTy = scaledOffsets.get(1);
 
         // Fixed distance from the target in inches
-        final double D = 4.3;
+        final double D = 7.4;
 
         // Convert angles from degrees to radians
         double txRadians = Math.toRadians(rawTx);
         double tyRadians = Math.toRadians(rawTy);
 
         // Calculate the strafing offsets
-        double strafeX = D * Math.tan(txRadians); // Left/Right adjustment
-        double strafeY = D * Math.tan(tyRadians); // Forward/Backward adjustment
+        double strafeX = (D * Math.tan(txRadians) * tyCorrectionSensitivity) ; // Left/Right adjustment
+        double strafeY = (D * Math.tan(tyRadians) * txCorrectionSensitivity) -2; // Forward/Backward adjustment
 
         // Return the offsets in a double array
         return new double[] {strafeX, strafeY};
@@ -452,6 +454,7 @@ public class Geronimo {
 
             Pose2d currentPose = drive.pose;
             Vector2d targetVector = new Vector2d(-offsetInches[1] , offsetInches[0]);
+
 
             Action strafeAction = drive.actionBuilder(currentPose)
                     .strafeToConstantHeading(targetVector)
