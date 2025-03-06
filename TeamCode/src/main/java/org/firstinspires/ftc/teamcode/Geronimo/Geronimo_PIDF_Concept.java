@@ -44,7 +44,7 @@ public class Geronimo_PIDF_Concept extends LinearOpMode {
     // proportional, integral, derivative, and feedforward
     public static double p = 0.005, i = 0, d = 0, f = 0.007;
 
-    public static double tolerance = 5.0; //half a degree in ticks
+    public static double tolerance = 20.0; //half a degree in ticks
     public static int sendF_to_Controller = 0;
     public static int useTolerance = 0;
 
@@ -86,6 +86,8 @@ public class Geronimo_PIDF_Concept extends LinearOpMode {
 
         leftSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+
 
         // Wait for the game to start (driver presses START)
         waitForStart();

@@ -59,8 +59,8 @@ public class Geronimo {
     DcMotor rightRear;
 
     //pidf variables
-    public static boolean pidfEnabled = true;
-    public static double p = 0.005, i = 0, d = 0.0, f = 0.007; //0.0001
+    public static boolean pidfEnabled = false;
+    public static double p = 0.004, i = 0, d = 0, f = 0.007; //0.0001 > p was .005
     PIDController Right_controller = new PIDController(p, i, d);
     PIDController Left_controller = new PIDController(p, i, d);
 
@@ -1245,10 +1245,10 @@ public class Geronimo {
             {
                 // Rotate urchin back away from the basket
                 BasketHighFinishingMove_UrchinSafeToLowerPosition();
-                SpecialSleep(400);
+                SpecialSleep(2000);
                 // Rotate arms a little away from basket and lower slides to zero
                 BasketHighFinishingMove_ArmSafeToLowerPosition();
-                SpecialSleep(400);
+                SpecialSleep(2000); //400
             }
             Stow();
         }
@@ -1656,13 +1656,13 @@ public class Geronimo {
             } else {
                 rotator_arm_target_angle = rotator_arm_target_ticks / ticks_in_degrees;
 
-                Right_controller.setTolerance(10.0); // sets the error in ticks I think that is tolerated > go back to ticks and degrees, plus or minus the tolerance
-                Left_controller.setTolerance(10.0);  //originally both 5.0 which is half a degree
+                Right_controller.setTolerance(20.0); // sets the error in ticks I think that is tolerated > go back to ticks and degrees, plus or minus the tolerance
+                Left_controller.setTolerance(20.0);  //originally both 5.0 which is half a degree
                 //Left_controller.atSetPoint();
                // Right_controller.atSetPoint();
 
                 // Calculate the next PID value
-                int left_armPos = leftSlideArmRotatorMotor.getCurrentPosition();
+                int left_armPos = (leftSlideArmRotatorMotor.getCurrentPosition() + rightSlideArmRotatorMotor.getCurrentPosition())/2;
                 double left_pid = Left_controller.calculate(left_armPos, rotator_arm_target_ticks);
 
                 int right_armPos = rightSlideArmRotatorMotor.getCurrentPosition();
@@ -1681,7 +1681,7 @@ public class Geronimo {
 
                 // Send calculated power to motors
                 leftSlideArmRotatorMotor.setPower(leftPower);
-                rightSlideArmRotatorMotor.setPower(rightPower);
+                rightSlideArmRotatorMotor.setPower(leftPower);
 
             }
         }
