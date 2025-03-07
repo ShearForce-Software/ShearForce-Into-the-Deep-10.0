@@ -1375,6 +1375,8 @@ public class Geronimo {
         SpecialSleep(200);
         // Rotate arms a little away from basket and lower slides to zero
         BasketHighFinishingMove_ArmSafeToLowerPosition();
+        SpecialSleep(200);
+        SetSlideToPosition(0);
     }
     public void BasketHighFinishingMove_SlidesPosition(){
         SetSlideToPosition(6560);
@@ -1389,7 +1391,6 @@ public class Geronimo {
     }
     public void BasketHighFinishingMove_ArmSafeToLowerPosition(){
         SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(74.49));
-        SetSlideToPosition(0);
     }
 
     // hanger position 0.8
