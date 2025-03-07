@@ -1186,8 +1186,19 @@ public class Geronimo {
         // if the rotator arm is raised for some reason
         if (GetRotatorLeftArmCurrentPosition() > 20)
         {
+            SetSlideToPosition(0);
+            double timeout = opMode.getRuntime() + 4.0;
+            while (slideLeft.getCurrentPosition() > 400 && opMode.getRuntime() < timeout)
+            {
+                SpecialSleep(50);
+            }
             SetSlideRotatorArmToPosition(0);
-            SpecialSleep(200);
+            timeout = opMode.getRuntime() + 2.0;
+            while (leftSlideArmRotatorMotor.getCurrentPosition() > findRealArmAngle(5) && opMode.getRuntime() < timeout)
+            {
+                SpecialSleep(50);
+            }
+
         }
         // if the slides need to be moved out in front of the robot still (doesn't waste time if already there)
         if (GetSlideLeftCurrentPosition() < 1700 ) {
@@ -1300,7 +1311,7 @@ public class Geronimo {
         }
         SetSlideToPosition(SLIDE_ARM_MAX_HORIZONTAL_POS);
         SetIntakeBoxRotatorPosition(0.96); //0.875
-        // SetSmallArmHangerPosition(0.35);
+        SetSmallArmHangerPosition(0.38);
         SetClawPosition(CLAW_MIN_POS);
     }
 
@@ -1346,8 +1357,8 @@ public class Geronimo {
         }
         // Raise slides to high basket height
         BasketHighFinishingMove_SlidesPosition();
-        double timeout = opMode.getRuntime() + 2.0;
-        while (slideLeft.getCurrentPosition() < 6500 && opMode.getRuntime() < timeout)
+        double timeout = opMode.getRuntime() + 4.0;
+        while (slideLeft.getCurrentPosition() < 6550 && opMode.getRuntime() < timeout)
         {
             SpecialSleep(50);
         }
@@ -1374,7 +1385,7 @@ public class Geronimo {
         SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(85.1));
     }
     public void BasketHighFinishingMove_UrchinSafeToLowerPosition(){
-        SetSmallArmHangerPosition(1.0);
+        SetSmallArmHangerPosition(.54); //1
     }
     public void BasketHighFinishingMove_ArmSafeToLowerPosition(){
         SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(74.49));
