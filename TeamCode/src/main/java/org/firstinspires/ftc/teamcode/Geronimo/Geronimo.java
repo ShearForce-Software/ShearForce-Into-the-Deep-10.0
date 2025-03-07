@@ -1084,7 +1084,7 @@ public class Geronimo {
         SetSlideRotatorArmToPosition(0);
     }
     public void SpecimenPickupFromWallServoPosition(){
-        SetIntakeBoxRotatorPosition(0.89); //0.875
+        SetIntakeBoxRotatorPosition(0.93); //0.875     ORIGINALLY 0.89
         SetSmallArmHangerPosition(0.35); //.15 //0.4
     }
     public void RemoveFromWall(){
