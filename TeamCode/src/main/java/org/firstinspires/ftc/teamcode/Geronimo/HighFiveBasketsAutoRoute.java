@@ -495,7 +495,7 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                 timeout = control.opMode.getRuntime() + 5.0;
             }
 
-          /*  boolean returnValue = true;
+            boolean returnValue = true;
             if (control.GetSlidesLimitSwitchPressed())
             {
                 control.ResetSlidesToZeroNoWait();
@@ -504,9 +504,9 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
             else if (control.opMode.getRuntime()>=timeout )
             {
                 returnValue = false;
-            }*/
+            }
             packet.put("slidesToZero", 0);
-            return false ;  // returning true means not done, and will be called again.  False means action is completely done
+            return returnValue ;  // returning true means not done, and will be called again.  False means action is completely done
         }
     }
     public Action rotatorArmsToZero(){return new RotatorArmsToZero();}

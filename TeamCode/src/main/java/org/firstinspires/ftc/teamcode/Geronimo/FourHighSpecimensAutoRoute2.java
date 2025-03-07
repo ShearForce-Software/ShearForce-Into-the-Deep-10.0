@@ -347,13 +347,13 @@ public class FourHighSpecimensAutoRoute2 extends LinearOpMode {
                 initialized = true;
                 timeout = control.opMode.getRuntime() + 0.5;
             }
-          /*  boolean returnValue = true;
+            boolean returnValue = true;
             if (control.opMode.getRuntime()>=timeout || control.GetSlidesLimitSwitchPressed())
             {
                 returnValue = false;
-            }*/
+            }
             packet.put("lock purple pixel", 0);
-            return false ;  // returning true means not done, and will be called again.  False means action is completely done
+            return returnValue ;  // returning true means not done, and will be called again.  False means action is completely done
         }
     }
     public Action rotatorarmstozero (){return new RotatorArmsToZero();}
