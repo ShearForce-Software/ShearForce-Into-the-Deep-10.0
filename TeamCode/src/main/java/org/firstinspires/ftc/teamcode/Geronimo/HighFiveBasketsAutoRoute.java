@@ -173,7 +173,7 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                         finishBasketHigh_ArmSafeToLowerPosition(),
                         new SleepAction(0.2),
                         slidesToZero(),
-                        new SleepAction(1.125),
+                        new SleepAction(1.5),
                         stowPosition(),
                         rotatorArmsToZero(),
 
@@ -213,7 +213,7 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                         finishBasketHigh_ArmSafeToLowerPosition(),
                         new SleepAction(2),
                         slidesToZero(),
-                        new SleepAction(1.125),
+                        new SleepAction(1.5),
                         stowPosition(),
                         rotatorArmsToZero(),
                         new SleepAction(10)
