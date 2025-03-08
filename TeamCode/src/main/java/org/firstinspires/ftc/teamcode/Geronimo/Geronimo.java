@@ -93,7 +93,7 @@ public class Geronimo {
     boolean slidesRunningToPosition = false;
     public static final double SLIDES_POS_POWER = 1.0;
     public static final int SLIDE_ARM_MIN_POS = 0;
-    public static final int SLIDE_ARM_MAX_VERTICAL_POS = 5918;
+    public static final int SLIDE_ARM_MAX_VERTICAL_POS = 5533; //5918 5300
     public static final int SLIDE_ARM_MAX_HORIZONTAL_POS = 2900; //1550 //1400  //3690 //3310
     private double slidePower = 0.0;
     TouchSensor touchSensorSlideLeft;
@@ -1379,7 +1379,7 @@ public class Geronimo {
         SetSlideToPosition(0);
     }
     public void BasketHighFinishingMove_SlidesPosition(){
-        SetSlideToPosition(6560);
+        SetSlideToPosition(5532); //6560
     }
     public void BasketHighFinishingMove_UrchinDeliverPosition() {
         SetIntakeBoxRotatorPosition(0.705);
@@ -1578,6 +1578,8 @@ public class Geronimo {
                 (power > 0) &&
                 (slideLeft.getCurrentPosition() >= SLIDE_ARM_MAX_HORIZONTAL_POS || slideRight.getCurrentPosition() >= SLIDE_ARM_MAX_HORIZONTAL_POS)){
             // override and ignore the bad command by killing power to the slides
+            slidePower = 0;
+        } else if(slideLeft.getCurrentPosition() >= SLIDE_ARM_MAX_VERTICAL_POS && power > 0) {
             slidePower = 0;
         }else {
 
