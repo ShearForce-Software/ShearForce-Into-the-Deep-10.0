@@ -1358,7 +1358,7 @@ public class Geronimo {
         // Raise slides to high basket height
         BasketHighFinishingMove_SlidesPosition();
         double timeout = opMode.getRuntime() + 4.0;
-        while (slideLeft.getCurrentPosition() < 6550 && opMode.getRuntime() < timeout)
+        while (slideLeft.getCurrentPosition() < 5530 && opMode.getRuntime() < timeout)
         {
             SpecialSleep(50);
         }
@@ -1366,7 +1366,7 @@ public class Geronimo {
 
         // Rotate urchin to align above basket
         BasketHighFinishingMove_UrchinDeliverPosition();
-        SpecialSleep(200);
+        SpecialSleep(200); //200
         // Release the sample from the urchin
         SetUrchinServoPosition(0);
         SpecialSleep(400);
@@ -1375,7 +1375,7 @@ public class Geronimo {
         SpecialSleep(200);
         // Rotate arms a little away from basket and lower slides to zero
         BasketHighFinishingMove_ArmSafeToLowerPosition();
-        SpecialSleep(200);
+        SpecialSleep(1500); //200
         SetSlideToPosition(0);
     }
     public void BasketHighFinishingMove_SlidesPosition(){
@@ -1387,7 +1387,7 @@ public class Geronimo {
         SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(85.1));
     }
     public void BasketHighFinishingMove_UrchinSafeToLowerPosition(){
-        SetSmallArmHangerPosition(.54); //1
+        SetSmallArmHangerPosition(.64); //1    .54 original
     }
     public void BasketHighFinishingMove_ArmSafeToLowerPosition(){
         SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(74.49));
