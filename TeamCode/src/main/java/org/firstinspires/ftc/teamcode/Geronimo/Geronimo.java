@@ -789,7 +789,7 @@ public class Geronimo {
     //    return (lock_position == 0.0);
     //}
 
-    /*
+
     public void PreHangRobot(){
         SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(34.37));
         SpecialSleep(2000);
@@ -808,10 +808,11 @@ public class Geronimo {
         SetSlideToPosition(1200);  //1365 <<original
     }
 
-     */
 
-    int stepCounter = 0;
-    public void level3Ascent() {
+
+
+      int stepCounter = 0;
+      public void level3Ascent() {
         stepCounter = 0;
         int targetAngle = 75;
 
@@ -826,9 +827,9 @@ public class Geronimo {
 
         double timeout = opMode.getRuntime() + 4.0;
 
-        while (stepCounter <= 14) {
+        while (stepCounter <= 9) {
             // Continually Hold the arms at 90 degrees from the floor until step 6 (then will clam shell close)
-            if (stepCounter < 10) {
+            if (stepCounter < 4) {
                 SetSlideRotatorArmToPosition(findRealArmAngle((targetAngle)));
             }
 
@@ -905,8 +906,11 @@ public class Geronimo {
             // *** Blinkin is RED_Orange in this step, goes Red when done
             // *******************************************
             else if (stepCounter == 4) {
-                targetAngle = 70;
-                SetSlideToPosition(0);
+                armRotatorOverride = true;
+                SetSlideRotatorArmToPosition(90);
+                SetSlideRotatorArmToHoldCurrentPosition();
+                //targetAngle = 90; //70
+                SetSlideToPosition(1050);
                 if (slideLeft.getCurrentPosition() <= 20) { // || opMode.getRuntime() > timeout) {
                     Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.RED;
                     blinkinLedDriver.setPattern(Blinken_pattern);
@@ -914,6 +918,13 @@ public class Geronimo {
                     stepCounter++;
                 }
             }
+
+            else if (stepCounter == 5) {
+                armRotatorOverride = true;
+                SetSlideRotatorArmToPosition(20);
+                SetSlideRotatorArmToHoldCurrentPosition();
+            }
+            /*
 
             else if (stepCounter == 5) {
                 targetAngle = 70;
@@ -924,7 +935,7 @@ public class Geronimo {
                     timeout = opMode.getRuntime() + 5.0;
                     stepCounter++;
                 }
-            }
+            } /*
 
             // *******************************************
             // *** STEP 4 Arms reduce to 75 degree angle to the floor
@@ -991,6 +1002,7 @@ public class Geronimo {
                     stepCounter++;
                 }
             }
+            */
 
             // *******************************************
             // *** STEP 7 Arms stay at 90 degrees to the floor
@@ -999,7 +1011,8 @@ public class Geronimo {
             // *** showing the SHEAR FORCE bottom to the crowd!!!
             // *** Blinkin is GREEN and stays Green from here on out to look cool
             // *******************************************
-            else if (stepCounter == 10)
+            /*
+            else if (stepCounter == 5) //10
             {
                 // CLAM SHELL CLOSED
                 SetSlideRotatorArmToPosition(0);
@@ -1009,13 +1022,16 @@ public class Geronimo {
                 }
             }
 
+
+
+
             // *******************************************
             // *** STEP 8 Arms stay at 90 degrees to the floor
             // *** Because it is pressed against both horizontal bars, (but no longer the bottom base bar)
             // *** Blinkin STAYS GREEN
             // *** Lock pin servos lock the base of the robot in the clam shell position
             // *******************************************
-            else if (stepCounter == 11)
+            else if (stepCounter == 6) //11
             {
                 HooksLocked();
                 if (opMode.getRuntime() > timeout) {
@@ -1023,6 +1039,7 @@ public class Geronimo {
                     stepCounter++;
                 }
             }
+
 
             // *******************************************
             // *** STEP 9
@@ -1033,7 +1050,7 @@ public class Geronimo {
             // *** As slides comes in the robot comes lose from
             // *** the lower hang bar and swings to a horizontal state
             // *******************************************
-            else if (stepCounter == 12)
+            else if (stepCounter == 7) //12
             {
                 // Remove power from arm rotators when locks are engaged
                 SetSlideRotatorToPowerMode(0);
@@ -1044,7 +1061,7 @@ public class Geronimo {
                 }
             }
 
-            else if (stepCounter == 13)
+            else if (stepCounter == 8) //13
             {
                 if (opMode.getRuntime() > timeout) {
                     timeout = opMode.getRuntime() + 3.0;
@@ -1052,15 +1069,17 @@ public class Geronimo {
                 }
             }
 
-            else if (stepCounter == 14)
+            else if (stepCounter == 5) //14
             {
                 SetSlideToPosition(1050);
             }
-
+            */
             if (opMode.gamepad1.share) {
                 armRotatorOverride = false;
                 break;
             }
+
+
 
             ShowTelemetry();
             SpecialSleep(50);
@@ -1791,12 +1810,16 @@ public class Geronimo {
 
         slideArmRotatorTargetPosition = position;
         // Limit the range to valid values
+        /*
         if (!armRotatorOverride) {
             slideArmRotatorTargetPosition = Math.min(slideArmRotatorTargetPosition, findRealArmAngle(90));
         }
         else {
             slideArmRotatorTargetPosition = Math.min(slideArmRotatorTargetPosition, findRealArmAngle(97));
         }
+        */
+
+        slideArmRotatorTargetPosition = Math.min(slideArmRotatorTargetPosition, findRealArmAngle(90));
         slideArmRotatorTargetPosition = Math.max(slideArmRotatorTargetPosition, SLIDE_ARM_ROTATOR_MIN_POS);
 
         slideArmRotatorRunningToPosition = true;
