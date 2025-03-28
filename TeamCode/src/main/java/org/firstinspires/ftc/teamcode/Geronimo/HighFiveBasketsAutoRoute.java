@@ -36,6 +36,7 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
     Action DeliverSample3;
     Action DriveToSubmersible4;
     Action DeliverSample4;
+    Action ClearingMove;
     public boolean readyToEnd = false;
     VelConstraint speedUpVelocityConstraint;
     AccelConstraint speedUpAccelerationConstraint;
@@ -96,18 +97,18 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                 // put front corners of robot exactly in corner at a 45 degree angle (12,0) diff from start
                 .strafeToConstantHeading(new Vector2d(-57,-56))
                 .build();
-        DriveToSample1 = drive.actionBuilder(new Pose2d(-57,-56,Math.toRadians(45)))
+        DriveToSample1 = drive.actionBuilder(new Pose2d(-53,-52,Math.toRadians(45)))
                 .setReversed(false)
                 .strafeToLinearHeading(new Vector2d(-46.5,-44.5), Math.toRadians(90))
                 .build();
-        DeliverSample1 = drive.actionBuilder(new Pose2d(-46,-45,Math.toRadians(90)))
+        DeliverSample1 = drive.actionBuilder(new Pose2d(-46.5,-44.5,Math.toRadians(90)))
                 .setReversed(true)
                 // move center of front of robot to center of diagonal basket line (6,6) diff from start
                 .strafeToLinearHeading(new Vector2d(-53,-52),Math.toRadians(45))
                 // put front corners of robot exactly in corner at a 45 degree angle (12,0) diff from start
                 .strafeToConstantHeading(new Vector2d(-58,-57))
                 .build();
-        DriveToSample2 = drive.actionBuilder(new Pose2d(-58, -57, Math.toRadians(45)))
+        DriveToSample2 = drive.actionBuilder(new Pose2d(-53, -52, Math.toRadians(45)))
                 .setReversed(false)
                 .strafeToLinearHeading(new Vector2d(-57,-46), Math.toRadians(90))
                 .build();
@@ -130,6 +131,11 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                 // put front corners of robot exactly in corner at a 45 degree angle (12,0) diff from start
                 .strafeToConstantHeading(new Vector2d(-59,-58))
                 .build();
+        ClearingMove = drive.actionBuilder(new Pose2d(-57,-56,Math.toRadians(45)))
+                .setReversed(true)
+                .strafeToLinearHeading(new Vector2d(-53,-52),Math.toRadians(45))
+                .build();
+
     /*     DriveToSubmersible4 = drive.actionBuilder(new Pose2d(-59, -59, Math.toRadians(45)))
                 .splineTo(new Vector2d(-36,-12),Math.toRadians(0))
                 .strafeToLinearHeading(new Vector2d(-24, -12), Math.toRadians(0))
@@ -170,10 +176,11 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                         finishBasketHigh_UrchinSafeToLowerPosition(),
                         new SleepAction(0.4),
                         // Rotate arms a little away from basket and lower slides to zero.
+                        ClearingMove,
                         finishBasketHigh_ArmSafeToLowerPosition(),
-                        new SleepAction(0.2),
+                        new SleepAction(0.2), //.2
                         slidesToZero(),
-                        new SleepAction(1.5),
+                        new SleepAction(3.5),//2, 1.5
                         stowPosition(),
                         rotatorArmsToZero(),
 
@@ -209,11 +216,12 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                         // Rotate urchin back away from the basket
                         finishBasketHigh_UrchinSafeToLowerPosition(),
                         new SleepAction(0.4),
+                        ClearingMove,
                         // Rotate arms a little away from basket and lower slides to zero
                         finishBasketHigh_ArmSafeToLowerPosition(),
-                        new SleepAction(2),
+                        new SleepAction(.2),
                         slidesToZero(),
-                        new SleepAction(1.5),
+                        new SleepAction(3.5),
                         stowPosition(),
                         rotatorArmsToZero(),
                         new SleepAction(10)
