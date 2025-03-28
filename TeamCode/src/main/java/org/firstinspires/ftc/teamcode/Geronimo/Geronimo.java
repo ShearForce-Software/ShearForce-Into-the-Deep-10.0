@@ -1762,8 +1762,6 @@ public class Geronimo {
                 leftSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 rightSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-
-
                 // Send calculated power to motors
                 leftSlideArmRotatorMotor.setPower(leftPower);
                 rightSlideArmRotatorMotor.setPower(leftPower);
