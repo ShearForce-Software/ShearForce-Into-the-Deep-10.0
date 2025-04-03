@@ -5,17 +5,11 @@
 ---
 
 
-- [ ] Shrey: Test inspection buttons, verify IMU logic working for inspection
-- [ ] Change network password for connecting to the new control hub/ update control hub?
-- [ ] Akshay: Get Limelight grab sample integrated and working for yellow samples
-- [ ] Claire: Test using PIDF arm control for manual and autonomous routines
-- [ ] Akshay: Get Limelight grab sample integrated and working for blue/red samples
-- [ ] Matthew: Test Level-3 ascent with new motors and hooks
-- [ ] Aidan: Test and get Auto Left delivering at least 3 samples to high basket
-
----
-- [ ] Akshay: Test Limelight on Geronimo for aligning on wall specimens
-- [ ] Make a NEW auto left to put at least 4 samples into the high basket
+- [ ] Claire: Create PIDF control for slides
+- [ ] Claire: update PIDF Rotator arm controls to slow down at end when going to zero
+- [ ] Aidan: HighFiveAuto -- get delivering at least 3 samples to high basket
+- [ ] Akshay & Gianna: Get limelight detecting by color
+- [ ] Matthew: Get Level-3 climb working again, but using PIDF for rotator arm control
 
 
 

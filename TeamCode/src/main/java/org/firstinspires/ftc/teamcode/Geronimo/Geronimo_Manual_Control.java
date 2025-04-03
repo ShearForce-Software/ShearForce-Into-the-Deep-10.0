@@ -33,17 +33,18 @@ public class Geronimo_Manual_Control extends LinearOpMode {
         theRobot.HooksReleased();
         theRobot.SetSwiperPosition(Geronimo.SWIPER_MAX_POS);
         theRobot.SetSwiper2Position(Geronimo.SWIPER2_MIN_POS);
+        theRobot.SetPIDF_Enabled(true);
 
         // create a thread to control the rotator arm position with PIDF control
         Thread pidfThread = new Thread(() -> {
             while (!isStopRequested()) {
-                // TODO - theRobot.SetSlideRotatorArmToPositionPIDF();
+             theRobot.SetSlideRotatorArmToPositionPIDF();
 
-                sleep(50);
+                sleep(20);
             }
         });
 
-      //  pidfThread.start();
+         pidfThread.start();
 
         while (opModeIsActive()) {
             theRobot.EndgameBuzzer();
@@ -177,7 +178,7 @@ public class Geronimo_Manual_Control extends LinearOpMode {
 
             // TODO - Consider moving this to a separate Thread
             //looping PIDF code
-            theRobot.SetSlideRotatorArmToPositionPIDF();
+           // theRobot.SetSlideRotatorArmToPositionPIDF();
 
             // small hanger arms holding the urchin / green box
             if (gamepad2.right_stick_x > 0.1 && gamepad2.options) {

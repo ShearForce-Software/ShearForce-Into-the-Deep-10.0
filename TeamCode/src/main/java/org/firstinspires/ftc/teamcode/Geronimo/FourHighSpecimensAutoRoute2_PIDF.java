@@ -177,7 +177,7 @@ public class FourHighSpecimensAutoRoute2_PIDF extends LinearOpMode {
         // create a thread to control the rotator arm position with PIDF control
         //Thread pidfThread = new Thread(() -> {
         //    while (!isStopRequested()) {
-        //        control.SetSlideRotatorArmToPositionPIDF();
+                control.SetSlideRotatorArmToPositionPIDF();
 
         //        sleep(50);
         //    }

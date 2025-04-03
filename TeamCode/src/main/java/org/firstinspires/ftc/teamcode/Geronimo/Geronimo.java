@@ -1849,13 +1849,15 @@ public class Geronimo {
 */
             //store in geronimo rotator_arm_target_ticks. Call loop again and again. then if and everything else, else
 
+
+
             if (rotator_arm_target_ticks == 0 && GetSlideRotatorArmLimitSwitchPressed()) {
                 ResetSlideRotatorArmToZero();
             } else {
                 rotator_arm_target_angle = rotator_arm_target_ticks / ticks_in_degrees;
 
-                Right_controller.setTolerance(20.0); // sets the error in ticks I think that is tolerated > go back to ticks and degrees, plus or minus the tolerance
-                Left_controller.setTolerance(20.0);  //originally both 5.0 which is half a degree
+                Right_controller.setTolerance(10.0); // sets the error in ticks I think that is tolerated > go back to ticks and degrees, plus or minus the tolerance
+                Left_controller.setTolerance(10.0);  //originally both 5.0 which is half a degree    was at 20 (2 degrees)
                 //Left_controller.atSetPoint();
                // Right_controller.atSetPoint();
 
@@ -1874,8 +1876,10 @@ public class Geronimo {
                 double leftPower = left_pid + left_ff;
                 double rightPower = right_pid + right_ff;
 
-                leftSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                rightSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                //leftSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                //rightSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                leftSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                rightSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
                 // Send calculated power to motors
                 leftSlideArmRotatorMotor.setPower(leftPower);
