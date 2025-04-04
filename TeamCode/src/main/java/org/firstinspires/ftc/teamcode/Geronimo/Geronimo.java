@@ -808,11 +808,265 @@ public class Geronimo {
         SetSlideToPosition(1200);  //1365 <<original
     }
 
+    int stepCounter = 0;
+    public void level3Ascent() {
+        stepCounter = 0;
+        int targetAngle = 75;
+
+        // Initialize the Blinkin at the start to be blue
+        Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;
+        blinkinLedDriver.setPattern(Blinken_pattern);
+
+        // Initialize the hanger arms and urchin intake go to safe place
+        SetIntakeBoxRotatorPosition(0.33);
+        SetSmallArmHangerPosition(0.79);
+        SpecialSleep(200);
+
+        double timeout = opMode.getRuntime() + 4.0;
+
+        while (stepCounter <= 14) {
+            // Continually Hold the arms at 90 degrees from the floor until step 6 (then will clam shell close)
+            if (stepCounter < 10) {
+                SetSlideRotatorArmToPosition(findRealArmAngle((targetAngle)));
+            }
+
+            // *******************************************
+            // *** STEP 0 Raises arms to 85 degrees (reference to floor tiles)
+            // *** and puts the hanger arms in a safe spot for climbing
+            // ***  is Blue while in this step, goes yellow when done
+            // *******************************************
+            if (stepCounter == 0) {
+                targetAngle = 75;
+                SetIntakeBoxRotatorPosition(0.33);
+                SetSmallArmHangerPosition(0.79);
+                SetClawPosition(1);
+                if (leftSlideArmRotatorMotor.getCurrentPosition() >= findRealArmAngle(70) || opMode.getRuntime() > timeout) {
+                    Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.YELLOW;
+                    blinkinLedDriver.setPattern(Blinken_pattern);
+                    timeout = opMode.getRuntime() +  5.0;
+                    stepCounter++;
+                }
+            }
+
+            // *******************************************
+            // *** STEP 1 Arms stay at 85 degrees and
+            // *** the slides go out/up, bringing the two
+            // *** hooks above the lower bar
+            // *** Blinkin is Yellow in this step, goes orange when done
+            // *******************************************
+            else if (stepCounter == 1) {
+                SetSlideToPosition(3400);
+                targetAngle = 75;
+                if (slideLeft.getCurrentPosition() >= 3300 || opMode.getRuntime() > timeout) {
+                    Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.ORANGE;
+                    blinkinLedDriver.setPattern(Blinken_pattern);
+                    timeout = opMode.getRuntime() + 5.0;
+                    stepCounter++;
+                }
+            }
+
+            // *******************************************
+            // *** STEP 2 Arms rotates to 90 degrees to the floor
+            // *** bringing the green hooks and the dolphin fins
+            // *** above the middle bar
+            // *** Blinkin is orange in this step, goes RED_ORANGE when done
+            // *******************************************
+            else if (stepCounter == 2) {
+                targetAngle = 90;
+                SetSlideToPosition(3400);
+                if ((slideLeft.getCurrentPosition() >= 3300 &&
+                        leftSlideArmRotatorMotor.getCurrentPosition() > findRealArmAngle((88)) )
+                        || opMode.getRuntime() > timeout) {
+                    Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.RED_ORANGE;
+                    blinkinLedDriver.setPattern(Blinken_pattern);
+                    timeout = opMode.getRuntime() + 1.0;
+                    stepCounter++;
+                }
+            }
+
+            else if (stepCounter == 3) {
+                if (opMode.getRuntime() > timeout) {
+                    timeout = opMode.getRuntime() + 3.0;
+                    stepCounter++;
+                }
+            }
+
+            // *******************************************
+            // *** STEP 3 Arms stay at 90 degrees and
+            // *** the slides come back down to put the
+            // *** weight on the dolphin fins.
+            // *** as weight transfers to fins, the rotator arm
+            // *** has to keep increasing the angle to maintain
+            // *** 90 degrees to the floor
+            // *** This achieves a LEVEL-2 HANG once the robot is off the floor
+            // *** Robot should look very open, just touching the bottom base bar but not the floor
+            // *** Blinkin is RED_Orange in this step, goes Red when done
+            // *******************************************
+            else if (stepCounter == 4) {
+                targetAngle = 70;
+                SetSlideToPosition(0);
+                if (slideLeft.getCurrentPosition() <= 20) { // || opMode.getRuntime() > timeout) {
+                    Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.RED;
+                    blinkinLedDriver.setPattern(Blinken_pattern);
+                    timeout = opMode.getRuntime() + 5.0;
+                    stepCounter++;
+                }
+            }
+
+            else if (stepCounter == 5) {
+                targetAngle = 70;
+                SetSlideToPosition(430);
+                if (slideLeft.getCurrentPosition() >= 425) { // || opMode.getRuntime() > timeout) {
+                    Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.RED;
+                    blinkinLedDriver.setPattern(Blinken_pattern);
+                    timeout = opMode.getRuntime() + 5.0;
+                    stepCounter++;
+                }
+            }
+
+            // *******************************************
+            // *** STEP 4 Arms reduce to 75 degree angle to the floor
+            // *** to allow the green hooks to go beyond the top bar
+            // *** without getting caught on the bar and
+            // *** the slides extend up / out
+            // *** Blinkin is Red in this step, goes HOT_PINK when done
+            // *******************************************
+            else if (stepCounter == 6) {
+                targetAngle = 75;
+                SetSlideToPosition(5100);
+                if ((leftSlideArmRotatorMotor.getCurrentPosition() >= findRealArmAngle(72) &&
+                        leftSlideArmRotatorMotor.getCurrentPosition() < findRealArmAngle(78) &&
+                        slideLeft.getCurrentPosition() >= 5100)
+                        || opMode.getRuntime() > timeout) {
+                    Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.HOT_PINK;
+                    blinkinLedDriver.setPattern(Blinken_pattern);
+                    timeout = opMode.getRuntime() + 3.0;
+                    stepCounter++;
+                }
+            }
+            // *******************************************
+            // *** STEP 5 Arms returns to 90 degrees to the floor
+            // *** bringing the green hooks directly above the
+            // *** top bar, robot is very open touching multiple bars
+            // *** Blinkin is Pink in this step, goes Aqua when done
+            // *******************************************
+            else if (stepCounter == 7) {
+                armRotatorOverride = true;
+                targetAngle = 95;
+                SetSlideToPosition(4900);
+                if ((slideLeft.getCurrentPosition() >= 4850 &&
+                        leftSlideArmRotatorMotor.getCurrentPosition() >= findRealArmAngle((93)) )
+                    //|| opMode.getRuntime() > timeout
+                ) {
+                    Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.AQUA;
+                    blinkinLedDriver.setPattern(Blinken_pattern);
+                    timeout = opMode.getRuntime() + 1.0;
+                    stepCounter++;
+                }
+            }
+
+            else if (stepCounter == 8) {
+                if (opMode.getRuntime() > timeout) {
+                    timeout = opMode.getRuntime() + 3.0;
+                    stepCounter++;
+                }
+            }
+            // *******************************************
+            // *** STEP 6 Arms stay at 90 degrees to the floor and
+            // *** the slides come down to hook the green
+            // *** hooks on the HIGH bar, and bring weight off of the dolphin fins
+            // *** But the slides stay extended enough to keep the robot
+            // *** touching both horizontal bars and probably still touching the bottom bar (but still off the floor)
+            // *** Blinkin is Aqua in this step, goes GREEN when done
+            // *******************************************
+            else if (stepCounter == 9) {
+                targetAngle = 95;
+                SetSlideToPosition(4400);
+                if (slideLeft.getCurrentPosition() <= 4400 || opMode.getRuntime() > timeout) {
+                    Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.GREEN;
+                    blinkinLedDriver.setPattern(Blinken_pattern);
+                    timeout = opMode.getRuntime() + 3.0;
+                    stepCounter++;
+                }
+            }
+
+            // *******************************************
+            // *** STEP 7 Arms stay at 90 degrees to the floor
+            // *** Because it is pressed against both horizontal bars,
+            // *** the base of the robot clam-shells closed
+            // *** showing the SHEAR FORCE bottom to the crowd!!!
+            // *** Blinkin is GREEN and stays Green from here on out to look cool
+            // *******************************************
+            else if (stepCounter == 10)
+            {
+                // CLAM SHELL CLOSED
+                SetSlideRotatorArmToPosition(0);
+                if (GetSlidesLimitSwitchPressed() || opMode.getRuntime() > timeout) {
+                    timeout = opMode.getRuntime() + 0.5;
+                    stepCounter++;
+                }
+            }
+
+            // *******************************************
+            // *** STEP 8 Arms stay at 90 degrees to the floor
+            // *** Because it is pressed against both horizontal bars, (but no longer the bottom base bar)
+            // *** Blinkin STAYS GREEN
+            // *** Lock pin servos lock the base of the robot in the clam shell position
+            // *******************************************
+            else if (stepCounter == 11)
+            {
+                HooksLocked();
+                if (opMode.getRuntime() > timeout) {
+                    timeout = opMode.getRuntime() + 3.0;
+                    stepCounter++;
+                }
+            }
+
+            // *******************************************
+            // *** STEP 9
+            // *** Arm Rotator power removed (lock pins holding now)
+            // *** Blinkin should stay GREEN here
+            // *** Slides come in (but not all the way,
+            // *** just enough to balance the weight of the back of the robot)
+            // *** As slides comes in the robot comes lose from
+            // *** the lower hang bar and swings to a horizontal state
+            // *******************************************
+            else if (stepCounter == 12)
+            {
+                // Remove power from arm rotators when locks are engaged
+                SetSlideRotatorToPowerMode(0);
+                SetSlideToPosition(1300);
+                if (slideLeft.getCurrentPosition() <= 1320 || opMode.getRuntime() > timeout) {
+                    timeout = opMode.getRuntime() + 1.0;
+                    stepCounter++;
+                }
+            }
+
+            else if (stepCounter == 13)
+            {
+                if (opMode.getRuntime() > timeout) {
+                    timeout = opMode.getRuntime() + 3.0;
+                    stepCounter++;
+                }
+            }
+
+            else if (stepCounter == 14)
+            {
+                SetSlideToPosition(1050);
+            }
+
+            if (opMode.gamepad1.share) {
+                armRotatorOverride = false;
+                break;
+            }
+
+            ShowTelemetry();
+            SpecialSleep(50);
+        } // END while loop
+    }
 
 
-
-      int stepCounter = 0;
-      public void level3Ascent() {
+    public void level2Ascent() {
         stepCounter = 0;
         int targetAngle = 75;
 
@@ -924,156 +1178,7 @@ public class Geronimo {
                 SetSlideRotatorArmToPosition(20);
                 SetSlideRotatorArmToHoldCurrentPosition();
             }
-            /*
 
-            else if (stepCounter == 5) {
-                targetAngle = 70;
-                SetSlideToPosition(430);
-                if (slideLeft.getCurrentPosition() >= 425) { // || opMode.getRuntime() > timeout) {
-                    Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.RED;
-                    blinkinLedDriver.setPattern(Blinken_pattern);
-                    timeout = opMode.getRuntime() + 5.0;
-                    stepCounter++;
-                }
-            } /*
-
-            // *******************************************
-            // *** STEP 4 Arms reduce to 75 degree angle to the floor
-            // *** to allow the green hooks to go beyond the top bar
-            // *** without getting caught on the bar and
-            // *** the slides extend up / out
-            // *** Blinkin is Red in this step, goes HOT_PINK when done
-            // *******************************************
-            else if (stepCounter == 6) {
-                targetAngle = 75;
-                SetSlideToPosition(5100);
-                if ((leftSlideArmRotatorMotor.getCurrentPosition() >= findRealArmAngle(72) &&
-                        leftSlideArmRotatorMotor.getCurrentPosition() < findRealArmAngle(78) &&
-                        slideLeft.getCurrentPosition() >= 5100)
-                        || opMode.getRuntime() > timeout) {
-                    Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.HOT_PINK;
-                    blinkinLedDriver.setPattern(Blinken_pattern);
-                    timeout = opMode.getRuntime() + 3.0;
-                    stepCounter++;
-                }
-            }
-            // *******************************************
-            // *** STEP 5 Arms returns to 90 degrees to the floor
-            // *** bringing the green hooks directly above the
-            // *** top bar, robot is very open touching multiple bars
-            // *** Blinkin is Pink in this step, goes Aqua when done
-            // *******************************************
-            else if (stepCounter == 7) {
-                armRotatorOverride = true;
-                targetAngle = 95;
-                SetSlideToPosition(4900);
-                if ((slideLeft.getCurrentPosition() >= 4850 &&
-                        leftSlideArmRotatorMotor.getCurrentPosition() >= findRealArmAngle((93)) )
-                        //|| opMode.getRuntime() > timeout
-                ) {
-                    Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.AQUA;
-                    blinkinLedDriver.setPattern(Blinken_pattern);
-                    timeout = opMode.getRuntime() + 1.0;
-                    stepCounter++;
-                }
-            }
-
-            else if (stepCounter == 8) {
-                if (opMode.getRuntime() > timeout) {
-                    timeout = opMode.getRuntime() + 3.0;
-                    stepCounter++;
-                }
-            }
-            // *******************************************
-            // *** STEP 6 Arms stay at 90 degrees to the floor and
-            // *** the slides come down to hook the green
-            // *** hooks on the HIGH bar, and bring weight off of the dolphin fins
-            // *** But the slides stay extended enough to keep the robot
-            // *** touching both horizontal bars and probably still touching the bottom bar (but still off the floor)
-            // *** Blinkin is Aqua in this step, goes GREEN when done
-            // *******************************************
-            else if (stepCounter == 9) {
-                targetAngle = 95;
-                SetSlideToPosition(4400);
-                if (slideLeft.getCurrentPosition() <= 4400 || opMode.getRuntime() > timeout) {
-                    Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.GREEN;
-                    blinkinLedDriver.setPattern(Blinken_pattern);
-                    timeout = opMode.getRuntime() + 3.0;
-                    stepCounter++;
-                }
-            }
-            */
-
-            // *******************************************
-            // *** STEP 7 Arms stay at 90 degrees to the floor
-            // *** Because it is pressed against both horizontal bars,
-            // *** the base of the robot clam-shells closed
-            // *** showing the SHEAR FORCE bottom to the crowd!!!
-            // *** Blinkin is GREEN and stays Green from here on out to look cool
-            // *******************************************
-            /*
-            else if (stepCounter == 5) //10
-            {
-                // CLAM SHELL CLOSED
-                SetSlideRotatorArmToPosition(0);
-                if (leftSlideArmRotatorMotor.getCurrentPosition() <= 160 || opMode.getRuntime() > timeout) {
-                    timeout = opMode.getRuntime() + 0.5;
-                    stepCounter++;
-                }
-            }
-
-
-
-
-            // *******************************************
-            // *** STEP 8 Arms stay at 90 degrees to the floor
-            // *** Because it is pressed against both horizontal bars, (but no longer the bottom base bar)
-            // *** Blinkin STAYS GREEN
-            // *** Lock pin servos lock the base of the robot in the clam shell position
-            // *******************************************
-            else if (stepCounter == 6) //11
-            {
-                HooksLocked();
-                if (opMode.getRuntime() > timeout) {
-                    timeout = opMode.getRuntime() + 3.0;
-                    stepCounter++;
-                }
-            }
-
-
-            // *******************************************
-            // *** STEP 9
-            // *** Arm Rotator power removed (lock pins holding now)
-            // *** Blinkin should stay GREEN here
-            // *** Slides come in (but not all the way,
-            // *** just enough to balance the weight of the back of the robot)
-            // *** As slides comes in the robot comes lose from
-            // *** the lower hang bar and swings to a horizontal state
-            // *******************************************
-            else if (stepCounter == 7) //12
-            {
-                // Remove power from arm rotators when locks are engaged
-                SetSlideRotatorToPowerMode(0);
-                SetSlideToPosition(1300);
-                if (slideLeft.getCurrentPosition() <= 1320 || opMode.getRuntime() > timeout) {
-                    timeout = opMode.getRuntime() + 1.0;
-                    stepCounter++;
-                }
-            }
-
-            else if (stepCounter == 8) //13
-            {
-                if (opMode.getRuntime() > timeout) {
-                    timeout = opMode.getRuntime() + 3.0;
-                    stepCounter++;
-                }
-            }
-
-            else if (stepCounter == 5) //14
-            {
-                SetSlideToPosition(1050);
-            }
-            */
             if (opMode.gamepad1.share) {
                 armRotatorOverride = false;
                 break;
@@ -1564,7 +1669,7 @@ public class Geronimo {
     // *********************************************************
 
     public boolean GetSlidesLimitSwitchPressed(){
-        return (!touchSensorSlideLeft.isPressed()) || (!touchSensorSlideRight.isPressed());
+        return (!touchSensorSlideLeft.isPressed()) && (!touchSensorSlideRight.isPressed());
     }
 
     // TODO -- need to determine other rotator arm positions to limit than just zero
@@ -1919,8 +2024,10 @@ public class Geronimo {
 
     public void ShowTelemetry(){
 
+        opMode.telemetry.addData("Slide Arm Rotator Positions: ", "L: %d, R: %d", leftSlideArmRotatorMotor.getCurrentPosition(), rightSlideArmRotatorMotor.getCurrentPosition());
         opMode.telemetry.addData("slides Position ", "L: %d, R: %d", slideLeft.getCurrentPosition(), slideRight.getCurrentPosition());
         opMode.telemetry.addData("stepCounter: ", stepCounter);
+
         opMode.telemetry.addData("Limelight Enabled: " , limelightEnabled);
         opMode.telemetry.addData("Limelight Target: " , limelight_targetImageName);
         opMode.telemetry.addData("Limelight Connected: " , limelightbox.isConnected());
@@ -1980,7 +2087,7 @@ public class Geronimo {
 
         opMode.telemetry.addData("PIDF Enabled:", pidfEnabled);
         opMode.telemetry.addData("PIDF Target:", " %.1f (ticks), %.1f (deg) ", rotator_arm_target_ticks, rotator_arm_target_angle);
-        opMode.telemetry.addData("Slide Arm Rotator Positions: ", "L: %d, R: %d", leftSlideArmRotatorMotor.getCurrentPosition(), rightSlideArmRotatorMotor.getCurrentPosition());
+
         opMode.telemetry.addData("Slide Arm Rotator ", "Target: %d, Power: %.2f", slideArmRotatorTargetPosition, slideArmRotatorPower);
         opMode.telemetry.addData("targetPositionIMUARM: " , " %d (ticks), %.1f (deg) ", targetPositionIMUARM_ticks, targetIMU_Degrees);
         //YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();

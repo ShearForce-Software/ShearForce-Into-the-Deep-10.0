@@ -88,15 +88,18 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 theRobot.SetSwiper2Position(Geronimo.SWIPER2_MIN_POS);
             }
             // LEVEL-3 Hang Logic
-            else if(gamepad1.dpad_up && !gamepad1.options){ //Driver will eventually hang the robot himself.
-               // theRobot.level3Ascent();
-                theRobot.PreHangRobot();
+            else if(gamepad1.dpad_up && !gamepad1.options){
+               theRobot.level3Ascent();
+            }
+            // LEVEL-2 Hang Logic
+            else if(gamepad1.left_bumper) {
+                theRobot.level2Ascent();
             }
             // Emergency pause
             else if (gamepad1.share) {
-              //  theRobot.SetSlidesToHoldCurrentPosition();
-               // theRobot.SetSlideRotatorArmToHoldCurrentPosition();
-                theRobot.ReadyHangRobot();
+              // theRobot.SetSlidesToHoldCurrentPosition();
+                // theRobot.SetSlideRotatorArmToHoldCurrentPosition();
+                // theRobot.ReadyHangRobot();
             }
             // LOCKS
             else if (gamepad1.dpad_right && !gamepad1.options) {
