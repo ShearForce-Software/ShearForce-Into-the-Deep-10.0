@@ -37,36 +37,45 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
  */
 
 @Config
-@TeleOp(name="Geronimo: Rotator Arm PIDF Control Concept")
+@TeleOp(name="Geronimo: Slide Extension PIDF Control Concept")
 //@Disabled
 public class Geronimo_Slide_PIDF_Concept extends LinearOpMode {
 
-    // proportional, integral, derivative, and feedforward
-    public static double p = 0, i = 0, d = 0, f = 0;
+    // ROTATOR proportional, integral, derivative, and feedforward
+    public static double p = 0.004, i = 0, d = 0, f = 0.007;
+    public static double Kp = 0, Ki = 0, Kd = 0, Kf = 0;
 
-    public static double tolerance = 20.0; //half a degree in ticks
+
+    public static double tolerance = 10.0; //half a degree in ticks
     public static int sendF_to_Controller = 0;
-    public static int useTolerance = 0;
+    public static int useTolerance = 0; //if 1 then using tolerance
 
-    public static int rotator_arm_angle = 0; // target arm angle
+    public static int slide_ticks = 0; // no conversions for tick extensions
+    public static int rotator_arm_angle = 0;
 
     DcMotor slideLeft;
     DcMotor slideRight;
 
+    DcMotor leftSlideArmRotatorMotor;
+    DcMotor rightSlideArmRotatorMotor;
+
     @Override
+    //TODO ASK about Interrupted Exception
     public void runOpMode() {
-
-      //  final double arm_gear_ratio = 90.0/20.0;
+        final double arm_gear_ratio = 90.0 / 20.0;
         final double yellow_jacket_27_ticks = 751.8;    //9.4 ticks for each degree of arm rotation
-        final double yellow_jacket_51_ticks = 1425.1;   //17.81 ticks for each degree of arm rotation
-      //  final double ticks_in_degrees = (arm_gear_ratio/360.0) * yellow_jacket_27_ticks;
+        //   final double yellow_jacket_51_ticks = 1425.1;   //17.81 ticks for each degree of arm rotation
+        final double ticks_in_degrees = (arm_gear_ratio / 360.0) * yellow_jacket_27_ticks;
 
-/*
         double rotator_arm_target = rotator_arm_angle * ticks_in_degrees;
 
         // Reference: https://docs.ftclib.org/ftclib/features/controllers
         // YouTube reference: https://www.youtube.com/watch?v=E6H6Nqe6qJo
         //Initialize PID Controllers for arm rotator motors.
+        //SLIDES
+        PIDController RightSlide_controller = new PIDController(Kp, Ki, Kd);
+        PIDController LeftSlide_controller = new PIDController(Kp, Ki, Kd);
+        //ROTATORS
         PIDController Right_controller = new PIDController(p, i, d);
         PIDController Left_controller = new PIDController(p, i, d);
 
@@ -76,19 +85,31 @@ public class Geronimo_Slide_PIDF_Concept extends LinearOpMode {
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app).
 
+        slideLeft = hardwareMap.get(DcMotorEx.class, "slideLeft");
+        slideRight = hardwareMap.get(DcMotorEx.class, "slideRight");
         leftSlideArmRotatorMotor = hardwareMap.get(DcMotorEx.class, "leftRotater");
         rightSlideArmRotatorMotor = hardwareMap.get(DcMotorEx.class, "rightRotater");
 
+        slideLeft.setDirection(DcMotor.Direction.REVERSE);
+        slideRight.setDirection(DcMotorSimple.Direction.FORWARD);
         leftSlideArmRotatorMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         rightSlideArmRotatorMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
         //Stop and Reset to Zero initially
+        slideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slideRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //Stop and Reset to Zero initially
         leftSlideArmRotatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightSlideArmRotatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        leftSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //Use braking to slow the motor down faster?
+        slideRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        slideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        slideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        slideRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
         // Wait for the game to start (driver presses START)
@@ -96,50 +117,43 @@ public class Geronimo_Slide_PIDF_Concept extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-
-
             // TODO - Jared question: have you  tried .setPIDF(p,i,d,f) ???
-            Right_controller.setPID(p,i,d);
-            Left_controller.setPID(p,i,d);
-            //  Right_controller.setPIDF(p,i,d,f);
-            //   Left_controller.setPIDF(p,i,d,f);
+            RightSlide_controller.setPID(Kp, Ki, Kd);
+            LeftSlide_controller.setPID(Kp, Ki, Kd);
+            Right_controller.setPID(p, i, d);
+            Left_controller.setPID(p, i, d);
+
 
             // TODO - Jared added this to try out, should be able to adjust the value in the dashboard to try out effects
             //set tolerance?
             if (useTolerance == 1) {
-                Right_controller.setTolerance(tolerance); // sets the error in ticks I think that is tolerated > go back to ticks and degrees, plus or minus the tolerance
-                Left_controller.setTolerance(tolerance);
+                RightSlide_controller.setTolerance(tolerance); // sets the error in ticks I think that is tolerated > go back to ticks and degrees, plus or minus the tolerance
+                LeftSlide_controller.setTolerance(tolerance);
             }
-            Left_controller.atSetPoint();
-            Right_controller.atSetPoint();
+            LeftSlide_controller.atSetPoint();
+            RightSlide_controller.atSetPoint();
 
             //TODO- Claire: maybe use tolerance with setpoint code?
 
-          //  if (Right_controller.atSetPoint() && Left_controller.atSetPoint()){
-
-          //  }
-
-
-
-
             // TODO - Jared added this to try out, in dashboard change sendF_to_Controller to be 1 to try out impacts
             if (sendF_to_Controller == 1) {
-                Left_controller.setF(f);
-                Right_controller.setF(f);
+                LeftSlide_controller.setF(f);
+                RightSlide_controller.setF(f);
             }
+
 
             rotator_arm_target = rotator_arm_angle * ticks_in_degrees;
 
             //actual arm angle value
-            double left_rotator_arm_actual_angle = leftSlideArmRotatorMotor.getCurrentPosition()/ticks_in_degrees;
-            double right_rotator_arm_actual_angle = rightSlideArmRotatorMotor.getCurrentPosition()/ticks_in_degrees;
+            double left_rotator_arm_actual_angle = leftSlideArmRotatorMotor.getCurrentPosition() / ticks_in_degrees;
+            double right_rotator_arm_actual_angle = rightSlideArmRotatorMotor.getCurrentPosition() / ticks_in_degrees;
 
             // Calculate the next PID value
-            int left_armPos = leftSlideArmRotatorMotor.getCurrentPosition();
-            double left_pid = Left_controller.calculate(left_armPos,rotator_arm_target);
+            int left_armPos = (leftSlideArmRotatorMotor.getCurrentPosition() + rightSlideArmRotatorMotor.getCurrentPosition())/2;
+            double left_pid = Left_controller.calculate(left_armPos, rotator_arm_target);
 
             int right_armPos = rightSlideArmRotatorMotor.getCurrentPosition();
-            double right_pid = Right_controller.calculate(right_armPos,rotator_arm_target);
+            double right_pid = Right_controller.calculate(right_armPos, rotator_arm_target);
 
             // Calculate the FeedForward component to adjust the PID by
             // TODO - Jared question: have you tried using left/right_rotator_arm_actual_angle here? I think this is right as is, but might be interesting to try
@@ -155,6 +169,33 @@ public class Geronimo_Slide_PIDF_Concept extends LinearOpMode {
             //changed
             rightSlideArmRotatorMotor.setPower(leftPower);
 
+           //slides
+            double slide_arm_target = slide_ticks;
+            //actual arm value
+            double left_slide_actual_ticks = slideLeft.getCurrentPosition(); //TODO TELEMETRY
+            double right_slide_actual_ticks = slideRight.getCurrentPosition();
+
+            // Calculate the next PID value
+            int leftSlide_armPos = (slideLeft.getCurrentPosition() + slideRight.getCurrentPosition())/2;
+            double leftSlide_pid = LeftSlide_controller.calculate(leftSlide_armPos, slide_arm_target);
+
+            int rightSlide_armPos = slideRight.getCurrentPosition();
+            double rightSlide_pid = RightSlide_controller.calculate(rightSlide_armPos, slide_arm_target);
+
+            // Calculate the FeedForward component to adjust the PID by
+            // TODO - Jared question: have you tried using left/right_rotator_arm_actual_angle here? I think this is right as is, but might be interesting to try
+            double leftSlide_ff = Math.sin(rotator_arm_angle) * Kf;
+            double rightSlide_ff = Math.sin(rotator_arm_angle) * Kf;
+
+            // Calculate the motor power (PID + FeedForward) component
+            double leftSlidePower = leftSlide_pid + leftSlide_ff;
+            double rightSlidePower = rightSlide_pid + rightSlide_ff;
+
+            // Send calculated power to motors
+            slideLeft.setPower(leftSlidePower);
+            //changed
+            slideRight.setPower(leftSlidePower);
+
 
             //Period values or cycle time of current loop
             double Left_period = Left_controller.getPeriod();
@@ -164,16 +205,29 @@ public class Geronimo_Slide_PIDF_Concept extends LinearOpMode {
             //telemetry for rotator_arm_angle
             telemetry.addData("Rotator arm target(angle)", rotator_arm_angle);
             telemetry.addData("Rotator arm target(ticks)", rotator_arm_target);
-            telemetry.addData("pidf: ", "p(%.4f), i(%.4f), d(%.4f), f(%.4f)", p, i, d, f);
-            telemetry.addData("tolerance: ", tolerance);
+            telemetry.addData("Rotator pidf: ", "p(%.4f), i(%.4f), d(%.4f), f(%.4f)", p, i, d, f);
             telemetry.addData("Rotator actual (angle) ", "left (%.2f), right (%.2f)", left_rotator_arm_actual_angle, right_rotator_arm_actual_angle);
             telemetry.addData("Rotator actual (ticks)", "left (%d), right (%d)", left_armPos, right_armPos);
-            telemetry.addData("pid calculation values ", "left_pid (%.4f), right_pid (%.4f)", left_pid, right_pid);
-            telemetry.addData("ff calculation values", "left_ff (%.4f), right_ff (%.4f)", left_ff, right_ff);
-            telemetry.addData("Commanded motor power", "left (%.4f), right (%.4f)", leftPower, rightPower);
-            telemetry.addData("Actual motor power", "left (%.4f), right (%.4f)", leftSlideArmRotatorMotor.getPower(), rightSlideArmRotatorMotor.getPower());
-            telemetry.addData("period", "left_period (%.4f), right_period (%.4f)", Left_period, Right_period);
+            telemetry.addData("Rotator pid calculation values ", "left_pid (%.4f), right_pid (%.4f)", left_pid, right_pid);
+            telemetry.addData("Rotator ff calculation values", "left_ff (%.4f), right_ff (%.4f)", left_ff, right_ff);
+            telemetry.addData("Commanded Rotator motor power", "left (%.4f), right (%.4f)", leftPower, rightPower);
+            telemetry.addData("Actual Rotator motor power", "left (%.4f), right (%.4f)", leftSlideArmRotatorMotor.getPower(), rightSlideArmRotatorMotor.getPower());
 
+            telemetry.addData("Slide arm target(ticks)", slide_ticks);
+            telemetry.addData("Slide pidf: ", "p(%.4f), i(%.4f), d(%.4f), f(%.4f)", Kp, Ki, Kd, Kf);
+            telemetry.addData("Slide Extension actual (ticks) ", "left (%.2f), right (%.2f)", left_slide_actual_ticks, right_slide_actual_ticks);
+            telemetry.addData("Slide left_armPos averaged (ticks)", "left (%d)", left_armPos);
+            telemetry.addData("Slide pid calculation values ", "leftSlide_pid (%.4f)", leftSlide_pid);
+            telemetry.addData("Slide ff calculation values", "leftSlide_ff (%.4f)", leftSlide_ff);
+            telemetry.addData("Commanded Slide motor power", "left (%.4f)", leftSlidePower);
+            telemetry.addData("Actual Slide motor power", "left (%.4f), right (%.4f)", slideLeft.getPower(), slideRight.getPower());
+
+
+
+
+
+            telemetry.addData("tolerance: ", tolerance);
+            telemetry.addData("period", "left_period (%.4f), right_period (%.4f)", Left_period, Right_period);
 
             //  telemetry.addData("Rotator motor power", "left (%.2f), right (%.2f)", leftPower, rightPower);
             telemetry.update();
@@ -181,9 +235,12 @@ public class Geronimo_Slide_PIDF_Concept extends LinearOpMode {
             //motor get power
 
 
-        }
+            //  if (Right_controller.atSetPoint() && Left_controller.atSetPoint()){
 
- */
+            //  }
+
+
+        }
     }
 
 

@@ -139,14 +139,28 @@ public class Geronimo_PIDF_Concept extends LinearOpMode {
             int right_armPos = rightSlideArmRotatorMotor.getCurrentPosition();
             double right_pid = Right_controller.calculate(right_armPos,rotator_arm_target);
 
+            if (rotator_arm_angle < 10){
+                double left_ff = Math.cos(rotator_arm_angle);
+                double right_ff = Math.cos(rotator_arm_angle);
+                double leftPower = left_pid + left_ff;
+                double rightPower = right_pid + right_ff;
+
+
+
+            } else{
+                double left_ff = Math.cos(rotator_arm_angle) * f;
+                double right_ff = Math.cos(rotator_arm_angle) * f;
+                double leftPower = left_pid + left_ff;
+                double rightPower = right_pid + right_ff;
+            }
+
             // Calculate the FeedForward component to adjust the PID by
             // TODO - Jared question: have you tried using left/right_rotator_arm_actual_angle here? I think this is right as is, but might be interesting to try
-            double left_ff = Math.cos(rotator_arm_angle) * f;
-            double right_ff = Math.cos(rotator_arm_angle) * f;
+
 
             // Calculate the motor power (PID + FeedForward) component
-            double leftPower = left_pid + left_ff;
-            double rightPower = right_pid + right_ff;
+         //   double leftPower = left_pid + left_ff;
+         //   double rightPower = right_pid + right_ff;
 
             // Send calculated power to motors
             leftSlideArmRotatorMotor.setPower(leftPower);
