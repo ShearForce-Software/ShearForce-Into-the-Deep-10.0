@@ -99,14 +99,14 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                 .build();
         DriveToSample1 = drive.actionBuilder(new Pose2d(-53,-52,Math.toRadians(45)))
                 .setReversed(false)
-                .strafeToLinearHeading(new Vector2d(-46.5,-44.5), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(-46.5,-43.5), Math.toRadians(90))
                 .build();
         DeliverSample1 = drive.actionBuilder(new Pose2d(-46.5,-44.5,Math.toRadians(90)))
                 .setReversed(true)
                 // move center of front of robot to center of diagonal basket line (6,6) diff from start
                 .strafeToLinearHeading(new Vector2d(-53,-52),Math.toRadians(45))
                 // put front corners of robot exactly in corner at a 45 degree angle (12,0) diff from start
-                .strafeToConstantHeading(new Vector2d(-58,-57))
+                .strafeToConstantHeading(new Vector2d(-57,-56))
                 .build();
         DriveToSample2 = drive.actionBuilder(new Pose2d(-53, -52, Math.toRadians(45)))
                 .setReversed(false)
@@ -164,23 +164,26 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                         new SleepAction(.1),
                         // Raise slides to high basket height
                         finishBasketHigh_SlidesPosition(),
-                        new SleepAction(3),
+                        new SleepAction(3), //3
 
                         // Rotate urchin to align above basket
                         finishBasketHigh_UrchinDeliverPosition(),
-                        new SleepAction(0.4),
+                        new SleepAction(0.5),
                         // Release the sample from the urchin
                         openUrchin(),
                         new SleepAction(0.4),
                         // Rotate urchin back away from the basket
+                        clearArm(),
+                        new SleepAction(0.5),
+                        ClearingMove,
+                        new SleepAction(0.4),
                         finishBasketHigh_UrchinSafeToLowerPosition(),
                         new SleepAction(0.4),
                         // Rotate arms a little away from basket and lower slides to zero.
-                        ClearingMove,
                         finishBasketHigh_ArmSafeToLowerPosition(),
                         new SleepAction(0.2), //.2
                         slidesToZero(),
-                        new SleepAction(3.5),//2, 1.5
+                        new SleepAction(2.5),//3, 2, 1.5
                         stowPosition(),
                         rotatorArmsToZero(),
 
@@ -206,25 +209,41 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                         new ParallelAction(DeliverSample1,
                                 basketHigh()),
                         finishBasketHigh_SlidesPosition(),
-                        new SleepAction(3),
+                        new SleepAction(3),//3
                         // Rotate urchin to align above basket
                         finishBasketHigh_UrchinDeliverPosition(),
-                        new SleepAction(0.4),
+                        new SleepAction(0.5),
                         // Release the sample from the urchin
                         openUrchin(),
                         new SleepAction(0.4),
                         // Rotate urchin back away from the basket
+                        ClearingMove,
+                        new SleepAction(0.4),
                         finishBasketHigh_UrchinSafeToLowerPosition(),
                         new SleepAction(0.4),
-                        ClearingMove,
+
                         // Rotate arms a little away from basket and lower slides to zero
                         finishBasketHigh_ArmSafeToLowerPosition(),
                         new SleepAction(.2),
                         slidesToZero(),
-                        new SleepAction(3.5),
+                        new SleepAction(2.5),//2.5
                         stowPosition(),
                         rotatorArmsToZero(),
-                        new SleepAction(10)
+                        //Drive to sample 2
+                        new ParallelAction(DriveToSample2,
+                                sampleUrchinFloorPickup_SlidePosition(),
+                                openUrchin()),
+                        sampleUrchinFloorPickup_UrchinReadyPosition(),
+                        new SleepAction(1.4),
+                        sampleUrchinFloorPickupFinishingMove_UrchinGrabPosition(),
+                        new SleepAction(0.1),
+                        closeUrchin(),
+                        new SleepAction(0.5),
+                        sampleUrchinFloorPickup_UrchinReadyPosition(),
+                        new SleepAction(0.1),
+                        stowPosition(),
+                        slidesToZero(),
+                        new SleepAction(0.2)
 
         //Drive to Sample 2
       /*  new ParallelAction(DriveToSample2, sampleUrchinFloorPickup_SlidePosition(), openUrchin()),
@@ -415,6 +434,20 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!initialized) {
                 control.BasketHighFinishingMove_UrchinDeliverPosition();
+                initialized = true;
+            }
+            packet.put("finishBasketHigh_UrchinDeliverPosition", 0);
+            return false;  // returning true means not done, and will be called again.  False means action is completely done
+        }
+    }
+    public Action clearArm (){return new ClearArm();}
+    public class ClearArm implements Action {
+        private boolean initialized = false;
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            if (!initialized) {
+                control.SetSlideRotatorArmToPosition(75);
                 initialized = true;
             }
             packet.put("finishBasketHigh_UrchinDeliverPosition", 0);

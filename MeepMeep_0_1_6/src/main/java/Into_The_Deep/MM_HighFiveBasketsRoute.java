@@ -81,10 +81,10 @@ public class MM_HighFiveBasketsRoute {
                 // move center of front of robot to center of diagonal basket line (6,6) diff from start
                 .strafeToLinearHeading(new Vector2d(-53,-52), Math.toRadians(45.0))
                 // put front corners of robot exactly in corner at a 45 degree angle (12,0) diff from start
-                .strafeToConstantHeading(new Vector2d(-59,-58))
+                .strafeToConstantHeading(new Vector2d(-53,-52))
                 .build();
 
-        DriveToSample2 = myBot.getDrive().actionBuilder(new Pose2d(-59, -58, Math.toRadians(45)))
+        DriveToSample2 = myBot.getDrive().actionBuilder(new Pose2d(-53, -52, Math.toRadians(45)))
                 .setReversed(false)
                 .strafeToLinearHeading(new Vector2d(-57,-47), Math.toRadians(90))
                 .build();
