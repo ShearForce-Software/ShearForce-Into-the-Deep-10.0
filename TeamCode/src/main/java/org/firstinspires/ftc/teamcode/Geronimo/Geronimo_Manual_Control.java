@@ -97,9 +97,9 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             }
             // Emergency pause
             else if (gamepad1.share) {
-              //  theRobot.SetSlidesToHoldCurrentPosition();
-               // theRobot.SetSlideRotatorArmToHoldCurrentPosition();
-                theRobot.ReadyHangRobot();
+              // theRobot.SetSlidesToHoldCurrentPosition();
+                // theRobot.SetSlideRotatorArmToHoldCurrentPosition();
+                // theRobot.ReadyHangRobot();
             }
             // LOCKS
             else if (gamepad1.dpad_right && !gamepad1.options) {
