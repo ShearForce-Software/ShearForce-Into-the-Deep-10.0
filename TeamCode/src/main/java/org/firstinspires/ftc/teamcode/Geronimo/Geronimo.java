@@ -1161,7 +1161,7 @@ public class Geronimo {
             // *******************************************
             else if (stepCounter == 4) {
                 armRotatorOverride = true;
-                SetSlideRotatorArmToPosition(90);
+                SetSlideRotatorArmToPosition(findRealArmAngle(90));
                 SetSlideRotatorArmToHoldCurrentPosition();
                 //targetAngle = 90; //70
                 SetSlideToPosition(1050);
@@ -1175,7 +1175,7 @@ public class Geronimo {
 
             else if (stepCounter == 5) {
                 armRotatorOverride = true;
-                SetSlideRotatorArmToPosition(20);
+                SetSlideRotatorArmToPosition(findRealArmAngle(20));
                 SetSlideRotatorArmToHoldCurrentPosition();
             }
 
