@@ -50,6 +50,8 @@ public class Geronimo_Slide_PIDF_Concept extends LinearOpMode {
     public static int sendF_to_Controller = 0;
     public static int useTolerance = 0; //if 1 then using tolerance
 
+    public static final int SLIDE_ARM_MIN_POS = 0;
+    public static final int SLIDE_ARM_MAX_VERTICAL_POS = 5533; //5918 5300
     public static int slide_ticks = 0; // no conversions for tick extensions
     public static int rotator_arm_angle = 0;
 
@@ -117,14 +119,11 @@ public class Geronimo_Slide_PIDF_Concept extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            // TODO - Jared question: have you  tried .setPIDF(p,i,d,f) ???
             RightSlide_controller.setPID(Kp, Ki, Kd);
             LeftSlide_controller.setPID(Kp, Ki, Kd);
             Right_controller.setPID(p, i, d);
             Left_controller.setPID(p, i, d);
 
-
-            // TODO - Jared added this to try out, should be able to adjust the value in the dashboard to try out effects
             //set tolerance?
             if (useTolerance == 1) {
                 RightSlide_controller.setTolerance(tolerance); // sets the error in ticks I think that is tolerated > go back to ticks and degrees, plus or minus the tolerance
@@ -135,7 +134,6 @@ public class Geronimo_Slide_PIDF_Concept extends LinearOpMode {
 
             //TODO- Claire: maybe use tolerance with setpoint code?
 
-            // TODO - Jared added this to try out, in dashboard change sendF_to_Controller to be 1 to try out impacts
             if (sendF_to_Controller == 1) {
                 LeftSlide_controller.setF(f);
                 RightSlide_controller.setF(f);
@@ -156,7 +154,6 @@ public class Geronimo_Slide_PIDF_Concept extends LinearOpMode {
             double right_pid = Right_controller.calculate(right_armPos, rotator_arm_target);
 
             // Calculate the FeedForward component to adjust the PID by
-            // TODO - Jared question: have you tried using left/right_rotator_arm_actual_angle here? I think this is right as is, but might be interesting to try
             double left_ff = Math.cos(rotator_arm_angle) * f;
             double right_ff = Math.cos(rotator_arm_angle) * f;
 
@@ -169,7 +166,11 @@ public class Geronimo_Slide_PIDF_Concept extends LinearOpMode {
             //changed
             rightSlideArmRotatorMotor.setPower(leftPower);
 
-           //slides
+            //slides
+            // Make sure slides are never allowed to be commanded to an impossible position that would break the slide motors
+            slide_ticks = Math.min(slide_ticks, SLIDE_ARM_MAX_VERTICAL_POS);
+            slide_ticks = Math.max(slide_ticks, SLIDE_ARM_MIN_POS);
+
             double slide_arm_target = slide_ticks;
             //actual arm value
             double left_slide_actual_ticks = slideLeft.getCurrentPosition(); //TODO TELEMETRY
@@ -183,7 +184,6 @@ public class Geronimo_Slide_PIDF_Concept extends LinearOpMode {
             double rightSlide_pid = RightSlide_controller.calculate(rightSlide_armPos, slide_arm_target);
 
             // Calculate the FeedForward component to adjust the PID by
-            // TODO - Jared question: have you tried using left/right_rotator_arm_actual_angle here? I think this is right as is, but might be interesting to try
             double leftSlide_ff = Math.sin(rotator_arm_angle) * Kf;
             double rightSlide_ff = Math.sin(rotator_arm_angle) * Kf;
 

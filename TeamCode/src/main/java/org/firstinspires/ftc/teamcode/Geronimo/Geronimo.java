@@ -2111,9 +2111,24 @@ public class Geronimo {
         opMode.telemetry.addData("Val: " , hsvValues[2]);
         opMode.telemetry.addData("Swiper Position:", swiper_position);
         showColorSensorTelemetry();
-
          */
+
+        opMode.telemetry.addData("lastStatusMsg: ", lastStatusMsg);
+        opMode.telemetry.addData("lastErrorMsg: ", lastErrorMsg);
+
         opMode.telemetry.update();
+    }
+
+    private String lastStatusMsg = "None";
+    private String lastErrorMsg = "None";
+
+    public void SetLastStatusMsg(String newMsg)
+    {
+        lastStatusMsg = newMsg;
+    }
+    public void SetLastErrorMsg(String newMsg)
+    {
+        lastErrorMsg = newMsg;
     }
 
     /*

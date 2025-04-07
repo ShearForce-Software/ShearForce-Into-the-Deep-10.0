@@ -72,18 +72,6 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
         control.SetSwiperPosition(Geronimo.SWIPER_MAX_POS);
         control.SetSwiper2Position(Geronimo.SWIPER2_MIN_POS);
 
-        // Wait for start to be pressed
-        while(!isStarted()){
-            telemetry.update();
-        }
-
-        // Started
-        resetRuntime();
-        Geronimo.autoTimeLeft = 0.0;
-        control.SetUrchinServoPosition(1);
-        slidesToZero();
-        sleep(100);
-
         // ***************************************************
         // ****  Define Trajectories    **********************
         // ***************************************************
@@ -117,7 +105,7 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                 // move center of front of robot to center of diagonal basket line (6,6) diff from start
                 .strafeToLinearHeading(new Vector2d(-53,-52),Math.toRadians(45))
                 // put front corners of robot exactly in corner at a 45 degree angle (12,0) diff from start
-                .strafeToConstantHeading(new Vector2d(-59,-58))
+                .strafeToConstantHeading(new Vector2d(-57,-56))
                 .build();
 
         DriveToSample3 = drive.actionBuilder(new Pose2d(-60, -60, Math.toRadians(45)))
@@ -129,7 +117,7 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                 // move center of front of robot to center of diagonal basket line (6,6) diff from start
                 .strafeToLinearHeading(new Vector2d(-53,-52),Math.toRadians(45))
                 // put front corners of robot exactly in corner at a 45 degree angle (12,0) diff from start
-                .strafeToConstantHeading(new Vector2d(-59,-58))
+                .strafeToConstantHeading(new Vector2d(-57,-56))
                 .build();
         ClearingMove = drive.actionBuilder(new Pose2d(-57,-56,Math.toRadians(45)))
                 .setReversed(true)
@@ -143,13 +131,36 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
         DeliverSample4 = drive.actionBuilder(new Pose2d(-24,-12, Math.toRadians(0)))
                 .setReversed(true)
                 .splineToConstantHeading(new Vector2d(-48,-48),Math.toRadians(45))
-                .strafeToLinearHeading(new Vector2d(-59,-59), Math.toRadians(45))
+                .strafeToLinearHeading(new Vector2d(-57,-56), Math.toRadians(45))
                 .build();
                 */
 
-        if (getRuntime()==29){
-            stowPosition();
+        // Wait for start to be pressed
+        while(!isStarted()){
+            telemetry.update();
         }
+
+        // Started
+        resetRuntime();
+        Geronimo.autoTimeLeft = 0.0;
+        control.SetUrchinServoPosition(1);
+        control.SetSlideToPosition(0);
+        sleep(100);
+
+        // ***************************************************
+        // ****  SECONDARY THREAD    *************************
+        // ***************************************************
+        //control.SetPIDF_Enabled(true);
+        // create a thread to control the rotator arm position with PIDF control
+        Thread pidfThread = new Thread(() -> {
+            while (!isStopRequested()) {
+                //control.SetSlideRotatorArmToPositionPIDF();
+                control.ShowTelemetry();
+
+                sleep(20);
+            }
+        });
+        pidfThread.start();
 
         // ***************************************************
         // ****  START DRIVING    ****************************
@@ -172,16 +183,19 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                         // Release the sample from the urchin
                         openUrchin(),
                         new SleepAction(0.4),
-                        // Rotate urchin back away from the basket
+                        // Rotate arm away from the basket
                         clearArm(),
                         new SleepAction(0.5),
+                        // drive a couple of inches away from the basket
                         ClearingMove,
                         new SleepAction(0.4),
+                        // move urchin back away from basket side
                         finishBasketHigh_UrchinSafeToLowerPosition(),
                         new SleepAction(0.4),
                         // Rotate arms a little away from basket and lower slides to zero.
                         finishBasketHigh_ArmSafeToLowerPosition(),
                         new SleepAction(0.2), //.2
+                        // Lower the slides to ZERO
                         slidesToZero(),
                         new SleepAction(2.5),//3, 2, 1.5
                         stowPosition(),
@@ -204,10 +218,14 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                         new SleepAction(0.2),
 
                         // *** Deliver Sample 1 ***
+                        // Rotate arm to 42 degrees
                         preBasketHigh(),
                         new SleepAction(0.1),
                         new ParallelAction(DeliverSample1,
+                                // rotate arm to 85 degrees
                                 basketHigh()),
+                        new SleepAction(.1),
+                        // raise slides
                         finishBasketHigh_SlidesPosition(),
                         new SleepAction(3),//3
                         // Rotate urchin to align above basket
@@ -216,9 +234,13 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                         // Release the sample from the urchin
                         openUrchin(),
                         new SleepAction(0.4),
-                        // Rotate urchin back away from the basket
+                        // Rotate arm away from the basket
+                        clearArm(),
+                        new SleepAction(0.5),
+                        // Drive slightly away the basket
                         ClearingMove,
                         new SleepAction(0.4),
+                        // Rotate urchin back away from the basket
                         finishBasketHigh_UrchinSafeToLowerPosition(),
                         new SleepAction(0.4),
 
@@ -367,6 +389,12 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
 
         drive.updatePoseEstimate();
 
+        // STOW POSITION
+        control.RemoveFromWallServoPosition();
+
+        // end the arm control thread
+        pidfThread.interrupt();
+
         Geronimo.autoTimeLeft = 30-getRuntime();
         telemetry.addData("Time left", Geronimo.autoTimeLeft);
         telemetry.update();
@@ -376,54 +404,90 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
     public Action basketHigh (){return new BasketHigh();}
     public class BasketHigh implements Action{
         private boolean initialized = false;
+        private double timeout = 0;
+
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!initialized) {
                // control.limelightHasTarget();
                 control.BasketHigh();
                 initialized = true;
+                timeout = control.opMode.getRuntime() + 3.0;
+            }
+            boolean returnValue = true;
+
+            if (control.GetRotatorLeftArmCurrentPosition() >= control.GetRotatorArmTicksFromDegrees(80))
+            {
+                returnValue = false;
+                control.SetLastStatusMsg("BasketHigh succeeded");
+            }
+            else if (control.opMode.getRuntime() >= timeout )
+            {
+                returnValue = false;
+                control.SetLastErrorMsg("ERROR: BasketHigh timed out");
             }
             packet.put("basketHigh", 0);
-            return false;  // returning true means not done, and will be called again.  False means action is completely done
+            return returnValue;  // returning true means not done, and will be called again.  False means action is completely done
         }
     }
 
     public Action finishBasketHigh_SlidesPosition (){return new FinishBasketHigh_SlidesPosition();}
     public class FinishBasketHigh_SlidesPosition implements Action {
         private boolean initialized = false;
+        private double timeout = 0;
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!initialized) {
                 control.BasketHighFinishingMove_SlidesPosition();
                 initialized = true;
+                timeout = control.opMode.getRuntime() + 5.0;
+            }
+
+            boolean returnValue = true;
+
+            if (control.GetSlideLeftCurrentPosition() >= 5500)
+            {
+                returnValue = false;
+                control.SetLastStatusMsg("FinishBasketHigh_SlidesPosition succeeded");
+            }
+            else if (control.opMode.getRuntime() >= timeout )
+            {
+                returnValue = false;
+                control.SetLastErrorMsg("ERROR: FinishBasketHigh_SlidesPosition timed out");
             }
             packet.put("finishBasketHigh_SlidesPosition", 0);
-            return false;  // returning true means not done, and will be called again.  False means action is completely done
+            return returnValue;  // returning true means not done, and will be called again.  False means action is completely done
         }
     }
     public Action preBasketHigh (){return new PreBasketHigh();}
     public class PreBasketHigh implements Action {
         private boolean initialized = false;
+        private double timeout = 0;
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!initialized) {
                 control.SetSlideRotatorArmToPosition(control.GetRotatorArmTicksFromDegrees(42.56));
                 initialized = true;
+                timeout = control.opMode.getRuntime() + 3.0;
             }
+
+            boolean returnValue = true;
+
+            if (control.GetRotatorLeftArmCurrentPosition() >= control.GetRotatorArmTicksFromDegrees(35))
+            {
+                returnValue = false;
+                control.SetLastStatusMsg("PreBasketHigh succeeded");
+            }
+            else if (control.opMode.getRuntime() >= timeout )
+            {
+                returnValue = false;
+                control.SetLastErrorMsg("ERROR: PreBasketHigh timed out");
+            }
+
             packet.put("finishBasketHigh_SlidesPosition", 0);
-            return false;  // returning true means not done, and will be called again.  False means action is completely done
-        }
-    }
-    public Action managePidfArmControl () { return new HighFiveBasketsAutoRoute.ManagePIDF_ArmControl(); }
-    public class ManagePIDF_ArmControl implements Action {
-        @Override
-        public boolean run(@NonNull TelemetryPacket packet) {
-            if (!readyToEnd) {
-                control.SetSlideRotatorArmToPositionPIDF();
-            }
-            return !readyToEnd;  // returning true means not done, and will be called again.  False means action is completely done
+            return returnValue;  // returning true means not done, and will be called again.  False means action is completely done
         }
     }
     public Action finishBasketHigh_UrchinDeliverPosition (){return new FinishBasketHigh_UrchinDeliverPosition();}
@@ -443,15 +507,30 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
     public Action clearArm (){return new ClearArm();}
     public class ClearArm implements Action {
         private boolean initialized = false;
+        private double timeout = 0;
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!initialized) {
-                control.SetSlideRotatorArmToPosition(75);
+                control.SetSlideRotatorArmToPosition(control.GetRotatorArmTicksFromDegrees(75));
                 initialized = true;
+                timeout = control.opMode.getRuntime() + 3.0;
             }
+            boolean returnValue = true;
+
+            if (control.GetRotatorLeftArmCurrentPosition() <= control.GetRotatorArmTicksFromDegrees(80))
+            {
+                returnValue = false;
+                control.SetLastStatusMsg("ClearArm succeeded");
+            }
+            else if (control.opMode.getRuntime() >= timeout )
+            {
+                returnValue = false;
+                control.SetLastErrorMsg("ERROR: ClearArm timed out");
+            }
+
             packet.put("finishBasketHigh_UrchinDeliverPosition", 0);
-            return false;  // returning true means not done, and will be called again.  False means action is completely done
+            return returnValue;  // returning true means not done, and will be called again.  False means action is completely done
         }
     }
     public Action finishBasketHigh_UrchinSafeToLowerPosition (){return new FinishBasketHigh_UrchinSafeToLowerPosition();}
@@ -471,15 +550,29 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
     public Action finishBasketHigh_ArmSafeToLowerPosition (){return new FinishBasketHigh_ArmSafeToLowerPosition();}
     public class FinishBasketHigh_ArmSafeToLowerPosition implements Action {
         private boolean initialized = false;
+        private double timeout = 0;
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!initialized) {
                 control.BasketHighFinishingMove_ArmSafeToLowerPosition();
                 initialized = true;
+                timeout = control.opMode.getRuntime() + 3.0;
+            }
+            boolean returnValue = true;
+
+            if (control.GetRotatorLeftArmCurrentPosition() <= control.GetRotatorArmTicksFromDegrees(80))
+            {
+                returnValue = false;
+                control.SetLastStatusMsg("FinishBasketHigh_ArmSafeToLowerPosition succeeded");
+            }
+            else if (control.opMode.getRuntime() >= timeout )
+            {
+                returnValue = false;
+                control.SetLastErrorMsg("ERROR: FinishBasketHigh_ArmSafeToLowerPosition timed out");
             }
             packet.put("finishBasketHigh_ArmSafeToLowerPosition", 0);
-            return false;  // returning true means not done, and will be called again.  False means action is completely done
+            return returnValue;  // returning true means not done, and will be called again.  False means action is completely done
         }
     }
     public Action stowPosition (){return new StowPosition();}
@@ -529,7 +622,7 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
     public Action slidesToZero(){return new SlidesToZero();}
     public class SlidesToZero implements Action {
         private boolean initialized = false;
-        double timeout = 0;
+        private double timeout = 0;
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!initialized) {
@@ -543,10 +636,12 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
             {
                 control.ResetSlidesToZeroNoWait();
                 returnValue = false;
+                control.SetLastStatusMsg("SlidesToZero succeeded");
             }
-            else if (control.opMode.getRuntime()>=timeout )
+            else if (control.opMode.getRuntime() >= timeout )
             {
                 returnValue = false;
+                control.SetLastErrorMsg("ERROR: SlidesToZero timed out");
             }
             packet.put("slidesToZero", 0);
             return returnValue ;  // returning true means not done, and will be called again.  False means action is completely done
@@ -555,7 +650,7 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
     public Action rotatorArmsToZero(){return new RotatorArmsToZero();}
     public class RotatorArmsToZero implements Action {
         private boolean initialized = false;
-        double timeout = 0;
+        private double timeout = 0;
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!initialized) {
@@ -569,10 +664,12 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
             {
                 control.SetSlideRotatorArmToZero();
                 returnValue = false;
+                control.SetLastStatusMsg("RotatorArmsToZero succeeded");
             }
             else if (control.opMode.getRuntime() >= timeout )
             {
                 returnValue = false;
+                control.SetLastErrorMsg("ERROR: RotatorArmsToZero timed out");
             }
             packet.put("rotatorArmsToZero", 0);
             return returnValue ;

@@ -96,13 +96,11 @@ public class Geronimo_PIDF_Concept extends LinearOpMode {
         while (opModeIsActive()) {
 
 
-            // TODO - Jared question: have you  tried .setPIDF(p,i,d,f) ???
             Right_controller.setPID(p,i,d);
              Left_controller.setPID(p,i,d);
           //  Right_controller.setPIDF(p,i,d,f);
          //   Left_controller.setPIDF(p,i,d,f);
 
-            // TODO - Jared added this to try out, should be able to adjust the value in the dashboard to try out effects
             //set tolerance?
             if (useTolerance == 1) {
                 Right_controller.setTolerance(tolerance); // sets the error in ticks I think that is tolerated > go back to ticks and degrees, plus or minus the tolerance
@@ -120,7 +118,6 @@ public class Geronimo_PIDF_Concept extends LinearOpMode {
            */
 
 
-            // TODO - Jared added this to try out, in dashboard change sendF_to_Controller to be 1 to try out impacts
             if (sendF_to_Controller == 1) {
                 Left_controller.setF(f);
                 Right_controller.setF(f);
@@ -139,23 +136,24 @@ public class Geronimo_PIDF_Concept extends LinearOpMode {
             int right_armPos = rightSlideArmRotatorMotor.getCurrentPosition();
             double right_pid = Right_controller.calculate(right_armPos,rotator_arm_target);
 
+            double left_ff = 0.0;
+            double right_ff = 0.0;
+            double leftPower = 0.0;
+            double rightPower = 0.0;
+
             if (rotator_arm_angle < 10){
-                double left_ff = Math.cos(rotator_arm_angle);
-                double right_ff = Math.cos(rotator_arm_angle);
-                double leftPower = left_pid + left_ff;
-                double rightPower = right_pid + right_ff;
-
-
-
-            } else{
-                double left_ff = Math.cos(rotator_arm_angle) * f;
-                double right_ff = Math.cos(rotator_arm_angle) * f;
-                double leftPower = left_pid + left_ff;
-                double rightPower = right_pid + right_ff;
+                left_ff = Math.cos(rotator_arm_angle);
+                right_ff = Math.cos(rotator_arm_angle);
+                leftPower = left_pid + left_ff;
+                rightPower = right_pid + right_ff;
+            } else {
+                left_ff = Math.cos(rotator_arm_angle) * f;
+                right_ff = Math.cos(rotator_arm_angle) * f;
+                leftPower = left_pid + left_ff;
+                rightPower = right_pid + right_ff;
             }
 
             // Calculate the FeedForward component to adjust the PID by
-            // TODO - Jared question: have you tried using left/right_rotator_arm_actual_angle here? I think this is right as is, but might be interesting to try
 
 
             // Calculate the motor power (PID + FeedForward) component

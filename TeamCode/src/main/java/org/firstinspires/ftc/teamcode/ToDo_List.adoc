@@ -8,8 +8,7 @@
 - [ ] Claire: Create PIDF control for slides
 - [ ] Claire: update PIDF Rotator arm controls to slow down at end when going to zero
 - [ ] Aidan: HighFiveAuto -- get delivering at least 3 samples to high basket
-- [ ] Akshay & Gianna: Get limelight detecting by color
-- [ ] Matthew: Get Level-3 climb working again, but using PIDF for rotator arm control
+- [ ] Akshay & Gianna & Shrey: Get limelight detecting by color
 
 
 
