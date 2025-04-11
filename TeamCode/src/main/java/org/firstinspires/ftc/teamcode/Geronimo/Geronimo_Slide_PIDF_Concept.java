@@ -43,7 +43,7 @@ public class Geronimo_Slide_PIDF_Concept extends LinearOpMode {
 
     // ROTATOR proportional, integral, derivative, and feedforward
     public static double p = 0.004, i = 0, d = 0, f = 0.007;
-    public static double Kp = 0, Ki = 0, Kd = 0, Kf = 0;
+    public static double Kp = 0.01, Ki = 0, Kd = 0.0002, Kf = 0;
 
 
     public static double tolerance = 10.0; //half a degree in ticks
@@ -65,9 +65,9 @@ public class Geronimo_Slide_PIDF_Concept extends LinearOpMode {
     //TODO ASK about Interrupted Exception
     public void runOpMode() {
         final double arm_gear_ratio = 90.0 / 20.0;
-        final double yellow_jacket_27_ticks = 751.8;    //9.4 ticks for each degree of arm rotation
-        //   final double yellow_jacket_51_ticks = 1425.1;   //17.81 ticks for each degree of arm rotation
-        final double ticks_in_degrees = (arm_gear_ratio / 360.0) * yellow_jacket_27_ticks;
+       // final double yellow_jacket_27_ticks = 751.8;    //9.4 ticks for each degree of arm rotation
+          final double yellow_jacket_51_ticks = 1425.1;   //17.81 ticks for each degree of arm rotation
+        final double ticks_in_degrees = (arm_gear_ratio / 360.0) * yellow_jacket_51_ticks;
 
         double rotator_arm_target = rotator_arm_angle * ticks_in_degrees;
 

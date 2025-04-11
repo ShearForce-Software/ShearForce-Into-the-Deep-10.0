@@ -60,7 +60,7 @@ public class Geronimo {
     DcMotor rightFront;
     DcMotor rightRear;
 
-    //pidf variables
+    //pidf rotator variables
     public static boolean pidfEnabled = false;
     public static double p = 0.004, i = 0, d = 0, f = 0.007; //0.0001 > p was .005
     PIDController Right_controller = new PIDController(p, i, d);
@@ -72,6 +72,16 @@ public class Geronimo {
     final double ticks_in_degrees = (arm_gear_ratio/360.0) * yellow_jacket_51_ticks;
     public double rotator_arm_target_ticks = 0;
     public double rotator_arm_target_angle = 0.0;
+
+    //pidf slide extension variables
+    public static boolean pidfSlidesEnabled = false;
+    public static double Kp = 0.01, Ki = 0, Kd = 0.0002, Kf = 0;
+    PIDController RightSlide_controller = new PIDController(Kp, Ki, Kd);
+    PIDController LeftSlide_controller = new PIDController(Kp, Ki, Kd);
+
+
+
+
 
     // Slide Arm Rotators
     DcMotor leftSlideArmRotatorMotor;
@@ -1746,6 +1756,51 @@ public class Geronimo {
 
     }
 
+    public void SetSlideExtensionToPositionPIDF(){
+        if (pidfSlidesEnabled) {
+
+            if (slidesTargetPosition == 0 && GetSlidesLimitSwitchPressed()) {
+                ResetSlidesToZero();
+            } else {
+
+                double slide_arm_target = slidesTargetPosition;
+
+                RightSlide_controller.setTolerance(10.0); // sets the error in ticks I think that is tolerated > go back to ticks and degrees, plus or minus the tolerance
+                LeftSlide_controller.setTolerance(10.0);  //originally both 5.0 which is half a degree    was at 20 (2 degrees)
+                //Left_controller.atSetPoint();  enabled in test code
+                // Right_controller.atSetPoint();
+
+                // Calculate the next PID value
+                int leftSlide_armPos = (slideLeft.getCurrentPosition() + slideRight.getCurrentPosition())/2;
+                double leftSlide_pid = LeftSlide_controller.calculate(leftSlide_armPos, slide_arm_target);
+
+                int rightSlide_armPos = slideRight.getCurrentPosition();
+                double rightSlide_pid = RightSlide_controller.calculate(rightSlide_armPos, slide_arm_target);
+
+                // Calculate the FeedForward component to adjust the PID by
+                double leftSlide_ff = Math.sin(rotator_arm_target_angle) * Kf;
+                double rightSlide_ff = Math.sin(rotator_arm_target_angle) * Kf;
+
+                // Calculate the motor power (PID + FeedForward) component
+                double leftSlidePower = leftSlide_pid + leftSlide_ff;
+                double rightSlidePower = rightSlide_pid + rightSlide_ff;
+
+                //Use braking to slow the motor down faster?
+                slideRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                slideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+                slideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                slideRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+                // Send calculated power to motors
+                slideLeft.setPower(leftSlidePower);
+                //changed
+                slideRight.setPower(leftSlidePower);
+
+            }
+        }
+    }
+
     public void SetSlideToPosition (int position)
     {
         // verify not needing to limit because of horizontal limits
@@ -1772,13 +1827,16 @@ public class Geronimo {
         slidesRunningToPosition = true;
         slideLeft.setTargetPosition(slidesTargetPosition);
         slideRight.setTargetPosition(slidesTargetPosition);
-        slideLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        slideRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        slideLeft.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
-        slideRight.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
-        slidePower = SLIDES_POS_POWER;
-        slideLeft.setPower(slidePower);
-        slideRight.setPower(slidePower);
+
+        if(!pidfSlidesEnabled) {
+            slideLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            slideRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            slideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            slideRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            slidePower = SLIDES_POS_POWER;
+            slideLeft.setPower(slidePower);
+            slideRight.setPower(slidePower);
+        }
     }
 
     public void SetSlidesToHoldCurrentPosition()
@@ -2087,6 +2145,8 @@ public class Geronimo {
 
         opMode.telemetry.addData("PIDF Enabled:", pidfEnabled);
         opMode.telemetry.addData("PIDF Target:", " %.1f (ticks), %.1f (deg) ", rotator_arm_target_ticks, rotator_arm_target_angle);
+
+        opMode.telemetry.addData("Slides Extension PIDF Enabled:", pidfSlidesEnabled);
 
         opMode.telemetry.addData("Slide Arm Rotator ", "Target: %d, Power: %.2f", slideArmRotatorTargetPosition, slideArmRotatorPower);
         opMode.telemetry.addData("targetPositionIMUARM: " , " %d (ticks), %.1f (deg) ", targetPositionIMUARM_ticks, targetIMU_Degrees);
