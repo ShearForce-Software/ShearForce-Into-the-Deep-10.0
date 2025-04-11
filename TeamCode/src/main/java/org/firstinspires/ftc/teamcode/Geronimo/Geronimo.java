@@ -1508,7 +1508,7 @@ public class Geronimo {
     public void BasketHighFinishingMove_UrchinDeliverPosition() {
         SetIntakeBoxRotatorPosition(0.705);
         SetSmallArmHangerPosition(0.52);  //1.0
-        SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(85.1));
+        SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(85.13));
     }
     public void BasketHighFinishingMove_UrchinSafeToLowerPosition(){
         SetSmallArmHangerPosition(.64); //1    .54 original

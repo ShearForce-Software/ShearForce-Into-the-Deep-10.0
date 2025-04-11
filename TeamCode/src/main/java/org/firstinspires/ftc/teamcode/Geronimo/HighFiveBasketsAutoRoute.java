@@ -63,6 +63,8 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
         /* Initialize the Robot */
         drive = new MecanumDrive_Geronimo(hardwareMap, startPose);
         control.Init(hardwareMap);
+        control.InitLimelight(hardwareMap);
+
         //  -- need to adjust this starting position to keep the specimen out of the wall Check
         control.Stow();
         telemetry.update();
@@ -135,17 +137,6 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                 .build();
                 */
 
-        // Wait for start to be pressed
-        while(!isStarted()){
-            telemetry.update();
-        }
-
-        // Started
-        resetRuntime();
-        Geronimo.autoTimeLeft = 0.0;
-        control.SetUrchinServoPosition(1);
-        control.SetSlideToPosition(0);
-        sleep(100);
 
         // ***************************************************
         // ****  SECONDARY THREAD    *************************
@@ -161,6 +152,19 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
             }
         });
         pidfThread.start();
+
+        // Wait for start to be pressed
+        while(!isStarted()){
+            telemetry.update();
+        }
+
+        // Started
+        resetRuntime();
+        Geronimo.autoTimeLeft = 0.0;
+        control.SetUrchinServoPosition(1);
+        control.SetSlideToPosition(0);
+        sleep(100);
+
 
         // ***************************************************
         // ****  START DRIVING    ****************************
