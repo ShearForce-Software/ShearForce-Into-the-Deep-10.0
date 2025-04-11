@@ -48,83 +48,83 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
     VelConstraint humanPlayerVelocityConstraint;
 
     public void runOpMode(){
-        startPose = new Pose2d(-47,-58, Math.toRadians(45));
+            startPose = new Pose2d(-47, -58, Math.toRadians(45));
 
-        // Define some custom constraints to use when wanting to go faster than defaults
-        speedUpVelocityConstraint = new TranslationalVelConstraint(60.0);
-        speedUpAccelerationConstraint = new ProfileAccelConstraint(-40.0, 60.0);
-        normalVelocityConstraint = new TranslationalVelConstraint(50.0);
-        normalAccelerationConstraint = new ProfileAccelConstraint(-35.0, 50.0);
-        slowDownVelocityConstraint = new TranslationalVelConstraint(30);
-        slowDownAccelerationConstraint = new ProfileAccelConstraint(-20, 50);
-        intakeVelocityConstraint = new TranslationalVelConstraint(15);
-        humanPlayerVelocityConstraint = new TranslationalVelConstraint(7);
+            // Define some custom constraints to use when wanting to go faster than defaults
+            speedUpVelocityConstraint = new TranslationalVelConstraint(60.0);
+            speedUpAccelerationConstraint = new ProfileAccelConstraint(-40.0, 60.0);
+            normalVelocityConstraint = new TranslationalVelConstraint(50.0);
+            normalAccelerationConstraint = new ProfileAccelConstraint(-35.0, 50.0);
+            slowDownVelocityConstraint = new TranslationalVelConstraint(30);
+            slowDownAccelerationConstraint = new ProfileAccelConstraint(-20, 50);
+            intakeVelocityConstraint = new TranslationalVelConstraint(15);
+            humanPlayerVelocityConstraint = new TranslationalVelConstraint(7);
 
-        /* Initialize the Robot */
-        drive = new MecanumDrive_Geronimo(hardwareMap, startPose);
-        control.Init(hardwareMap);
-        control.InitLimelight(hardwareMap);
+            /* Initialize the Robot */
+            drive = new MecanumDrive_Geronimo(hardwareMap, startPose);
+            control.Init(hardwareMap);
+            control.InitLimelight(hardwareMap);
 
-        //  -- need to adjust this starting position to keep the specimen out of the wall Check
-        control.Stow();
-        telemetry.update();
-        control.imuOffsetInDegrees = 90; // Math.toDegrees(startPose.heading.toDouble());
-        control.SetUrchinServoPosition(0);
-        control.HooksReleased();
-        control.SetSwiperPosition(Geronimo.SWIPER_MAX_POS);
-        control.SetSwiper2Position(Geronimo.SWIPER2_MIN_POS);
+            //  -- need to adjust this starting position to keep the specimen out of the wall Check
+            control.Stow();
+            telemetry.update();
+            control.imuOffsetInDegrees = 90; // Math.toDegrees(startPose.heading.toDouble());
+            control.SetUrchinServoPosition(0);
+            control.HooksReleased();
+            control.SetSwiperPosition(Geronimo.SWIPER_MAX_POS);
+            control.SetSwiper2Position(Geronimo.SWIPER2_MIN_POS);
 
-        // ***************************************************
-        // ****  Define Trajectories    **********************
-        // ***************************************************
+            // ***************************************************
+            // ****  Define Trajectories    **********************
+            // ***************************************************
 
-        DeliverStartingSample = drive.actionBuilder(startPose)
-               // .splineToConstantHeading(new Vector2d(-36, -36),Math.toRadians(90))
-                //check
-                .setReversed(true)
-                // move center of front of robot to center of diagonal basket line (6,6) diff from start
-                .strafeToConstantHeading(new Vector2d(-53,-52))
-                // put front corners of robot exactly in corner at a 45 degree angle (12,0) diff from start
-                .strafeToConstantHeading(new Vector2d(-57,-56))
-                .build();
-        DriveToSample1 = drive.actionBuilder(new Pose2d(-53,-52,Math.toRadians(45)))
-                .setReversed(false)
-                .strafeToLinearHeading(new Vector2d(-46.5,-43.5), Math.toRadians(90))
-                .build();
-        DeliverSample1 = drive.actionBuilder(new Pose2d(-46.5,-44.5,Math.toRadians(90)))
-                .setReversed(true)
-                // move center of front of robot to center of diagonal basket line (6,6) diff from start
-                .strafeToLinearHeading(new Vector2d(-53,-52),Math.toRadians(45))
-                // put front corners of robot exactly in corner at a 45 degree angle (12,0) diff from start
-                .strafeToConstantHeading(new Vector2d(-57,-56))
-                .build();
-        DriveToSample2 = drive.actionBuilder(new Pose2d(-53, -52, Math.toRadians(45)))
-                .setReversed(false)
-                .strafeToLinearHeading(new Vector2d(-57,-46), Math.toRadians(90))
-                .build();
-        DeliverSample2 = drive.actionBuilder(new Pose2d(-57,-46, Math.toRadians(90)))
-                .setReversed(true)
-                // move center of front of robot to center of diagonal basket line (6,6) diff from start
-                .strafeToLinearHeading(new Vector2d(-53,-52),Math.toRadians(45))
-                // put front corners of robot exactly in corner at a 45 degree angle (12,0) diff from start
-                .strafeToConstantHeading(new Vector2d(-57,-56))
-                .build();
+            DeliverStartingSample = drive.actionBuilder(startPose)
+                    // .splineToConstantHeading(new Vector2d(-36, -36),Math.toRadians(90))
+                    //check
+                    .setReversed(true)
+                    // move center of front of robot to center of diagonal basket line (6,6) diff from start
+                    .strafeToConstantHeading(new Vector2d(-53, -52))
+                    // put front corners of robot exactly in corner at a 45 degree angle (12,0) diff from start
+                    .strafeToConstantHeading(new Vector2d(-57, -56))
+                    .build();
+            DriveToSample1 = drive.actionBuilder(new Pose2d(-53, -52, Math.toRadians(45)))
+                    .setReversed(false)
+                    .strafeToLinearHeading(new Vector2d(-46.5, -43.5), Math.toRadians(90))
+                    .build();
+            DeliverSample1 = drive.actionBuilder(new Pose2d(-46.5, -44.5, Math.toRadians(90)))
+                    .setReversed(true)
+                    // move center of front of robot to center of diagonal basket line (6,6) diff from start
+                    .strafeToLinearHeading(new Vector2d(-53, -52), Math.toRadians(45))
+                    // put front corners of robot exactly in corner at a 45 degree angle (12,0) diff from start
+                    .strafeToConstantHeading(new Vector2d(-57, -56))
+                    .build();
+            DriveToSample2 = drive.actionBuilder(new Pose2d(-53, -52, Math.toRadians(45)))
+                    .setReversed(false)
+                    .strafeToLinearHeading(new Vector2d(-57, -46), Math.toRadians(90))
+                    .build();
+            DeliverSample2 = drive.actionBuilder(new Pose2d(-57, -46, Math.toRadians(90)))
+                    .setReversed(true)
+                    // move center of front of robot to center of diagonal basket line (6,6) diff from start
+                    .strafeToLinearHeading(new Vector2d(-53, -52), Math.toRadians(45))
+                    // put front corners of robot exactly in corner at a 45 degree angle (12,0) diff from start
+                    .strafeToConstantHeading(new Vector2d(-57, -56))
+                    .build();
 
-        DriveToSample3 = drive.actionBuilder(new Pose2d(-60, -60, Math.toRadians(45)))
-                .setReversed(false)
-                .strafeToLinearHeading(new Vector2d(-55,-40), Math.toRadians(135))
-                .build();
-        DeliverSample3 = drive.actionBuilder(new Pose2d(-55,-40, Math.toRadians(135)))
-                .setReversed(true)
-                // move center of front of robot to center of diagonal basket line (6,6) diff from start
-                .strafeToLinearHeading(new Vector2d(-53,-52),Math.toRadians(45))
-                // put front corners of robot exactly in corner at a 45 degree angle (12,0) diff from start
-                .strafeToConstantHeading(new Vector2d(-57,-56))
-                .build();
-        ClearingMove = drive.actionBuilder(new Pose2d(-57,-56,Math.toRadians(45)))
-                .setReversed(true)
-                .strafeToLinearHeading(new Vector2d(-53,-52),Math.toRadians(45))
-                .build();
+            DriveToSample3 = drive.actionBuilder(new Pose2d(-60, -60, Math.toRadians(45)))
+                    .setReversed(false)
+                    .strafeToLinearHeading(new Vector2d(-55, -40), Math.toRadians(135))
+                    .build();
+            DeliverSample3 = drive.actionBuilder(new Pose2d(-55, -40, Math.toRadians(135)))
+                    .setReversed(true)
+                    // move center of front of robot to center of diagonal basket line (6,6) diff from start
+                    .strafeToLinearHeading(new Vector2d(-53, -52), Math.toRadians(45))
+                    // put front corners of robot exactly in corner at a 45 degree angle (12,0) diff from start
+                    .strafeToConstantHeading(new Vector2d(-57, -56))
+                    .build();
+            ClearingMove = drive.actionBuilder(new Pose2d(-57, -56, Math.toRadians(45)))
+                    .setReversed(true)
+                    .strafeToLinearHeading(new Vector2d(-53, -52), Math.toRadians(45))
+                    .build();
 
     /*     DriveToSubmersible4 = drive.actionBuilder(new Pose2d(-59, -59, Math.toRadians(45)))
                 .splineTo(new Vector2d(-36,-12),Math.toRadians(0))
@@ -138,140 +138,143 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                 */
 
 
-        // ***************************************************
-        // ****  SECONDARY THREAD    *************************
-        // ***************************************************
-        //control.SetPIDF_Enabled(true);
-        // create a thread to control the rotator arm position with PIDF control
-        Thread pidfThread = new Thread(() -> {
-            while (!isStopRequested()) {
-                //control.SetSlideRotatorArmToPositionPIDF();
-                control.ShowTelemetry();
+            // ***************************************************
+            // ****  SECONDARY THREAD    *************************
+            // ***************************************************
+            //control.SetPIDF_Enabled(true);
+            // create a thread to control the rotator arm position with PIDF control
+            Thread pidfThread = new Thread(() -> {
+                while (!isStopRequested() && getRuntime() < 30) {
+                    //control.SetSlideRotatorArmToPositionPIDF();
+                    control.ShowTelemetry();
 
-                sleep(20);
+                    sleep(20);
+                }
+            });
+            pidfThread.start();
+        try {
+
+            // Wait for start to be pressed
+            while (!isStarted()) {
+                telemetry.update();
             }
-        });
-        pidfThread.start();
 
-        // Wait for start to be pressed
-        while(!isStarted()){
-            telemetry.update();
-        }
-
-        // Started
-        resetRuntime();
-        Geronimo.autoTimeLeft = 0.0;
-        control.SetUrchinServoPosition(1);
-        control.SetSlideToPosition(0);
-        sleep(100);
+            // Started
+            resetRuntime();
+            Geronimo.autoTimeLeft = 0.0;
+            control.SetUrchinServoPosition(1);
+            control.SetSlideToPosition(0);
+            sleep(100);
 
 
-        // ***************************************************
-        // ****  START DRIVING    ****************************
-        // ***************************************************
-        Actions.runBlocking(
-                new SequentialAction(
-                        preBasketHigh(),
-                        new SleepAction(0.1),
-                        // Drive to basket and deliver preloaded sample
-                        new ParallelAction(DeliverStartingSample,
-                                basketHigh()),
-                        new SleepAction(.1),
-                        // Raise slides to high basket height
-                        finishBasketHigh_SlidesPosition(),
-                        new SleepAction(3), //3
+            // ***************************************************
+            // ****  START DRIVING    ****************************
+            // ***************************************************
+            Actions.runBlocking(
+                    new SequentialAction(
+                            preBasketHigh(),
+                            new SleepAction(0.1),
+                            // Drive to basket and deliver preloaded sample
+                            new ParallelAction(DeliverStartingSample,
+                                    basketHigh()),
+                            new SleepAction(.1),
+                            // Raise slides to high basket height
+                            finishBasketHigh_SlidesPosition(),
+                           //TEST new SleepAction(3), //3
 
-                        // Rotate urchin to align above basket
-                        finishBasketHigh_UrchinDeliverPosition(),
-                        new SleepAction(0.5),
-                        // Release the sample from the urchin
-                        openUrchin(),
-                        new SleepAction(0.4),
-                        // Rotate arm away from the basket
-                        clearArm(),
-                        new SleepAction(0.5),
-                        // drive a couple of inches away from the basket
-                        ClearingMove,
-                        new SleepAction(0.4),
-                        // move urchin back away from basket side
-                        finishBasketHigh_UrchinSafeToLowerPosition(),
-                        new SleepAction(0.4),
-                        // Rotate arms a little away from basket and lower slides to zero.
-                        finishBasketHigh_ArmSafeToLowerPosition(),
-                        new SleepAction(0.2), //.2
-                        // Lower the slides to ZERO
-                        slidesToZero(),
-                        new SleepAction(2.5),//3, 2, 1.5
-                        stowPosition(),
-                        rotatorArmsToZero(),
+                            // Rotate urchin to align above basket
+                            finishBasketHigh_UrchinDeliverPosition(),
+                            new SleepAction(0.5),
+                            // Release the sample from the urchin
+                            openUrchin(),
+                            new SleepAction(0.4),
+                            // Rotate arm away from the basket
+                            finishBasketHigh_UrchinSafeToLowerPosition(),
+                            new SleepAction(0.4),
+                            clearArm(),
+                            //TEST new SleepAction(0.5),
 
-                        // Drive to Sample 1
-                        new ParallelAction(DriveToSample1,
-                                sampleUrchinFloorPickup_SlidePosition(),
-                                openUrchin()),
-                        sampleUrchinFloorPickup_UrchinReadyPosition(),
-                        new SleepAction(1.4),
-                        sampleUrchinFloorPickupFinishingMove_UrchinGrabPosition(),
-                        new SleepAction(0.1),
-                        closeUrchin(),
-                        new SleepAction(0.5),
-                        sampleUrchinFloorPickup_UrchinReadyPosition(),
-                        new SleepAction(0.1),
-                        stowPosition(),
-                        slidesToZero(),
-                        new SleepAction(0.2),
+                            // drive a couple of inches away from the basket
+                            ClearingMove,
+                            //TEST new SleepAction(0.4),
+                            // move urchin back away from basket side
 
-                        // *** Deliver Sample 1 ***
-                        // Rotate arm to 42 degrees
-                        preBasketHigh(),
-                        new SleepAction(0.1),
-                        new ParallelAction(DeliverSample1,
-                                // rotate arm to 85 degrees
-                                basketHigh()),
-                        new SleepAction(.1),
-                        // raise slides
-                        finishBasketHigh_SlidesPosition(),
-                        new SleepAction(3),//3
-                        // Rotate urchin to align above basket
-                        finishBasketHigh_UrchinDeliverPosition(),
-                        new SleepAction(0.5),
-                        // Release the sample from the urchin
-                        openUrchin(),
-                        new SleepAction(0.4),
-                        // Rotate arm away from the basket
-                        clearArm(),
-                        new SleepAction(0.5),
-                        // Drive slightly away the basket
-                        ClearingMove,
-                        new SleepAction(0.4),
-                        // Rotate urchin back away from the basket
-                        finishBasketHigh_UrchinSafeToLowerPosition(),
-                        new SleepAction(0.4),
+                            // Rotate arms a little away from basket and lower slides to zero.
+                            finishBasketHigh_ArmSafeToLowerPosition(),
+                           //TEST  new SleepAction(0.2), //.2
+                            // Lower the slides to ZERO
+                            slidesToZero(),
+                            //TEST new SleepAction(2.5),//3, 2, 1.5
+                            stowPosition(),
+                            rotatorArmsToZero(),
 
-                        // Rotate arms a little away from basket and lower slides to zero
-                        finishBasketHigh_ArmSafeToLowerPosition(),
-                        new SleepAction(.2),
-                        slidesToZero(),
-                        new SleepAction(2.5),//2.5
-                        stowPosition(),
-                        rotatorArmsToZero(),
-                        //Drive to sample 2
-                        new ParallelAction(DriveToSample2,
-                                sampleUrchinFloorPickup_SlidePosition(),
-                                openUrchin()),
-                        sampleUrchinFloorPickup_UrchinReadyPosition(),
-                        new SleepAction(1.4),
-                        sampleUrchinFloorPickupFinishingMove_UrchinGrabPosition(),
-                        new SleepAction(0.1),
-                        closeUrchin(),
-                        new SleepAction(0.5),
-                        sampleUrchinFloorPickup_UrchinReadyPosition(),
-                        new SleepAction(0.1),
-                        stowPosition(),
-                        slidesToZero(),
-                        new SleepAction(0.2)
+                            // Drive to Sample 1
+                            new ParallelAction(DriveToSample1,
+                                    sampleUrchinFloorPickup_SlidePosition(),
+                                    openUrchin()),
+                            sampleUrchinFloorPickup_UrchinReadyPosition(),
+                            new SleepAction(1.4),
+                            sampleUrchinFloorPickupFinishingMove_UrchinGrabPosition(),
+                            new SleepAction(0.1),
+                            closeUrchin(),
+                            new SleepAction(0.5),
+                            sampleUrchinFloorPickup_UrchinReadyPosition(),
+                            new SleepAction(0.1),
+                            stowPosition(),
+                            slidesToZero(),
+                            new SleepAction(0.2),
 
-        //Drive to Sample 2
+                            // *** Deliver Sample 1 ***
+                            // Rotate arm to 42 degrees
+                            preBasketHigh(),
+                            new SleepAction(0.1),
+                            new ParallelAction(DeliverSample1,
+                                    // rotate arm to 85 degrees
+                                    basketHigh()),
+                            new SleepAction(.1),
+                            // raise slides
+                            finishBasketHigh_SlidesPosition(),
+                            //TEST new SleepAction(3),//3
+                            // Rotate urchin to align above basket
+                            finishBasketHigh_UrchinDeliverPosition(),
+                            new SleepAction(0.5),
+                            // Release the sample from the urchin
+                            openUrchin(),
+                            new SleepAction(0.4),
+                            // Rotate urchin back away from the basket
+                            finishBasketHigh_UrchinSafeToLowerPosition(),
+                            new SleepAction(0.4),
+                            // Rotate arm away from the basket
+                            clearArm(),
+                            //TEST new SleepAction(0.5),
+                            // Drive slightly away the basket
+                            ClearingMove,
+                            //TEST new SleepAction(0.4),
+
+                            // Rotate arms a little away from basket and lower slides to zero
+                            finishBasketHigh_ArmSafeToLowerPosition(),
+                            //TEST new SleepAction(.2),
+                            slidesToZero(),
+                            //TEST new SleepAction(2.5),//2.5
+                            stowPosition(),
+                            rotatorArmsToZero(),
+                            //Drive to sample 2
+                            new ParallelAction(DriveToSample2,
+                                    sampleUrchinFloorPickup_SlidePosition(),
+                                    openUrchin()),
+                            sampleUrchinFloorPickup_UrchinReadyPosition(),
+                            new SleepAction(1.4),
+                            sampleUrchinFloorPickupFinishingMove_UrchinGrabPosition(),
+                            new SleepAction(0.1),
+                            closeUrchin(),
+                            new SleepAction(0.5),
+                            sampleUrchinFloorPickup_UrchinReadyPosition(),
+                            new SleepAction(0.1),
+                            stowPosition(),
+                            slidesToZero(),
+                            new SleepAction(0.2)
+
+                            //Drive to Sample 2
       /*  new ParallelAction(DriveToSample2, sampleUrchinFloorPickup_SlidePosition(), openUrchin()),
                 sampleUrchinFloorPickup_UrchinReadyPosition(),
                 new SleepAction(1.4),
@@ -306,7 +309,7 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                 rotatorArmsToZero(), new SleepAction(10)
 
        */
-                        // Drive to Sample 3
+                            // Drive to Sample 3
      /*   new ParallelAction(DriveToSample3, sampleUrchinFloorPickup_SlidePosition(), openUrchin()),
                 sampleUrchinFloorPickup_UrchinReadyPosition(),
                 new SleepAction(1.4),
@@ -389,21 +392,27 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                         sampleUrchinFloorPickup_UrchinReadyPosition()
                         */
 
-                ));
+                    ));
 
-        drive.updatePoseEstimate();
+            drive.updatePoseEstimate();
 
-        // STOW POSITION
-        control.RemoveFromWallServoPosition();
+            // STOW POSITION
+            control.RemoveFromWallServoPosition();
 
-        // end the arm control thread
-        pidfThread.interrupt();
+            // end the arm control thread
+            pidfThread.interrupt();
 
-        Geronimo.autoTimeLeft = 30-getRuntime();
-        telemetry.addData("Time left", Geronimo.autoTimeLeft);
-        telemetry.update();
+            Geronimo.autoTimeLeft = 30 - getRuntime();
+            telemetry.addData("Time left", Geronimo.autoTimeLeft);
+            telemetry.update();
+        }
+        catch (Exception e){
+            pidfThread.interrupt();
+
+        }
 
     }
+
 
     public Action basketHigh (){return new BasketHigh();}
     public class BasketHigh implements Action{
