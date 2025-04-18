@@ -459,7 +459,7 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
 
             boolean returnValue = true;
 
-            if (control.GetSlideLeftCurrentPosition() >= 5500)
+            if (control.GetSlideLeftCurrentPosition() >= 4356) //5500
             {
                 returnValue = false;
                 control.SetLastStatusMsg("FinishBasketHigh_SlidesPosition succeeded");

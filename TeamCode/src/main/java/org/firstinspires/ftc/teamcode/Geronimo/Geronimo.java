@@ -1335,7 +1335,7 @@ public class Geronimo {
 
         }
         // if the slides need to be moved out in front of the robot still (doesn't waste time if already there)
-        if (GetSlideLeftCurrentPosition() < 1700 ) {
+        if (GetSlideLeftCurrentPosition() < 1346 ) { //1700
             // Move slides a little in front of robot
             SampleUrchinFloorPickup_SlidePosition();
             SpecialSleep(300);
@@ -1370,7 +1370,7 @@ public class Geronimo {
 
     public void SampleUrchinFloorJam(){
         // if the slides need to be moved out in front of the robot still (doesn't waste time if already there)
-        if (!(GetRotatorLeftArmCurrentPosition() <= 20 && GetSlideLeftCurrentPosition() >= 1700 )) {
+        if (!(GetRotatorLeftArmCurrentPosition() <= 20 && GetSlideLeftCurrentPosition() >= 1346 )) { //1700
             // Move slides a little in front of robot
             SampleUrchinFloorPickup_SlidePosition();
             SpecialSleep(300);
@@ -1451,7 +1451,7 @@ public class Geronimo {
 
     public void InspectionHighPos(){
         // if the slides are currently horizontally extended, but the rotator arm is not raised yet
-        if (GetRotatorLeftArmCurrentPosition() <= GetRotatorArmTicksFromDegrees(30) && GetSlideLeftCurrentPosition() >= 1700 ) {
+        if (GetRotatorLeftArmCurrentPosition() <= GetRotatorArmTicksFromDegrees(30) && GetSlideLeftCurrentPosition() >= 1346 ) { //1700
             // Stow the urchin before raising the arms and reraising the slides
             Stow();
         }
