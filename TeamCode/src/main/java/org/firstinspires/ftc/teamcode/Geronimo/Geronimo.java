@@ -105,6 +105,9 @@ public class Geronimo {
     public static final int SLIDE_ARM_MIN_POS = 0;
     public static final int SLIDE_ARM_MAX_VERTICAL_POS = 4382; //5918 5300 //5533
     public static final int SLIDE_ARM_MAX_HORIZONTAL_POS = 2297; //1550 //1400  //3690 //3310 //2900
+    //OLD- pulley = 12.1,  12.1pi = 38mm,  motor ticks = 1425.1,  1425.1/38 = 37.5 ticks/mm
+    //NEW- pulley = 15.3, 15.3pi = 48mm, motor ticks = 1425.1, 1425.1/48 = 29.7 ticks/mm
+    //changing it from old to new- 29.7/37.5 = 0.792, multiply old number by 0.792 to change to new
     private double slidePower = 0.0;
     TouchSensor touchSensorSlideLeft;
     TouchSensor touchSensorSlideRight;
