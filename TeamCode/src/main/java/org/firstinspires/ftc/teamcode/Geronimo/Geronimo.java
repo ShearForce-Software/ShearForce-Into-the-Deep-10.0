@@ -1732,30 +1732,55 @@ public class Geronimo {
     }
 
     public void ResetSlidesToZero (){
-        slidesRunningToPosition = false;
-        slidePower = 0;
-        slideLeft.setPower(slidePower);
-        slideRight.setPower(slidePower);
-        this.SpecialSleep(50);
-        slideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        slideRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        slideLeft.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
-        slideRight.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
+        slidesTargetPosition = 0;
+        if(pidfSlidesEnabled) {
+
+            slidesRunningToPosition = false;
+            slideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            slideRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            slideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            slideRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        } else {
+
+
+            slidesRunningToPosition = false;
+            slidePower = 0;
+            slideLeft.setPower(slidePower);
+            slideRight.setPower(slidePower);
+            this.SpecialSleep(50);
+            slideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            slideRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+
+            slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            slideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            slideRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        }
     }
 
     public void ResetSlidesToZeroNoWait() {
-        slidesRunningToPosition = false;
-        slidePower = 0;
-        slideLeft.setPower(slidePower);
-        slideRight.setPower(slidePower);
-        slideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        slideRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        slideLeft.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
-        slideRight.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
+        slidesTargetPosition = 0;
+        if(pidfSlidesEnabled) {
+            slidesRunningToPosition = false;
+            slideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            slideRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);;
+            slideLeft.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
+            slideRight.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
+        }else{
+            slidesRunningToPosition = false;
+            slidePower = 0;
+            slideLeft.setPower(slidePower);
+            slideRight.setPower(slidePower);
+            slideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            slideRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            slideLeft.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
+            slideRight.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
+        }
+
 
     }
 
@@ -1849,16 +1874,20 @@ public class Geronimo {
         //    ResetSlidesToZero();
         //}
         //else {
+        slidesTargetPosition = slideLeft.getCurrentPosition();
+
+
+        if(!pidfSlidesEnabled) {
             slidePower = 0;
             slideLeft.setPower(slidePower);
             slideRight.setPower(slidePower);
-            slidesTargetPosition = slideLeft.getCurrentPosition();
             slideLeft.setTargetPosition(slidesTargetPosition);
             slideRight.setTargetPosition(slideRight.getCurrentPosition());
             slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            slideLeft.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
-            slideRight.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
+            slideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            slideRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        }
         //}
         slidesRunningToPosition = false;
     }
