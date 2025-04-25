@@ -39,7 +39,7 @@ public class Geronimo_Manual_Control extends LinearOpMode {
         Thread pidfThread = new Thread(() -> {
             while (!isStopRequested()) {
              theRobot.SetSlideRotatorArmToPositionPIDF();
-          //   theRobot.SetSlideExtensionToPositionPIDF();
+             //theRobot.SetSlideExtensionToPositionPIDF();
 
                 sleep(20);
             }

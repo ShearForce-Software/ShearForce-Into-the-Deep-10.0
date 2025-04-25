@@ -1710,25 +1710,47 @@ public class Geronimo {
 
     public void SetSlidesToPowerMode(double power)
     {
-        // if rotator arms are in horizontal position, AND slides are at the limit already, AND commanding to get longer
-        if ((GetRotatorRightArmCurrentPosition() == 0 || GetRotatorLeftArmCurrentPosition() == 0) &&
-                (power > 0) &&
-                (slideLeft.getCurrentPosition() >= SLIDE_ARM_MAX_HORIZONTAL_POS || slideRight.getCurrentPosition() >= SLIDE_ARM_MAX_HORIZONTAL_POS)){
-            // override and ignore the bad command by killing power to the slides
-            slidePower = 0;
-        } else if(slideLeft.getCurrentPosition() >= SLIDE_ARM_MAX_VERTICAL_POS && power > 0) {
-            slidePower = 0;
-        }else {
+        //TODO Claire changed this
+        if(pidfSlidesEnabled) {
+            // if rotator arms are in horizontal position, AND slides are at the limit already, AND commanding to get longer
+            if ((GetRotatorRightArmCurrentPosition() == 0 || GetRotatorLeftArmCurrentPosition() == 0) &&
+                    (power > 0) &&
+                    (slideLeft.getCurrentPosition() >= SLIDE_ARM_MAX_HORIZONTAL_POS || slideRight.getCurrentPosition() >= SLIDE_ARM_MAX_HORIZONTAL_POS)) {
+                // override and ignore the bad command by killing power to the slides
+                slidePower = 0;
+            } else if (slideLeft.getCurrentPosition() >= SLIDE_ARM_MAX_VERTICAL_POS && power > 0) {
+                slidePower = 0;
+            } else {
 
-            slidePower = power;
+                slidePower = power;
+            }
+            slidesRunningToPosition = true; //TODO changed
+            slideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            slideRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            slideLeft.setPower(slidePower);
+            slideRight.setPower(slidePower);
+        } else{
+            // if rotator arms are in horizontal position, AND slides are at the limit already, AND commanding to get longer
+            if ((GetRotatorRightArmCurrentPosition() == 0 || GetRotatorLeftArmCurrentPosition() == 0) &&
+                    (power > 0) &&
+                    (slideLeft.getCurrentPosition() >= SLIDE_ARM_MAX_HORIZONTAL_POS || slideRight.getCurrentPosition() >= SLIDE_ARM_MAX_HORIZONTAL_POS)) {
+                // override and ignore the bad command by killing power to the slides
+                slidePower = 0;
+            } else if (slideLeft.getCurrentPosition() >= SLIDE_ARM_MAX_VERTICAL_POS && power > 0) {
+                slidePower = 0;
+            } else {
+
+                slidePower = power;
+            }
+            slidesRunningToPosition = false;
+            slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            slideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            slideRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            slideLeft.setPower(slidePower);
+            slideRight.setPower(slidePower);
+
         }
-        slidesRunningToPosition = false;
-        slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        slideLeft.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
-        slideRight.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
-        slideLeft.setPower(slidePower);
-        slideRight.setPower(slidePower);
     }
 
     public void ResetSlidesToZero (){
@@ -1736,6 +1758,12 @@ public class Geronimo {
         if(pidfSlidesEnabled) {
 
             slidesRunningToPosition = false;
+            //TODO changed this
+            slidePower = 0;
+            slideLeft.setPower(slidePower);
+            slideRight.setPower(slidePower);
+            this.SpecialSleep(50);
+
             slideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             slideRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             slideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -1825,6 +1853,8 @@ public class Geronimo {
                 //changed
                 slideRight.setPower(leftSlidePower);
 
+                slidesRunningToPosition = true;
+
             }
         }
     }
@@ -1874,10 +1904,13 @@ public class Geronimo {
         //    ResetSlidesToZero();
         //}
         //else {
-        slidesTargetPosition = slideLeft.getCurrentPosition();
+
 
 
         if(!pidfSlidesEnabled) {
+            //TODO moved into method
+            slidesTargetPosition = slideLeft.getCurrentPosition();
+
             slidePower = 0;
             slideLeft.setPower(slidePower);
             slideRight.setPower(slidePower);
@@ -1887,9 +1920,11 @@ public class Geronimo {
             slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             slideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             slideRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+            slidesRunningToPosition = false;
         }
         //}
-        slidesRunningToPosition = false;
+      //  slidesRunningToPosition = true; //TODO changed
     }
 
     public boolean GetSlidesRunningToPosition() { return slidesRunningToPosition; }
