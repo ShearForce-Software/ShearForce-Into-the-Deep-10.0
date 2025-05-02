@@ -111,7 +111,10 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             }
             // LIMELIGHT Color Target
             else if (gamepad1.square && !gamepad1.options) {
-                theRobot.SetLimelightToRed();
+                //theRobot.GivePercentOfTarget();
+                theRobot.getColorTxTy();
+                theRobot.AlignOnFloorSampleWithPercent();
+
             }
             else if (gamepad1.cross && !gamepad1.options) {
                 theRobot.SetLimelightToYellow();

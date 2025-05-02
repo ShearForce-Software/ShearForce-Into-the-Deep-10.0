@@ -50,7 +50,7 @@ public class GetStrafeInches extends LinearOpMode {
                     telemetry.addLine("No target detected => offset = 0");
                 } else {
                     telemetry.addData("Offset (inches in x)", "%.2f", offsetInches[0]);
-
+                    telemetry.addData("Percent of image", "%.2f", theRobot.GivePercentOfTarget());
                 }
                 telemetry.update();
             }
