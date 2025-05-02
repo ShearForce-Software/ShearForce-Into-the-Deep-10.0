@@ -39,7 +39,7 @@ public class Geronimo_Manual_Control extends LinearOpMode {
         Thread pidfThread = new Thread(() -> {
             while (!isStopRequested()) {
              theRobot.SetSlideRotatorArmToPositionPIDF();
-             //theRobot.SetSlideExtensionToPositionPIDF();
+          //   theRobot.SetSlideExtensionToPositionPIDF();
 
                 sleep(20);
             }
@@ -151,6 +151,7 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 }
             }
             // else if was moving the slides through the LEFT STICK Y and stopped -- tell the slides to hold the current position
+
             else if (slidePowerApplied) {
                 slidePowerApplied = false;
                 theRobot.SetSlidesToPowerMode(0.0);
@@ -174,6 +175,9 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                     }
                 }
             }
+
+
+
             // Make sure the slides aren't ever trying to go past their horizontal limits
             theRobot.Slides_Horizontal_MAX_Limit();
 
