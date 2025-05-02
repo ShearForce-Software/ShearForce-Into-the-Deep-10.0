@@ -87,7 +87,7 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                     // put front corners of robot exactly in corner at a 45 degree angle (12,0) diff from start
                     .strafeToConstantHeading(new Vector2d(-57, -56))
                     .build();
-            DriveToSample1 = drive.actionBuilder(new Pose2d(-53, -52, Math.toRadians(45)))
+            DriveToSample1 = drive.actionBuilder(new Pose2d(-57, -56, Math.toRadians(45)))
                     .setReversed(false)
                     .strafeToLinearHeading(new Vector2d(-46.5, -43.5), Math.toRadians(90))
                     .build();
