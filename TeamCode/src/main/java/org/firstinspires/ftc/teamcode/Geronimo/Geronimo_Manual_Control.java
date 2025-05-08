@@ -34,12 +34,13 @@ public class Geronimo_Manual_Control extends LinearOpMode {
         theRobot.SetSwiperPosition(Geronimo.SWIPER_MAX_POS);
         theRobot.SetSwiper2Position(Geronimo.SWIPER2_MIN_POS);
         theRobot.SetPIDF_Enabled(true);
+        theRobot.SetPIDF_Slides_Enabled(false);
 
         // create a thread to control the rotator arm position with PIDF control
         Thread pidfThread = new Thread(() -> {
             while (!isStopRequested()) {
              theRobot.SetSlideRotatorArmToPositionPIDF();
-          //   theRobot.SetSlideExtensionToPositionPIDF();
+             theRobot.SetSlideExtensionToPositionPIDF();
 
                 sleep(20);
             }
