@@ -204,7 +204,7 @@ public class Geronimo {
 
     LLResult limelight_result;//= new LLResult();
     LLStatus limelight_status = new LLStatus();
-    int limelightPipelineId = 0;
+    int limelightPipelineId = 9;
 
     //double captureLatency = result.getCaptureLatency();
     //double targetingLatency = result.getTargetingLatency();
@@ -365,6 +365,88 @@ public class Geronimo {
         limelightbox.start();
     }
 
+
+    /**
+     * Return the tx/ty from the first ColorResult in your color-threshold pipeline,
+     * or NaN/NaN if nothing is seen.
+     */
+    public double[] getColorTxTy() {
+        // 1) Check that we have a valid latest result
+        if (limelight_result != null && limelight_result.isValid()) {
+            List<LLResultTypes.ColorResult> cr = limelight_result.getColorResults();
+            if (cr != null && !cr.isEmpty()) {
+                // take the first (and only) color-range rectangle
+                return new double[]{
+                        cr.get(0).getTargetXDegrees(),
+                        cr.get(0).getTargetYDegrees()
+                };
+            }
+        }
+        // 2) Fallback when no color‐rectangle is detected
+        return new double[]{ Double.NaN, Double.NaN };
+    }
+
+    private double[] getStrafeOffsetInInchesColor() {
+
+        double[] raw = getColorTxTy();
+        if (Double.isNaN(raw[0]) || Double.isNaN(raw[1])) {
+            // target not found
+            return new double[] { 0.0, 0.0 };
+        }
+
+        // Convert angles → inches (same maths as before)
+        final double D = 7.2;                                // camera height in in
+        double strafeX =  D * Math.tan(Math.toRadians(raw[0])) * tyCorrectionSensitivity;
+        double strafeY = (D * Math.tan(Math.toRadians(raw[1])) * txCorrectionSensitivity);
+
+        return new double[] { strafeX, strafeY };
+    }
+
+    public void AlignOnFloorSampleWithPercent() {
+
+        // 1  pixel-angle offset from colour box
+        double[] offsetInches = getStrafeOffsetInInchesColor();
+
+        // 2  extra bias from visible area %
+        double pct = GivePercentOfTarget();                       // 0-100
+        pct = Math.max(0.0, Math.min(pct, MAX_SEEN_AREA_PCT));
+
+        double visibility = (MAX_SEEN_AREA_PCT - pct) / MAX_SEEN_AREA_PCT; // 0…1
+        double biasX = Math.signum(offsetInches[0]) * visibility * AREA_OFFSET_SCALE_INCH;
+        double biasY = Math.signum(offsetInches[1]) * visibility * AREA_OFFSET_SCALE_INCH;
+
+        double finalX = offsetInches[0] + biasX;
+        double finalY = offsetInches[1] + biasY;
+
+        // 3  abort if target not found (both ≈0)
+        if (Math.abs(offsetInches[0]) < 0.001 && Math.abs(offsetInches[1]) < 0.001) {
+            opMode.telemetry.addLine("NO TARGET");
+            Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.GREEN;
+            blinkinLedDriver.setPattern(Blinken_pattern);
+            return;
+        }
+
+        // 4  LED & strafe identical to the old routine
+        switch (limelight_targetImageName) {
+            case "red":    Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.RED;    break;
+            case "yellow": Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.YELLOW; break;
+            case "blue":   Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;   break;
+            default:       Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.GREEN;  break;
+        }
+        blinkinLedDriver.setPattern(Blinken_pattern);
+
+        drive.updatePoseEstimate();
+        Pose2d currentPose = drive.pose;
+        Vector2d targetVector = new Vector2d(-finalY, finalX);  // note swap
+
+        Action strafeAction = drive.actionBuilder(currentPose)
+                .strafeToConstantHeading(targetVector)
+                .build();
+
+        Actions.runBlocking(strafeAction);
+    }
+
+
     public List<Double>  FindAlignAngleToTargetImage(String targetImageName) {
         List<Double> offset = new ArrayList<>();
 
@@ -436,6 +518,8 @@ public class Geronimo {
         return new double[] {strafeX, strafeY};
     }
 
+
+
     public void AlignOnFloorSample()
     {
         double [] offsetInches = GetStrafeOffsetInInches(limelight_targetImageName);
@@ -475,6 +559,85 @@ public class Geronimo {
 
             Actions.runBlocking(strafeAction);
         }
+    }
+
+    public static final double MAX_SEEN_AREA_PCT= 17.0;
+    public static double AREA_OFFSET_SCALE_INCH = 4.0;
+
+    /*
+    public void AlignOnFloorSampleWithPercent() {
+
+        // 1.  Classic pixel-angle based offset
+        double[] offsetInches = GetStrafeOffsetInInches(limelight_targetImageName);
+
+        // 2.  How much of the block is visible right now?
+        double pct = GivePercentOfTarget();              // 0 – 100
+        pct = Math.max(0.0, Math.min(pct, MAX_SEEN_AREA_PCT)); // clamp just in case
+
+        // 3.  Compute the bias term (larger when pct is small, 0 when pct == MAX)
+        double visibilityFactor = (MAX_SEEN_AREA_PCT - pct) / MAX_SEEN_AREA_PCT; // 0 … 1
+        //      ^^^ 1 when nothing seen
+        // Apply the same scaling to X and Y, keeping their directions
+        double biasX = Math.signum(offsetInches[0]) * visibilityFactor * AREA_OFFSET_SCALE_INCH;
+        double biasY = Math.signum(offsetInches[1]) * visibilityFactor * AREA_OFFSET_SCALE_INCH;
+
+        // 4.  Final commanded offsets
+        double finalX = offsetInches[0] + biasX;   // remember: X  = left/right
+        double finalY = offsetInches[1] + biasY;   //            Y  = forward/back
+
+        // 5.  If no target at all (== our -1 flag propagated), skip strafe
+        if (Math.abs(offsetInches[0]) < 0.001 && Math.abs(offsetInches[1]) < 0.001) {
+            opMode.telemetry.addLine("NO TARGET");
+            Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.GREEN;
+            blinkinLedDriver.setPattern(Blinken_pattern);
+            return;
+        }
+
+        // 6.  Same LED logic as before
+        switch (limelight_targetImageName) {
+            case "red":
+                Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.RED;   break;
+            case "yellow":
+                Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.YELLOW; break;
+            case "blue":
+                Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;   break;
+            default:
+                Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.GREEN;  break;
+        }
+        blinkinLedDriver.setPattern(Blinken_pattern);
+
+        // 7.  Build the Road Runner action
+        drive.updatePoseEstimate();
+        Pose2d  currentPose  = drive.pose;
+        Vector2d targetVector = new Vector2d(-finalY, finalX); // note X/Y swap!
+
+        Action strafeAction = drive.actionBuilder(currentPose)
+                .strafeToConstantHeading(targetVector)
+                .build();
+
+        Actions.runBlocking(strafeAction);
+    }
+*/
+
+
+
+    public double GivePercentOfTarget() {
+
+        // Make sure the Limelight has been initialised
+        if (limelightbox == null) {
+            return 0.0;
+        }
+
+        // Ask for the latest frame’s result
+        LLResult result = limelightbox.getLatestResult();
+
+        // Sanity-check: non-null result object AND target found
+        if (result != null && result.isValid()) {
+            return result.getTa();     // already 0–100 %
+        }
+
+        // Fallback if no valid contour in view
+        return 0.0;
     }
 
     public boolean limelightHasTarget() {
@@ -1361,6 +1524,7 @@ public class Geronimo {
         {
             // center up the robot on the sample using the limelight
             AlignOnFloorSample();
+
         }
     }
 
@@ -1710,25 +1874,47 @@ public class Geronimo {
 
     public void SetSlidesToPowerMode(double power)
     {
-        // if rotator arms are in horizontal position, AND slides are at the limit already, AND commanding to get longer
-        if ((GetRotatorRightArmCurrentPosition() == 0 || GetRotatorLeftArmCurrentPosition() == 0) &&
-                (power > 0) &&
-                (slideLeft.getCurrentPosition() >= SLIDE_ARM_MAX_HORIZONTAL_POS || slideRight.getCurrentPosition() >= SLIDE_ARM_MAX_HORIZONTAL_POS)){
-            // override and ignore the bad command by killing power to the slides
-            slidePower = 0;
-        } else if(slideLeft.getCurrentPosition() >= SLIDE_ARM_MAX_VERTICAL_POS && power > 0) {
-            slidePower = 0;
-        }else {
+        //TODO Claire changed this
+        if(pidfSlidesEnabled) {
+            // if rotator arms are in horizontal position, AND slides are at the limit already, AND commanding to get longer
+            if ((GetRotatorRightArmCurrentPosition() == 0 || GetRotatorLeftArmCurrentPosition() == 0) &&
+                    (power > 0) &&
+                    (slideLeft.getCurrentPosition() >= SLIDE_ARM_MAX_HORIZONTAL_POS || slideRight.getCurrentPosition() >= SLIDE_ARM_MAX_HORIZONTAL_POS)) {
+                // override and ignore the bad command by killing power to the slides
+                slidePower = 0;
+            } else if (slideLeft.getCurrentPosition() >= SLIDE_ARM_MAX_VERTICAL_POS && power > 0) {
+                slidePower = 0;
+            } else {
 
-            slidePower = power;
+                slidePower = power;
+            }
+            slidesRunningToPosition = true; //TODO changed
+            slideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            slideRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            slideLeft.setPower(slidePower);
+            slideRight.setPower(slidePower);
+        } else{
+            // if rotator arms are in horizontal position, AND slides are at the limit already, AND commanding to get longer
+            if ((GetRotatorRightArmCurrentPosition() == 0 || GetRotatorLeftArmCurrentPosition() == 0) &&
+                    (power > 0) &&
+                    (slideLeft.getCurrentPosition() >= SLIDE_ARM_MAX_HORIZONTAL_POS || slideRight.getCurrentPosition() >= SLIDE_ARM_MAX_HORIZONTAL_POS)) {
+                // override and ignore the bad command by killing power to the slides
+                slidePower = 0;
+            } else if (slideLeft.getCurrentPosition() >= SLIDE_ARM_MAX_VERTICAL_POS && power > 0) {
+                slidePower = 0;
+            } else {
+
+                slidePower = power;
+            }
+            slidesRunningToPosition = false;
+            slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            slideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            slideRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            slideLeft.setPower(slidePower);
+            slideRight.setPower(slidePower);
+
         }
-        slidesRunningToPosition = false;
-        slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        slideLeft.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
-        slideRight.setZeroPowerBehavior (DcMotor.ZeroPowerBehavior.BRAKE);
-        slideLeft.setPower(slidePower);
-        slideRight.setPower(slidePower);
     }
 
     public void ResetSlidesToZero (){
@@ -1736,6 +1922,12 @@ public class Geronimo {
         if(pidfSlidesEnabled) {
 
             slidesRunningToPosition = false;
+            //TODO changed this
+            slidePower = 0;
+            slideLeft.setPower(slidePower);
+            slideRight.setPower(slidePower);
+            this.SpecialSleep(50);
+
             slideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             slideRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             slideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -1825,6 +2017,8 @@ public class Geronimo {
                 //changed
                 slideRight.setPower(leftSlidePower);
 
+                slidesRunningToPosition = true;
+
             }
         }
     }
@@ -1874,10 +2068,13 @@ public class Geronimo {
         //    ResetSlidesToZero();
         //}
         //else {
-        slidesTargetPosition = slideLeft.getCurrentPosition();
+
 
 
         if(!pidfSlidesEnabled) {
+            //TODO moved into method
+            slidesTargetPosition = slideLeft.getCurrentPosition();
+
             slidePower = 0;
             slideLeft.setPower(slidePower);
             slideRight.setPower(slidePower);
@@ -1887,9 +2084,11 @@ public class Geronimo {
             slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             slideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             slideRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+            slidesRunningToPosition = false;
         }
         //}
-        slidesRunningToPosition = false;
+      //  slidesRunningToPosition = true; //TODO changed
     }
 
     public boolean GetSlidesRunningToPosition() { return slidesRunningToPosition; }
@@ -2113,6 +2312,19 @@ public class Geronimo {
     }
 
     public void ShowTelemetry(){
+        double[] col = getColorTxTy();                 // our helper returns {tx,ty} or {NaN,NaN}
+
+
+        // after you display color tx/ty…
+        if (!Double.isNaN(col[0])) {
+            opMode.telemetry.addData("Color-tx / ty (deg)", "%.1f , %.1f", col[0], col[1]);
+
+            double[] sco = getStrafeOffsetInInchesColor();
+            opMode.telemetry.addData("Color-based strafe X/Y (in)", "%.2f , %.2f", sco[0], sco[1]);
+        } else {
+            opMode.telemetry.addData("Color-tx / ty (deg)", "NO COLOR TARGET");
+        }
+
 
         opMode.telemetry.addData("Slide Arm Rotator Positions: ", "L: %d, R: %d", leftSlideArmRotatorMotor.getCurrentPosition(), rightSlideArmRotatorMotor.getCurrentPosition());
         opMode.telemetry.addData("slides Position ", "L: %d, R: %d", slideLeft.getCurrentPosition(), slideRight.getCurrentPosition());
@@ -2264,6 +2476,7 @@ public class Geronimo {
         }
     }
     //opMode.getRuntime() < 109.5 && opMode.getRuntime() > 109.0       10 SECONDS
+
 
     public void driveControlsRobotCentric() {
         double y = -opMode.gamepad1.left_stick_y;

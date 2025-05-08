@@ -111,7 +111,10 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             }
             // LIMELIGHT Color Target
             else if (gamepad1.square && !gamepad1.options) {
-                theRobot.SetLimelightToRed();
+                //theRobot.GivePercentOfTarget();
+                theRobot.getColorTxTy();
+                theRobot.AlignOnFloorSampleWithPercent();
+
             }
             else if (gamepad1.cross && !gamepad1.options) {
                 theRobot.SetLimelightToYellow();
@@ -151,6 +154,7 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 }
             }
             // else if was moving the slides through the LEFT STICK Y and stopped -- tell the slides to hold the current position
+
             else if (slidePowerApplied) {
                 slidePowerApplied = false;
                 theRobot.SetSlidesToPowerMode(0.0);
@@ -174,6 +178,9 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                     }
                 }
             }
+
+
+
             // Make sure the slides aren't ever trying to go past their horizontal limits
             theRobot.Slides_Horizontal_MAX_Limit();
 
