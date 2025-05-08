@@ -179,9 +179,6 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                     }
                 }
             }
-
-
-
             // Make sure the slides aren't ever trying to go past their horizontal limits
             theRobot.Slides_Horizontal_MAX_Limit();
 
