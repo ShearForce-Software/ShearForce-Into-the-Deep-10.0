@@ -87,11 +87,11 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                     // put front corners of robot exactly in corner at a 45 degree angle (12,0) diff from start
                     .strafeToConstantHeading(new Vector2d(-57, -56))
                     .build();
-            DriveToSample1 = drive.actionBuilder(new Pose2d(-57, -56, Math.toRadians(45)))
+            DriveToSample1 = drive.actionBuilder(new Pose2d(-53, -52, Math.toRadians(45)))
                     .setReversed(false)
                     .strafeToLinearHeading(new Vector2d(-46.5, -43.5), Math.toRadians(90))
                     .build();
-            DeliverSample1 = drive.actionBuilder(new Pose2d(-46.5, -44.5, Math.toRadians(90)))
+            DeliverSample1 = drive.actionBuilder(new Pose2d(-46.5, -43.5, Math.toRadians(90)))
                     .setReversed(true)
                     // move center of front of robot to center of diagonal basket line (6,6) diff from start
                     .strafeToLinearHeading(new Vector2d(-53, -52), Math.toRadians(45))
@@ -100,9 +100,9 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                     .build();
             DriveToSample2 = drive.actionBuilder(new Pose2d(-53, -52, Math.toRadians(45)))
                     .setReversed(false)
-                    .strafeToLinearHeading(new Vector2d(-57, -46), Math.toRadians(90))
+                    .strafeToLinearHeading(new Vector2d(-57, -43), Math.toRadians(90))
                     .build();
-            DeliverSample2 = drive.actionBuilder(new Pose2d(-57, -46, Math.toRadians(90)))
+            DeliverSample2 = drive.actionBuilder(new Pose2d(-57, -43, Math.toRadians(90)))
                     .setReversed(true)
                     // move center of front of robot to center of diagonal basket line (6,6) diff from start
                     .strafeToLinearHeading(new Vector2d(-53, -52), Math.toRadians(45))
@@ -213,7 +213,7 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                                     sampleUrchinFloorPickup_SlidePosition(),
                                     openUrchin()),
                             sampleUrchinFloorPickup_UrchinReadyPosition(),
-                            new SleepAction(1.4),
+                            //new SleepAction(1.4),
                             sampleUrchinFloorPickupFinishingMove_UrchinGrabPosition(),
                             new SleepAction(0.1),
                             closeUrchin(),
@@ -263,7 +263,7 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                                     sampleUrchinFloorPickup_SlidePosition(),
                                     openUrchin()),
                             sampleUrchinFloorPickup_UrchinReadyPosition(),
-                            new SleepAction(1.4),
+                            //new SleepAction(1.4),
                             sampleUrchinFloorPickupFinishingMove_UrchinGrabPosition(),
                             new SleepAction(0.1),
                             closeUrchin(),
@@ -272,8 +272,41 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                             new SleepAction(0.1),
                             stowPosition(),
                             slidesToZero(),
-                            new SleepAction(0.2)
+                            new SleepAction(0.2),
+                            //***Deliver Sample 2***
+                            preBasketHigh(),
+                            new SleepAction(0.1),
+                            new ParallelAction(DeliverSample2,
+                                    // rotate arm to 85 degrees
+                                    basketHigh()),
+                            new SleepAction(.1),
+                            // raise slides
+                            finishBasketHigh_SlidesPosition(),
+                            //TEST new SleepAction(3),//3
+                            // Rotate urchin to align above basket
+                            finishBasketHigh_UrchinDeliverPosition(),
+                            new SleepAction(0.5),
+                            // Release the sample from the urchin
+                            openUrchin(),
+                            new SleepAction(0.4),
+                            // Rotate urchin back away from the basket
+                            finishBasketHigh_UrchinSafeToLowerPosition(),
+                            new SleepAction(0.4),
+                            // Rotate arm away from the basket
+                            clearArm(),
+                            //TEST new SleepAction(0.5),
+                            // Drive slightly away the basket
+                            ClearingMove,
+                            //TEST new SleepAction(0.4),
+                            // Rotate arms a little away from basket and lower slides to zero
+                            finishBasketHigh_ArmSafeToLowerPosition(),
+                            //TEST new SleepAction(.2),
+                            slidesToZero(),
+                            //TEST new SleepAction(2.5),//2.5
+                            stowPosition(),
+                            rotatorArmsToZero()
 
+                            //TODO Decrease Cycle Time
                             //Drive to Sample 2
       /*  new ParallelAction(DriveToSample2, sampleUrchinFloorPickup_SlidePosition(), openUrchin()),
                 sampleUrchinFloorPickup_UrchinReadyPosition(),
@@ -710,6 +743,7 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
 
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
+
             if (!initialized) {
                 control.SampleUrchinFloorPickup_UrchinReadyPosition();
                 initialized = true;
@@ -717,6 +751,7 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
             packet.put("SampleUrchinFloorPickup_UrchinReadyPosition", 0);
             return false;  // returning true means not done, and will be called again.  False means action is completely done
         }
+
     }
     public Action sampleUrchinFloorPickupFinishingMove_UrchinGrabPosition (){return new SampleUrchinFloorPickupFinishingMove_UrchinGrabPosition();}
     public class SampleUrchinFloorPickupFinishingMove_UrchinGrabPosition implements Action {
