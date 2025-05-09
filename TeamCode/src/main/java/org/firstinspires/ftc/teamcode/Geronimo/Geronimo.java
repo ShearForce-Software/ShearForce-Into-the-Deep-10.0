@@ -2109,6 +2109,10 @@ public class Geronimo {
     {
         pidfEnabled = enabled;
     }
+    public void SetPIDF_Slides_Enabled(boolean enabled)
+    {
+        pidfSlidesEnabled = enabled;
+    }
     public void SetSlideRotatorArmToPositionPIDF(){
         if (pidfEnabled) {
             //Right_controller.setPID(p,i,d);
