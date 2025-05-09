@@ -141,6 +141,7 @@ public class Geronimo_Manual_Control extends LinearOpMode {
              *************************************************
              */
             // SLIDE MOTOR CONTROL through the LEFT STICK Y (up is negative)
+
             if ((gamepad2.left_stick_y > 0.1 && !gamepad2.options) || (gamepad2.left_stick_y <= -0.1 && !gamepad2.options)) {
                 slidePowerApplied = true;
                 // If commanding an override to go down
@@ -164,7 +165,8 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 }
             }
             // else if the slide was running to a set position
-            else if (theRobot.GetSlidesRunningToPosition())
+            //TODO -- need to better integrate with PIDF
+           else if (theRobot.GetSlidesRunningToPosition())
             {
                 // if slides were running to zero and the limit switch got pressed
                 if (theRobot.GetSlidesTargetPosition() == 0 && theRobot.GetSlidesLimitSwitchPressed()) {
@@ -179,12 +181,12 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                     }
                 }
             }
+
+
             // Make sure the slides aren't ever trying to go past their horizontal limits
+            //TODO -- need to better integrate with PIDF
             theRobot.Slides_Horizontal_MAX_Limit();
 
-            // TODO - Consider moving this to a separate Thread
-            //looping PIDF code
-           // theRobot.SetSlideRotatorArmToPositionPIDF();
 
             // small hanger arms holding the urchin / green box
             if (gamepad2.right_stick_x > 0.1 && gamepad2.options) {

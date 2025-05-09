@@ -28,7 +28,7 @@ public class Geronimo_Slide_PIDF_Test_With_Rotators extends LinearOpMode {
 
     public static final int SLIDE_ARM_MIN_POS = 0;
     public static final int SLIDE_ARM_MAX_VERTICAL_POS = 5533; //5918 5300
-    public static int slide_ticks = 0; // no conversions for tick extensions
+    public static int slide_ticks = 1426; // no conversions for tick extensions
     public static int rotator_arm_angle = 0;
 
     DcMotor slideLeft;

@@ -75,7 +75,8 @@ public class Geronimo {
 
     //pidf slide extension variables
     public static boolean pidfSlidesEnabled = false;
-    public static double Kp = 0.01, Ki = 0, Kd = 0.0002, Kf = 0;
+    public static double Kp = 0.0035, Ki = 0, Kd = 0.00021, Kf = 0;
+    public static double Ktolerance = 10.0;
     PIDController RightSlide_controller = new PIDController(Kp, Ki, Kd);
     PIDController LeftSlide_controller = new PIDController(Kp, Ki, Kd);
 
@@ -1978,6 +1979,7 @@ public class Geronimo {
 
     public void SetSlideExtensionToPositionPIDF(){
         if (pidfSlidesEnabled) {
+            LeftSlide_controller.setPID(Kp, Ki, Kd);
 
             if (slidesTargetPosition == 0 && GetSlidesLimitSwitchPressed()) {
                 ResetSlidesToZero();
@@ -1985,29 +1987,29 @@ public class Geronimo {
 
                 double slide_arm_target = slidesTargetPosition;
 
-                RightSlide_controller.setTolerance(10.0); // sets the error in ticks I think that is tolerated > go back to ticks and degrees, plus or minus the tolerance
-                LeftSlide_controller.setTolerance(10.0);  //originally both 5.0 which is half a degree    was at 20 (2 degrees)
-                //Left_controller.atSetPoint();  enabled in test code
+                RightSlide_controller.setTolerance(Ktolerance); // sets the error in ticks I think that is tolerated > go back to ticks and degrees, plus or minus the tolerance
+                LeftSlide_controller.setTolerance(Ktolerance);  //originally both 5.0 which is half a degree    was at 20 (2 degrees)
+                Left_controller.atSetPoint();  //enabled in test code
                 // Right_controller.atSetPoint();
 
                 // Calculate the next PID value
-                int leftSlide_armPos = (slideLeft.getCurrentPosition() + slideRight.getCurrentPosition())/2;
+                int leftSlide_armPos = (slideLeft.getCurrentPosition());  // int leftSlide_armPos = (slideLeft.getCurrentPosition() + slideRight.getCurrentPosition())/2;
                 double leftSlide_pid = LeftSlide_controller.calculate(leftSlide_armPos, slide_arm_target);
 
-                int rightSlide_armPos = slideRight.getCurrentPosition();
-                double rightSlide_pid = RightSlide_controller.calculate(rightSlide_armPos, slide_arm_target);
+                //int rightSlide_armPos = slideRight.getCurrentPosition();
+                //double rightSlide_pid = RightSlide_controller.calculate(rightSlide_armPos, slide_arm_target);
 
                 // Calculate the FeedForward component to adjust the PID by
                 double leftSlide_ff = Math.sin(rotator_arm_target_angle) * Kf;
-                double rightSlide_ff = Math.sin(rotator_arm_target_angle) * Kf;
+                //double rightSlide_ff = Math.sin(rotator_arm_target_angle) * Kf;
 
                 // Calculate the motor power (PID + FeedForward) component
                 double leftSlidePower = leftSlide_pid + leftSlide_ff;
-                double rightSlidePower = rightSlide_pid + rightSlide_ff;
+                //double rightSlidePower = rightSlide_pid + rightSlide_ff;
 
                 //Use braking to slow the motor down faster?
-                slideRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-                slideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                //slideRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                //slideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
                 slideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 slideRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
