@@ -80,6 +80,9 @@ public class Geronimo {
     PIDController RightSlide_controller = new PIDController(Kp, Ki, Kd);
     PIDController LeftSlide_controller = new PIDController(Kp, Ki, Kd);
 
+    public double finalX;
+    public double finalY;
+
 
 
 
@@ -398,7 +401,7 @@ public class Geronimo {
         // Convert angles → inches (same maths as before)
         final double D = 7.2;                                // camera height in in
         double strafeX =  D * Math.tan(Math.toRadians(raw[0])) * tyCorrectionSensitivity;
-        double strafeY = (D * Math.tan(Math.toRadians(raw[1])) * txCorrectionSensitivity);
+        double strafeY = (D * Math.tan(Math.toRadians(raw[1])) * txCorrectionSensitivity) -2;
 
         return new double[] { strafeX, strafeY };
     }
@@ -408,16 +411,16 @@ public class Geronimo {
         // 1  pixel-angle offset from colour box
         double[] offsetInches = getStrafeOffsetInInchesColor();
 
-        // 2  extra bias from visible area %
+        // 2  extra bias from vi sible area %
         double pct = GivePercentOfTarget();                       // 0-100
-        pct = Math.max(0.0, Math.min(pct, MAX_SEEN_AREA_PCT));
+        pct = Math.max(0.0, Math.min(pct, MAX_SEEN_AREA_PCT)); //clamping technique so nothing stupiid happens
 
         double visibility = (MAX_SEEN_AREA_PCT - pct) / MAX_SEEN_AREA_PCT; // 0…1
-        double biasX = Math.signum(offsetInches[0]) * visibility * AREA_OFFSET_SCALE_INCH;
-        double biasY = Math.signum(offsetInches[1]) * visibility * AREA_OFFSET_SCALE_INCH;
+        double biasX = Math.signum(offsetInches[0]) * visibility /* * AREA_OFFSET_SCALE_INCH*/;
+        double biasY = Math.signum(offsetInches[1]) * visibility /* * AREA_OFFSET_SCALE_INCH*/;
 
-        double finalX = offsetInches[0] + biasX;
-        double finalY = offsetInches[1] + biasY;
+        finalX = offsetInches[0] + biasX;
+        finalY = offsetInches[1] + biasY;
 
         // 3  abort if target not found (both ≈0)
         if (Math.abs(offsetInches[0]) < 0.001 && Math.abs(offsetInches[1]) < 0.001) {
@@ -438,7 +441,7 @@ public class Geronimo {
 
         drive.updatePoseEstimate();
         Pose2d currentPose = drive.pose;
-        Vector2d targetVector = new Vector2d(-finalY, finalX);  // note swap
+        Vector2d targetVector = new Vector2d(drive.pose.position.x -finalY, drive.pose.position.y + finalX);  // note swap
 
         Action strafeAction = drive.actionBuilder(currentPose)
                 .strafeToConstantHeading(targetVector)
@@ -2330,6 +2333,13 @@ public class Geronimo {
         } else {
             opMode.telemetry.addData("Color-tx / ty (deg)", "NO COLOR TARGET");
         }
+
+        opMode.telemetry.addData(
+                "align finalX / finalY (in)",
+                "%.2f , %.2f",
+                finalX, finalY
+        );
+
 
 
         opMode.telemetry.addData("Slide Arm Rotator Positions: ", "L: %d, R: %d", leftSlideArmRotatorMotor.getCurrentPosition(), rightSlideArmRotatorMotor.getCurrentPosition());

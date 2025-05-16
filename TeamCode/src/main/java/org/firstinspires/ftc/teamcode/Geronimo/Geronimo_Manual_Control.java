@@ -9,6 +9,8 @@ public class Geronimo_Manual_Control extends LinearOpMode {
     Geronimo theRobot;
     boolean rotatorPowerApplied = false;
     boolean slidePowerApplied = false;
+
+    boolean alignBusy = false;
     //boolean intakeStarPowerApplied = false;
 
 
@@ -41,8 +43,16 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             while (!isStopRequested()) {
              theRobot.SetSlideRotatorArmToPositionPIDF();
              theRobot.SetSlideExtensionToPositionPIDF();
+                if (gamepad1.square && !gamepad1.options /* && !alignBusy*/) {
+                    //alignBusy=true;
+                    //theRobot.GivePercentOfTarget();
 
+                    theRobot.AlignOnFloorSampleWithPercent();
+
+                }
                 sleep(20);
+
+
             }
         });
 
@@ -111,12 +121,11 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 theRobot.HooksLocked();
             }
             // LIMELIGHT Color Target
-            else if (gamepad1.square && !gamepad1.options) {
-                //theRobot.GivePercentOfTarget();
-                theRobot.getColorTxTy();
-                theRobot.AlignOnFloorSampleWithPercent();
 
-            }
+            //else if(!gamepad1.square && !gamepad1.options && alignBusy){
+              //  alignBusy = false;
+            //}
+
             else if (gamepad1.cross && !gamepad1.options) {
                 theRobot.SetLimelightToYellow();
             }
