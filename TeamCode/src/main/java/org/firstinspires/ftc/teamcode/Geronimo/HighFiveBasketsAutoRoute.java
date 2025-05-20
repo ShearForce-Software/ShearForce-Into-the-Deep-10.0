@@ -141,11 +141,13 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
             // ***************************************************
             // ****  SECONDARY THREAD    *************************
             // ***************************************************
-            //control.SetPIDF_Enabled(true);
+            control.SetPIDF_Enabled(false);
+            control.SetPIDF_Slides_Enabled(false);
             // create a thread to control the rotator arm position with PIDF control
             Thread pidfThread = new Thread(() -> {
                 while (!isStopRequested() && getRuntime() < 30) {
-                    //control.SetSlideRotatorArmToPositionPIDF();
+                    control.SetSlideRotatorArmToPositionPIDF();
+                    control.SetSlideExtensionToPositionPIDF();
                     control.ShowTelemetry();
 
                     sleep(20);

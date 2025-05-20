@@ -43,16 +43,13 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             while (!isStopRequested()) {
              theRobot.SetSlideRotatorArmToPositionPIDF();
              theRobot.SetSlideExtensionToPositionPIDF();
-                if (gamepad1.square && !gamepad1.options /* && !alignBusy*/) {
-                    //alignBusy=true;
-                    //theRobot.GivePercentOfTarget();
+             if (gamepad1.square && !gamepad1.options /* && !alignBusy*/) {
+                 alignBusy=true;
+                 theRobot.AlignOnFloorSampleWithPercent();
+                 alignBusy=false;
+             }
 
-                    theRobot.AlignOnFloorSampleWithPercent();
-
-                }
-                sleep(20);
-
-
+             sleep(20);
             }
         });
 

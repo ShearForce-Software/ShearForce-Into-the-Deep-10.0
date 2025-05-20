@@ -1930,7 +1930,7 @@ public class Geronimo {
             slidePower = 0;
             slideLeft.setPower(slidePower);
             slideRight.setPower(slidePower);
-            this.SpecialSleep(50);
+            //.SpecialSleep(50);
 
             slideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             slideRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -1944,7 +1944,7 @@ public class Geronimo {
             slidePower = 0;
             slideLeft.setPower(slidePower);
             slideRight.setPower(slidePower);
-            this.SpecialSleep(50);
+            //this.SpecialSleep(50);
             slideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             slideRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
@@ -2261,7 +2261,7 @@ public class Geronimo {
         slideArmRotatorPower = 0.0;
         leftSlideArmRotatorMotor.setPower(slideArmRotatorPower);
         rightSlideArmRotatorMotor.setPower(slideArmRotatorPower);
-        this.SpecialSleep(50);
+        //this.SpecialSleep(50);
         leftSlideArmRotatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightSlideArmRotatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftSlideArmRotatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
