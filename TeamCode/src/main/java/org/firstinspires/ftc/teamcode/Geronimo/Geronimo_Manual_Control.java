@@ -36,7 +36,7 @@ public class Geronimo_Manual_Control extends LinearOpMode {
         theRobot.SetSwiperPosition(Geronimo.SWIPER_MAX_POS);
         theRobot.SetSwiper2Position(Geronimo.SWIPER2_MIN_POS);
         theRobot.SetPIDF_Enabled(true);
-        theRobot.SetPIDF_Slides_Enabled(false);
+        theRobot.SetPIDF_Slides_Enabled(true);
 
         // create a thread to control the rotator arm position with PIDF control
         Thread pidfThread = new Thread(() -> {
@@ -149,21 +149,30 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             // SLIDE MOTOR CONTROL through the LEFT STICK Y (up is negative)
 
             if ((gamepad2.left_stick_y > 0.1 && !gamepad2.options) || (gamepad2.left_stick_y <= -0.1 && !gamepad2.options)) {
-                slidePowerApplied = true;
-                // If commanding an override to go down
-                if (gamepad2.left_stick_y > 0.1 && gamepad1.circle && !gamepad1.options){
-                    theRobot.SetSlidesToPowerMode(-gamepad2.left_stick_y);
-                }
-                // else if slide limit pressed and still commanding down
-                else if (theRobot.GetSlidesLimitSwitchPressed() && (gamepad2.left_stick_y > 0.1)) {
-                    theRobot.ResetSlidesToZero();
+                if(!theRobot.pidfSlidesEnabled){
+                    slidePowerApplied = true;
+                    // If commanding an override to go down
+                    if (gamepad2.left_stick_y > 0.1 && gamepad1.circle && !gamepad1.options){
+                        theRobot.SetSlidesToPowerMode(-gamepad2.left_stick_y);
+                    }
+                    // else if slide limit pressed and still commanding down
+                    else if (theRobot.GetSlidesLimitSwitchPressed() && (gamepad2.left_stick_y > 0.1)) {
+                        theRobot.ResetSlidesToZero();
+                    } else {
+                        theRobot.SetSlidesToPowerMode(-gamepad2.left_stick_y);
+                    }
+
                 } else {
-                    theRobot.SetSlidesToPowerMode(-gamepad2.left_stick_y);
+                    int slideScale = 1000;
+                    theRobot.SetSlideToPosition(theRobot.GetSlideLeftCurrentPosition() - (int)(slideScale * gamepad2.left_stick_y));
+
+
                 }
+
             }
             // else if was moving the slides through the LEFT STICK Y and stopped -- tell the slides to hold the current position
 
-            else if (slidePowerApplied) {
+            else if (slidePowerApplied && !theRobot.pidfSlidesEnabled) {
                 slidePowerApplied = false;
                 theRobot.SetSlidesToPowerMode(0.0);
                 if (theRobot.GetSlidesLimitSwitchPressed()) {
@@ -172,7 +181,7 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             }
             // else if the slide was running to a set position
             //TODO -- need to better integrate with PIDF
-           else if (theRobot.GetSlidesRunningToPosition())
+           else if (theRobot.GetSlidesRunningToPosition() && !theRobot.pidfSlidesEnabled)
             {
                 // if slides were running to zero and the limit switch got pressed
                 if (theRobot.GetSlidesTargetPosition() == 0 && theRobot.GetSlidesLimitSwitchPressed()) {
@@ -191,7 +200,10 @@ public class Geronimo_Manual_Control extends LinearOpMode {
 
             // Make sure the slides aren't ever trying to go past their horizontal limits
             //TODO -- need to better integrate with PIDF
-            theRobot.Slides_Horizontal_MAX_Limit();
+            if(!theRobot.pidfSlidesEnabled){
+                theRobot.Slides_Horizontal_MAX_Limit();
+            }
+
 
 
             // small hanger arms holding the urchin / green box

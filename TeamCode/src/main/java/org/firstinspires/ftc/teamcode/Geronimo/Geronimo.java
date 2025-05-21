@@ -76,7 +76,7 @@ public class Geronimo {
     //pidf slide extension variables
     public static boolean pidfSlidesEnabled = false;
     public static double Kp = 0.0035, Ki = 0, Kd = 0.00021, Kf = 0;
-    public static double Ktolerance = 10.0;
+    public static double Ktolerance = 5.0;
     PIDController RightSlide_controller = new PIDController(Kp, Ki, Kd);
     PIDController LeftSlide_controller = new PIDController(Kp, Ki, Kd);
 
@@ -1633,8 +1633,10 @@ public class Geronimo {
 
     public void BasketHigh(){
         //STEP ONE
+        BasketHighFinishingMove_UrchinSafeToLowerPosition();
+
         SetIntakeBoxRotatorPosition(0.865); //0.85
-        SetSmallArmHangerPosition(1.0); //.8 //1.05
+      //  SetSmallArmHangerPosition(1.0); //.8 //1.05
         // if in a horizontal arm position, then should do a reset on the slides, first before raising the arm to keep from tipping over
         if (leftSlideArmRotatorMotor.getCurrentPosition() < GetRotatorArmTicksFromDegrees(20)) {
             double timeout = opMode.getRuntime() + 2.0;
@@ -1984,9 +1986,32 @@ public class Geronimo {
         if (pidfSlidesEnabled) {
             LeftSlide_controller.setPID(Kp, Ki, Kd);
 
-            if (slidesTargetPosition == 0 && GetSlidesLimitSwitchPressed()) {
+            if (slidesTargetPosition <= 0 && GetSlidesLimitSwitchPressed()) {
                 ResetSlidesToZero();
             } else {
+
+                // if the rotator arms are in a horizontal orientation
+                // AND the slides are starting to go past the max horizontal position
+                if ((GetRotatorLeftArmCurrentPosition() <= findRealArmAngle(45)) && (slideLeft.getCurrentPosition() >= SLIDE_ARM_MAX_HORIZONTAL_POS)) {
+                    //if ((GetRotatorRightArmCurrentPosition() <= SLIDE_ARM_ROTATOR_POS_TO_LIMIT_SLIDES || GetRotatorLeftArmCurrentPosition() <= SLIDE_ARM_ROTATOR_POS_TO_LIMIT_SLIDES) &&
+                    //        (slideLeft.getCurrentPosition() >= SLIDE_ARM_MAX_HORIZONTAL_POS || slideRight.getCurrentPosition() >= SLIDE_ARM_MAX_HORIZONTAL_POS)){
+                    // if slides are in power mode
+                    /*
+                    if (!slidesRunningToPosition) {
+                        // if user is not commanding slides to go in
+                        if (slidePower >= 0) {
+                            // override the command to limit the slides to a max horizontal position
+                            SetSlideToPosition(SLIDE_ARM_MAX_HORIZONTAL_POS);
+                        }
+                    }
+
+                     */
+                    // else slides are being commanded to a position, but if slides have been commanded past the limit, bring the slides back in
+                    if (slidesTargetPosition > SLIDE_ARM_MAX_HORIZONTAL_POS)
+                    {
+                        SetSlideToPosition(SLIDE_ARM_MAX_HORIZONTAL_POS);
+                    }
+                }
 
                 double slide_arm_target = slidesTargetPosition;
 
@@ -2043,7 +2068,7 @@ public class Geronimo {
         slidesTargetPosition = position;
         // Limit the range to valid values
         slidesTargetPosition = Math.min(slidesTargetPosition, SLIDE_ARM_MAX_VERTICAL_POS);
-        slidesTargetPosition = Math.max(slidesTargetPosition, SLIDE_ARM_MIN_POS);
+       // slidesTargetPosition = Math.max(slidesTargetPosition, SLIDE_ARM_MIN_POS);
 
         if (slideArmRotatorTargetPosition <= findRealArmAngle(45.0) &&
                 (slidesTargetPosition >= SLIDE_ARM_MAX_HORIZONTAL_POS) && !armRotatorOverride)
@@ -2576,6 +2601,9 @@ public class Geronimo {
             if (IsDriverControl) {
                 if (IsFieldCentric) driveControlsFieldCentric();
                 if (!IsFieldCentric) driveControlsRobotCentric();
+            }
+            if(pidfSlidesEnabled || pidfEnabled){
+                opMode.sleep(5);
             }
         }
     }
