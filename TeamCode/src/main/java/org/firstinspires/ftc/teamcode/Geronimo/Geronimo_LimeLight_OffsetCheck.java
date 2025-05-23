@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Geronimo;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.acmerobotics.roadrunner.Pose2d;
@@ -8,6 +9,7 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.acmerobotics.roadrunner.Action;
 
 @TeleOp(name = "Geronimo Limelight Offset (All Zeros)", group = "Geronimo")
+@Disabled
 public class Geronimo_LimeLight_OffsetCheck extends LinearOpMode {
 
     private Geronimo theRobot;

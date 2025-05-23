@@ -358,12 +358,12 @@ public class Geronimo {
     }
 
     public void SwitchLimelightPipeline() {
-        if (limelightPipelineId < 3)
+        if (limelightPipelineId ==9)
         {
-            ++limelightPipelineId;
+            --limelightPipelineId;
         }
         else {
-            limelightPipelineId = 0;
+            limelightPipelineId = 7;
         }
         limelightbox.pipelineSwitch(limelightPipelineId);
         limelightbox.start();
@@ -401,7 +401,7 @@ public class Geronimo {
         // Convert angles → inches (same maths as before)
         final double D = 7.2;                                // camera height in in
         double strafeX =  D * Math.tan(Math.toRadians(raw[0])) * tyCorrectionSensitivity;
-        double strafeY = (D * Math.tan(Math.toRadians(raw[1])) * txCorrectionSensitivity) -2;
+        double strafeY = (D * Math.tan(Math.toRadians(raw[1])) * txCorrectionSensitivity);
 
         return new double[] { strafeX, strafeY };
     }
@@ -451,7 +451,7 @@ public class Geronimo {
     }
 
 
-    public List<Double>  FindAlignAngleToTargetImage(String targetImageName) {
+    public List<Double>  FindAlignAngleToTargetImage(String targetImageName) {    // outdated lynx firmware error for roadrunner
         List<Double> offset = new ArrayList<>();
 
 

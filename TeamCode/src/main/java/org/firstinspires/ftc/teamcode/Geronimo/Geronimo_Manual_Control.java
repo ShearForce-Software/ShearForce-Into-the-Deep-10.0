@@ -11,6 +11,8 @@ public class Geronimo_Manual_Control extends LinearOpMode {
     boolean slidePowerApplied = false;
 
     boolean alignBusy = false;
+
+    private boolean dpadDownPrev = false;
     //boolean intakeStarPowerApplied = false;
 
 
@@ -43,11 +45,6 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             while (!isStopRequested()) {
              theRobot.SetSlideRotatorArmToPositionPIDF();
              theRobot.SetSlideExtensionToPositionPIDF();
-             if (gamepad1.square && !gamepad1.options /* && !alignBusy*/) {
-                 alignBusy=true;
-                 theRobot.AlignOnFloorSampleWithPercent();
-                 alignBusy=false;
-             }
 
              sleep(20);
             }
@@ -67,6 +64,36 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             // Drive Controls uses left_stick_y, left_stick_x, and right_stick_x
             theRobot.RunDriveControls();
             theRobot.UpdateLimelightStatusAndResults();
+
+            boolean dpadDownNow = gamepad1.dpad_down && gamepad1.options;
+
+            if (gamepad1.square && !gamepad1.options && !alignBusy) {
+                alignBusy = true;
+
+                // remember original slide‐PIDF setting
+                boolean pidfSlidesOrig = Geronimo.pidfSlidesEnabled;
+
+                // so then we will disable slide PIDF so RoadRunner isn’t fighting the  strafing
+                theRobot.SetPIDF_Slides_Enabled(false);
+
+
+                theRobot.AlignOnFloorSampleWithPercent();
+
+                // now we will set the slide PIDF to whatever it was before
+                theRobot.SetPIDF_Slides_Enabled(pidfSlidesOrig);
+
+                alignBusy = false;
+            }
+
+            // 3) then all your other gamepad1 / gamepad2 commands
+            if (gamepad1.triangle && !gamepad1.options) {
+                theRobot.imu.resetYaw();
+            } else if (gamepad1.triangle && gamepad1.options) {
+                theRobot.SetFieldCentricMode(true);
+
+            } else if (gamepad1.square && gamepad1.options) {
+                theRobot.SetFieldCentricMode(false);
+            }
 
             // RESERVED COMBOS    options + cross and options + circle
 
@@ -125,6 +152,9 @@ public class Geronimo_Manual_Control extends LinearOpMode {
 
             else if (gamepad1.cross && !gamepad1.options) {
                 theRobot.SetLimelightToYellow();
+
+
+
             }
             else if (gamepad1.circle && !gamepad1.options && gamepad2.left_stick_y < 0.1 && gamepad2.left_stick_y > -0.1) {
                 theRobot.SetLimelightToBlue();
@@ -135,9 +165,10 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 theRobot.SetLimelightEnabled(!Geronimo.limelightEnabled);
             }
             // TEMP -- Switch Limelight to different pipelines/models
-            else if(gamepad1.dpad_down && gamepad1.options){
+            else if(dpadDownNow && !dpadDownPrev){
                 theRobot.SwitchLimelightPipeline();
             }
+            dpadDownPrev = dpadDownNow;
 
             /* *************************************************
              *************************************************
