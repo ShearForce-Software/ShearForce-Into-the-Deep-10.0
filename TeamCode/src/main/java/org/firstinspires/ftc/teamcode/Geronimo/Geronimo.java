@@ -993,6 +993,9 @@ public class Geronimo {
         stepCounter = 0;
         int targetAngle = 75;
 
+        boolean originalPidf = pidfSlidesEnabled;
+        pidfSlidesEnabled = false;
+
         // Initialize the Blinkin at the start to be blue
         Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;
         blinkinLedDriver.setPattern(Blinken_pattern);
@@ -1240,9 +1243,12 @@ public class Geronimo {
                 break;
             }
 
+
+
             ShowTelemetry();
             SpecialSleep(50);
         } // END while loop
+        pidfSlidesEnabled = originalPidf;
     }
 
 
@@ -1987,7 +1993,9 @@ public class Geronimo {
             LeftSlide_controller.setPID(Kp, Ki, Kd);
 
             if (slidesTargetPosition <= 0 && GetSlidesLimitSwitchPressed()) {
-                ResetSlidesToZero();
+                if(slideLeft.getCurrentPosition() != 0 || slideRight.getCurrentPosition() != 0){
+                    ResetSlidesToZero();
+                }
             } else {
 
                 // if the rotator arms are in a horizontal orientation
@@ -2007,7 +2015,7 @@ public class Geronimo {
 
                      */
                     // else slides are being commanded to a position, but if slides have been commanded past the limit, bring the slides back in
-                    if (slidesTargetPosition > SLIDE_ARM_MAX_HORIZONTAL_POS)
+                    if (slidesTargetPosition > SLIDE_ARM_MAX_HORIZONTAL_POS && !armRotatorOverride)
                     {
                         SetSlideToPosition(SLIDE_ARM_MAX_HORIZONTAL_POS);
                     }
@@ -2042,10 +2050,35 @@ public class Geronimo {
                 slideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 slideRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-                // Send calculated power to motors
-                slideLeft.setPower(leftSlidePower);
-                //changed
-                slideRight.setPower(leftSlidePower);
+                if(slide_arm_target == 0 && slideLeft.getCurrentPosition() < 200){
+                    if(touchSensorSlideLeft.isPressed()){
+                        if(armRotatorOverride){
+                            slideLeft.setPower(-1);
+
+                        }else {
+                            slideLeft.setPower(Math.max(-0.1, leftSlidePower));
+                        }
+
+
+                    }
+                    if(touchSensorSlideRight.isPressed()){
+                        if(armRotatorOverride){
+                            slideRight.setPower(-1);
+                        }else {
+                            slideRight.setPower(Math.max(-0.1, leftSlidePower));
+                        }
+
+                    }
+
+
+
+                }else {
+                    // Send calculated power to motors
+                    slideLeft.setPower(leftSlidePower);
+                    //changed
+                    slideRight.setPower(leftSlidePower);
+
+                }
 
                 slidesRunningToPosition = true;
 
@@ -2314,19 +2347,22 @@ public class Geronimo {
     public boolean GetSlideRotatorBothArmLimitSwitchPressed(){
         return (!touchSensorSlideArmRotatorRight.isPressed()) && (!touchSensorSlideArmRotatorLeft.isPressed());
     }
-    public void SetSlideRotatorArmToHoldCurrentPosition()
-    {
+    public void SetSlideRotatorArmToHoldCurrentPosition() {
+        if (!pidfEnabled) {
+
+
         //if (slideArmRotatorTargetPosition == 0) {
         //    ResetSlideRotatorArmToZero();
         //}
         //else {
-            slideArmRotatorPower = SLIDE_ARM_ROTATOR_POWER;
-            leftSlideArmRotatorMotor.setPower(slideArmRotatorPower);
-            rightSlideArmRotatorMotor.setPower(slideArmRotatorPower);
-            leftSlideArmRotatorMotor.setTargetPosition(leftSlideArmRotatorMotor.getCurrentPosition());
-            rightSlideArmRotatorMotor.setTargetPosition(leftSlideArmRotatorMotor.getCurrentPosition());
+        slideArmRotatorPower = SLIDE_ARM_ROTATOR_POWER;
+        leftSlideArmRotatorMotor.setPower(slideArmRotatorPower);
+        rightSlideArmRotatorMotor.setPower(slideArmRotatorPower);
+        leftSlideArmRotatorMotor.setTargetPosition(leftSlideArmRotatorMotor.getCurrentPosition());
+        rightSlideArmRotatorMotor.setTargetPosition(leftSlideArmRotatorMotor.getCurrentPosition());
         //}
         slideArmRotatorRunningToPosition = false;
+    }
     }
     public boolean GetRotatorArmRunningToPosition()
     {
