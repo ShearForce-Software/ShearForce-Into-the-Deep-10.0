@@ -146,8 +146,8 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             }
             // LIMELIGHT Color Target
 
-            //else if(!gamepad1.square && !gamepad1.options && alignBusy){
-              //  alignBusy = false;
+            //else if(!gamepad1.squapre && !gamepad1.options && alignBusy){
+              //  alignBusy = false
             //}
 
             else if (gamepad1.cross && !gamepad1.options) {

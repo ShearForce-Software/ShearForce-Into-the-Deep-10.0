@@ -358,13 +358,33 @@ public class Geronimo {
     }
 
     public void SwitchLimelightPipeline() {
-        if (limelightPipelineId ==9)
+        if (limelightPipelineId == 9)
         {
-            --limelightPipelineId;
-        }
-        else {
             limelightPipelineId = 7;
+            // check pipline color
+            SetLimelightToYellow();
         }
+        else if (limelightPipelineId == 8)
+        {
+            limelightPipelineId = 9;
+            SetLimelightToRed();
+        }
+        else if (limelightPipelineId == 7)
+        {
+            limelightPipelineId = 8;
+            // check pipline color
+            SetLimelightToBlue();
+
+        }
+
+        switch (limelight_targetImageName) {
+            case "red":    Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.RED;    break;
+            case "yellow": Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.YELLOW; break;
+            case "blue":   Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.BLUE;   break;
+            default:       Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.GREEN;  break;
+        }
+        blinkinLedDriver.setPattern(Blinken_pattern);
+
         limelightbox.pipelineSwitch(limelightPipelineId);
         limelightbox.start();
     }
