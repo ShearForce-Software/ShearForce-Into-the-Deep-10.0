@@ -17,6 +17,8 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import java.io.PushbackInputStream;
+
 
 @Autonomous(name="High Five Baskets Auto Route", preselectTeleOp =
         "Geronimo 1 Manual Control")
@@ -37,6 +39,7 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
     Action DriveToSubmersible4;
     Action DeliverSample4;
     Action ClearingMove;
+    Action PushIn;
     public boolean readyToEnd = false;
     VelConstraint speedUpVelocityConstraint;
     AccelConstraint speedUpAccelerationConstraint;
@@ -125,6 +128,10 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                     .setReversed(true)
                     .strafeToLinearHeading(new Vector2d(-53, -52), Math.toRadians(45))
                     .build();
+            PushIn = drive.actionBuilder(new Pose2d(-56.7, -55.7, Math.toRadians(45)))
+                    .setReversed(true)
+                    .strafeToConstantHeading(new Vector2d(-57.5, -56.5))
+                    .build();
 
     /*     DriveToSubmersible4 = drive.actionBuilder(new Pose2d(-59, -59, Math.toRadians(45)))
                 .splineTo(new Vector2d(-36,-12),Math.toRadians(0))
@@ -179,7 +186,7 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                             // Drive to basket and deliver preloaded sample
                             new ParallelAction(DeliverStartingSample,
                                     basketHigh()),
-                            new SleepAction(.1),
+                            new SleepAction(0.1),
                             // Raise slides to high basket height
                             finishBasketHigh_SlidesPosition(),
                            //TEST new SleepAction(3), //3
@@ -187,9 +194,11 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                             // Rotate urchin to align above basket
                             finishBasketHigh_UrchinDeliverPosition(),
                             new SleepAction(0.1),
+                            PushIn,
+                           // new SleepAction(0.1),
                             // Release the sample from the urchin
                             openUrchin(),
-                            new SleepAction(0.5),
+                            new SleepAction(0.25),
                             new ParallelAction(clearArm(),ClearingMove),
                             // Rotate arm away from the basket
                             finishBasketHigh_UrchinSafeToLowerPosition(),
@@ -238,9 +247,11 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                             // Rotate urchin to align above basket
                             finishBasketHigh_UrchinDeliverPosition(),
                             new SleepAction(0.1),
+                            PushIn,
+                            //new SleepAction(0.1),
                             // Release the sample from the urchin
                             openUrchin(),
-                            new SleepAction(0.5),
+                            new SleepAction(0.25),
                             new ParallelAction(clearArm(),ClearingMove),
                             // Rotate urchin back away from the basket
                             finishBasketHigh_UrchinSafeToLowerPosition(),
@@ -287,8 +298,10 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
                             finishBasketHigh_UrchinDeliverPosition(),
                             new SleepAction(0.1),
                             // Release the sample from the urchin
+                            PushIn,
+                            //new SleepAction(0.1),
                             openUrchin(),
-                            new SleepAction(0.5),
+                            new SleepAction(0.25),
                             new ParallelAction(clearArm(),ClearingMove),
                             // Rotate urchin back away from the basket
                             finishBasketHigh_UrchinSafeToLowerPosition(),
@@ -451,6 +464,7 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
             if (!initialized) {
                // control.limelightHasTarget();
                 control.BasketHighFinishingMove_UrchinSafeToLowerPosition();
+                control.SetIntakeBoxRotatorPosition(0.865);
                 control.SetSlideRotatorArmToPosition(control.GetRotatorArmTicksFromDegrees(85.13));
                 initialized = true;
                 timeout = control.opMode.getRuntime() + 3.0;
@@ -487,7 +501,7 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
 
             boolean returnValue = true;
 
-            if (control.GetSlideLeftCurrentPosition() >= 4356) //5500
+            if (control.GetSlideLeftCurrentPosition() >= 4381) //5500
             {
                 returnValue = false;
                 control.SetLastStatusMsg("FinishBasketHigh_SlidesPosition succeeded");
@@ -538,7 +552,10 @@ public class HighFiveBasketsAutoRoute extends LinearOpMode {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             if (!initialized) {
-                control.BasketHighFinishingMove_UrchinDeliverPosition();
+                //control.BasketHighFinishingMove_UrchinDeliverPosition();
+                control.SetIntakeBoxRotatorPosition(0.705);
+                control.SetSmallArmHangerPosition(0.52);  //1.0
+                //control.SetSlideRotatorArmToPosition(control.GetRotatorArmTicksFromDegrees(85.13));
                 initialized = true;
             }
             packet.put("finishBasketHigh_UrchinDeliverPosition", 0);
