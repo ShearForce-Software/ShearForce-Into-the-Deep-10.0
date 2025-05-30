@@ -5,7 +5,7 @@
 ---
 
 
-- [ ] Claire: Create PIDF control for slides
+- [X] Claire: Create PIDF control for slides
 - [ ] Claire: update PIDF Rotator arm controls to slow down at end when going to zero
 - [ ] Aidan: HighFiveAuto -- get delivering at least 3 samples to high basket
 - [ ] Akshay & Gianna & Shrey: Get limelight detecting by color
