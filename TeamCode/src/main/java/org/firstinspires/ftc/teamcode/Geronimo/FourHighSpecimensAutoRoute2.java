@@ -81,8 +81,8 @@ public class FourHighSpecimensAutoRoute2 extends LinearOpMode {
                 //.strafeToLinearHeading(new Vector2d(4,-30), Math.toRadians(270))
                 //.strafeToLinearHeading(new Vector2d(0,-30), Math.toRadians(270), slowDownVelocityConstraint)
                 .setReversed(true)
-                .splineToConstantHeading(new Vector2d(-2,-39), Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
-                .strafeToLinearHeading(new Vector2d(-2,-30), Math.toRadians(270), intakeVelocityConstraint)
+                .splineToConstantHeading(new Vector2d(-3,-39), Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
+                .strafeToLinearHeading(new Vector2d(-3,-30), Math.toRadians(270), intakeVelocityConstraint)
                 .build();
 
         DriveToSamplesandDeliver1 = drive.actionBuilder(new Pose2d(-2, -30, Math.toRadians(270)))
@@ -90,7 +90,7 @@ public class FourHighSpecimensAutoRoute2 extends LinearOpMode {
                 //.splineToLinearHeading(new Pose2d(36,-48,Math.toRadians(270)), Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
                 //.splineToConstantHeading(new Vector2d(36,-48), Math.toRadians(90))
                 //.splineToLinearHeading(new Pose2d(36,-48,Math.toRadians(270)),Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
-                .splineToConstantHeading(new Vector2d(40, -40),Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
+                .splineToConstantHeading(new Vector2d(40, -45),Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
                 .strafeToLinearHeading(new Vector2d(40,-15), Math.toRadians(270), slowDownVelocityConstraint)
                 //.strafeToLinearHeading(new Vector2d(48,-15),Math.toRadians(270),normalVelocityConstraint, normalAccelerationConstraint)
                 .splineToConstantHeading(new Vector2d(48.5,-15), Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
@@ -124,8 +124,8 @@ public class FourHighSpecimensAutoRoute2 extends LinearOpMode {
                 //.strafeToLinearHeading(new Vector2d(48, -54), Math.toRadians(270))
                 //.strafeToLinearHeading(new Vector2d(2, -54), Math.toRadians(270))
                 //.strafeToLinearHeading(new Vector2d(16,-56), Math.toRadians(270))
-                .splineToConstantHeading(new Vector2d(0,-39),Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
-                .strafeToLinearHeading(new Vector2d(0,-30), Math.toRadians(270), intakeVelocityConstraint)
+                .splineToConstantHeading(new Vector2d(-1.5,-39),Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
+                .strafeToLinearHeading(new Vector2d(-1.5,-30), Math.toRadians(270), intakeVelocityConstraint)
                 .build();
         DrivetoDeck2 = drive.actionBuilder(new Pose2d(0,-30,Math.toRadians(270)))
                 .splineToLinearHeading(new Pose2d(38,-54,Math.toRadians(270)),Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
@@ -135,8 +135,8 @@ public class FourHighSpecimensAutoRoute2 extends LinearOpMode {
                 .setReversed(true)
                 //.strafeToLinearHeading(new Vector2d(16,-56), Math.toRadians(270))
                 //.splineToLinearHeading(new Pose2d(4,-39,Math.toRadians(270)), Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
-                .splineToConstantHeading(new Vector2d(2,-39),Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
-                .strafeToLinearHeading(new Vector2d(2,-30), Math.toRadians(270), intakeVelocityConstraint)
+                .splineToConstantHeading(new Vector2d(0,-39),Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
+                .strafeToLinearHeading(new Vector2d(0,-30), Math.toRadians(270), intakeVelocityConstraint)
                 .build();
         DrivetoDeck3 = drive.actionBuilder(new Pose2d(2,-30,Math.toRadians(270)))
                 .splineToLinearHeading(new Pose2d(38,-54,Math.toRadians(270)),Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
@@ -146,8 +146,8 @@ public class FourHighSpecimensAutoRoute2 extends LinearOpMode {
                 .setReversed(true)
                 //.strafeToLinearHeading(new Vector2d(16,-56), Math.toRadians(270))
                 //.splineToLinearHeading(new Pose2d(3,-39,Math.toRadians(270)), Math.toRadians(270), normalVelocityConstraint, normalAccelerationConstraint)
-                .splineToConstantHeading(new Vector2d(4,-39),Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
-                .strafeToLinearHeading(new Vector2d(4,-30), Math.toRadians(270), intakeVelocityConstraint)
+                .splineToConstantHeading(new Vector2d(1.5,-39),Math.toRadians(90), normalVelocityConstraint, normalAccelerationConstraint)
+                .strafeToLinearHeading(new Vector2d(1.5,-30), Math.toRadians(270), intakeVelocityConstraint)
                 .build();
 
         ParkinDeck = drive.actionBuilder(new Pose2d(4,-30,Math.toRadians(270)))
