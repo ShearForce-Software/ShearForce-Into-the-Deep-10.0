@@ -171,6 +171,9 @@ public class FourHighSpecimensAutoRoute2 extends LinearOpMode {
         Geronimo.autoTimeLeft = 0.0;
         control.SetClawPosition(Geronimo.CLAW_MAX_POS);
 
+        control.SetPIDF_Enabled(false);
+        control.SetPIDF_Slides_Enabled(false);
+
 
         // ***************************************************
         // ****  START DRIVING    ****************************

@@ -1448,16 +1448,16 @@ public class Geronimo {
         SetSmallArmHangerPosition(0.2); //0 //0.25
     }
     public void SpecimenDeliverHighChamberAlternate(){
-        SetIntakeBoxRotatorPosition(0.908); //0.82  //0.905
-        SetSmallArmHangerPosition(.20); //0 //0.25
+        SetIntakeBoxRotatorPosition(0.948); //0.82  //0.905  //0.908
+        SetSmallArmHangerPosition(0.22); //0 //0.25 //.20
         SetSlideToPosition(1063);  //1240  //740 //1342
-        SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(70.68)); //75.55 //1259  //85
+        SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(72)); //75.55 //1259  //85 // most recent: 70.68
     }
     public void SpecimenDeliverHighChamberFinishingMove(){
-        SetIntakeBoxRotatorPosition(0.908); //0.945
-        SetSmallArmHangerPosition(0.2); //0 //0.25
+        SetIntakeBoxRotatorPosition(0.948); //0.908 //0.945
+        SetSmallArmHangerPosition(0.22); //0 //0.25 //0.2
         SetSlideToPosition(2297); //00  //2350  //1750 //2900
-        SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(70.68)); //642
+        SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(72)); //642 //most recent: 70.68
     }
     public void UrchinPickupFromWall(){
             UrchinPickupFromWallServoPosition();
@@ -1665,7 +1665,7 @@ public class Geronimo {
       //  SetSmallArmHangerPosition(1.0); //.8 //1.05
         // if in a horizontal arm position, then should do a reset on the slides, first before raising the arm to keep from tipping over
         if (leftSlideArmRotatorMotor.getCurrentPosition() < GetRotatorArmTicksFromDegrees(20)) {
-            double timeout = opMode.getRuntime() + 2.0;
+            double timeout = opMode.getRuntime() + 1.5; //2.0
             SetSlideToPosition(0);
             while (!GetSlidesLimitSwitchPressed() && opMode.getRuntime() < timeout) {
                 SpecialSleep(50);
