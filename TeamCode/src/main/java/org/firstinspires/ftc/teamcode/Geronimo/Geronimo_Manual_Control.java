@@ -65,7 +65,7 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             theRobot.RunDriveControls();
             theRobot.UpdateLimelightStatusAndResults();
 
-            boolean dpadDownNow = gamepad1.dpad_down && gamepad1.options;
+            // boolean dpadDownNow = gamepad1.dpad_down && gamepad1.options;
 
             if (gamepad1.square && !gamepad1.options && !alignBusy) {
                 alignBusy = true;
@@ -138,12 +138,15 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 // theRobot.ReadyHangRobot();
             }
             // LOCKS
+            /*
             else if (gamepad1.dpad_right && !gamepad1.options) {
                 theRobot.HooksReleased();
             }
             else if(gamepad1.dpad_down && !gamepad1.options){
                 theRobot.HooksLocked();
             }
+            */
+
             // LIMELIGHT Color Target
 
             //else if(!gamepad1.squapre && !gamepad1.options && alignBusy){
@@ -165,10 +168,10 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 theRobot.SetLimelightEnabled(!Geronimo.limelightEnabled);
             }
             // TEMP -- Switch Limelight to different pipelines/models
-            else if(dpadDownNow && !dpadDownPrev){
+            else if(gamepad1.dpad_down && !gamepad1.options){
                 theRobot.SwitchLimelightPipeline();
             }
-            dpadDownPrev = dpadDownNow;
+            // dpadDownPrev = dpadDownNow;
 
             /* *************************************************
              *************************************************
