@@ -536,7 +536,7 @@ public class Geronimo {
 
         // Calculate the strafing offsets
         double strafeX = (D * Math.tan(txRadians) * tyCorrectionSensitivity) ; // Left/Right adjustment
-        double strafeY = (D * Math.tan(tyRadians) * txCorrectionSensitivity) -2; // Forward/Backward adjustment
+        double strafeY = (D * Math.tan(tyRadians) * txCorrectionSensitivity) -2.3; // Forward/Backward adjustment
 
         // Return the offsets in a double array
         return new double[] {strafeX, strafeY};

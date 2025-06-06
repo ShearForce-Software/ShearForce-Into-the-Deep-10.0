@@ -154,14 +154,13 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             //}
 
             else if (gamepad1.cross && !gamepad1.options) {
-                theRobot.SetLimelightToYellow();
-
-
+                theRobot.SetLimelightToRed();
 
             }
             else if (gamepad1.circle && !gamepad1.options && gamepad2.left_stick_y < 0.1 && gamepad2.left_stick_y > -0.1) {
                 theRobot.SetLimelightToBlue();
             }
+
             // AVAILABLE COMMANDS
             // TEMP -- turn limelight on/off
             else if(gamepad1.dpad_right && gamepad1.options){
