@@ -67,7 +67,7 @@ public class Geronimo_Manual_Control extends LinearOpMode {
 
             // boolean dpadDownNow = gamepad1.dpad_down && gamepad1.options;
 
-            if (gamepad1.square && !gamepad1.options && !alignBusy) {
+            if (gamepad1.right_bumper && !alignBusy) {
                 alignBusy = true;
 
                 // remember original slide‐PIDF setting
