@@ -14,13 +14,14 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.VelConstraint;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import java.util.Vector;
 
 
 @Autonomous(name="Level1AscentLeft", preselectTeleOp = "Geronimo 1 Manual Control")
-// @Disabled
+@Disabled
 public class GeronimoRedLeftAscent extends LinearOpMode {
     Geronimo control = new Geronimo(true, false,this);
     MecanumDrive_Geronimo drive;

@@ -24,12 +24,13 @@ Note: Servos initialize to midpoint of servo travel
 
 package org.firstinspires.ftc.teamcode.Geronimo;
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
 //@Config // added for FTC dashboard usage
-//@Disabled
+@Disabled
 @TeleOp(name = "Geronimo Intake Servo Test")
 public class Geronimo_Intake_Servo_Test extends LinearOpMode {
     static final double SCALE   = 0.001;  // Joystick scaling for servo increment value

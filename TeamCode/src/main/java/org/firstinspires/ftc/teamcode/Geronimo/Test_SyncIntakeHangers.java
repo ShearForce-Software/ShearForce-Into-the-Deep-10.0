@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Geronimo;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -9,7 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 
 @TeleOp(name = "Test_SyncIntakeHangers.java", group = "Test")
-//@Disabled
+@Disabled
 public class Test_SyncIntakeHangers extends LinearOpMode {
     Servo intakeHangerLeft;
     Servo intakeHangerRight;

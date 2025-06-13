@@ -18,7 +18,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 
 @Autonomous(name="GeronimoPickUpSamples", preselectTeleOp = "Geronimo 1 Manual Control")
- //@Disabled
+@Disabled
 public class GeronimoPickUpSamples extends LinearOpMode {
     Geronimo control = new Geronimo(true, false,this);
     MecanumDrive_Geronimo drive;

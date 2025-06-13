@@ -4,6 +4,7 @@ import static org.firstinspires.ftc.teamcode.summerChassis.MecanumDrive_summerCh
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -18,6 +19,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import java.util.concurrent.TimeUnit;
 
 @Config
+@Disabled
 public class Geraldine {
     LinearOpMode opMode;
     DcMotor leftFrontDrive;

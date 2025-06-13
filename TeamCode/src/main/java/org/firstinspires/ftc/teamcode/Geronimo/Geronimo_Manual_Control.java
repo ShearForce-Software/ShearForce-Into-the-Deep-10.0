@@ -128,9 +128,9 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                theRobot.level3Ascent();
             }
             // LEVEL-2 Hang Logic
-            else if(gamepad1.left_bumper) {
-                theRobot.level2Ascent();
-            }
+            //else if(gamepad1.left_bumper) {
+            //    theRobot.level2Ascent();
+            //}
             // Emergency pause
             else if (gamepad1.share) {
               // theRobot.SetSlidesToHoldCurrentPosition();
@@ -280,12 +280,27 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 }
             }
 
+
+            // Urchin Open/Close Control
             if (gamepad2.right_trigger > 0.2 && !gamepad2.options) {
                 theRobot.SetUrchinServoPosition(0);
             }
             else if (gamepad2.left_trigger > 0.2 && !gamepad2.options) {
                 theRobot.SetUrchinServoPosition(1);
             }
+
+            /*
+            // Urchin Open/Close Control
+            if (gamepad2.right_bumper && !gamepad2.options) {
+                if (theRobot.urchinServo_position == 1) {
+                    theRobot.SetUrchinServoPosition(0);
+                }
+                else if (theRobot.urchinServo_position == 0) {
+                    theRobot.SetUrchinServoPosition(1);
+                }
+            }
+            */
+
 
             // Combo Moves for specimen deliveries
             if (gamepad2.square && !gamepad2.options) {
@@ -299,15 +314,15 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             }
 
             //Combo moves for urchin specimen deliveries
-            else if (gamepad2.left_bumper && gamepad2.options) {
-                theRobot.UrchinPickupFromWall();
-            } else if (gamepad2.right_bumper && gamepad2.options){
-                theRobot.UrchinRemoveFromWall();
-            } else if (gamepad2.left_trigger > 0.2 && gamepad2.options) {
-                theRobot.UrchinDeliverHighChamberAlternate();
-            } else if (gamepad2.right_trigger > 0.2 && gamepad2.options) {
-                theRobot.UrchinDeliverHighChamberFinishingMove();
-            }
+            //else if (gamepad2.left_bumper && gamepad2.options) {
+             //   theRobot.UrchinPickupFromWall();
+            //} else if (gamepad2.right_bumper && gamepad2.options){
+            //    theRobot.UrchinRemoveFromWall();
+            //} else if (gamepad2.left_trigger > 0.2 && gamepad2.options) {
+            //    theRobot.UrchinDeliverHighChamberAlternate();
+            //} else if (gamepad2.right_trigger > 0.2 && gamepad2.options) {
+            //    theRobot.UrchinDeliverHighChamberFinishingMove();
+            //}
 
             //TEMP? -- PIDF Enabled toggle
             else if(gamepad2.dpad_up && gamepad2.options){
@@ -339,12 +354,25 @@ public class Geronimo_Manual_Control extends LinearOpMode {
                 theRobot.InspectionHighPos();
             }
 
+
             // Claw Control
             if (gamepad2.left_bumper && !gamepad2.options) {
                 theRobot.SetClawPosition(Geronimo.CLAW_MAX_POS);
             } else if (gamepad2.right_bumper && !gamepad2.options) {
                 theRobot.SetClawPosition(Geronimo.CLAW_MIN_POS);
             }
+
+            /*
+            // Claw Control
+            if (gamepad2.left_bumper && !gamepad2.options) {
+                if (theRobot.claw_position == Geronimo.CLAW_MIN_POS) {
+                    theRobot.SetClawPosition(Geronimo.CLAW_MAX_POS);
+                }
+                else if (theRobot.claw_position == Geronimo.CLAW_MAX_POS) {
+                    theRobot.SetClawPosition(Geronimo.CLAW_MIN_POS);
+                }
+            }
+            */
 
             theRobot.ShowTelemetry();
         } // end while (opModeIsActive())

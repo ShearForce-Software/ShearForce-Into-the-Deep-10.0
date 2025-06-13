@@ -14,6 +14,7 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.VelConstraint;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.summerChassis.MecanumDrive_summerChassis;
@@ -21,6 +22,7 @@ import org.firstinspires.ftc.teamcode.summerChassis.SummerChassis;
 
 //@Disabled
 @Autonomous(name="LG Auto", preselectTeleOp = "ManualControlLG")
+@Disabled
 public class LGAutoRoutine extends LinearOpMode {
     LG control = new LG(true, false,this);
     MecanumDrive_summerChassis drive;

@@ -51,7 +51,7 @@ import com.qualcomm.robotcore.hardware.Servo;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 @TeleOp(name = "Servo Urchin Rotate Test")
-
+@Disabled
 public class ServoUrchinRotateTest extends LinearOpMode {
 
     // Define class members

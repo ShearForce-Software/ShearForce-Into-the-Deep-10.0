@@ -14,9 +14,11 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.VelConstraint;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 @Autonomous(name="Limelight+Actions")
+@Disabled
 public class ActionsLimelight extends LinearOpMode{
     Pose2d startPose = new Pose2d(0,0,0);
     MecanumDrive_summerChassis drive = new MecanumDrive_summerChassis(hardwareMap, startPose);

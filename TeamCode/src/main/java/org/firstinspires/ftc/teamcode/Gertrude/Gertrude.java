@@ -7,6 +7,7 @@ import com.qualcomm.hardware.dfrobot.HuskyLens;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -30,6 +31,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Config
+@Disabled
 public class Gertrude {
     LinearOpMode opMode;
     DcMotor leftFront;

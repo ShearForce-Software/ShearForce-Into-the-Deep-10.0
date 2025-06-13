@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.summerChassis;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
@@ -12,6 +13,7 @@ import com.acmerobotics.roadrunner.ProfileAccelConstraint;
 import com.acmerobotics.roadrunner.AccelConstraint;
 
 @Autonomous(name="Strafe Right 10 Inches Slow", group="SummerChassis")
+@Disabled
 public class StrafeRightAutoRoutine extends LinearOpMode {
 
     @Override

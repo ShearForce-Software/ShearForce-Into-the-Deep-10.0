@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.summerChassis;
 
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -10,6 +11,7 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 import org.firstinspires.ftc.teamcode.summerChassis.SummerChassis;
 
 @TeleOp(name = "1 Manual Control Summer Chassis")
+@Disabled
 public class ManualControlSummerChassis extends LinearOpMode {
 
     double ticks = 103.6;

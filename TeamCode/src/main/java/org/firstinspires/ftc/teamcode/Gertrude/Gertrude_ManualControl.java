@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Gertrude;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -7,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.Gertrude.Gertrude;
 
 @TeleOp(name = "Gertrude Manual Control")
+@Disabled
 public class Gertrude_ManualControl extends LinearOpMode {
     Gertrude theRobot;
     static final double SCALE = 0.001;

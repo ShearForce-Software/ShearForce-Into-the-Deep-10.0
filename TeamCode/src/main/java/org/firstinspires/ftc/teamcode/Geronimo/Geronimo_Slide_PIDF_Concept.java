@@ -38,7 +38,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @Config
 @TeleOp(name="Geronimo: Slide Extension PIDF Control Concept")
-//@Disabled
+@Disabled
 public class Geronimo_Slide_PIDF_Concept extends LinearOpMode {
 
     // ROTATOR proportional, integral, derivative, and feedforward

@@ -15,12 +15,13 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.VelConstraint;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 
 @Autonomous(name="High Five Baskets Auto Route Limelight", preselectTeleOp =
         "Geronimo 1 Manual Control")
-// @Disabled
+@Disabled
 public class HighFiveBasketsAutoRouteLimelight extends LinearOpMode {
     Geronimo control = new Geronimo(true, false,this);
     MecanumDrive_Geronimo drive;

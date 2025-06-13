@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-//@Disabled
+@Disabled
 @TeleOp(name = "LG Servo Test")
 public class LG_Servo_Test extends LinearOpMode {
     static final double SCALE   = 0.01;     // Joystick scaling for servo increment value

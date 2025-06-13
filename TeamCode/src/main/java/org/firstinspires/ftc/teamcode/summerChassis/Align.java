@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.summerChassis;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
@@ -13,7 +14,7 @@ import com.acmerobotics.roadrunner.AccelConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 @Autonomous(name="Align", group="SummerChassis")
-
+@Disabled
 public class Align extends LinearOpMode{
     @Override
     public void runOpMode(){

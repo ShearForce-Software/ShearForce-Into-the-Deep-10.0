@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Gertrude;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -8,6 +9,7 @@ import org.firstinspires.ftc.teamcode.Gertrude.Gertrude_KidFriendly;
 
 //@Disabled
 @TeleOp(name = "Gertrude Kid Friendly - 1 Operator")
+@Disabled
 public class KidFriendly_Gertrude_1Operator extends LinearOpMode {
     Gertrude_KidFriendly theRobot;
     static final double SCALE = 0.001;

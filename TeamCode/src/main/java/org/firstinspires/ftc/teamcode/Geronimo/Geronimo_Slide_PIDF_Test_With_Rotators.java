@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
 
-//@Disabled
+@Disabled
 @TeleOp(name = "Geronimo PIDF Slides Test")
 
 public class Geronimo_Slide_PIDF_Test_With_Rotators extends LinearOpMode {

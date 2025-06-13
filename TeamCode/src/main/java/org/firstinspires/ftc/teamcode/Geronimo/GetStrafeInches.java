@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Geronimo;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.acmerobotics.roadrunner.Pose2d;
@@ -8,6 +9,7 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.acmerobotics.roadrunner.Action;
 
 @TeleOp(name = "Get Strafe Inches", group = "Geronimo")
+@Disabled
 public class GetStrafeInches extends LinearOpMode {
 
     private Geronimo theRobot;
