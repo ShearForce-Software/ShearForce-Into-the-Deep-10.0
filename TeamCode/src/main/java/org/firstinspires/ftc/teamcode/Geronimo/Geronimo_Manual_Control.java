@@ -292,10 +292,11 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             /*
             // Urchin Open/Close Control
             if (gamepad2.right_bumper && !gamepad2.options) {
-                if (theRobot.urchinServo_position == 1) {
+                double waitTime = getRuntime() + 0.25;
+                if (theRobot.urchinServo_position == 1 && getRuntime() < waitTime) {
                     theRobot.SetUrchinServoPosition(0);
                 }
-                else if (theRobot.urchinServo_position == 0) {
+                else if (theRobot.urchinServo_position == 0 && getRuntime() < waitTime) {
                     theRobot.SetUrchinServoPosition(1);
                 }
             }
@@ -365,10 +366,11 @@ public class Geronimo_Manual_Control extends LinearOpMode {
             /*
             // Claw Control
             if (gamepad2.left_bumper && !gamepad2.options) {
-                if (theRobot.claw_position == Geronimo.CLAW_MIN_POS) {
+                double waitTime = getRuntime() + 0.25;
+                if (theRobot.claw_position == Geronimo.CLAW_MIN_POS && getRuntime() < waitTime) {
                     theRobot.SetClawPosition(Geronimo.CLAW_MAX_POS);
                 }
-                else if (theRobot.claw_position == Geronimo.CLAW_MAX_POS) {
+                else if (theRobot.claw_position == Geronimo.CLAW_MAX_POS && getRuntime() < waitTime) {
                     theRobot.SetClawPosition(Geronimo.CLAW_MIN_POS);
                 }
             }
