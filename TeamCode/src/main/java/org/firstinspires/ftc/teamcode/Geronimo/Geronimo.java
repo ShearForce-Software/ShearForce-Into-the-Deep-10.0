@@ -420,8 +420,8 @@ public class Geronimo {
 
         // Convert angles → inches (same maths as before)
         final double D = 7.2;                                // camera height in in
-        double strafeX =  D * Math.tan(Math.toRadians(raw[0])) * tyCorrectionSensitivity;
-        double strafeY = (D * Math.tan(Math.toRadians(raw[1])) * txCorrectionSensitivity);
+        double strafeX =  (D * Math.tan(Math.toRadians(raw[0])) * tyCorrectionSensitivity);
+        double strafeY = (D * Math.tan(Math.toRadians(raw[1])) * txCorrectionSensitivity)+1.3;
 
         return new double[] { strafeX, strafeY };
     }
@@ -443,7 +443,7 @@ public class Geronimo {
         finalY = offsetInches[1] + biasY;
 
         // 3  abort if target not found (both ≈0)
-        if (Math.abs(offsetInches[0]) < 0.001 && Math.abs(offsetInches[1]) < 0.001) {
+        if (Math.abs(offsetInches[0]) < 0.25 && Math.abs(offsetInches[1]) < 0.001) {
             opMode.telemetry.addLine("NO TARGET");
             Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.GREEN;
             blinkinLedDriver.setPattern(Blinken_pattern);
@@ -461,7 +461,7 @@ public class Geronimo {
 
         drive.updatePoseEstimate();
         Pose2d currentPose = drive.pose;
-        Vector2d targetVector = new Vector2d(drive.pose.position.x -finalY, drive.pose.position.y + finalX +2.0);  // note swap
+        Vector2d targetVector = new Vector2d(drive.pose.position.x -finalY, drive.pose.position.y + finalX);  // note swap
 
         Action strafeAction = drive.actionBuilder(currentPose)
                 .strafeToConstantHeading(targetVector)
