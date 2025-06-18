@@ -421,7 +421,7 @@ public class Geronimo {
         // Convert angles → inches (same maths as before)
         final double D = 7.2;                                // camera height in in
         double strafeX =  (D * Math.tan(Math.toRadians(raw[0])) * tyCorrectionSensitivity);
-        double strafeY = (D * Math.tan(Math.toRadians(raw[1])) * txCorrectionSensitivity)+1.3;
+        double strafeY = (D * Math.tan(Math.toRadians(raw[1])) * txCorrectionSensitivity)-1;
 
         return new double[] { strafeX, strafeY };
     }
