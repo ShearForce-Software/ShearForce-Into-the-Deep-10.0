@@ -1608,8 +1608,8 @@ public class Geronimo {
     }
     public void SampleUrchinFloorPickup_UrchinJamReadyPosition() {
         // position the urchin to be ready to intake
-        SetIntakeBoxRotatorPosition(0.47);
-        SetSmallArmHangerPosition(0.87); //.15 //0.80 //0.81
+        SetIntakeBoxRotatorPosition(0.51); //0.47
+        SetSmallArmHangerPosition(0.83); //0.87 //0.15 //0.80 //0.81
         SetSlideRotatorArmToPosition(0);
     }
     public void SampleUrchinFloorPickupFinishingMove(){
