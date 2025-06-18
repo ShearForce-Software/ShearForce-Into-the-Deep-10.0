@@ -67,6 +67,10 @@ public class Geronimo_Manual_Control extends LinearOpMode {
 
             // boolean dpadDownNow = gamepad1.dpad_down && gamepad1.options;
 
+            if (gamepad1.dpad_right && !gamepad1.options) {
+                theRobot.ReadyHangRobot();
+            }
+
             if (gamepad1.right_bumper && !alignBusy) {
                 alignBusy = true;
 

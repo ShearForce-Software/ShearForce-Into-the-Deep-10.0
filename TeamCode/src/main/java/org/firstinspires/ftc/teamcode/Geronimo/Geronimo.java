@@ -461,7 +461,7 @@ public class Geronimo {
 
         drive.updatePoseEstimate();
         Pose2d currentPose = drive.pose;
-        Vector2d targetVector = new Vector2d(drive.pose.position.x -finalY, drive.pose.position.y + finalX);  // note swap
+        Vector2d targetVector = new Vector2d(drive.pose.position.x -finalY, drive.pose.position.y + finalX +2.0);  // note swap
 
         Action strafeAction = drive.actionBuilder(currentPose)
                 .strafeToConstantHeading(targetVector)
@@ -1001,17 +1001,18 @@ public class Geronimo {
         SetSlideToPosition(2415); //3049
     }
     public void ReadyHangRobot(){
-        SetSlideToPosition(1225); //1547
-        SpecialSleep(2000);
-        SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(51.08));  //323 <<original  503  //400 did not work
-        SpecialSleep(2000);
-        SetSlideToPosition(950);  //1365 <<original //1200
+        SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(90));
+        SpecialSleep(500);
+        SetIntakeBoxRotatorPosition(0.33);
+        SetSmallArmHangerPosition(0.79);
+        SetClawPosition(1);
+        SetSlideToPosition(2693); //1547
     }
 
     int stepCounter = 0;
     public void level3Ascent() {
         stepCounter = 0;
-        int targetAngle = 75;
+        int targetAngle = 90;
 
         boolean originalPidf = pidfSlidesEnabled;
         pidfSlidesEnabled = false;
@@ -1039,15 +1040,20 @@ public class Geronimo {
             // ***  is Blue while in this step, goes yellow when done
             // *******************************************
             if (stepCounter == 0) {
-                targetAngle = 75;
-                SetIntakeBoxRotatorPosition(0.33);
-                SetSmallArmHangerPosition(0.79);
-                SetClawPosition(1);
-                if (leftSlideArmRotatorMotor.getCurrentPosition() >= findRealArmAngle(70) || opMode.getRuntime() > timeout) {
-                    Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.YELLOW;
-                    blinkinLedDriver.setPattern(Blinken_pattern);
-                    timeout = opMode.getRuntime() +  5.0;
+                if (leftSlideArmRotatorMotor.getCurrentPosition() >= findRealArmAngle(70) && intakeBoxRotatorPosition == 0.33 && smallArmHangerRightPosition == 0.79) {
                     stepCounter++;
+                    timeout = opMode.getRuntime() + 5.0;
+                } else {
+                    targetAngle = 75;
+                    SetIntakeBoxRotatorPosition(0.33);
+                    SetSmallArmHangerPosition(0.79);
+                    SetClawPosition(1);
+                    if (leftSlideArmRotatorMotor.getCurrentPosition() >= findRealArmAngle(70) || opMode.getRuntime() > timeout) {
+                        Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.YELLOW;
+                        blinkinLedDriver.setPattern(Blinken_pattern);
+                        timeout = opMode.getRuntime() + 5.0;
+                        stepCounter++;
+                    }
                 }
             }
 
@@ -1058,13 +1064,20 @@ public class Geronimo {
             // *** Blinkin is Yellow in this step, goes orange when done
             // *******************************************
             else if (stepCounter == 1) {
-                SetSlideToPosition(2693); //3400
-                targetAngle = 75;
-                if (slideLeft.getCurrentPosition() >= 2614 || opMode.getRuntime() > timeout) { //3300
-                    Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.ORANGE;
-                    blinkinLedDriver.setPattern(Blinken_pattern);
-                    timeout = opMode.getRuntime() + 5.0;
+                if (slideLeft.getCurrentPosition() >= 2614) {
                     stepCounter++;
+                    timeout = opMode.getRuntime() + 5.0;
+                }
+                else
+                {
+                    SetSlideToPosition(2693); //3400
+                    targetAngle = 75;
+                    if (slideLeft.getCurrentPosition() >= 2614 || opMode.getRuntime() > timeout) { //3300
+                        Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.ORANGE;
+                        blinkinLedDriver.setPattern(Blinken_pattern);
+                        timeout = opMode.getRuntime() + 5.0;
+                        stepCounter++;
+                    }
                 }
             }
 
