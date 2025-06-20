@@ -1032,7 +1032,7 @@ public class Geronimo {
         SetSlideToPosition(2415); //3049
     }
     public void ReadyHangRobot(){
-        SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(90));
+        SetSlideRotatorArmToPosition(GetRotatorArmTicksFromDegrees(92));
         SpecialSleep(500);
         SetIntakeBoxRotatorPosition(0.33);
         SetSmallArmHangerPosition(0.79);
@@ -1043,7 +1043,7 @@ public class Geronimo {
     int stepCounter = 0;
     public void level3Ascent() {
         stepCounter = 0;
-        int targetAngle = 90;
+        int targetAngle = 92;
 
         boolean originalPidf = pidfSlidesEnabled;
         pidfSlidesEnabled = false;
@@ -1119,7 +1119,7 @@ public class Geronimo {
             // *** Blinkin is orange in this step, goes RED_ORANGE when done
             // *******************************************
             else if (stepCounter == 2) {
-                targetAngle = 90;
+                targetAngle = 92;
                 SetSlideToPosition(2693); //3400
                 if ((slideLeft.getCurrentPosition() >= 2614 && //3300
                         leftSlideArmRotatorMotor.getCurrentPosition() > findRealArmAngle((88)) )
@@ -1202,7 +1202,7 @@ public class Geronimo {
                 targetAngle = 95;
                 SetSlideToPosition(3881); //4900
                 if ((slideLeft.getCurrentPosition() >= 3841 && //4850
-                        leftSlideArmRotatorMotor.getCurrentPosition() >= findRealArmAngle((93)) )
+                        leftSlideArmRotatorMotor.getCurrentPosition() >= findRealArmAngle((88)) )
                     //|| opMode.getRuntime() > timeout
                 ) {
                     Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.AQUA;
@@ -1214,7 +1214,7 @@ public class Geronimo {
 
             else if (stepCounter == 8) {
                 if (opMode.getRuntime() > timeout) {
-                    timeout = opMode.getRuntime() + 3.0;
+                    timeout = opMode.getRuntime() + 1.5; //3.0
                     stepCounter++;
                 }
             }
@@ -1229,10 +1229,10 @@ public class Geronimo {
             else if (stepCounter == 9) {
                 targetAngle = 95;
                 SetSlideToPosition(3485); //4400
-                if (slideLeft.getCurrentPosition() <= 3485 || opMode.getRuntime() > timeout) { //4400
+                if (slideLeft.getCurrentPosition() <= 3490 || opMode.getRuntime() > timeout) { //4400
                     Blinken_pattern = RevBlinkinLedDriver.BlinkinPattern.GREEN;
                     blinkinLedDriver.setPattern(Blinken_pattern);
-                    timeout = opMode.getRuntime() + 3.0;
+                    timeout = opMode.getRuntime() + 1.5; //3.0
                     stepCounter++;
                 }
             }
@@ -1249,7 +1249,7 @@ public class Geronimo {
                 // CLAM SHELL CLOSED
                 SetSlideRotatorArmToPosition(0);
                 if (GetSlidesLimitSwitchPressed() || opMode.getRuntime() > timeout) {
-                    timeout = opMode.getRuntime() + 0.5;
+                    timeout = opMode.getRuntime() + 0.25; //0.5
                     stepCounter++;
                 }
             }
@@ -1264,7 +1264,7 @@ public class Geronimo {
             {
                 HooksLocked();
                 if (opMode.getRuntime() > timeout) {
-                    timeout = opMode.getRuntime() + 3.0;
+                    timeout = opMode.getRuntime() + 1.5; //3.0
                     stepCounter++;
                 }
             }
