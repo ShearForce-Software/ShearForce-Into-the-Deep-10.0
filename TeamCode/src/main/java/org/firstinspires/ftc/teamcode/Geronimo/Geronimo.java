@@ -25,6 +25,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
+
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 //import org.firstinspires.ftc.vision.VisionPortal;
 //import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
@@ -321,6 +322,12 @@ public class Geronimo {
         limelightEnabled = enabled;
     }
 
+    /* -------------------------------------------------------------------
+     *  Helper -- convert a robot–relative (dx,dy) to a field vector
+     * -------------------------------------------------------------------*/
+
+
+
     public void InitLimelight(HardwareMap hardwareMap){
         limelightbox = hardwareMap.get(Limelight3A.class, "limelight");
 
@@ -426,6 +433,22 @@ public class Geronimo {
         return new double[] { strafeX, strafeY };
     }
 
+    private Vector2d robotOffsetToField(double dxRobot, double dyRobot) {
+        // heading of the RR pose estimate (already fused with IMU)
+        double h = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS); //need help?????        // radians, CCW+
+
+        double dxField =  dxRobot * Math.cos(-h) - dyRobot * Math.sin(-h);      // do we use -h or h?????
+        double dyField =  dxRobot * Math.sin(-h) + dyRobot * Math.cos(-h);
+
+
+
+        // so basically yer RoadRunner’s X-axis is field-forward, Y-axis is field-left,
+        //but our Limelight “dxRobot” is strafe-right  (-Y in RR coordinates)
+        //and then basicallyyy “dyRobot” is forward (+X)    ernoe.  The rotation above keeps that
+         //convention; we do the same swap we basiclaly  already had later on.w
+        return new Vector2d(dxField, dyField);
+    }
+
     public void AlignOnFloorSampleWithPercent() {
 
         // 1  pixel-angle offset from colour box
@@ -461,7 +484,15 @@ public class Geronimo {
 
         drive.updatePoseEstimate();
         Pose2d currentPose = drive.pose;
-        Vector2d targetVector = new Vector2d(drive.pose.position.x -finalY, drive.pose.position.y + finalX);  // note swap
+        //Vector2d targetVector = new Vector2d(drive.pose.position.x -finalY, drive.pose.position.y + finalX);  // note swap
+
+        // --- 3  convert robot offsets → field space ---
+        Vector2d fieldOffset = robotOffsetToField(finalY, finalX);   // (dxF , dyF)
+
+// --- 4  build where we really want to be basicallyyy
+        Vector2d targetVector = new Vector2d(
+                drive.pose.position.x - fieldOffset.x,  // forward/back  (RR-X)
+                   drive.pose.position.y + fieldOffset.y); // strafe        (RR-Y)
 
         Action strafeAction = drive.actionBuilder(currentPose)
                 .strafeToConstantHeading(targetVector)
